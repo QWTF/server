@@ -1,6 +1,6 @@
 qwprogs.dat
 
-defs.h2
+defs.h
 defs.qc
 qw.qc
 debug.qc
