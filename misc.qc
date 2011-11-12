@@ -1,3 +1,30 @@
+void () UserInfo_Changed = 
+{
+    local string st;
+    local float tc;
+
+    st = infokey (self, "bottomcolor");
+    tc = stof (st);
+    if ((self.playerclass == 8) && (self.undercover_team != 0)) {
+        if ((TeamFortress_TeamGetColor (self.undercover_team) - 1) != tc) {
+            stuffcmd (self, "bottomcolor ");
+            tc = TeamFortress_TeamGetColor (self.undercover_team) - 1;
+            st = ftos (tc);
+            stuffcmd (self, st);
+            stuffcmd (self, "\n");
+            return;
+        }
+    } else {
+        if (tc != (TeamFortress_TeamGetColor (self.team_no) - 1)) {
+            stuffcmd (self, "bottomcolor ");
+            tc = TeamFortress_TeamGetColor (self.team_no) - 1;
+            st = ftos (tc);
+            stuffcmd (self, st);
+            stuffcmd (self, "\n");
+            return;
+        }
+    }
+};
 
 void () info_null = { dremove (self); };
 void () info_notnull = {};
