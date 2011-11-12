@@ -1887,7 +1887,7 @@ void () ClientConnect =
 	    while (te) {
 		if (te.tf_id == self.tf_id) {
 		    got_one = 1;
-		    TeamFortress_TeamSet (te.team_no);
+		    TeamFortress_TeamSet (te.team_no, 0);
 		    self.frags = te.frags;
 		    self.real_frags = te.real_frags;
 		    if (!(toggleflags & TFLAG_TEAMFRAGS) && !(toggleflags & TFLAG_FULLTEAMSCORE)) {

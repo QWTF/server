@@ -16,13 +16,14 @@ void () lvl1_sentry_stand;
 void () lvl2_sentry_stand;
 void () lvl3_sentry_stand;
 
-float (float tno) TeamFortress_TeamSet;
+float (float tno, float autoteam) TeamFortress_TeamSet;
 float (float tno) TeamFortress_TeamGetColor;
 float () TeamFortress_TeamPutPlayerInTeam;
 float (float tno) TeamFortress_TeamIsCivilian;
 float (float tno) TeamFortress_TeamGetNoPlayers;
 float () TeamFortress_GetNoPlayers;
 
+void () TeamFortress_ChangeTeam;
 void () TeamFortress_ChangeClass;
 void (entity p) TeamFortress_SetSkin;
 
@@ -190,6 +191,10 @@ void () Player_Menu =
 
 	Menu_Class ();
 
+	} else if (self.current_menu == 21) {
+	
+	Menu_Team ();
+	
     } else if (((self.team_no == 0) && teamplay) && (self.lives != 0)) {
 
 	self.current_menu = MENU_TEAM;
@@ -233,9 +238,9 @@ void (float inp) Menu_Team_Input =
     if (inp == 5) {
 	TeamFortress_TeamPutPlayerInTeam ();
     } else if ((inp <= number_of_teams) && (inp > 0)) {
-	TeamFortress_TeamSet (inp);
+	TeamFortress_TeamSet (inp, 0);
     } else if ((number_of_teams == 0) && (inp <= 4)) {
-	TeamFortress_TeamSet (inp);
+	TeamFortress_TeamSet (inp, 0);
     } else if (inp == 7) {
 	self.current_menu = MENU_PICKBINDS;
     }

@@ -37,7 +37,7 @@ float () TeamFortress_TeamPutPlayerInTeam =
 	}
 	i = i + 1;
     }
-    return (TeamFortress_TeamSet (likely_team));
+    return (TeamFortress_TeamSet (likely_team, 1));
 };
 
 float (float tno) TeamFortress_TeamGetColor =
@@ -117,7 +117,7 @@ void (entity p) SetTeamName =
     stuffcmd (p, "\n");
 };
 
-float (float tno) TeamFortress_TeamSet =
+float (float tno, float autoteam) TeamFortress_TeamSet =
 {
     local string st;
     local float tc;
@@ -132,7 +132,7 @@ float (float tno) TeamFortress_TeamSet =
 	sprint (self, PRINT_HIGH, st, " teams on this map.\nTry again\n");
 	return (0);
     }
-    if (self.team_no > 0) {
+    if (self.team_no == tno) {
 	sprint (self, PRINT_HIGH, "You're already in Team No ");
 	st = ftos (self.team_no);
 	sprint (self, PRINT_HIGH, st, ".\n");
@@ -175,12 +175,14 @@ float (float tno) TeamFortress_TeamSet =
     }
     bprint (PRINT_HIGH, self.netname, " has joined Team No ");
     st = ftos (tno);
-    bprint (PRINT_HIGH, st, ".\n");
+	if (autoteam == 1) bprint (PRINT_HIGH, st, ". ?????????\n"); // brown AUTOTEAM with gold brackets []
+    else bprint (PRINT_HIGH, st, ".\n");
     stuffcmd (self, "color ");
     tc = TeamFortress_TeamGetColor (tno) - 1;
     st = ftos (tc);
     stuffcmd (self, st);
     stuffcmd (self, "\n");
+	
     self.team_no = tno;
     self.immune_to_check = time + 10;
     self.lives = TeamFortress_TeamGetLives (tno);

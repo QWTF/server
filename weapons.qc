@@ -2547,8 +2547,10 @@ void () DeadImpulses =
 	TeamFortress_AutoZoomToggle ();
     else if (self.impulse == TF_SHOWLEGALCLASSES)
 	TeamFortress_DisplayLegalClasses ();
+	else if (self.impulse == TF_CHANGETEAM)
+	TeamFortress_ChangeTeam ();
     else if ((self.impulse > 100) && (self.impulse <= (100 + 10))) {
-	TeamFortress_ChangeClass ();
+    TeamFortress_ChangeClass ();
     } else if ((self.playerclass != 0) && (self.impulse == 99)
 	       && (deathmatch == 3) && (cb_prematch_time < time)) {
 	self.current_menu = 20;
@@ -2574,13 +2576,13 @@ void () DeadImpulses =
     else if (self.impulse == TF_STATUS_QUERY)
 	TeamFortress_StatusQuery ();
     else if (self.impulse == TF_TEAM_1)
-	TeamFortress_TeamSet (1);
+	TeamFortress_TeamSet (1, 0);
     else if (self.impulse == TF_TEAM_2)
-	TeamFortress_TeamSet (2);
+	TeamFortress_TeamSet (2, 0);
     else if (self.impulse == TF_TEAM_3)
-	TeamFortress_TeamSet (3);
+	TeamFortress_TeamSet (3, 0);
     else if (self.impulse == TF_TEAM_4)
-	TeamFortress_TeamSet (4);
+	TeamFortress_TeamSet (4, 0);
     else if (self.impulse == TF_TEAM_SCORES)
 	TeamFortress_TeamShowScores (0);
     else if (self.impulse == TF_TEAM_CLASSES)
@@ -2663,13 +2665,14 @@ void () W_WeaponFrame =
 	} else if ((self.impulse > 0) && (self.impulse < 11)) {
 	    Menu_Input (self.impulse);
 	    if (self.impulse != 0) {
-		if (((self.team_no == 0) && teamplay) && (self.lives != 0)) {
-		    Menu_Team_Input (self.impulse);
-		} else if ((self.playerclass == 0) && (self.lives != 0)) {
-		    Menu_Class_Input (self.impulse);
-		}
+		    if (((self.team_no == 0) && teamplay) && (self.lives != 0)) {
+		        Menu_Team_Input (self.impulse);
+		    } else if ((self.playerclass == 0) && (self.lives != 0)) {
+		        Menu_Class_Input (self.impulse);
+		    } else if (self.current_menu == 21) {
+                Menu_Team_Input (self.impulse);
+	        }
 	    }
-	}
     }
     if (time < self.attack_finished) {
 	return;

@@ -68,6 +68,43 @@ void () UseSpecialSkill =
     }
 };
 
+void () TeamFortress_ChangeTeam =
+{
+    local float oldtno;
+    local string st;
+    
+    if (self.team_no != 0) {
+        oldtno = self.team_no;
+        
+        self.playerclass = 0;
+        self.team_no = 0;
+        self.model = "";
+        self.mdl = "";
+        self.frags = 0;
+        
+        TeamFortress_RemoveTimers ();
+        
+        self.flags = FL_CLIENT | FL_NOTARGET | FL_ONGROUND;
+        self.waterlevel = 3;
+        self.takedamage = DAMAGE_NO;
+        self.solid = SOLID_NOT;
+        self.movetype = MOVETYPE_NONE;
+        
+        PutClientInServer ();
+        stuffcmd (self, "color 0 0");
+        
+        st = ftos (oldtno);
+        bprint (PRINT_HIGH, self.netname, " has left Team No ", st, ".\n");
+        
+        self.current_menu = 21;
+        return;
+    }
+    else {
+            sprint (self, PRINT_HIGH, "You must be on a team before you can change teams.\n");
+            return;
+    }
+}
+
 void () TeamFortress_ChangeClass =
 {
     local entity spot;
