@@ -2674,6 +2674,7 @@ void () W_WeaponFrame =
 	        }
 	    }
     }
+	}
     if (time < self.attack_finished) {
 	return;
     }
@@ -2747,12 +2748,12 @@ void () W_WeaponFrame =
 void () SuperDamageSound =
 {
     if (self.super_damage_finished > time) {
-	if (self.super_sound < time) {
-	    self.super_sound = time + 1;
-	    sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
-	}
+		if (self.super_sound < time) {
+			self.super_sound = time + 1;
+			sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
+		}
     }
-    return;
+	return;
 };
 
 void () RemoveGrenade =
