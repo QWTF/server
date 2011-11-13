@@ -122,7 +122,7 @@ void () door_trigger_touch =
     if (other.health <= 0)
 	return;
     if (other.playerclass == 0)
-	return ( 0 );
+	return;
 
     if (!Activated (self, other)) {
 	if (self.else_goal != 0) {
