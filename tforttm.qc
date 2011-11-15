@@ -48,13 +48,11 @@ float () TeamFortress_TeamPutPlayerInTeam =
         if (arr_team_sizes[i] < ceiling && arr_team_sizes[i] < TeamFortress_TeamGetMaxPlayers (i)) { 
             if (ceiling_matches >= number_of_largest_teams) {
                 if (arr_team_sizes[i] < flooring) {
-                    bprint (PRINT_HIGH, self.netname, "IF! arr_team_sizes = ");
                     arr_eligible_teams[eligible_teams_count] = i;
                     eligible_teams_count++;
                 }
             }
             else {
-                bprint (PRINT_HIGH, self.netname, "ELSE! arr_team_sizes = ");
                 arr_eligible_teams[eligible_teams_count] = i;
                 eligible_teams_count++;
             }
