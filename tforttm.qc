@@ -10,33 +10,61 @@ float (float tno) TeamFortress_TeamGetMaxPlayers;
 string (float tno) TeamFortress_TeamGetColorString;
 float (float tno) TeamFortress_TeamGetIllegalClasses;
 string (entity p) TeamFortress_GetSkin;
+float arr_team_sizes[8];
+float arr_eligible_teams[8];
 
 float () TeamFortress_TeamPutPlayerInTeam =
 {
-    local float i, j;
-    local float lowest;
+    local float i;
     local float likely_team;
-    local string st;
-
-    likely_team = random () * number_of_teams;
-    likely_team = ceil (likely_team);
-    if (likely_team == 0)
-	likely_team = number_of_teams;
-
-    lowest = 33;
-
-    i = 1;
-    while (i < (number_of_teams + 1)) {
-
-	j = TeamFortress_TeamGetNoPlayers (i);
-	if (j < lowest) {
-	    if (TeamFortress_TeamGetMaxPlayers (i) > j) {
-		lowest = j;
-		likely_team = i;
-	    }
-	}
-	i = i + 1;
+    local float likely_team_index;
+    local float ceiling_matches;
+    local float eligible_teams_count;
+    local float flooring;
+    local float ceiling;
+    local float number_of_largest_teams;
+    local float total_players;
+    
+    total_players = 0;
+    // Populate team size array
+    for (i = 0; i <= number_of_teams; i++) {
+        arr_team_sizes[i] = TeamFortress_TeamGetNoPlayers (i);
+        total_players = total_players + arr_team_sizes[i];
     }
+    
+    ceiling = ceil (total_players / number_of_teams);
+    flooring = floor (total_players / number_of_teams);
+    number_of_largest_teams = total_players - (floor (total_players / number_of_teams) * number_of_teams);
+    
+    // Get the number of teams that match or exceed the ceiling
+    ceiling_matches = 0;
+    for (i = 1;i <= number_of_teams; i++) {
+        if (arr_team_sizes[i] >= ceiling) ceiling_matches++;
+    }
+    
+    // Find the eligible teams for the player to auto join
+    eligible_teams_count = 0;
+    for (i = 1;i <= number_of_teams; i++) {
+        if (arr_team_sizes[i] < ceiling && arr_team_sizes[i] < TeamFortress_TeamGetMaxPlayers (i)) { 
+            if (ceiling_matches >= number_of_largest_teams) {
+                if (arr_team_sizes[i] < flooring) {
+                    bprint (PRINT_HIGH, self.netname, "IF! arr_team_sizes = ");
+                    arr_eligible_teams[eligible_teams_count] = i;
+                    eligible_teams_count++;
+                }
+            }
+            else {
+                bprint (PRINT_HIGH, self.netname, "ELSE! arr_team_sizes = ");
+                arr_eligible_teams[eligible_teams_count] = i;
+                eligible_teams_count++;
+            }
+        }
+    }
+
+    likely_team_index = random () * eligible_teams_count;
+    likely_team_index = floor (likely_team_index);
+    likely_team = arr_eligible_teams[likely_team_index];
+    
     return (TeamFortress_TeamSet (likely_team, 1));
 };
 
@@ -175,7 +203,7 @@ float (float tno, float autoteam) TeamFortress_TeamSet =
     }
     bprint (PRINT_HIGH, self.netname, " has joined Team No ");
     st = ftos (tno);
-	if (autoteam == 1) bprint (PRINT_HIGH, st, ". ?????????\n"); // brown AUTOTEAM with gold brackets []
+	if (autoteam == 1) bprint (PRINT_HIGH, st, ". αυτο‘\n"); // brown auto with gold brackets []
     else bprint (PRINT_HIGH, st, ".\n");
     stuffcmd (self, "color ");
     tc = TeamFortress_TeamGetColor (tno) - 1;
