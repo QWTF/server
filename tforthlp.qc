@@ -29,7 +29,7 @@ void () TeamFortress_MOTD =
 
 	sprint (self, PRINT_HIGH, "Type help for more info.\n");
 	sprint (self, PRINT_HIGH, "TeamFortress QuakeWorld v2.92\n");
-	sprint (self, PRINT_HIGH, "https://github.com/KillJoy83/Quake-Team-Fortress\n");
+	sprint (self, PRINT_HIGH, "https://github.com/quaketf/\n");
 
 	self.menu_displaytime = 0;
 	self.current_menu = MENU_INTRO;
@@ -45,6 +45,7 @@ void () TeamFortress_MOTD =
 	TeamFortress_Alias ("autozoom", TF_AUTOZOOM, 0);
 	TeamFortress_Alias ("changeclass", TF_CHANGECLASS, 0);
 	TeamFortress_Alias ("changeteam", TF_CHANGETEAM, 0);
+    TeamFortress_Alias ("rpickup", TF_RPICKUP, 0);
 	TeamFortress_Alias ("scout", TF_CHANGEPC + PC_SCOUT, 0);
 	TeamFortress_Alias ("sniper", TF_CHANGEPC + PC_SNIPER, 0);
 	TeamFortress_Alias ("soldier", TF_CHANGEPC + PC_SOLDIER, 0);

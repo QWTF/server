@@ -53,6 +53,7 @@ void () TeamFortress_Discard;
 void () TeamFortress_DetonatePipebombs;
 void (float timer) TeamFortress_SetDetpack;
 void () TeamFortress_DetpackStop;
+void () TeamFortress_Rpickup;
 
 void () DropKey;
 void () UseSpecialSkill;
@@ -2537,6 +2538,10 @@ void () PreMatchImpulses =
 	    TeamFortress_DisplayDetectionItems ();
     } else if (self.impulse == TF_DISPLAYLOCATION)
 	display_location ();
+    
+    if (self.impulse == TF_RPICKUP) {
+        TeamFortress_Rpickup ();
+    }
 };
 
 void () DeadImpulses =

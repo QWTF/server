@@ -3,6 +3,9 @@ void () TeamFortress_CheckClassStats;
 void (entity Player, float Armorclass) TeamFortress_DescribeArmor;
 void () TeamFortress_AmmoboxTouch;
 
+float rpickup_votes;
+float arr_rpickup_voters[32];
+
 float (float tno) num_team_ammoboxes;
 void (float tno) RemoveOldAmmobox;
 void (float tno) increment_team_ammoboxes;
@@ -68,6 +71,56 @@ void () UseSpecialSkill =
     }
 };
 
+void () TeamFortress_Rpickup =
+{
+    local float rpickup_votes_needed;
+    local float total_players;
+    local float i;
+    local entity search;
+    
+    total_players = 0;
+    // Get the total players in the server
+    for (i = 0; i <= number_of_teams; i++) {
+        total_players += TeamFortress_TeamGetNoPlayers (i);
+    }
+    
+    // Calculate how many votes are needed for a majority
+    rpickup_votes_needed = floor (total_players / 2) + 1;
+    
+    // If player has already voted, withdraw their vote
+    for (i = 0; i < rpickup_votes; i++) {
+        if (arr_rpickup_voters[i] == self.tf_id) {
+            rpickup_votes--;
+            arr_rpickup_voters[i] = -1;
+            bprint(PRINT_HIGH, self.netname, " withdraws his rpickup vote! (", ftos (rpickup_votes), "/", ftos (rpickup_votes_needed), ")\n");
+            return;
+        }
+    }
+
+    // Capture this player's vote
+    arr_rpickup_voters[rpickup_votes] = self.tf_id;
+    rpickup_votes++;
+    
+    bprint(PRINT_HIGH, self.netname, " votes for rpickup! (", ftos (rpickup_votes), "/", ftos (rpickup_votes_needed), ")\n");
+
+    // If required number of votes was hit, random the teams
+    if (rpickup_votes >= rpickup_votes_needed) {
+        // Loop through each player on the server
+        search = find (world, classname, "player");
+        while (search != world) {
+            if (search.netname != string_null) {
+                stuffcmd (search, "changeteam; wait; wait; wait; impulse 5\n");
+            }
+            
+            search = find (search, classname, "player");
+        }
+
+        rpickup_votes = 0;
+    }
+    
+    return;
+}
+
 void () TeamFortress_ChangeTeam =
 {
     local float oldtno;
@@ -91,17 +144,13 @@ void () TeamFortress_ChangeTeam =
         self.movetype = MOVETYPE_NONE;
         
         PutClientInServer ();
-        stuffcmd (self, "color 0 0");
+        stuffcmd (self, "color 0 0\n");
         
         st = ftos (oldtno);
         bprint (PRINT_HIGH, self.netname, " has left Team No ", st, ".\n");
         
         self.current_menu = 21;
         return;
-    }
-    else {
-            sprint (self, PRINT_HIGH, "You must be on a team before you can change teams.\n");
-            return;
     }
 }
 

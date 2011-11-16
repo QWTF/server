@@ -442,6 +442,9 @@
 #define TF_SHOW_IDS		186
 #define TF_DROPITEMS		194
 
+// rpickup support for re-arranging teams evenly
+#define TF_RPICKUP      197
+
 /*======================================================*/
 /*	Colors						*/
 /*======================================================*/
