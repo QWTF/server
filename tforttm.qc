@@ -23,18 +23,37 @@ float () TeamFortress_TeamPutPlayerInTeam =
     local float flooring;
     local float ceiling;
     local float number_of_largest_teams;
-    local float total_players;
+    local float total_players_to_balance;
+    local float teams_to_balance;
+    local float total_players_on_maxed_teams;
     
-    total_players = 0;
+    total_players_to_balance = 0;
+    teams_to_balance = number_of_teams;
+    total_players_on_maxed_teams = 0;
+    
     // Populate team size array
     for (i = 0; i <= number_of_teams; i++) {
         arr_team_sizes[i] = TeamFortress_TeamGetNoPlayers (i);
-        total_players = total_players + arr_team_sizes[i];
+        total_players_to_balance += arr_team_sizes[i];
+        
+        // If team is at max players keep track of it
+        if (arr_team_sizes[i] == TeamFortress_TeamGetMaxPlayers (i)) {
+            teams_to_balance--;
+            total_players_on_maxed_teams += arr_team_sizes[i];
+        }
     }
     
-    ceiling = ceil (total_players / number_of_teams);
-    flooring = floor (total_players / number_of_teams);
-    number_of_largest_teams = total_players - (floor (total_players / number_of_teams) * number_of_teams);
+    // Take the players on the maxed team(s) out of the player pool that we're balancing
+    total_players_to_balance -= total_players_on_maxed_teams;
+    
+    // Most a team should have if it's as balanced as possible
+    ceiling = ceil (total_players_to_balance / teams_to_balance);
+    
+    // Least a team should have if it's as balanced as possible
+    flooring = floor (total_players_to_balance / teams_to_balance);
+    
+    // Number of teams which should have the ceiling number of players if it's as balanced as possible
+    number_of_largest_teams = total_players_to_balance - (floor (total_players_to_balance / teams_to_balance) * teams_to_balance);
     
     // Get the number of teams that match or exceed the ceiling
     ceiling_matches = 0;
@@ -59,11 +78,18 @@ float () TeamFortress_TeamPutPlayerInTeam =
         }
     }
 
-    likely_team_index = random () * eligible_teams_count;
-    likely_team_index = floor (likely_team_index);
-    likely_team = arr_eligible_teams[likely_team_index];
-    
-    return (TeamFortress_TeamSet (likely_team, 1));
+    if (teams_to_balance == 0) {
+        sprint (self, PRINT_HIGH, "All teams are full.\n");
+        
+        return 0;
+    }
+    else {
+        likely_team_index = random () * eligible_teams_count;
+        likely_team_index = floor (likely_team_index);
+        likely_team = arr_eligible_teams[likely_team_index];
+        
+        return (TeamFortress_TeamSet (likely_team, 1));
+    }
 };
 
 float (float tno) TeamFortress_TeamGetColor =
