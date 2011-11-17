@@ -48,6 +48,7 @@ void () CTF_FlagCheck;
 string nextmap;
 float intermission_running;
 float intermission_exittime;
+float hideconsoletext;
 
 void () info_intermission =
 {
@@ -1086,7 +1087,7 @@ void () PutClientInServer =
 
     self.takedamage = 2;
 
-    TeamFortress_PrintClassName (self, self.playerclass, self.tfstate & TFSTATE_RANDOMPC);
+    if (hideconsoletext == 0) TeamFortress_PrintClassName (self, self.playerclass, self.tfstate & TFSTATE_RANDOMPC);
     TeamFortress_SetEquipment ();
     TeamFortress_SetHealth ();
     TeamFortress_SetSpeed (self);
@@ -1961,7 +1962,7 @@ void () ClientDisconnect =
     }
     set_suicide_frame ();
     self.netname = string_null;
-    self.team_no = 0;
+    self.team_no = -1;
     self.solid = 0;
     setsize (self, '0 0 0', '0 0 0');
 };

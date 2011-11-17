@@ -77,11 +77,14 @@ void () TeamFortress_Rpickup =
     local float total_players;
     local float i;
     local entity search;
+    local entity tempself;
     
     total_players = 0;
+    bprint(PRINT_HIGH, ftos (total_players),"\n");
     // Get the total players in the server
     for (i = 0; i <= number_of_teams; i++) {
         total_players += TeamFortress_TeamGetNoPlayers (i);
+        bprint(PRINT_HIGH, ftos (total_players),"\n");
     }
     
     // Calculate how many votes are needed for a majority
@@ -105,17 +108,45 @@ void () TeamFortress_Rpickup =
 
     // If required number of votes was hit, random the teams
     if (rpickup_votes >= rpickup_votes_needed) {
+        bprint(PRINT_HIGH, "Randomly picking new teams...\n");
+    
+        tempself = self;
+        hideconsoletext = 1;
+        
         // Loop through each player on the server
         search = find (world, classname, "player");
         while (search != world) {
             if (search.netname != string_null) {
-                stuffcmd (search, "changeteam; wait; wait; wait; impulse 5\n");
+                self = search;          
+                
+                self.playerclass = 0;
+                self.team_no = 0;
+                self.model = "";
+                self.mdl = "";
+                self.frags = 0;
+                
+                TeamFortress_RemoveTimers ();
+                self = search;
+                
+                self.flags = FL_CLIENT | FL_NOTARGET | FL_ONGROUND;
+                self.waterlevel = 3;
+                self.takedamage = DAMAGE_NO;
+                self.solid = SOLID_NOT;
+                self.movetype = MOVETYPE_NONE;
+                
+                PutClientInServer ();
+                self = search;
+                
+                stuffcmd (self, "color 0 0\n");
+                TeamFortress_TeamPutPlayerInTeam ();
             }
             
             search = find (search, classname, "player");
         }
 
         rpickup_votes = 0;
+        self = tempself;
+        hideconsoletext = 0;
     }
     
     return;

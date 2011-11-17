@@ -225,23 +225,25 @@ float (float tno, float autoteam) TeamFortress_TeamSet =
 	}
 	return (1);
     }
-    bprint (PRINT_HIGH, self.netname, " has joined Team No ");
-    st = ftos (tno);
-	if (autoteam == 1) bprint (PRINT_HIGH, st, ". αυτο‘\n"); // brown auto with gold brackets []
-    else bprint (PRINT_HIGH, st, ".\n");
+    if (hideconsoletext == 0) {
+        bprint (PRINT_HIGH, self.netname, " has joined Team No ");
+        st = ftos (tno);
+        if (autoteam == 1) bprint (PRINT_HIGH, st, ". αυτο‘\n"); // brown auto with gold brackets []
+        else bprint (PRINT_HIGH, st, ".\n");
+    }
     stuffcmd (self, "color ");
     tc = TeamFortress_TeamGetColor (tno) - 1;
     st = ftos (tc);
     stuffcmd (self, st);
     stuffcmd (self, "\n");
-	
+
     self.team_no = tno;
     self.immune_to_check = time + 10;
     self.lives = TeamFortress_TeamGetLives (tno);
     if ((toggleflags & TFLAG_TEAMFRAGS) || (toggleflags & TFLAG_FULLTEAMSCORE)) {
 	self.frags = TeamFortress_TeamGetScore (tno);
     }
-    TeamFortress_TeamShowMemberClasses (self);
+    if (hideconsoletext == 0) TeamFortress_TeamShowMemberClasses (self);
     SetTeamName (self);
     if (self.playerclass == 0) {
 	if (TeamFortress_TeamIsCivilian (self.team_no)) {
