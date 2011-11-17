@@ -80,11 +80,9 @@ void () TeamFortress_Rpickup =
     local entity tempself;
     
     total_players = 0;
-    bprint(PRINT_HIGH, ftos (total_players),"\n");
     // Get the total players in the server
     for (i = 0; i <= number_of_teams; i++) {
         total_players += TeamFortress_TeamGetNoPlayers (i);
-        bprint(PRINT_HIGH, ftos (total_players),"\n");
     }
     
     // Calculate how many votes are needed for a majority
