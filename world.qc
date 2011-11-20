@@ -120,7 +120,8 @@ entity lastspawn;
 void () worldspawn =
 {
     local string st;
-
+    
+    TeamFortress_InitConstants ();
     lastspawn = world;
     number_of_teams = 0;
     InitBodyQue ();

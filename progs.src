@@ -2,6 +2,7 @@ qwprogs.dat
 
 defs.h
 defs.qc
+constants.qc
 qw.qc
 debug.qc
 status.qc

@@ -90,7 +90,7 @@ void () TeamFortress_Rpickup =
         if (arr_rpickup_voters[i] == self.tf_id) {
             rpickup_votes--;
             arr_rpickup_voters[i] = -1;
-            bprint(PRINT_HIGH, self.netname, " withdraws his rpickup vote! (", ftos (rpickup_votes), "/", ftos (rpickup_votes_needed), ")\n");
+            bprint(PRINT_HIGH, self.netname, " withdraws his ςπιγλυπ vote! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
             return;
         }
     }
@@ -99,7 +99,7 @@ void () TeamFortress_Rpickup =
     arr_rpickup_voters[rpickup_votes] = self.tf_id;
     rpickup_votes++;
     
-    bprint(PRINT_HIGH, self.netname, " votes for rpickup! (", ftos (rpickup_votes), "/", ftos (rpickup_votes_needed), ")\n");
+    bprint(PRINT_HIGH, self.netname, " votes for ςπιγλυπ! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
 
     // If required number of votes was hit, random the teams
     if (rpickup_votes >= rpickup_votes_needed) {
@@ -114,7 +114,7 @@ void () TeamFortress_RandomTheTeams =
     local entity search;
     local entity tempself;
 
-    bprint(PRINT_HIGH, "Randomly picking new teams...\n");
+    bprint(PRINT_HIGH, "ςπιγλυπ vote passed, randomly picking new teams...\n");
     
     tempself = self;
     hideconsoletext = 1;

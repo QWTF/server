@@ -26,10 +26,10 @@ void () TeamFortress_MOTD =
 
 	if (self.got_aliases == FALSE)
 	    sprint (self, PRINT_HIGH, "\n\n\n");
-
+        
 	sprint (self, PRINT_HIGH, "Type help for more info.\n");
-	sprint (self, PRINT_HIGH, "TeamFortress QuakeWorld v2.92\n");
-	sprint (self, PRINT_HIGH, "https://github.com/quaketf/\n");
+	sprint (self, PRINT_HIGH, "TeamFortress QuakeWorld v", tf_version, "\n");
+	sprint (self, PRINT_HIGH, website, "\n");
 
 	self.menu_displaytime = 0;
 	self.current_menu = MENU_INTRO;

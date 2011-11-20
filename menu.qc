@@ -436,7 +436,7 @@ void () Menu_Intro =
 	st2 = infokey (world, "motd2");
 	centerprint (self, st1, "\n", st2);
    } else {
-       CenterPrint (self, "Welcome to TeamFortress v2.9\nby TeamFortress Software\n======================================\nwww.planetquake.com/teamfortress");
+       centerprint (self, "Welcome to TeamFortress v", tf_version, "\n\nCreated by TeamFortress Software\nUpdated by clan FOLD‘\n======================================\n", website);
    }
 };
 

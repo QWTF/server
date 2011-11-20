@@ -2501,14 +2501,15 @@ void () ImpulseCommands =
     else if ((self.impulse == TF_ENGINEER_BUILD) && (self.playerclass == PC_ENGINEER))
 	TeamFortress_EngineerBuild ();
     else if (self.impulse == FLAG_INFO) {
-	if (CTF_Map == 1)
-	    TeamFortress_CTF_FlagInfo ();
-	else
-	    TeamFortress_DisplayDetectionItems ();
-    } else if (self.impulse == TF_DISPLAYLOCATION)
-	display_location ();
+        if (CTF_Map == 1)
+            TeamFortress_CTF_FlagInfo ();
+        else
+            TeamFortress_DisplayDetectionItems ();
+    } 
+    else if (self.impulse == TF_DISPLAYLOCATION)
+        display_location ();
     else
-	DeadImpulses ();
+        DeadImpulses ();
 
     if (self.impulse == TF_DETPACK)
 	self.last_impulse = self.impulse;
