@@ -19,7 +19,7 @@ void () SpectatorConnect =
     local string st2;
 
     self.playerclass = PC_UNDEFINED;
-    self.classname = "observer";
+    self.classname = "spectator";
     self.flags = 8;
 
     st2 = infokey (world, "apw");

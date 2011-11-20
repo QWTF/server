@@ -3,9 +3,6 @@ void () TeamFortress_CheckClassStats;
 void (entity Player, float Armorclass) TeamFortress_DescribeArmor;
 void () TeamFortress_AmmoboxTouch;
 
-float rpickup_votes;
-float arr_rpickup_voters[32];
-
 float (float tno) num_team_ammoboxes;
 void (float tno) RemoveOldAmmobox;
 void (float tno) increment_team_ammoboxes;
@@ -106,49 +103,57 @@ void () TeamFortress_Rpickup =
 
     // If required number of votes was hit, random the teams
     if (rpickup_votes >= rpickup_votes_needed) {
-        bprint(PRINT_HIGH, "Randomly picking new teams...\n");
-    
-        tempself = self;
-        hideconsoletext = 1;
-        
-        // Loop through each player on the server
-        search = find (world, classname, "player");
-        while (search != world) {
-            if (search.netname != string_null) {
-                self = search;          
-                
-                self.playerclass = 0;
-                self.team_no = 0;
-                self.model = "";
-                self.mdl = "";
-                self.frags = 0;
-                
-                TeamFortress_RemoveTimers ();
-                self = search;
-                
-                self.flags = FL_CLIENT | FL_NOTARGET | FL_ONGROUND;
-                self.waterlevel = 3;
-                self.takedamage = DAMAGE_NO;
-                self.solid = SOLID_NOT;
-                self.movetype = MOVETYPE_NONE;
-                
-                PutClientInServer ();
-                self = search;
-                
-                stuffcmd (self, "color 0 0\n");
-                TeamFortress_TeamPutPlayerInTeam ();
-            }
-            
-            search = find (search, classname, "player");
-        }
-
-        rpickup_votes = 0;
-        self = tempself;
-        hideconsoletext = 0;
+        TeamFortress_RandomTheTeams ();
     }
     
     return;
 }
+
+void () TeamFortress_RandomTheTeams = 
+{
+    local entity search;
+    local entity tempself;
+
+    bprint(PRINT_HIGH, "Randomly picking new teams...\n");
+    
+    tempself = self;
+    hideconsoletext = 1;
+    
+    // Loop through each player on the server
+    search = find (world, classname, "player");
+    while (search != world) {
+        if (search.netname != string_null) {
+            self = search;          
+            
+            self.playerclass = 0;
+            self.team_no = 0;
+            self.model = "";
+            self.mdl = "";
+            self.frags = 0;
+            
+            TeamFortress_RemoveTimers ();
+            self = search;
+            
+            self.flags = FL_CLIENT | FL_NOTARGET | FL_ONGROUND;
+            self.waterlevel = 3;
+            self.takedamage = DAMAGE_NO;
+            self.solid = SOLID_NOT;
+            self.movetype = MOVETYPE_NONE;
+            
+            PutClientInServer ();
+            self = search;
+            
+            stuffcmd (self, "color 0 0\n");
+            TeamFortress_TeamPutPlayerInTeam ();
+        }
+        
+        search = find (search, classname, "player");
+    }
+
+    rpickup_votes = 0;
+    self = tempself;
+    hideconsoletext = 0;
+};
 
 void () TeamFortress_ChangeTeam =
 {

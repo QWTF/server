@@ -45,10 +45,14 @@ void (entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer;
 
 void () CTF_FlagCheck;
 
+void () TeamFortress_RandomTheTeams;
+
 string nextmap;
 float intermission_running;
 float intermission_exittime;
 float hideconsoletext;
+float rpickup_votes;
+float arr_rpickup_voters[32];
 
 void () info_intermission =
 {
@@ -1926,7 +1930,11 @@ void () ClientDisconnect =
     local entity te;
     local string st;
     local float fr;
-
+    local float i;
+    local float rpickup_voter;
+    local float total_players;
+    local float rpickup_votes_needed;
+    
     fr = rint (self.frags);
     st = ftos (fr);
     bprint4 (PRINT_HIGH, self.netname, " left the game with ", st, " frags\n");
@@ -1965,6 +1973,29 @@ void () ClientDisconnect =
     self.team_no = -1;
     self.solid = 0;
     setsize (self, '0 0 0', '0 0 0');
+    
+    rpickup_voter = 0;
+    for (i = 0; i < rpickup_votes; i++) {
+        if (arr_rpickup_voters[i] == self.tf_id) {
+            rpickup_votes--;
+            arr_rpickup_voters[i] = -1;
+            rpickup_voter = 1;
+        }
+    }
+    
+    total_players = 0;
+    if (rpickup_voter != 1) {
+        for (i = 0; i <= number_of_teams; i++) {
+            total_players += TeamFortress_TeamGetNoPlayers (i);
+        }
+    
+        // Calculate how many votes are needed for a majority
+        rpickup_votes_needed = floor (total_players / 2) + 1;
+        
+        if (rpickup_votes >= rpickup_votes_needed) {
+            TeamFortress_RandomTheTeams ();
+        }
+    }
 };
 
 void (entity targ, entity attacker) ClientObituary =

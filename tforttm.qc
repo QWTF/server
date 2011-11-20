@@ -256,72 +256,21 @@ float (float tno, float autoteam) TeamFortress_TeamSet =
 
 void () TeamFortress_CheckTeamCheats =
 {
-    local string st;
-    local string sk;
-    local float tc;
-
     if (self.immune_to_check > time)
-	return;
+        return;
     if (self.deadflag)
-	return;
+        return;
 
     if (self.netname == string_null) {
-	KickCheater (self);
-    } else {
-	if (((self.playerclass != 0) && (self.team_no == 0)) && (teamplay > 0)) {
-	    KickCheater (self);
-	}
+        KickCheater (self);
     }
-    if ((self.team_no > 0) && (teamplay > 0)) {
-	st = infokey (self, "bottomcolor");
-	tc = stof (st);
-	if ((self.playerclass == 8) && (self.undercover_team != 0)) {
-	    if ((TeamFortress_TeamGetColor (self.undercover_team) - 1) != tc) {
-		stuffcmd (self, "color ");
-		tc = TeamFortress_TeamGetColor (self.undercover_team) - 1;
-		st = ftos (tc);
-		stuffcmd (self, st);
-		stuffcmd (self, "\n");
-		bprint2 (PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-		sprint (self, PRINT_HIGH, "You have been kicked for changing your pants color. Don't do it.\n");
-		KickCheater (self);
-		return;
-	    }
-	} else {
-	    if (tc != (TeamFortress_TeamGetColor (self.team_no) - 1)) {
-		stuffcmd (self, "color ");
-		tc = TeamFortress_TeamGetColor (self.team_no) - 1;
-		st = ftos (tc);
-		stuffcmd (self, st);
-		stuffcmd (self, "\n");
-		bprint2 (PRINT_MEDIUM, self.netname, " has been kicked for changing color.\n");
-		sprint (self, PRINT_HIGH, "You have been kicked for changing your pants color. Don't do it.\n");
-		KickCheater (self);
-		return;
-	    }
-	}
-	if (self.playerclass != 0) {
-	    st = infokey (self, "skin");
-	    tc = 0;
-	    sk = TeamFortress_GetSkin (self);
-	    if (st != sk) {
-		TeamFortress_SetSkin (self);
-		bprint2 (PRINT_MEDIUM, self.netname, " has been kicked for changing skin.\n");
-		sprint (self, PRINT_HIGH, "You have been kicked for changing your skin. Don't do it.\n");
-		KickCheater (self);
-	    }
-	    if (tc == 8)
-		self.playerclass = 8;
-	}
-	st = GetTeamName (self.team_no);
-	if (st != infokey (self, "team")) {
-	    SetTeamName (self);
-	    bprint2 (PRINT_MEDIUM, self.netname, " has been kicked for changing team.\n");
-	    sprint (self, PRINT_HIGH, "You have been kicked for changing your team. Don't do it.\n");
-	    KickCheater (self);
-	    return;
-	}
+    else {
+        if (((self.playerclass != 0) && (self.team_no == 0)) && (teamplay > 0)) {
+            KickCheater (self);
+        }
     }
+    
+    return;
 };
 
 void (float tno, float scoretoadd) TeamFortress_TeamIncreaseScore =
