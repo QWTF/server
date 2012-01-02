@@ -131,7 +131,7 @@ void () DumpClanScores =
 
     ti = 0;
 
-    teamfrags = toggleflags & (128 | 2048);
+    teamfrags = toggleflags & (TFLAG_TEAMFRAGS | TFLAG_FULLTEAMSCORE);
 
     te = find (world, classname, "player");
     while (te) {
