@@ -131,7 +131,7 @@ void () DumpClanScores =
 
     ti = 0;
 
-    teamfrags = toggleflags & (TFLAG_TEAMFRAGS | TFLAG_FULLTEAMSCORE);
+    teamfrags = toggleflags & (128 | 2048);
 
     te = find (world, classname, "player");
     while (te) {
@@ -153,17 +153,341 @@ void () DumpClanScores =
 
     winners = TeamFortress_TeamGetWinner ();
 
-    bprint (PRINT_HIGH, "\n\n=------= MATCH RESULTS =------=\n");
-    if ((no_teams == 2) && (((team1score == team2score) && teamfrags)
+    bprint (PRINT_HIGH, "\n\n=------= Íáôãè Òåóõìôó =------="); // Match Results in brown
+    	
+	//Print team names
+	bprint (PRINT_HIGH, "\nTeam:        ");
+	if (t1_pl > 0) { bprint (PRINT_HIGH, "blue"); }
+	else { bprint (PRINT_HIGH, "    "); }
+	if (t2_pl > 0) { bprint (PRINT_HIGH, " red"); }
+	else { bprint (PRINT_HIGH, "    "); }
+	if (t3_pl > 0) { bprint (PRINT_HIGH, "  grn"); }
+	else { bprint (PRINT_HIGH, "     "); }
+	if (t4_pl > 0) { bprint (PRINT_HIGH, "  yell"); }
+	
+	//Print the number of players per team, assume 99 max players (two digits)
+	bprint (PRINT_HIGH, "\nPlayers:     ");
+	
+	if (t1_pl > 0) {
+		tno = TeamFortress_TeamGetNoPlayers (1);
+		st = ftos (tno);
+		
+		if (t1_pl < 10) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t2_pl > 0) {
+		bprint (PRINT_HIGH, "   ");
+		tno = TeamFortress_TeamGetNoPlayers (2);
+		st = ftos (tno);
+		
+		if (t2_pl < 10) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t3_pl > 0) {
+		bprint (PRINT_HIGH, "   ");
+		tno = TeamFortress_TeamGetNoPlayers (3);
+		st = ftos (tno);
+		
+		if (t3_pl < 10) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t4_pl > 0) {
+		bprint (PRINT_HIGH, "   ");
+		tno = TeamFortress_TeamGetNoPlayers (4);
+		st = ftos (tno);
+		
+		if (t4_pl < 10) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	
+	//Print the number of frags per team, assuming 9999 max frags
+	bprint (PRINT_HIGH, "\nFrags:       ");
+	
+	if (t1_pl > 0) {
+		st = ftos (team1frags);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t2_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team2frags);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t3_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team3frags);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t4_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team4frags);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	
+	//Print unnaccounted for frags per team, assuming 9999 max
+	bprint (PRINT_HIGH, "\nUnacc Frags: ");
+	
+	if (t1_pl > 0) {
+		st = ftos (t1_unacc);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t2_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (t2_unacc);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t3_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (t3_unacc);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	else {
+		bprint (PRINT_HIGH, "  ");
+	}
+	
+	if (t4_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (t4_unacc);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+	}
+	
+	//Print Team Scores, assuming 9999 max
+	bprint (PRINT_HIGH, "\nTeam Score:  ");
+	
+	if (t1_pl > 0) {
+		st = ftos (team1score);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+    }
+	else {
+		bprint (PRINT_HIGH, "    ");
+	}
+	
+	if (t2_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team2score);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+    }
+	else {
+		bprint (PRINT_HIGH, "    ");
+	}
+	
+	if (t3_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team3score);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+    }
+	else {
+		bprint (PRINT_HIGH, "    ");
+	}
+	
+	if (t4_pl > 0) {
+		bprint (PRINT_HIGH, " ");
+		st = ftos (team4score);
+		
+		if (stof(st) < 10) {
+			bprint2 (PRINT_HIGH, st, "   ");
+		}
+		else if (stof(st) < 100) {
+			bprint2 (PRINT_HIGH, st, "  ");
+		}
+		else if (stof(st) < 1000) {
+			bprint2 (PRINT_HIGH, st, " ");
+		}
+		else {
+			bprint2 (PRINT_HIGH, st);
+		}
+    }
+	
+	bprint (PRINT_HIGH, "\n");
+	if ((no_teams == 2) && (((team1score == team2score) && teamfrags)
 			    || ((team1frags == team2frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, " DRAW ");
+	bprint (PRINT_HIGH, "Ôèå íáôãè éó á ÄÒÁ×®"); // The match is a DRAW. in brown
     } else if ((no_teams == 3) && ((((team1score == team2score) == team3score) && teamfrags)
 				   || (((team1frags == team2frags) == team3frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, " DRAW ");
+	bprint (PRINT_HIGH, "Ôèå íáôãè éó á ÄÒÁ×®"); // The match is a DRAW. in brown
     } else if ((no_teams == 3)
 	       && (((((team1score == team2score) == team3score) == team4score) && teamfrags)
 		   || ((((team1frags == team2frags) == team3frags) == team4frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, " DRAW ");
+	bprint (PRINT_HIGH, "Ôèå íáôãè éó á ÄÒÁ×®"); // The match is a DRAW. in brown
     } else {
 	st = GetTeamName (winners);
 	bprint (PRINT_HIGH, st, " defeated ");
@@ -360,55 +684,9 @@ void () DumpClanScores =
 	    }
 	}
     }
-    if (t1_pl > 0) {
-	bprint (PRINT_HIGH, "\n=------= TEAM1 RESULTS =------=\n");
-	tno = TeamFortress_TeamGetNoPlayers (1);
-	st = ftos (tno);
-	bprint2 (PRINT_HIGH, st, " players.\n");
-	st = ftos (team1frags);
-	bprint2 (PRINT_HIGH, st, " frags, ");
-	st = ftos (t1_unacc);
-	bprint2 (PRINT_HIGH, st, " unaccounted for.\n");
-	st = ftos (team1score);
-	bprint2 (PRINT_HIGH, st, " team score.\n");
-    }
-    if (t2_pl > 0) {
-	bprint (PRINT_HIGH, "\n=------= TEAM2 RESULTS =------=\n");
-	tno = TeamFortress_TeamGetNoPlayers (2);
-	st = ftos (tno);
-	bprint2 (PRINT_HIGH, st, " players.\n");
-	st = ftos (team2frags);
-	bprint2 (PRINT_HIGH, st, " frags, ");
-	st = ftos (t2_unacc);
-	bprint2 (PRINT_HIGH, st, " unaccounted for.\n");
-	st = ftos (team2score);
-	bprint2 (PRINT_HIGH, st, " team score.\n");
-    }
-    if (t3_pl > 0) {
-	bprint (PRINT_HIGH, "\n=------= TEAM3 RESULTS =------=\n");
-	tno = TeamFortress_TeamGetNoPlayers (3);
-	st = ftos (tno);
-	bprint2 (PRINT_HIGH, st, " players.\n");
-	st = ftos (team3frags);
-	bprint2 (PRINT_HIGH, st, " frags, ");
-	st = ftos (t3_unacc);
-	bprint2 (PRINT_HIGH, st, " unaccounted for.\n");
-	st = ftos (team3score);
-	bprint2 (PRINT_HIGH, st, " team score.\n");
-    }
-    if (t4_pl > 0) {
-	bprint (PRINT_HIGH, "\n=------= TEAM4 RESULTS =------=\n");
-	tno = TeamFortress_TeamGetNoPlayers (4);
-	st = ftos (tno);
-	bprint2 (PRINT_HIGH, st, " players.\n");
-	st = ftos (team4frags);
-	bprint2 (PRINT_HIGH, st, " frags, ");
-	st = ftos (t4_unacc);
-	bprint2 (PRINT_HIGH, st, " unaccounted for.\n");
-	st = ftos (team4score);
-	bprint2 (PRINT_HIGH, st, " team score.\n");
-    }
-    te = find (world, classname, "player");
+	
+	//End of match results output
+	te = find (world, classname, "player");
     while (te) {
 	st = infokey (te, "take_sshot");
 	if (st != string_null) {
