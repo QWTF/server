@@ -25,11 +25,14 @@ void () TeamFortress_MOTD =
 	}
 
 	if (self.got_aliases == FALSE)
-	    sprint (self, PRINT_HIGH, "\n\n\n");
-        
-	sprint (self, PRINT_HIGH, "Type help for more info.\n");
-	sprint (self, PRINT_HIGH, "TeamFortress QuakeWorld v", tf_version, "\n");
-	sprint (self, PRINT_HIGH, website, "\n");
+	    sprint (self, PRINT_HIGH, "\n");
+    
+	localcmd("serverinfo qwtfver \"");
+	localcmd(tf_version);
+	localcmd("\"\n");
+	
+	sprint (self, PRINT_HIGH, "QuakeWorld TeamFortress v", tf_version, "\n");
+	sprint (self, PRINT_HIGH, website, "\n\n");
 
 	self.menu_displaytime = 0;
 	self.current_menu = MENU_INTRO;
@@ -39,7 +42,7 @@ void () TeamFortress_MOTD =
 	if (self.got_aliases == TRUE)
 	    return;
 
-	sprint (self, PRINT_HIGH, "binding aliases...\n");
+	//sprint (self, PRINT_HIGH, "binding aliases...\n"); //why do we need this line? commenting it out
 	TeamFortress_Alias ("inv", TF_INVENTORY, 0);
 	TeamFortress_Alias ("showtf", TF_SHOWTF, 0);
 	TeamFortress_Alias ("autozoom", TF_AUTOZOOM, 0);

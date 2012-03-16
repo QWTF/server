@@ -5,6 +5,6 @@ void () TeamFortress_InitConstants;
 
 void () TeamFortress_InitConstants = 
 {
-    website = "θττπσΊ――ηιτθυβ®γον―ρυαλετζ";
-    tf_version = "2.92";
+    website = "\shttps://github.com/quaketf\s";
+    tf_version = "2.92a";
 };

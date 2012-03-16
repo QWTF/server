@@ -416,6 +416,13 @@ string(entity e, string key) infokey	= #80;  // get a key value (world = serveri
 float(string s) stof			= #81;	// convert string to float
 void(vector where, float set) multicast	= #82;	// sends the temp message to a set
 						// of clients, possibly in PVS or PHS
+						
+//strcat for combining two strings, strlen to getting the length of a string. From FrikaC's file access tutorial
+float(string s) strlen = #114;
+string(string s1, string s2) strcat = #115;
+float FILE_READ = 0;
+float FILE_APPEND = 1;
+float FILE_WRITE = 2;
 
 //============================================================================
 

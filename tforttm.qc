@@ -228,7 +228,7 @@ float (float tno, float autoteam) TeamFortress_TeamSet =
     if (hideconsoletext == 0) {
         bprint (PRINT_HIGH, self.netname, " has joined Team No ");
         st = ftos (tno);
-        if (autoteam == 1) bprint (PRINT_HIGH, st, ". αυτο‘\n"); // brown auto with gold brackets []
+        if (autoteam == 1) bprint (PRINT_HIGH, st, ". \sauto\s‘\n"); // brown auto with gold brackets []
         else bprint (PRINT_HIGH, st, ".\n");
     }
     stuffcmd (self, "color ");

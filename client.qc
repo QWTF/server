@@ -252,36 +252,32 @@ void () DecodeLevelParms =
 	    birthday = FALSE;
 
 	st = infokey (world, "c");
-	if (st == string_null)
+	if (st == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
 	    st = infokey (world, "clan");
 
-	if (st == "on") {
+	if (st == "on") { // if prematch is set to on
 
-	    clanbattle = TRUE;
+	    clanbattle = TRUE; // I assume from here that the prefix cb_ is clanbattle_
 	    clan_scores_dumped = 0;
 	    game_locked = 0;
 
 	    st = infokey (world, "pm");
-	    if (st == string_null)
-		st = infokey (world, "prematch");
+	    if (st == string_null) // maybe they are using "serverinfo prematch" instead of "serverinfo pm"
+			st = infokey (world, "prematch");
 
-	    cb_prematch_time = time + stof (st) * 60;
+	    cb_prematch_time = time + stof (st) * 60; // so cb_prematch_time is the sum of time and serverinfo prematch, in seconds
 
 	    if (timelimit && ((time + timelimit) < cb_prematch_time)) {
-
-		timelimit = timelimit + cb_prematch_time;
-		ti = ceil (timelimit / 60);
-		st = ftos (ti);
-		cvar_set ("timelimit", st);
-
+			timelimit = timelimit + cb_prematch_time;
+			ti = ceil (timelimit / 60);
+			st = ftos (ti);
+			cvar_set ("timelimit", st);
 	    }
 	    if (cb_prematch_time > time) {
-
-		cb_prematch_time = cb_prematch_time + 5;
-		ent = spawn ();
-		ent.think = PreMatch_Think;
-		ent.nextthink = time + 5;
-
+			cb_prematch_time = cb_prematch_time + 5;
+			ent = spawn ();
+			ent.think = PreMatch_Think;
+			ent.nextthink = time + 5;
 	    }
 
 	    st = infokey (world, "cft");
@@ -289,40 +285,41 @@ void () DecodeLevelParms =
 		st = infokey (world, "ceasefire_time");
 
 	    cb_ceasefire_time = stof (st);
+		
 	    if (cb_ceasefire_time != 0) {
 
-		cb_ceasefire_time = time + cb_ceasefire_time * 60;
-		if (cb_prematch_time < cb_ceasefire_time) {
+			cb_ceasefire_time = time + cb_ceasefire_time * 60;
+			if (cb_prematch_time < cb_ceasefire_time) {
+			
+				cb_prematch_time = cb_ceasefire_time + 5;
+				
+				if (timelimit && ((time + timelimit) < cb_prematch_time)) {
 
-		    cb_prematch_time = cb_ceasefire_time + 5;
-		    if (timelimit && ((time + timelimit) < cb_prematch_time)) {
+				timelimit = timelimit + cb_ceasefire_time;
+				ti = ceil (timelimit / 60);
+				st = ftos (ti);
+				cvar_set ("timelimit", st);
+				}
+			}
+			cease_fire = 1;
+			bprint (PRINT_HIGH, "CEASE FIRE\n");
 
-			timelimit = timelimit + cb_ceasefire_time;
-			ti = ceil (timelimit / 60);
-			st = ftos (ti);
-			cvar_set ("timelimit", st);
-
-		    }
-
-		}
-		cease_fire = 1;
-		bprint (PRINT_HIGH, "CEASE FIRE\n");
-
-		te = find (world, classname, "player");
-		while (te) {
-		    centerprint (te, "CEASE FIRE\n");
-		    te.immune_to_check = time + 10;
-		    te.tfstate = te.tfstate | TFSTATE_CANT_MOVE;
-		    TeamFortress_SetSpeed (te);
-		    te = find (te, classname, "player");
-		}
-		te = spawn ();
-		te.classname = "ceasefire";
-		te.think = CeaseFire_think;
-		te.nextthink = time + 5;
-		te.weapon = 1;
+			te = find (world, classname, "player");
+			while (te) {
+				centerprint (te, "CEASE FIRE\n");
+				te.immune_to_check = time + 10;
+				te.tfstate = te.tfstate | TFSTATE_CANT_MOVE;
+				TeamFortress_SetSpeed (te);
+				te = find (te, classname, "player");
+			}
+			te = spawn ();
+			te.classname = "ceasefire";
+			te.think = CeaseFire_think;
+			te.nextthink = time + 5;
+			te.weapon = 1;
 
 	    }
+		
 	    st = infokey (world, "lg");
 	    if (st == string_null)
 		st = infokey (world, "locked_game");
