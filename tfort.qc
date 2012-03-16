@@ -70,43 +70,45 @@ void () UseSpecialSkill =
 
 void () TeamFortress_Rpickup =
 {
-    local float rpickup_votes_needed;
-    local float total_players;
-    local float i;
-    local entity search;
-    local entity tempself;
+    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+		local float rpickup_votes_needed;
+		local float total_players;
+		local float i;
+		local entity search;
+		local entity tempself;
     
-    total_players = 0;
-    // Get the total players in the server
-    for (i = 0; i <= number_of_teams; i++) {
-        total_players += TeamFortress_TeamGetNoPlayers (i);
-    }
+		total_players = 0;
+		// Get the total players in the server
+		for (i = 0; i <= number_of_teams; i++) {
+			total_players += TeamFortress_TeamGetNoPlayers (i);
+		}
     
-    // Calculate how many votes are needed for a majority
-    rpickup_votes_needed = floor (total_players / 2) + 1;
+		// Calculate how many votes are needed for a majority
+		rpickup_votes_needed = floor (total_players / 2) + 1;
     
-    // If player has already voted, withdraw their vote
-    for (i = 0; i < rpickup_votes; i++) {
-        if (arr_rpickup_voters[i] == self.tf_id) {
-            rpickup_votes--;
-            arr_rpickup_voters[i] = -1;
-            bprint(PRINT_HIGH, self.netname, " withdraws his ςπιγλυπ vote! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
-            return;
-        }
-    }
+		// If player has already voted, withdraw their vote
+		for (i = 0; i < rpickup_votes; i++) {
+			if (arr_rpickup_voters[i] == self.tf_id) {
+				rpickup_votes--;
+				arr_rpickup_voters[i] = -1;
+				bprint(PRINT_HIGH, self.netname, " withdraws his \srpickup\s vote! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
+				return;
+			}
+		}
 
-    // Capture this player's vote
-    arr_rpickup_voters[rpickup_votes] = self.tf_id;
-    rpickup_votes++;
+		// Capture this player's vote
+		arr_rpickup_voters[rpickup_votes] = self.tf_id;
+		rpickup_votes++;
     
-    bprint(PRINT_HIGH, self.netname, " votes for ςπιγλυπ! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
+		bprint(PRINT_HIGH, self.netname, " votes for \srpickup\s! ", ftos (rpickup_votes), "―", ftos (rpickup_votes_needed), "‘\n");
 
-    // If required number of votes was hit, random the teams
-    if (rpickup_votes >= rpickup_votes_needed) {
-        TeamFortress_RandomTheTeams ();
-    }
+		// If required number of votes was hit, random the teams
+		if (rpickup_votes >= rpickup_votes_needed) {
+			TeamFortress_RandomTheTeams ();
+		}
     
-    return;
+		return;
+	}
 }
 
 void () TeamFortress_RandomTheTeams = 
@@ -114,7 +116,7 @@ void () TeamFortress_RandomTheTeams =
     local entity search;
     local entity tempself;
 
-    bprint(PRINT_HIGH, "ςπιγλυπ vote passed, randomly picking new teams...\n");
+    bprint(PRINT_HIGH, "\srpickup\s vote passed, randomly picking new teams...\n");
     
     tempself = self;
     hideconsoletext = 1;

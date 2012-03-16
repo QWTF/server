@@ -1971,28 +1971,31 @@ void () ClientDisconnect =
     self.solid = 0;
     setsize (self, '0 0 0', '0 0 0');
     
-    rpickup_voter = 0;
-    for (i = 0; i < rpickup_votes; i++) {
-        if (arr_rpickup_voters[i] == self.tf_id) {
-            rpickup_votes--;
-            arr_rpickup_voters[i] = -1;
-            rpickup_voter = 1;
-        }
-    }
+    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+		rpickup_voter = 0;
+		for (i = 0; i < rpickup_votes; i++) {
+			if (arr_rpickup_voters[i] == self.tf_id) {
+				rpickup_votes--;
+				arr_rpickup_voters[i] = -1;
+				rpickup_voter = 1;
+			}
+		}
+	
     
-    total_players = 0;
-    if (rpickup_voter != 1) {
-        for (i = 0; i <= number_of_teams; i++) {
-            total_players += TeamFortress_TeamGetNoPlayers (i);
-        }
+		total_players = 0;
+		if (rpickup_voter != 1) {
+			for (i = 0; i <= number_of_teams; i++) {
+				total_players += TeamFortress_TeamGetNoPlayers (i);
+			}
     
-        // Calculate how many votes are needed for a majority
-        rpickup_votes_needed = floor (total_players / 2) + 1;
-        
-        if (rpickup_votes >= rpickup_votes_needed) {
-            TeamFortress_RandomTheTeams ();
-        }
-    }
+			// Calculate how many votes are needed for a majority
+			rpickup_votes_needed = floor (total_players / 2) + 1;
+			
+			if (rpickup_votes >= rpickup_votes_needed) {
+				TeamFortress_RandomTheTeams ();
+			}
+		}
+	}
 };
 
 void (entity targ, entity attacker) ClientObituary =
