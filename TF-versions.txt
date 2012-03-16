@@ -1,0 +1,1346 @@
+*============================================================================*
+* TeamFortress v2.92a                                            versions.txt *
+*============================================================================*
+
+Changelog:
+
+--------------------------------------------
+Version 2.92a	 			03/15/2012
+--------------------------------------------
+
+Features Added:
+	- Added a countdown menu which replaces the "10... 9..." message during the last 10 seconds of prematch.
+	  One or two very small bugs remain which are due to strcat overflows, but these should rarely, if ever
+	  be encountered. Currently, the countdown menu flickers if the player has their sbar on. I don't know
+	  of a workaround at this moment. (Up2)
+	- A new serverinfo field "qwtfver" has been added, similar to KTX (ktxver). May be useful for the future. (Up2)
+	- Added strcat feature to the QWTF code, originally by FrikaC and supported by almost all modern engines.
+	  Allows you to combine two strings. (Up2)
+
+Changes:
+	- The highest team score is now displayed in red in the Match Results table (Up2)
+	- Misc small code changes, alignment changes, etc. (Up2)
+
+--------------------------------------------
+Version 2.92	 			01/01/2012
+--------------------------------------------
+
+Features Added:
+	- "changeteam" is fully functional without and bugs (KillJoy)
+	- New autoteam logic, fully random and supports all four teams (KillJoy/Up2)
+	- Added "rpickup" functionality, similar to KTX. Known bug: does not timeout (it should when prematch ends!) (KillJoy/Up2)
+	- New Match Results table which significantly reduces the console spam. (Up2)
+
+Changes:
+	- Removed kicks for changing color, skin, or team (KillJoy)
+	- Changed the webpage address to https://github.com/quaketf (KillJoy)
+
+--------------------------------------------
+Version 2.91 - 09/23/2007		Internal Release
+--------------------------------------------
+Up2nOgOoD[ROCK] and KillJoy[FOLD] have taken over the project.
+
+Features Added:
+	- "changeteam" will now allow you to change teams without having to reconnect to the server (KillJoy)
+		->todo: bugfix: player's corpse is left when he uses this feature
+
+Changes:
+	- TF will not kick you for changing colors (KillJoy)
+	- Added brown "AUTOTEAM" with golden brackets when a player autoteams (KillJoy)
+	- "Autozoom" on/off text is now brown to be more noticable (Up2)
+	- Changed webpage address from planetquake.com/teamfortress (no longer exists) to www.sourceforge.net/projects/qwtf (Up2)
+
+--------------------------------------------
+Version 2.9				   Released 23/10/98
+--------------------------------------------
+Features Added:
+	- Put in several QW server defaults due to changes in QW 2.3
+		pausable = 0
+		sv_friction = 6
+		sv_waterfriction = 1
+	- Spys can now silently feign without a death scream with the command "sfeign".
+		The feign command in the spy's "special" menu will only do the default
+		non-silent feign.
+	- Persons in spectator mode can ID players they are looking at
+		(if they are in range).  Also if the spectator has admin privilages, they
+		can use the admin commands (see below).
+
+Changes:
+	- Tweaked concussion effect to take a player's ping into consideration.  Removed
+		snapping the player's view.  Also a jumping player should get some concussion
+		effects now.
+	- HWGuy's are not affected by the concussion grenade's effects only when firing.
+	- HWGuy is thrown slightly less by explosions.
+	- HWGuy's "special" bind now switches between the Assault Cannon and the
+		Super Shotgun.
+	- Medic's "special" bind now switches between the Medikit and the Super
+		Nailgun.
+	- Admin commands have changed:
+		- Instead of using the admin command "kick" to deal with a player, you
+		now use the command "deal".  That command will do the same thing "kick"
+		did, but this time after listing the name of each player in the game
+		there is the option to use the commands "kick" (to simply kick them
+		from the server), "ban" (to add their IP address to be banned from the
+		server), or "next" (to list the next player in the game).
+		When a player is banned with this method, their IP address will be removed
+		from the server banlist if the server is ever restarted.
+		- The command "listips" will show a list of all players in the game, along
+		with their IP address in this format: NAME (IP ADDRESS)
+	- Scout's scanner upgraded and commands changed.  The command has changed now
+		to "autoscan" (you can still use the old commands if you still have them bound
+		and they will execute the "autoscan" command). This command turns
+		on/off the scout scanner. It will keep sending out "bursts" every 2 seconds while
+		it is on. It is defaulted to only scan for enemies (this includes players,
+		sentries and flags/goal items), but can be changed by using the commands "scane"
+		(scan enemies) and "scanf" (scan friendlies). You CAN have both set.  The scanner
+		also now has the ability to play a sound to the player if it detects an enemy.
+		It is off by default but can be switched on/off with the "scansound" command.
+		Also, the statusbar will now report what your scanner has detected (i.e., "Red
+		Soldier", "Blue Sentry", etc.) and it's range from you in approximate meters.
+	- EMP Grenades will not destroy own-team buildings if explosive damage to teammates
+		is turned off on the server.
+	- When medikit is selected, the medikit ammo will be displayed.
+	- When a spy feigns he will now drop all goal items.
+	- Feigning spies are no longer ID-able by enemies.
+	- Spy's backstab ignores armor.
+	- Spy now is allowed to have (and starts with) yellow armor.
+	- New sentry code for finding targets.
+	- Limited number of active napalm grenades and gas grenades per player to 2.
+	- Incresed cell useage for cannon powerup from 4 to 7 to compensate for newly increased
+		damage from bug fix.  Also the Heavy Weapon's guy can no longer move while
+		spinning the Assault Cannon up, down, or while firing.
+	- Thrown grenades now have a "throwing" sound rather than the grenade launcher sound.
+
+Bugs Fixed:
+	- A dead scout can no longer disarm a detpack.
+	- Health boxes will now heal leg damage even if the player's health is
+		>= his class's max health.
+	- HWGuy can shoot while on the ground underwater now.
+	- Demoman help menu fixed to show "[7] Pipebomb launcher".
+	- Napalm Grenade fixed.  Explosions now follow the grenade instead of staying where
+		the initial explosion started.  Also grenade will now properly extinguish if it
+		enters water while exploding.
+	- Fixed invisibility bug with spy (disguise & Ring of Shadows problems).
+	- Removed the stuff regarding "imin1", "imin2", etc. (no longer used).
+	- Fixed the old TF weblink.
+	- Fixed the problem of armor gotten from a goal-item not absorbing damage.
+	- Buildings and detpacks should get telefragged if a player respawns into them.
+	- Fixed a few death message problems.
+	- Multiple concussion grenade hits on a player should now only add on to the time
+		the concussion effects last.
+	- Fixed soldier clip reloading.
+	- Fixed problem with some of the sounds that should play with the spy gas gren
+		hallucinations.
+	- Sentry will no longer fire at feigning spies.
+	- Fixed bug with Assault Cannon damage.
+
+--------------------------------------------
+Version 2.81               Released 25/5/98
+--------------------------------------------
+Bugs Fixed:
+	- Caltrops should now hurt the enemy when teamplay is set to not hurt
+		teammates.
+
+--------------------------------------------
+Version 2.8                 Released 24/5/98
+--------------------------------------------
+Features Added:
+	- EMP grenades now do damage to sentry guns.
+	- New in-game messages for medic healing functions, spy uncovering and
+		"aerial" pipebomb kills.  Made unique death messages for use
+		with statistical programs in distinguishing classes.  Also team messages
+		when engineer buildings are dismantled by other teammates.
+	- Sentry guns now have a muzzleflash.
+	- Server setting available to those who want to use the old effect grenades
+		(i.e., old concussion, gas, and flash grenades): set "old_grens" to "on"
+		(or abbreivated "og").  Default is "off".
+	- If the player has the setinfo string "exec_map" (or "em") set, the file
+		"mapdefault.cfg" will be executed if it exists when the player enters a server
+		or the server map changes. If the player also has a specific .cfg file for the
+		map on the server, that file will also be executed. (i.e., The player enters
+		the game and 2fort5 is playing. The script "mapdefault.cfg" will be executed
+		and then "2fort5.cfg" - if it exists).
+
+Changes:
+	- Impulse 100 removed.
+	- Limited # of flares useable at one time to 9 / # of teams.
+	- Scout must be looking directly at a detpack for him to begin disarming.
+	- Made abbreviations for more setinfo commands:
+		bd = birthday
+		sbr = sbar_res
+		sbs = sbar_size
+		apw = adminpwd
+		ec = exec_class
+		ws = use_standard ("War Standard" flags)
+	- Changed concussion grenade effects.  Instead of your "vision" only being
+		impaired, you now stumble around.  The more you try to move, the more
+		you stumble.  If you are against a wall and not moving at all, you can
+		stabalize yourself.
+	- Limited the amount of concussion grenades a medic/scout can carry to 3.
+	- Put back the TF "War Standard" option for maps.
+	- Scout's Flash Grenade replaced with the Caltrops Canister. Limited
+		carry amount to 3 of these.  Prime time is 1 second.  When dropped,
+		6 caltrops (spikes) will scatter on the ground at the scout's feet.
+		Hitting a caltrop will cause damage and slow down the player until
+		being healed (by health box or medic).
+	- New spy gas grenade effects:  No more color changing for affected players.
+		More explosion effects and random pain sounds (but no actual pain except when in
+		the gas cloud itself) and other "illusions".  New effects disabled (like the
+		other new grens) with the "old_grens" server setting.
+	- Sniper sight is now a red dot which is now visible in both GL and non-GL QW 2.2x.
+
+Bugs Fixed:
+	- SpyInvis Only setting on non QW servers fixed.
+	- Removed ability for multiple invincible sentry guns cheat.
+	- Cannot use RandomPC to choose a server restricted class.
+	- Due to stronger kicking, any cheats that were the result of
+		getting "kicked" and staying in the game, such as the Medic/Sniper
+		cheats, are now impossible.
+	- Spy can no longer unfeign when anything at all is on top of him.
+	- Detpacks can no longer hang in the air.
+	- If sentry gun becomes separated (i.e., the gun "head" detaches from
+		the base), it will blow up (i.e., "malfunction").
+	- Fixed some typo's.
+	- Sentry gun will not keep beeping when someone disconnects within its
+		range.
+	- Pyro flames really will go out under water now.
+	- Fixed bug where medic would get multiple frags if infecting a player more
+		than once and them ing by a means other than the infection.
+
+--------------------------------------------
+Version 2.7                 Released 29/1/98
+--------------------------------------------
+Changes:
+    - Players with NoMove set cannot be moved by damage.
+
+Bugs Fixed:
+    - Finally fixed the pipebomb counting bug. (Thanks dz!)
+    - HWGuy moving at fullspeed while spinning loophole fixed.
+    - That minor sentry cheat/bug fixed.
+
+--------------------------------------------
+Version 2.666              Released 16/12/97
+--------------------------------------------
+Changes:
+    - Demomen can only have 1 detpack active at a time.
+
+Bugs Fixed:
+    - Spy disguise menu is now removed after picking up a flag.
+
+--------------------------------------------
+Version 2.65 Bug Fix E
+--------------------------------------------
+Features Added:
+    - Serverinfo key "exec_map_cfgs". If set to "on", then whenever the 
+      map changes, the server will automatically exec "qwmcycle/<mapname>.cfg"
+
+Changes:
+    - Nailgun and Supernailgun's now use double the ammo, fire at half
+      the rate, and do double the damage they used to. Should reduce lag.
+    - Net Napalm grenade light shrunk.
+
+Bugs Fixed:
+    - Telefrag problems with Team 1 Spawnpoints fixed.
+    - Security loophole with player's names fixed.
+    - Spy skins not being reset correctly when custom skins were being used.
+    - Exploding Sentrys/Dispensers producing the wrong death messages fixed.
+    - Red GL Glow not being removed from players with pent and flag.
+
+Map Code Changes:
+    - Flaginfo now allows you to specify only some of the flaginfo strings.
+
+--------------------------------------------
+Version 2.65 Bug Fix D
+--------------------------------------------
+Changes:
+    - Buildings check the area under themselves and fall they're in the air.
+    - No Bioinfections during Prematch mode.
+    - In LAN version, Cheat Checking is now off by default, and can be
+      turned on using the "temp1" var. Read the server.txt file for info.
+    - Soldiers can only have 2 nail grenades active at once now.
+
+Bug Fixes:
+    - Bioinfections during prematch mode removed.
+    - Loophole in reloading fixed.
+    - Scouts killed while disarming in QW don't continue to disarm.
+    - Player frame cycling loophole in Axe/Hook use fixed.
+
+Map Code Bug Fixes:
+    - GoalItem return messages appearing when Goal's
+      force returns. Will fix "flag has returned" when
+      capturing a flag.
+    - GoalItem Drop initial origin changed.
+
+--------------------------------------------
+Version 2.65 Bug Fix C
+--------------------------------------------
+Changes:
+    - Soldier can only carry 2 nail grenades at a time.
+    - Engineer Build area-checking is a little tougher now, and
+      should prevent you building in corners where the building
+      will fall out.
+
+Bug Fixes:
+    - Spawnpoints not working correctly fixed.
+    - Glow not being removed from players with quad and flag.
+    - Friendly Sentry IDs sometimes reporting as enemies fixed.
+    - Admins can toggle ceasefire while dead.
+    - Players cannot be killed during ceasefire.
+
+Map Code Bug Fixes:
+    - Criteria for Spawnpoints working correctly now.
+
+--------------------------------------------
+Version 2.65 Bug Fix B
+--------------------------------------------
+Changes:
+    - Nobody should be able to get in using the "skins"
+      command hack ever again.
+    - Servers running in Clan Mode should be secure again.
+    - Map Code cycling with QW2.01's method will work
+      now even if the serverinfo/localinfo key "n" is set.
+    - Map cycling key "n" moved back to serverinfo.
+
+Map Code Enhancements:                                   
+    - GoalItems dropped by living or dead players now
+      don't return immediately if they fall out of the world.
+      Instead, they "retry" the drop 3 times. If all fail,
+      then they return.
+
+Map Code Bug Fixes:
+    - Activating Goals remove their model correctly again.
+
+--------------------------------------------
+Version 2.65 Bug Fix A
+--------------------------------------------
+Features Added:
+    - MOTD localinfo for servers.
+    - Support for the QW 2.01's method of map cycling.
+    - QW TF Map cyling now has extra added tang.
+      See qwserver.txt for full info.
+
+Changes:
+    - Dispenser death message tells you who's dispenser it was.
+    - Cheat checking's a little nastier now.
+
+Bugs Fixed:
+    - Disappearing flags bug fixed.
+    - Dispensers shouldn't drop thru floors anymore.
+    - Dropitems won't allow you to throw items out of the world anymore.
+    - HWGuys picking up ammobox/discards while firing cannon fixed.
+    - Pipebombs/Detpacks/etc left by disconnecting players don't explode.
+    - EMP Grenades not affecting players fixed.
+    - Spectators passing on Bio-infections fixed.
+    - Scores changing after the match is over fixed.
+    - "serverinfo n" being used instead of "localinfo n". This will fix
+      the server cfg problem.
+ 
+Map Code Bug Fixes:
+    - All abbreviations working correctly now.
+    - Grenade removal goals remove primed grenades as well.
+
+--------------------------------------------
+Version 2.6 Final Release - Released 22/7/97
+--------------------------------------------
+Changes:
+    - Teleporters removed.
+    - Server Admin password moved to localinfo.
+    - Clan skins moved to localinfo.
+    - Detpacks blocking lifts or doors are removed.
+    - Detpacks pumped upto 700 radius.
+    - All class speeds reevaluated.
+    - Buildings add towards AutoKick Teamkill tally now.
+    - Net Napalm Grenade weakened slightly.
+    - Sentry Rotation moved to the menu.
+    - Sentry Targeting range reduced. Still better than
+      the 2.5 targeting system.
+
+Bugs Fixed:
+    - Scout flash grenade crashing the server.
+    - Scout concussion grenade not restoring fov correctly.
+    - Speed limitations not working for spy feigning fixed.
+    - Detpack noise not being precached.
+    - Disease re-infecting immediately after heal fixed.
+    - Invulnerability trick now thwarted.
+    - Admin commands not working fixed.
+    - Gas Gren hurting teammates fixed. It still messes with their vision.
+    - Observers being able to suicide fixed.
+    - Observers being able to push buttons fixed.
+    - Flares sticking to sky.
+
+--------------------------------------------
+Version 2.6 Final Beta 
+--------------------------------------------
+Features Added:
+    - Full Team Score
+        A third scoring system, which is a combination of TeamFrags and 
+        Normal. Each player's frags are equal to the Team's frags + the
+        Team's score for map related goals.
+    - PreMatch Mode
+        Servers operating in Clan Battle Mode can set a PreMatch time period,
+        in which Players can run around and shoot, but do nothing else.
+        Once the PreMatch time is over, players are respawned.
+    - Cease Fire Time
+        Servers operating in Clan Battle Mode can set a Cease Fire time
+        period at the beginning of the Match, in which Players can't move 
+        or shoot.
+    - Class Restrictions
+        Servers can limit the number of players, in the same team, able to play 
+        the same class. This can also be used to prevent any classes from being
+        played at all.
+    - Player Substitutions
+        During Clan Battles, players who drop off and rejoin are automatically
+        put in the same team they were in, and their Class, frags, etc are
+        restored. Players can also sub in for another player in this way.
+    - Locked Games
+        Servers can prevent anyone joining games after the PreMatch time
+        is over, except for substitutions for disconnected players.
+    - Flag Emulation
+        When turned on for the old maps which use keys for Flags, this
+        feature will change the key to the new TF Flag.
+    - Admin Capabilities
+        Servers can have "admin" players who don't know the rcon password,
+        but still have the ability to kick players and force cease-fires.
+    - AutoKick
+        Servers can enable an Autokicker which kicks players who kill
+        a set number of their teammates over a set time period.
+    - Anyone can tell the server they don't want to see the Classhelp
+      by setting their infokey "classhelp" (or "ch") to "off".
+    - Engineers can use the "detdispenser", "detsentry", "detentrance",
+      and "detexit" commands to detonate their buildings without using 
+      the menus.
+    - Engineer buildings now explode when killed, with a blast radius
+      dependant on the amount of explosive ammo they had in them.
+    - Engineers can now build Teleporter Pads. He can only have one
+      entrance and one exit in existence at the one time, but either 
+      can be dismantled and built elsewhere without affecting the other.
+      Teammates can use the teleporter by running onto it and stopping.
+    - Engineers can rotate their sentries by hitting them with the spanner 
+      to bring up the menu, and then each spanner hit after that rotates
+      the sentry by 45 degrees.
+    - Sentry Guns now attack monsters in Co-Op mode.
+    - More realistic falling damage.
+    - Players can use impulse 69 to change to the previously selected weapon.
+    - QW Servers can specify an alternative directory to "qwmcycle" 
+      using the "cycledir" serverinfo key, and the server will use the 
+      mapX.cfg files in that directory instead.
+    - QW Servers can now store TF in any directory, but the "sv_gamedir"
+      key must still be "fortress". 
+    - Players can now change classes using the "changeclass" command,
+      if the server allows it. This will bring up the normal class menu.
+    - Players can set the "take_sshot" infokey to "on", which will make
+      TF automatically take a screenshot of the end game scores for you.
+    - Players can set the "exec_class" infokey to "on", which will make
+      TF automatically exec the "class".cfg file whenever you change
+      classes. (e.g. it'll exec scout.cfg if you're a scout)
+    - Thanks to the QW Team's addition of player maxspeeds, and the increase
+      of the QW speed limit, all classes now move at their correct speeds,
+      and speed cheating is impossible, even wall-strafing.
+    - 4 More Teamplay bits which work as follows:
+    	Bit 128:   Team-members only lose 1/2 armor from direct fire.
+    	Bit 256:   Team-members lose no armor from direct fire.
+    	Bit 512:   Team-members only lose 1/2 armor from area-affect weaponry.
+    	Bit 1024:  Team-members lose no armor from area-affect weaponry.
+        Bit 2048:  Team-members take 1/2 mirror damage from direct fire.
+        Bit 4096:  Team-members take full mirror damage from direct fire.
+        Bit 8192:  Team-members take 1/2 mirror damage from area-affect weaponry.
+        Bit 16384: Team-members take full mirror damage from area-affect weaponry.
+
+Changes:
+    - Demoman don't start with Blast armor. Their max armor was increased by 20.
+    - Demoman speed dropped by 20.
+    - The Detpack drastically changed. It now affects a much smaller
+      area, but does a lot of damage to all in it. Time taken to set it
+      reduced to 3 seconds.
+    - Scouts get a frag for disarming a detpack.
+    - Scouts/Spies get a frag for unmasking enemy spies.
+    - Scout's bounding box restored to the normal player size.
+    - Scout's scanner cost nothing to use now.
+    - Heavy Weapons Guy's Assault Cannon damage increased.
+    - Heavy Weapons Guy max armor increased.
+    - Snipers now "shoot" flares, allowing them to fire them much further.
+    - Sniper rifle targeter is back to being a sprite again. This will make
+      it more visible in GLQuake and GLQWCL.
+    - Pyro flames on players now replace older ones.
+    - Pyro "special" command now swaps between Flamethrower and Incendiary Cannon.
+    - Pyro indendiary rockets set players alight through walls as they
+      used to do, but only if they're within 1/2 the rocket's blast radius.
+      Effectively, it'll only set alight players who're very close to the wall.
+    - Pyro napalm grenades in the net version are now actually dangerous.
+    - Engineer detonates buildings with 7 & 8 now, instead of 1 & 2,
+      hopefully preventing ppl from accidently detonating their buildings.
+    - Sentries damage increased due to their loss of quad.
+    - Sentries lock onto targets faster now.
+    - Medic bioinfections are airborn now... they infect ppl much more.
+    - Medic gets the kills for all players killed by his/her infection.
+    - Discard Backpacks tell you who dropped them when picked up.
+    - Players can't injure their own team's dispensers.
+    - Concussion gren's mess with your fov now too.
+    - Proxy spruced up the menus.
+
+Bugs Fixed:
+    - Fixed CTF emulation again.
+    - Spies feigning on top of other spies fixed.
+    - Spies being able to shoot and stay disguised fixed.
+    - Spies disguise handles non-standard skins correctly.
+    - Spies start with ammo for their nailgun now.
+    - Engineers getting frags for their Sentries killing teammates fixed.
+    - Engineers being able to kill teammates with teamkills off fixed.
+    - Engineers being able to build sentries in the air fixed.
+    - Sentries getting quad every 3 seconds fixed.
+    - Sentries lock onto enemy spies who've only changed their skin now.
+    - Sentries targeting from their base fixed.
+    - Sentries not firing rockets when out of shells fixed.
+    - Sentries making firing noises and not actually firing fixed.
+    - Sentries not rotating around the 0 degree mark fixed.
+    - Pyro flamethrower setting flames underwater fixed.
+    - Pyro flames on the ground in QW being "sticky".
+    - Heavy Weapon Guy's shell ammo not being updated correctly fixed.
+    - Detpack's blocking lifts are now removed.
+    - Nail ammo being destroyed by EMP grenades fixed.
+    - Players joining teams in a server with TeamFrags on now have their
+      frags set to the team's score straight away.
+
+Map Code Bug Fixes:
+    - Else Goals using the wrong Activating Goal when checking for
+      whether they should apply results fixed.
+    - Non-TF ents activating Else Goals without checking their
+      criteria first fixed.
+    - Goal Items staying active after they killed a player in the process 
+      of retrieving it fixed.
+    - Skill Existence Behaviour now works correctly.
+
+Map Code Enhancements:                                   
+    - Map Debug cleaned up a lot.
+    - Showloc debug dumps the current angle too.
+    - A new bit (32) was added to "goal_result" for Goals/etc which forces
+      anyone affected by the goal to simply respawn. The player doesn't
+      die... just respawns.
+    - A new bit (2048) was added to "goal_activation" for Goals and GoalItems.
+        2048: If this bit is set, the Goal/Item drops to the ground when it
+              first spawns.
+    - Another new bit (4096) was added to "goal_result" for GoalItems.
+        4096: If this bit is set, any player carrying this item can drop
+              it using the "dropitems" command.
+    - Yet another bit (8192) was added to "goal_activation" for GoalItems.
+        8192: If this bit is set, the GoalItem is Solid while not
+              being carried by a player. This means it blocks bullets,
+              grenades.
+              N.B. It will also block any players that don't pass it's
+                   criteria. Players that do pass the criteria will
+                   simply pick it up.
+    - The size of a Goal or GoalItem can now be set using the "goal_min"
+      and "goal_max" variables to set the min and max bounding box.
+      If not set, they default to:
+		"goal_min"       "-16 -16 -24"
+		"goal_max"       "16 16 32"
+    - More Abbreviations, as follows:
+    	Floats
+            "h_i_g"	    for     "has_item_from_group"
+            "r_i_g" 	for     "remove_item_group"
+
+            "a_s"		for     "ammo_shells"
+            "a_n"		for     "ammo_nails"
+            "a_r"		for     "ammo_rockets"
+            "a_c"		for     "ammo_cells"
+
+            "rv_s_h"	for     "remove_spawngroup"
+            "rs_s_h"	for     "restore_spawngroup"
+            "rv_gr"	    for     "remove_group_no"
+            "rs_gr"	    for     "restore_group_no"
+            "rv_g"	    for     "remove_goal_no"
+            "rs_g"	    for     "restore_goal_no"
+	- The "ex_skill_min" and "ex_skill_max" variables can now
+      use "-1" to mean 0. This is needed because specifying either
+      as 0 is the same as not specifying it at all.
+      E.g. An entity with:
+                "ex_skill_min" "-1"
+                "ex_skill_max" "-1"
+           Would only exist at skill 0.
+            An entity with:
+                "ex_skill_min" "-1"
+                "ex_skill_max" "2"
+           Would only exist at skill 0, 1, or 2.
+
+--------------------------------------------
+Version 2.5 Final Release - Released 13/6/97
+--------------------------------------------
+Bugs Fixed:
+	- Detpack countdown's being removed when an EMP grenade destroys the pack.
+	- CTF emulation being broken by the tf_flag.mdl fixed.
+    - Abbreviations not working for Quake Triggers fixed.
+    - Button/Door handling with Engineer spanner fixed.
+
+-----------------------------------------
+Version 2.5 Final Beta - Released 10/6/97
+-----------------------------------------
+Changes:
+	- Added support for QW "rj" key to allow RocketJump customisation.
+	- Soldiers Rocket damage increased to 92 direct, 92+rnd(20) splash.
+	- Demoman starts with Blast resistant armor.
+	- Detpacks are removed if the demoman who set them disconnects.
+	- Map Code mdl setting cleaned up.
+	- Players in Observer mode have their skin set to base.
+	- CTF support now uses the tf_flag.mdl 
+	- Decapitation removed in QW version, since we were exceeding QW's
+	  16 meg RAM limit.
+
+Bugs Fixed:
+	- Engineer out of shells being unable to select railgun fixed.
+	- Special Armor types not updating correctly fixed.
+	- Incendiary Rockets injuring teammates fixed.
+
+Map Code Enhancements:
+	- A new bit (64) was added to the "goal_effects".
+	  	64 : If this bit is set, then instead of just applying this Goal's
+			 results to the group of players specified by the other 
+			 "goal_effects" variable, this Goal checks it's criteria for
+			 each player in the group and then applies it's results 
+			 invididually to any of them that pass.
+
+--------------------------------------
+Version 2.5 Beta I  - Released  3/6/97
+--------------------------------------
+Features Added:
+	- Respawn Delay code fixed. QW servers can set a respawn delay by
+	  using the serverinfo key "respawn_delay" to set a time in seconds.
+	  LAN servers can have a set Respawn Delay of 5 seconds by using the
+	  "temp1" variable.
+	  Suiciding players cannot respawn for an extra 5 seconds.
+	- EMP Grenades detonate pipebombs and ammoboxes/discard-backpacks.
+	- Forced Reloading time is now proportional to the number of empty
+	  spaces in the clip.
+	- Dispensers create ammo inside themselves at a rate of 
+	  20 shells, 30 nails, 15 rockets, 20 cells, & 25 armor every 10 seconds.
+	- Player suiciding or killing themselves while infected now
+	  give the medic a frag.
+	- IDing sentries/dispensers tells you who built them.
+	- Direct selection impulse for Axe added. The impulse is 40.
+	  It will select the axe equivalent for your current class.
+	  e.g. Knife for Spy, Spanner for Engineer, BioWeapon for Medic,
+	       Axe for everyone else.
+
+Changes:
+	- When a player gets ammo/armor from a dispenser, he/she attempts to
+	  get as much as they can carry in one go.
+	- Drop Ammo amount and Dispenser Ammo Retrieval amount doubled.
+	- Detpacks can't be set with fuses shorter than 5 seconds.
+	- Nail Grenade's nails don't knock players around.
+	- Nail Grenade's nails damage decrease to by a 1/3.
+	- Heavy Weapons Man is not knocked around by the damage he takes.
+	- Tweaked Soldier and Medic.
+
+Bug Fixes:
+	- Bug in alias creation fixed. ZMalloc should occur less frequently now.
+	- Pyro rockets/flames hurting teammates fixed.
+	- Demomen retrieving detpacks being unable to move fixed.
+	- Sentry Gun's not using rocket ammo fixed.
+	- Sentry Gun's taking double damage from explosions fixed.
+	- Sentry Gun's not shooting anyone in DM fixed.
+	- Team Centerprinting in DM fixed.
+	- Detpack blocking fixed.
+	- Engineer getting other class's weapons fixed. Sorry ;)
+	- Railgun weapon selection fixed.
+	- Detpack countdown being removed if setter dies fixed.
+	- Armor picture being incorrectly updated fixed.
+	- Status Bar crashing in Size 3 (No Console) fixed.
+	  There is only two Statusbar sizes now: Full Console and Half Console.
+
+Map Code Changes:
+	- "armortype" variable for Goals used to be added to player's current
+	  armortype. Now, the player's armortype is set to the Goals "armortype".
+	  Armortypes are:   
+			0.3 : Green
+			0.6 : Yellow
+			0.8 : Red
+
+Map Code Bug Fixes:
+	- Illegal Classes handling for Spy, Engineer, and RandomPC fixed.
+	- Goals starting in Removed state being visible fixed.
+	- GoalItem's Reverse activation bit working now.
+	- Timer Goals not checking criteria properly fixed.
+	- Abbreviations for "info_tfdetect" entities fixed.
+	- Goal's giving armor not updating the picture fixed.
+
+Map Code Enhancements:
+	- A new bit (32) was added to the "goal_effects".
+	  	32	:	If a player who fits one of the other "goal_effects" variables
+				is not in the same environment as the Goal, don't affect him.
+				Environments are air, water, slime, lava.
+				e.g. If a Goal is above some water, and does a radius effect
+				     with "t_length", and a player in the water is within the
+					 radius, he won't be affected if this bit is set.
+
+
+--------------------------------------
+Version 2.5 Beta H  - Released 27/5/97
+--------------------------------------
+Features Added:
+	- Demomen can select pipebomb launcher with impulse 7, and 6
+	  always selects normal grenades.
+
+Changes:
+	- Medic's now heal teammates fully in one hit with the medikit, and
+	  it doesn't use any medikit ammo.
+	- If a Medic hits a teammate with the medikit, and the teammate is already
+	  fully healed, then the Medic will add 5 megahealth to the teammate,
+	  upto 50 megahealth over the teammates max health. This uses up 1 medikit
+	  ammo per 5 megahealth.
+	- Medic's now use 1 medikit ammo per 1 health regenerated.
+	- Engineer's repair 4 armor for every 1 metal now.
+	- New Dispenser mdl by Jim Kaufman. It's now smaller, and can be jumped.
+	- Players can't shoot for 0.4s after spawning, to prevent ppl dying in a
+	  fight from accidently shooting teammates.
+	- The use of "samelevel" restored, and we now use the serverinfo key "n"
+	  to store the current level number in the cycle. Read the qw.txt file
+	  for full details.
+
+Bugs Fixed:
+	- Demomen "bouncing" as they set detpacks.
+	- "trigger_hurt" entities only gibbing a player once.
+	- Engineer's building cleaned up. No more build-sentry-change-class,
+	  or build-sentry-reconnect.
+
+Map Code Changes:
+	- Goals that injure players they affect never gib the player. This should
+	  stop Jim Kaufman's Rock map crashing.
+
+Map Code Enhancements:
+	- There are now abbreviations for many of the mapcode entity's strings.
+	  This should help for those of you having trouble with Quake's limit on
+	  a map's entity details.
+	  The Abbreviations are as follows:
+		Classnames
+			"i_p_t"   for   "info_player_teamspawn"
+			"i_t_g"   for   "info_tfgoal"
+			"i_t_t"   for   "info_tfgoal_timer"
+
+		Floats
+			"g_a"     for   "goal_activation"
+			"g_e"     for   "goal_effects"
+
+		Strings
+			"t_s_h"   for   "team_str_home"
+			"t_s_m"   for   "team_str_moved"
+			"t_s_c"   for   "team_str_carried"
+			"n_s_h"   for   "non_team_str_home"
+			"n_s_m"   for   "non_team_str_moved"
+			"n_s_c"   for   "non_team_str_carried"
+
+			"b_b"     for   "broadcast"
+			"b_t"     for   "team_broadcast"
+			"b_n"     for   "non_team_broadcast"
+			"b_o"     for   "owners_team_broadcast"
+			"n_b"     for   "netname_broadcast"
+			"n_t"     for   "netname_team_broadcast"
+			"n_n"     for   "netname_non_team_broadcast"
+			"n_o"     for   "netname_owners_team_broadcast"
+
+			"d_t"     for   "team_drop"
+			"d_n"     for   "non_team_drop"
+			"d_n_t"   for   "netname_team_drop"
+			"d_n_n"   for   "netname_non_team_drop"
+
+--------------------------------------
+Version 2.5 Beta G  - Released 21/5/97
+--------------------------------------
+Features Added:
+	- Players using the "saveme" impulse now yell "Medic!"
+	- "id" impulse, allowing you to identify players
+
+Changes:
+	- Detpack's explosion size lowered.
+	- Frag for killing an enemy sentry gun.
+	- Engineer's Railgun used nails instead of metal.
+
+Bugs Fixed:
+	- Detpacks exploding outside the map in QW fixed.
+	- Number of Special Grenades limited to 4 of each type.
+	- Number of Detpacks limited to 1.
+	- Napalm grenades not removing themselves underwater.
+	- Pipebomb counting tweaked.
+	- Server's not being able to enable the grapple with the 
+	  "serverinfo g on" method fixed.
+	- Grenades exploding in player's hands hurting teammates
+	  when teamplay is on.
+
+Map Code Bug Fixes:
+	- Dead Players getting GoalItems fixed.
+
+Map Code Changes:
+	- Goals can now affects players who are dead, allowing dead players
+	  to get teamscores when their team captures flags, etc. 
+
+--------------------------------------
+Version 2.5 Beta F  - Released 17/5/97
+--------------------------------------
+Features Added:
+	- Much more powerful and admin-friendly map cycling method.
+	- Decapitation.
+	- Status Bar, showing team scores, as well as various details 
+	  depending on the class you're playing.
+	- Engineer is alerted when his/her sentry is destroyed.
+	- Completely new user-friendly map cycling method.
+	- Scout now has a flash grenade.
+	- "fortress" gamedir is enforced.
+	- "discard" alias, which drops all ammo your carrying that
+	  can't be used by your class in a single backpack.
+	- Some new models, including a new grapple-gun, hook, and
+	  a headless player.
+	
+Changes:
+	- Assault Cannon's damage increased.
+	- Gas Grenades that explode underwater don't make gas.
+	- Sniper's cannot jump and fire the sniper rifle.
+
+Bugs Fixed:
+	- Engineers can't build more than one of each building.
+	- Kicked for color cheating in co-op fixed.
+	- Class help corrected.
+	- Engineers can't repair armor on players with no armor.
+	- Spies can't feign on top of other spies.
+	- Illegal Classes & Deathmatch 3 fixed.
+	- Shub death by gunfire fixed.
+
+Map Code Enhancements:
+	- Buttons can use bit 4(8) of the "goal_activation" variable
+	  to make them only activated when hit by an engineer's spanner.
+
+Map Code Bug Fixes:
+	- Various centerprinted messages have been fixed.
+
+Map Code Changes:
+	- "delay" variable used for delaying goal results has been changed
+	  to "delay_time", to allow for better backwards compatability.
+
+Map Code breakages (Old maps won't work if you used these)
+	- Way back in version 1.3 the "goal_effects" variable was introduced,
+	  to allow goals to affect more than one player. In version 1.21 you
+	  didn't have to specify a "goal_effects" variable... instead, any
+	  goal simply affected it's AP. To allow for backwards compatability,
+	  in all versions since 1.3, any Goal that did not specify a "goal_effects"
+	  field automatically had it's "goal_effects" set to 1, which is affect
+	  AP only. This has become a problem now, since it prevents map-makers
+	  from having goals that have a "goal_effects" of 0.
+	  From this version onwards, the "goal_effects" variable will be left 
+	  as it is in the .map file. So, if you have a map which contains any
+	  Goals/Items that do _not_ have a "goal_effects" variable specified,
+	  add it in and set it to 1.
+
+--------------------------------------
+Version 2.5 Beta E  - Released 25/4/97
+--------------------------------------
+Features Added:
+	- Spy disguising is more user-friendly.
+
+Bugs Fixed:
+	- Engineers can't build more than one of each building by suiciding.
+	- Scouts getting removed fixed.
+	- Spy disguise being removed by enemies is better.
+
+--------------------------------------
+Version 2.5 Beta D  - Released 22/4/87
+--------------------------------------
+Bugs Fixed:
+	- Sentryguns not targeting the right people. And they
+	  target faster now.
+	- Toggleflag defines fixed, so serverinfo keys are working again.
+
+--------------------------------------
+Version 2.5 Beta C  - Released 21/4/87
+--------------------------------------
+Features Added:
+	- "Help!!!" impulse implemented. Any player can do issue just do it
+	  using the "saveme" command. Any medic/engineer on the same team as
+	  that person will see a lightning bolt effect around that player.
+	  Use it to signal you need help.
+	  Spy's can see anyone of any team doing it.
+	- Spies and Scouts who touch any undercover enemy Spy remove the
+	  enemy's disguise.
+	- Spy now has a knife model.
+	- Engineers can remotely detonate their buildings.
+
+Changes:
+	- QW Serverinfo keys shortened to fit 256 char keyspace.
+	- QW "temp1" key can be used like the temp1 var in normal quake.
+	- Assault Cannon winds up in 1/2 the time.
+	- Since the new cheat checking is tougher, moving with the mouse
+	  has been allowed again.
+
+Bugs Fixed:
+	- Snipers changing weapons while aiming fixed.
+	- Sentries won't shoot at feigning spies now.
+	- Healing infection from your team fixed.
+	- Building code rewritten. It should be more robust now.
+	- Players being unable to respawn fixed.
+	- Color/Skin cheat checking shouldn't kick non-cheaters now.
+	- Players with no weapon being hit by an EMP grenade won't cause problems now.
+	- Players being prevented from moving shouldn't be kicked for speed 
+	  cheating straight away.
+
+--------------------------------------
+Version 2.5 Beta B  - Released 16/4/97
+--------------------------------------
+Changes:
+	- Engineers can only have 1 dispenser at a time.
+	- Dispenser health lowered.
+	- SentryGuns can only be activated by their owners.
+	- Player's can't hurt turrets/dispensers made by their teammembers.
+
+Bugs Fixed:
+	- CycleWeapon crashing servers fixed.
+	- Spy Color changing fixed.
+	- Building/Stop-Building/Build loophole fixed.
+	- Buildings are destroyed if the Engineer who built them changes class.
+
+--------------------------------------
+Version 2.5 Beta A  - Released 13/4/97
+--------------------------------------
+Classes: Scout, Sniper, Soldier, Demolitions Man, Combat Medic,
+		 Heavy Weapons Guy, Spy, Engineer.
+
+Features Added:
+	- New, improved, and just plain nastier cheat checking.
+	- Concussed ppl make bubbles.
+	- Sniper rifle now has locational damage, like TF-Sniper.
+	- Support for skins for each class for each team. Good for Clan battles.
+	- A new alias called "special", which does the primary 
+	  ability of your class.
+
+Models/Sounds:
+	- Assault Cannon redone with no cooling. Looks and sounds fantastic now.
+	- Grenade models for all types.
+	- Detpack model.
+	- Ammobox model.
+
+Quakeworld Additions:
+	- QuakeWorld servers can use various Keys to set options. Keys are:
+	  "autoteam", "grapple", "teamfrags", etc. See QW.TXT for details.
+
+Changes:
+	- Major code cleanup. A lot of redundant code/features removed.
+	- Demomen can't fire while setting detpacks.
+	- Demomen can't set detpacks while in the air or hanging from a hook.
+	- Scout scanner is more user friendly now. 
+	- Coop Mode Door/Key behaviour is much more user friendly now.
+	- Assault Cannon doesn't need cooling after really short bursts.
+	- Grapple cannot hurt players.
+	- Snipers have flare grenades.
+	- All lasting effects (concussion/hallucination/tranquilisation) can
+	  affect team members, but Medics only get frags for curing effects 
+	  caused by enemy teams.
+
+Bug Fixes:
+	- Fixed a loophole in the non_team and owners_team Goal Broadcasting.
+	- Fixed a bug in the map code governing items given by goals.
+	- Powerups don't remove Dimlight caused by GoalItems, and vice versa.
+	- Detpacks exploding outside maps.
+	- Some Weapons not "kicking" your view fixed.
+	- Ammoboxes are counted like pipebombs now. e.g. limited number of 
+	  them in existence at any one time.
+	- Fixed bug in pipebomb counting in deathmatch.
+
+Map Code Enhancements:
+	- Goals can use the "delay" variable now to delay their activation for a 
+	  specific amount of time.
+	- Goals can check to see if the player is carrying any items from
+	  a particular group in it's criteria using "has_item_from_group".
+	- Goals can use the "remove_item_group" to remove all the items
+	  in a particular group from any player affected by its activation.
+	- A new Bit was added to the "goal_results" variable for Goals/Items
+	  which allows them to remove a Spy's disguise.
+	- A new Bit was added to the "goal_activation" of GoalItems. 
+	  See the tfortmap.txt for details.
+	- Team Spawnpoints can now use Criteria exactly the same as Goals.
+	  Players can only spawn at spawnpoints that they match the Criteria of.
+	- Team Spawnpoints can activate a goal when someone spawns on them, 
+	  using the "activate_goal_no" variable.
+
+Map Code Changes:
+	- Items given by Goals are not set to Active state anymore, so they
+	  can be given out multiple times.
+
+Map Code Bug Fixes (Thanks Jim!) :
+	- Goal/Groups being removed/returned fixed.
+	- Fixed Goals applying bonuses to players through other Goals.
+	- Use of the "all_active" and "last_impulse" variables is now fixed.
+	- Fixed a bug with the "t_length" variable.
+	- Fixed the problem of Goals using the "wait" variable never inactivating.
+	- Fixed the behaviour of the "wait" variable in Goals. It used to
+	  remove Goals for the period of time in the "wait" variable. Now
+	  they stay active for that time... like the readme says they do.
+
+-------------------------------------
+Version 2.15  - Released 12/03/97
+-------------------------------------
+	QUAKEWORLD 1.5
+
+-------------------------------------
+Version 2.14  - Released 12/03/97
+-------------------------------------
+Bug Fixes:
+	- Various small bugs in the map code fixed.
+
+-------------------------------------
+Version 2.13  - Released 17/2/97
+-------------------------------------
+Features Added:
+	- Better prevention of cheating with mouse movement.
+	- Medic gets a frag for curing infection and concussion.
+	- Level cycling is now sensitive to the number of Players in the game.
+
+Map Code Enhancements:
+	- GoalItems can centerprint messages to players when they're dropped by
+	  a dying player.
+
+Changes:
+	- Method of counting players adjusted so we count people with a fancy
+	  character as the first letter in their name. This will fix team
+	  imbalances in the autoteam assignment.
+	- Sniper Reload time #defined for accessability.
+	- Medic max_armor and max_nails lowered.
+	- Assault Cannon's damage increased.
+	- Flamethrower and Incendiary Cannon damage increased in the net version.
+	  This is because the Pyro is a weaker character on net, due to the fact
+	  he cannot spread fires.
+	- All damage done by players is now reduced by 10%.
+
+Bug Fixes:
+	- Fixed a killtarget problem which prevented TF Goals from using 
+	  killtarget and target effectively (Thanks Jeremy!)
+	- Fixed a problem with the Class-Persistence in non-Coop Mode play.
+
+-------------------------------------
+Version 2.12  - Released 4/2/97
+-------------------------------------
+Map Code Enhancements:
+	- Goals can do more intelligent broadcasting with netname.(Happy Network? ;)
+
+Changes:
+	- Skin checking no longer disconnects the player, just sets the skin back.
+	- Sniper laser sight and autozoom.
+
+-------------------------------------
+Version 2.11  - Released 27/1/97
+-------------------------------------
+Features Added:
+	- Speed checking is now much more efficient, and will catch
+	  them everytime.
+	- Suiciders now have a respawn delay, and cannot re-suicide for 10 
+	  seconds. This prevents them from crashing servers.
+	- Skin and color checking has been fixed, and players who are 
+	  caught are kicked.
+
+Changes:
+	- Teamfrags option changed. Servers now have the option to
+	  never use teamfrags. This is now the default.
+
+-------------------------------------
+Version 2.1  - Released 22/1/97
+-------------------------------------
+Features Added:
+	- "maphelp" alias which gives you a short description of the
+	  map you're playing, if it's a TF map and a description has 
+	  been supplied by the map creator.
+	- "flaginfo" alias which gives you a display of the status
+	  of the flags on any map which the map creator provides a 
+	  flag info section in the Detection entity.
+	  Works for all CTF maps as well.
+	- Civilian Class. Sorry, you can't play this one by choice. It is
+	  only used on special maps.
+	- QuakeWorld grappling hook.
+
+Bugs Fixed:
+	- Quake Plats and Doors AP checking fixed
+	- Quake Trigger reverse-AP-criteria fixed
+	- Spawncode fixed and enhanced
+	- Level Cycling removed, rewritten, and hopefully fixed!
+	  N.B. You can't use nextlevel anymore to pick your next level.
+	       Instead, the server admin chooses the levels he/she wants
+		   the patch to cycle through.
+
+Changes:
+	- Speed Cheat Checking has been updated, so those cheating soldiers
+	  out there won't be moving so fast.
+	- Finally updated this doc!
+
+Map Code Enhancements:
+    - Goals can specify a team they belong to
+	- Goals can specify a starting state
+	- Activation Criteria can check other Goal's states
+	- Can Centerprint to members on/not-on AP's team
+	- Detection entity can specify a custom Team Menu message
+	- Detection entity can specify a Map Help message
+	- Entities can specify whether they exist for different "skill" settings
+	- TeamSpawn points can remove themselves after being spawned on
+	- GoalItems can glow when not being carried
+	- Detection entity can restrict available classes for each team
+	- All Goals can specify an 'else' goal, which is activated if this isn't
+	- Detection entity can now specify a maximum number of players in each team
+	- All Goals can display the status of upto 2 GoalItems when activated
+	- GoalItems can centerprint messages to players when they return
+	- Detection entity can restrict teams to the Civilian class for fancy maps
+	- Can Centerprint to owners of a Goal/Item when it's activated
+	- Any Goal/Item can force an item to return
+	- Any Goal check whether any GoalItem is at its origin in it's Criteria
+	- Goals that give out GoalItems can specify whether they want to the Item
+	  itself to apply results.
+	- Detection entity can specify that the Grappling Hook cannot be used
+	- Any Goal can remove/restore Team Spawnpoints
+	- GoalItems can specify console item's they'd like to light up when carried
+
+Map Code Changes:
+	- "Personal Message" is now centerprinted to AP
+	- "Broadcast Message" is now centerprinted to everyone else
+	- Goals activated by others now check their Criteria before activating
+	- GoalItems don't restore a goal when they return, now they activate it
+
+Map Code breakages (Old maps won't work if you used these)
+	- Detection entity can now make Pyro class illegal. 
+	  It replaces the Random PC prevention. 
+	  This will only cause a problem if you have a map which
+	  prevented players from playing Random PC.
+	- GoalItems don't restore a goal when they return, now they activate it.
+	  If you had any GoalItems using the "impulse" variable to restore a Goal
+	  when the GoalItem returns, you'll need to redo the Goalwork.
+	  My suggestion: Say a GoalItem was restoring Goal A when it returned.
+					 Make a Goal B. Make the GoalItem activate Goal B when
+					 it returns. Make Goal B restore Goal A. 
+	  If you're wondering why I did this, it's because an activating goal
+	  can restore a goal, and do much more. This way, you're not limited in
+	  what you want to do when a GoalItem is returned.
+
+-------------------------------------
+Version 2.03  - Beta Released 28/12/96
+-------------------------------------
+Bugs Fixed:
+	- Items falling through world
+	- Burning players not being able to move
+	- Teamplay settings fixed
+	- Quake Triggers activating TF Goals fixed
+	- Level Cycling fixed
+
+-------------------------------------
+Version 2.01  - Beta Released 24/12/96
+-------------------------------------
+Bugs Fixed:
+	- Team management on non-TF & non-CTF maps.
+
+Changes:
+	- RandomPC never respawns as the last class.
+
+Debug For:
+	- Flag states.
+	- Teamplay settings.
+
+-------------------------------------
+Version 2.0  - Beta Released 22/12/96
+-------------------------------------
+	QUAKEWORLD
+
+--------------------------------
+Version 1.37 - Beta Released
+--------------------------------
+So many changes, so here are just a few of them:
+	- Pipebombs completely cleaned up. Now there's a 
+	  limit defined in options.qc, default 10, and
+	  this is divided out between teams.
+	  e.g. in 2 team games, both teams can have upto 5.
+	- "reload" fixed.
+	- "dropammo" fixed.
+	- Concussion gren healing fixed.
+	- Teamplay options are much better.
+	- Temp1 variable now hold Toggleflags, so they
+	  persist over maps.
+	- maxammo for all ammo increased for each
+	  class, so that scouts can carry rockets,
+	  but still not use them. This way they can
+	  carry them to team members.
+	- BioWeapon and Medikit can be merged into
+	  one weapon if MEDIKIT_IS_BIOWEAPON is defined.
+	  It heals if you hit a teammember and infects
+	  if you hit an enemy. This is default for net servers.
+	- Dropammo menu appears faster
+	- Spawn blood when curing concussion
+	- Prevented infections attacking your own team,
+	  if teamplay options prevent it doing damage
+	- telefragged players respawn a couple of seconds
+	  later, so we don't get that telefrag crap.
+	- autoteam kicks in after 30 seconds into a map.
+	  So teams can be restructured when people enter
+	  a new map, and then after 30 seconds, people will
+	  be assigned automatically.
+	- Firing removes help now, and prints the "8 to see..."
+	- People can now ask for bindings to be done for them,
+	  with a selection of keys for mouse and key players.
+	- Player's push each other, and flag carrying players
+	  have a bigger weight.
+
+--------------------------------
+Version 1.33 - Released 11/11/96
+--------------------------------
+Bugs Removed:
+	- Nextlevel command not working.
+
+--------------------------------
+Version 1.32 - Released 10/11/96
+--------------------------------
+Features added:
+	- Nextlevel command.
+		Players can use the "Nextlevel" command to cycle through the
+		v1.3 FortressMaps and choose which one will be played when the
+		current one ends.
+	- Deathmatch 3 setting.
+		When in deathmatch 3, players can choose the class they will
+		respawn as.
+
+Changes:
+	- Removed all pre-impulses.
+	  	We used these in LAN games and they're fine. But on the net,
+	  	the lag can cause problems with them. So they're gone. We 
+	  	have left in the pre-impulses for Detpacks and Scanners so
+	  	players can still define their own time settings/energy levels.
+	- Detpack setting changed.
+	  	Instead of stopping you for 4 seconds when you set a detpack,
+	  	now you have to hold down the Detpack-Set key for 4 seconds
+	  	without moving, and you can stop and run at any time.
+	 	The old method is still there if you want to use it instead.
+	- Sniper Rifle changed.
+		It takes a little longer to build up the damage now, so snap-shots
+		won't kill so much. Aiming still builds up the damage.
+		Also, the Sniper must stop moving before he can start to aim.
+	- Team Color Checking
+		Now it doesn't penalise the player in any way for changing colors,
+		it just sets them back. Players with lag on servers would get 
+		penalised before they're colors had been set when they joined a 
+		team. :)
+
+Bugs Removed:
+	- Announcing of class choices when deathmatching.
+	- Sniper aiming not incrementing damage.
+	- Teamfrags not keeping correct count.
+	- Team 4 wasn't working.
+
+--------------------------------
+Version 1.31 - Released 4/11/96
+--------------------------------
+Features added:
+	- Class choices are announced to Team Members.
+
+Changes:
+	- Pyro Class made a little weaker, as follows:
+		- Flames on Players burn for half as long.
+		- Incendiary Cannon has a smaller radius.
+
+Bugs Removed:
+	- Pipebomb's crashing the server.
+		"I just commented out the debug!" John cried :)
+	- Grenade names in inventory fixed.
+	- Updating of Current Ammo fixed.
+	- Weapon firing in air fixed.
+		"Who the hell is DeMorgan?!?!" Robin screams :)
+	- Speed resetting when a GoalItem is removed corrected.
+	- Detpack activation of Goals fixed.
+
+--------------------------------
+Version 1.3  - Released 31/10/96
+--------------------------------
+Features added:
+	- Lives for players in each team.
+	- More Toggleables added.
+		- TeamFrags
+		- Server Only
+	- Napalm Grenades added
+	- Others, but I can't remember them. :)
+
+Changes:
+	- Entire TeamFortress Map code rewritten.
+	  Huge amount of changes and added functionality for them.
+	  See the tfortmap.txt for complete details.
+
+Classes: Scout, Sniper, Soldier, Demolitions Man, Combat Medic,
+		 Heavy Weapons Guy, Pyro, RandomClass.
+
+Bugs Removed:
+	- Respawn Delays fixed.
+	- Inventory display of second Grenade type fixed.
+	- Lotsa other small things
+
+--------------------------------
+Version 1.21 - Released 17/9/96
+--------------------------------
+Bugs Removed:
+	- Assault Cannon backpack/cooling bug fixed.
+	- BioWeapon not infecting monsters bug fixed.
+	- Megahealth always curing infection bug fixed.
+	- Detpack stuffcmd failure bug fixed.
+	- Medikit non-precached sound bug fixed.
+	- Deathmatch Everyone-respawn-in-the-same-place bug fixed.
+	- Heavy Weapon Guy's weapons cleaned up.
+
+--------------------------------
+Version 1.2	- Released 11/9/96
+--------------------------------
+Features added:
+	- TeamFortressMap Goal Support (Yeeha!)
+	- Bioweapon for the Combat Medic
+	- More Toggleables added.
+		- Auto Teaming
+		- Respawn Delays
+	- Players start in Observer mode.
+
+Classes: Scout, Sniper, Soldier, Demolitions Man, Combat Medic,
+		 Heavy Weapons Guy, RandomClass.
+
+Changes:
+	- Rewrote various sections to reduce variable use
+	- Changed Team Spawnpoints handling
+	- Team Members now only damage each other with Area-Effect weapons.
+	- Armor doesn't protect against drowning, etc.
+	- Remove telefragging.
+	- Concussion grenade toned down a little.
+	- Rewrote all the code for timers. Not only does it
+	  now save variable space, it also makes sure we clean
+	  up _all_ timers.
+
+Bugs Removed:
+	- John got it! The nastiest bug we've had yet!! Bye bye Zmalloc error!
+	- Medikit bug fixed
+	- Toggleflags being incorrectly passed between levels fixed
+
+Known Bugs:
+	- The Assault Cannon cooling still isn't perfect.
+
+--------------------------------
+Version 1.1	- Released 31/8/96
+--------------------------------
+Features added:
+	- Help revamped.
+	- Aliases for Help, Detpacks, and Scanners added.
+	- Multiple Player skin support added.
+	- Added World Toggleables handling.
+		- Classkin and Multiskin Toggle added.
+		- Class persistence between levels Toggle added.
+		- Cheatchecking Toggle added.
+        - TeamFortressMap Toggle added.
+	- Detpack CountDown added.
+	- Scanner now gives directions of blips
+	- NetServer setting which uses no non-standard quake files
+	- TeamFortress Map Support (Yeah!!)
+
+Classes: Scout, Sniper, Soldier, Demolitions Man, Combat Medic,
+		 Heavy Weapons Guy.
+
+Changes:
+	- Undefined players are now invincible, but can't move.
+
+Bugs Removed:
+	- Detpack was spawning two objects.
+	- Gibbed while Reloading bug fixed.
+	- Dying while concussed bug fixed.
+
+--------------------------------
+Version 1.1	- Released 24/8/96
+--------------------------------
+Initial Release
+Classes: Scout, Sniper, Soldier, Demolitions Man, Combat Medic
