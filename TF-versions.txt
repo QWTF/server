@@ -20,6 +20,7 @@ Features Added:
 Changes:
 	- The highest team score is now displayed in red in the Match Results table (Up2)
 	- Misc small code changes, alignment changes, etc. (Up2)
+	- Rpickup bug fixed. Rpickup will now only work in prematch. (Up2)
 
 --------------------------------------------
 Version 2.92	 			01/01/2012
