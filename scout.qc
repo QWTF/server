@@ -268,6 +268,13 @@ void () OldConcussionGrenadeTimer =
 
 void () ConcussionGrenadeTimer =
 {
+/*
+Up2 fixme
+For later:
+if ( (practice == on) && (cb_prematch_time > time) && (clanbattle = TRUE) {
+}
+else {
+*/
     local string st;
     local string st2;
     local vector src;
