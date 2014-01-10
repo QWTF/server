@@ -256,30 +256,44 @@ void () DecodeLevelParms =
 	    st = infokey (world, "clan");
 
 	if (st == "on") { // if prematch is set to on
-
 	    clanbattle = TRUE; // I assume from here that the prefix cb_ is clanbattle_
 	    clan_scores_dumped = 0;
 	    game_locked = 0;
-
+		
+	/*
+	This is where the "ready" code should go.
+	-You still have to start a map with "serverinfo c on"
+	-Remove the ability to set a pm time
+	-Replace pm timer code with the "ready" code. When all players are ready, start a 10 second countdown
+	
+	*/
 	    st = infokey (world, "pm");
 	    if (st == string_null) // maybe they are using "serverinfo prematch" instead of "serverinfo pm"
 			st = infokey (world, "prematch");
 
-	    cb_prematch_time = time + stof (st) * 60; // so cb_prematch_time is the sum of time and serverinfo prematch, in seconds
+	    cb_prematch_time = time + stof (st) * 60; // so cb_prematch_time is the sum (time + prematch), in seconds. I think "time" is time spent in server so far?
 
+		// SAFETY CHECK: if you set the timelimit less than pm duration, this will make sure it's longer
+		// This will be obsolete soon I hope
 	    if (timelimit && ((time + timelimit) < cb_prematch_time)) {
 			timelimit = timelimit + cb_prematch_time;
 			ti = ceil (timelimit / 60);
 			st = ftos (ti);
 			cvar_set ("timelimit", st);
-	    }
+			
+			//Tell players we had to change timelimit
+			bprint (PRINT_HIGH, "\n\sSERVER: Timelimit changed to \s");
+			bprint2 (PRINT_HIGH, st, " \sminutes.\s\n\n");
+	    }// New ready code should go here maybe?
 	    if (cb_prematch_time > time) {
 			cb_prematch_time = cb_prematch_time + 5;
 			ent = spawn ();
-			ent.think = PreMatch_Think;
-			ent.nextthink = time + 5;
+			ent.think = PreMatch_Think; // This starts the countdown in clan.qc
+			ent.nextthink = time + 5; // What is this for?
 	    }
-
+		// End pm code
+		
+		
 	    st = infokey (world, "cft");
 	    if (st == string_null)
 		st = infokey (world, "ceasefire_time");
