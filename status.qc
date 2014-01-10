@@ -222,47 +222,49 @@ void (float res) StatusRes =
 string (float num) NumberToString10 =
 {
     if (num < 5) {
-	if (num == 0)
-	    return (" 0");
-	else if (num == 1)
+		if (num == 0)
+			return (" 0");
+		else if (num == 1)
             return (" 1");
-	else if (num == 2)
-	    return (" 2");
-	else if (num == 3)
-	    return (" 3");
-	else
-	    return (" 4");
-   } else {
+		else if (num == 2)
+			return (" 2");
+		else if (num == 3)
+			return (" 3");
+		else
+			return (" 4");
+   }
+   else {
        if (num == 5)
-	   return (" 5");
+		return (" 5");
        else if (num == 6)
-	   return (" 6");
+		return (" 6");
        else if (num == 7)
-	   return (" 7");
+		return (" 7");
        else if (num == 8)
-	   return (" 8");
+		return (" 8");
        else if (num == 9)
-	   return (" 9");
+		return (" 9");
        else
-	   return ("10");
+		return ("10");
    }
 };
 
 string (float num) NumberToString100 =
 {
     if (num < 10) {
-	if (num < 5) {
-	    if (num == 0)
-		return (" 0");
-	    else if (num == 1)
-		return (" 1");
-	    else if (num == 2)
-		return (" 2");
-	    else if (num == 3)
-		return (" 3");
-	    else
-		return (" 4");
-	} else if (num == 5)
+		if (num < 5) {
+			if (num == 0)
+				return (" 0");
+			else if (num == 1)
+				return (" 1");
+			else if (num == 2)
+				return (" 2");
+			else if (num == 3)
+				return (" 3");
+			else
+				return (" 4");
+		}
+	else if (num == 5)
 	    return (" 5");
 	else if (num == 6)
 	    return (" 6");
@@ -272,7 +274,8 @@ string (float num) NumberToString100 =
 	    return (" 8");
 	else
 	    return (" 9");
-    } else if (num < 20) {
+    } 
+	else if (num < 20) {
 	if (num < 15) {
 	    if (num == 10)
 		return ("10");

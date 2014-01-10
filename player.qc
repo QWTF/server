@@ -22,55 +22,51 @@ void () player_touch =
     local float found;
 
     if ((invis_only == 0) && ((self.playerclass == 8) || (other.playerclass == 8))) {
-	if (other.classname == "player") {
-	    if ((self.undercover_team != 0) || (self.undercover_skin != 0)) {
-		if (((other.playerclass == PC_SPY) || (other.playerclass == PC_SCOUT))
-		    && (other.team_no != self.team_no)) {
-		    TF_AddFrags (other, 1);
-		    bprint (PRINT_MEDIUM, other.netname, " uncovered an enemy spy!\n");
-		    Spy_RemoveDisguise (self);
+		if (other.classname == "player") {
+			if ((self.undercover_team != 0) || (self.undercover_skin != 0)) {
+				if (((other.playerclass == PC_SPY) || (other.playerclass == PC_SCOUT)) && (other.team_no != self.team_no)) {
+					TF_AddFrags (other, 1);
+					bprint (PRINT_MEDIUM, other.netname, " uncovered an enemy spy!\n");
+					Spy_RemoveDisguise (self);
+				}
+			}
+			if ((other.undercover_team != 0) || (other.undercover_skin != 0)) {
+				if (((self.playerclass == PC_SPY) || (self.playerclass == PC_SCOUT)) && (self.team_no != other.team_no)) {
+					TF_AddFrags (self, 1);
+					bprint (PRINT_MEDIUM, self.netname, " uncovered an enemy spy!\n");
+					Spy_RemoveDisguise (other);
+				}
+			}
 		}
-	    }
-	    if ((other.undercover_team != 0) || (other.undercover_skin != 0)) {
-		if (((self.playerclass == PC_SPY) || (self.playerclass == PC_SCOUT))
-		    && (self.team_no != other.team_no)) {
-		    TF_AddFrags (self, 1);
-		    bprint (PRINT_MEDIUM, self.netname, " uncovered an enemy spy!\n");
-		    Spy_RemoveDisguise (other);
-		}
-	    }
-	}
     }
     if ((self.tfstate & 16) && (cb_prematch_time < time)) {
-	if ((other.classname == "player") && (te.playerclass != 0)) {
-	    if (!(other.tfstate & 16)) {
-		if (other.playerclass != 5) {
-		    if (!((teamplay & 16)
-			  && (self.owner.team_no == self.enemy.team_no)
-			  && (self.owner.team_no != 0))) {
-			found = 0;
-			te = find (world, classname, "timer");
-			while ((te != world) && (found == 0)) {
-			    if ((te.owner == self) && (te.think == BioInfection_Decay)) {
-				found = 1;
-			    } else {
-				te = find (te, classname, "timer");
-			    }
+		if ((other.classname == "player") && (te.playerclass != 0)) {
+			if (!(other.tfstate & 16)) {
+				if (other.playerclass != 5) {
+					if (!((teamplay & 16) && (self.owner.team_no == self.enemy.team_no) && (self.owner.team_no != 0))) {
+						found = 0;
+						te = find (world, classname, "timer");
+						while ((te != world) && (found == 0)) {
+							if ((te.owner == self) && (te.think == BioInfection_Decay)) {
+								found = 1;
+							} else {
+								te = find (te, classname, "timer");
+							}
+						}
+						Bio = spawn ();
+						Bio.nextthink = 2;
+						Bio.think = BioInfection_Decay;
+						Bio.owner = other;
+						Bio.classname = "timer";
+						Bio.enemy = te.enemy;
+						other.tfstate = other.tfstate | 16;
+						other.infection_team_no = self.infection_team_no;
+						sprint (other, PRINT_MEDIUM, "You have been infected by ", self.netname, "!\n");
+						sprint (self, PRINT_MEDIUM, "You have infected ", other.netname, "!\n");
+					}
+				}
 			}
-			Bio = spawn ();
-			Bio.nextthink = 2;
-			Bio.think = BioInfection_Decay;
-			Bio.owner = other;
-			Bio.classname = "timer";
-			Bio.enemy = te.enemy;
-			other.tfstate = other.tfstate | 16;
-			other.infection_team_no = self.infection_team_no;
-			sprint (other, PRINT_MEDIUM, "You have been infected by ", self.netname, "!\n");
-			sprint (self, PRINT_MEDIUM, "You have infected ", other.netname, "!\n");
-		    }
 		}
-	    }
-	}
     }
 };
 
