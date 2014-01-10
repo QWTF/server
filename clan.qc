@@ -6,7 +6,10 @@ void () PreMatch_Think =
     local entity te;
     local entity oldself;
     local entity gren;
-	
+
+// Quick and ugly hack. New countdown is currently buggy. Leave it off by default, have user set serverinfo newcountdown 1 to use it.
+st = infokey (world, "newcountdown");
+if (st == "on") {
 	local string countdown;
 	local string sinfo_timelimit;
 	local string tlvalue;
@@ -419,6 +422,56 @@ void () PreMatch_Think =
     
 	if (game_locked)
 		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
+}
+else { // no countdown menu, default countdown instead
+	time_left = rint (cb_prematch_time - time);
+	
+	// Might as well put this here until we get pm sorted out.
+	// Up2 fixme
+	if (time_left > 0) {
+		localcmd ("serverinfo status Countdown\n");
+	}
+
+	if (time_left > 60) {
+		st = ftos (time_left / 60);
+		bprint2 (PRINT_HIGH, st, " minutes left till Match begins.\n");
+		
+		if (time_left < 120) {
+			self.nextthink = time + time_left - 60;
+		}
+		else {
+			self.nextthink = time + 60;
+		}
+		return;
+	} else if (time_left >= 59) {
+		bprint (PRINT_HIGH, "1 minute left till Match begins.\n");
+		self.nextthink = time + 30;
+		return;
+    } else if (time_left >= 29) {
+		bprint (PRINT_HIGH, "30 seconds left till Match begins.\n");
+		self.nextthink = time + 20;
+		return;
+    } else if (time_left > 1) {
+		st = ftos (time_left);
+		bprint2 (PRINT_HIGH, st, " seconds.\n");
+		self.nextthink = time + 1;
+		return;
+    }
+	else if (time_left > 0) {
+		bprint (PRINT_HIGH, "1 second.\n");
+		self.nextthink = time + 1;
+		return;
+    }
+    	
+	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
+	
+	// Might as well put this here until we get pm sorted out.
+	// Up2 fixme
+	localcmd ("serverinfo status Match\n");
+	
+	if (game_locked)
+		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
+}
 
     team4score = 0;
     team3score = 0;
@@ -468,7 +521,12 @@ void () PreMatch_Think =
 
 void () DumpClanScores =
 {
-    local float winners;
+	
+	// May be not the best place to put this. Anyway, if we are dumping scores, we have finished a match. Put server in standby
+	// Up2 fixme: set server to something like "ffa" or "regular game" when not in a match (not countdown/standby/mins left)
+	localcmd ("serverinfo status Standby\n");
+    
+	local float winners;
     local float second;
     local float no_teams;
     local float printed;
