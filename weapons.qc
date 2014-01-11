@@ -54,6 +54,7 @@ void () TeamFortress_DetonatePipebombs;
 void (float timer) TeamFortress_SetDetpack;
 void () TeamFortress_DetpackStop;
 void () TeamFortress_Rpickup;
+void () TeamFortress_PlayersReady;
 
 void () DropKey;
 void () UseSpecialSkill;
@@ -2542,6 +2543,10 @@ void () PreMatchImpulses =
     
     if (self.impulse == TF_RPICKUP) {
         TeamFortress_Rpickup ();
+    }
+	
+	if (self.impulse == TF_READY) {
+        TeamFortress_PlayersReady ();
     }
 };
 

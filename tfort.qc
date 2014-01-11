@@ -67,6 +67,58 @@ void () UseSpecialSkill =
 	}
     }
 };
+//Ready code
+void () TeamFortress_PlayersReady =
+{
+    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+		local float ready_votes_needed;
+		local float total_players;
+		local float i;
+		local entity search;
+		local entity tempself;
+    
+		total_players = 0;
+		// Get the total players in the server
+		for (i = 0; i <= number_of_teams; i++) {
+			total_players += TeamFortress_TeamGetNoPlayers (i);
+		}
+    
+		// Calculate how many votes are still needed
+		ready_votes_needed = (total_players - ready_votes);
+    
+		// If player has already voted, withdraw their vote
+		for (i = 0; i < ready_votes; i++) {
+			if (arr_ready_voters[i] == self.tf_id) {
+				ready_votes--;
+				arr_ready_voters[i] = -1;
+				bprint(PRINT_HIGH, self.netname, " is not ready ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
+				return;
+			}
+		}
+
+		// Capture this player's vote
+		arr_ready_voters[ready_votes] = self.tf_id;
+		ready_votes++;
+    
+		bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
+
+		// If required number of votes are set, end pm an start the match
+		local entity ent;
+		if (ready_votes == total_players) {
+			clanbattle = TRUE; // I assume from here that the prefix cb_ is clanbattle_
+			clan_scores_dumped = 0;
+			game_locked = 0;
+		
+			cb_prematch_time = 10;
+			time = 0;
+			ent = spawn ();
+			ent.think = PreMatch_Think; // This starts the countdown in clan.qc
+			ent.nextthink = 0.1; // How long after players are ready to start the countdown
+		}
+    
+		return;
+	}
+}
 
 void () TeamFortress_Rpickup =
 {

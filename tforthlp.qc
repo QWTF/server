@@ -49,6 +49,7 @@ void () TeamFortress_MOTD =
 	TeamFortress_Alias ("changeclass", TF_CHANGECLASS, 0);
 	TeamFortress_Alias ("changeteam", TF_CHANGETEAM, 0);
     TeamFortress_Alias ("rpickup", TF_RPICKUP, 0);
+	TeamFortress_Alias ("ready", TF_READY, 0);
 	TeamFortress_Alias ("scout", TF_CHANGEPC + PC_SCOUT, 0);
 	TeamFortress_Alias ("sniper", TF_CHANGEPC + PC_SNIPER, 0);
 	TeamFortress_Alias ("soldier", TF_CHANGEPC + PC_SOLDIER, 0);

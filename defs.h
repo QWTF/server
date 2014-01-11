@@ -445,6 +445,9 @@
 // rpickup support for re-arranging teams evenly
 #define TF_RPICKUP      197
 
+// "ready" support to get rid of prematch time
+#define TF_READY      200 //Up2: I don't know if 200 is a good number or not. Let's hope it doesnt break anything
+
 /*======================================================*/
 /*	Colors						*/
 /*======================================================*/

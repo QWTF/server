@@ -424,49 +424,30 @@ if (st == "on") {
 		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
 }
 else { // no countdown menu, default countdown instead
+	
+	local float i;
+	
 	time_left = rint (cb_prematch_time - time);
 	
-	// Might as well put this here until we get pm sorted out.
-	// Up2 fixme
-	if (time_left > 0) {
-		localcmd ("serverinfo status Countdown\n");
-	}
-
-	if (time_left > 60) {
-		st = ftos (time_left / 60);
-		bprint2 (PRINT_HIGH, st, " minutes left till Match begins.\n");
-		
-		if (time_left < 120) {
-			self.nextthink = time + time_left - 60;
-		}
-		else {
-			self.nextthink = time + 60;
-		}
-		return;
-	} else if (time_left >= 59) {
-		bprint (PRINT_HIGH, "1 minute left till Match begins.\n");
-		self.nextthink = time + 30;
-		return;
-    } else if (time_left >= 29) {
-		bprint (PRINT_HIGH, "30 seconds left till Match begins.\n");
-		self.nextthink = time + 20;
-		return;
-    } else if (time_left > 1) {
+	for (i = 0; i < time_left; i++) {
 		st = ftos (time_left);
 		bprint2 (PRINT_HIGH, st, " seconds.\n");
+		//cb_prematch_time--;
 		self.nextthink = time + 1;
+		localcmd ("serverinfo status Countdown\n");
 		return;
-    }
-	else if (time_left > 0) {
-		bprint (PRINT_HIGH, "1 second.\n");
+	}
+	
+	/*for (i = 0; i < cb_prematch_time; i++) {
+		st = ftos (cb_prematch_time);
+		bprint2 (PRINT_HIGH, st, " seconds.\n");
+		cb_prematch_time--;
 		self.nextthink = time + 1;
+		localcmd ("serverinfo status Countdown\n");
 		return;
-    }
+	}*/
     	
 	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
-	
-	// Might as well put this here until we get pm sorted out.
-	// Up2 fixme
 	localcmd ("serverinfo status Match\n");
 	
 	if (game_locked)
@@ -522,7 +503,7 @@ else { // no countdown menu, default countdown instead
 void () DumpClanScores =
 {
 	
-	// May be not the best place to put this. Anyway, if we are dumping scores, we have finished a match. Put server in standby
+	// If we are dumping scores, we have finished a match. Put server in standby
 	// Up2 fixme: set server to something like "ffa" or "regular game" when not in a match (not countdown/standby/mins left)
 	localcmd ("serverinfo status Standby\n");
     
