@@ -139,8 +139,8 @@ void () DecodeLevelParms =
     local float ti;
 
     if (serverflags)
-	if (world.model == "maps/start.bsp")
-	    SetNewParms ();
+		if (world.model == "maps/start.bsp")
+			SetNewParms ();
 
     self.items = parm1;
     self.health = parm2;
@@ -154,263 +154,259 @@ void () DecodeLevelParms =
 
     if (!(toggleflags & TFLAG_FIRSTENTRY)) {
 
-	toggleflags = parm10;
-	flagem_checked = 0;
-	allow_hook = 0;
-	invis_only = 0;
+		toggleflags = parm10;
+		flagem_checked = 0;
+		allow_hook = 0;
+		invis_only = 0;
 
-	if (coop || !deathmatch)
-	    toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
+		if (coop || !deathmatch)
+			toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
 
-	nextmap = mapname;
-	allow_hook = TRUE;
+		nextmap = mapname;
+		allow_hook = TRUE;
 
-	ent = find (world, classname, "info_tfdetect");
-	if (ent != world) {
+		ent = find (world, classname, "info_tfdetect");
+		if (ent != world) {
+			if (teamplay == 0)
+				cvar_set ("teamplay", "21?TeamFortress");
 
-	    if (teamplay == 0)
-		cvar_set ("teamplay", "21?TeamFortress");
+			ParseTFDetect (ent);
 
-	    ParseTFDetect (ent);
+			if ((number_of_teams <= 0) || (number_of_teams >= 5))
+				number_of_teams = 4;
+		}
+		else {
 
-	    if ((number_of_teams <= 0) || (number_of_teams >= 5))
-		number_of_teams = 4;
+			ent = find (world, classname, "info_player_team1");
+			if ((ent != world) || (CTF_Map == 1)) {
+				CTF_Map = TRUE;
+				if (teamplay == 0)
+					cvar_set ("teamplay", "21?TeamFortress");
 
-	} else {
-
-	    ent = find (world, classname, "info_player_team1");
-	    if ((ent != world) || (CTF_Map == 1)) {
-
-		CTF_Map = TRUE;
-		if (teamplay == 0)
-		    cvar_set ("teamplay", "21?TeamFortress");
-
-		ent = spawn ();
-		ent.nextthink = time + 30;
-		ent.think = CTF_FlagCheck;
-
-		number_of_teams = 2;
-
-	    } else
-		number_of_teams = 4;
-
-	    team1lives = -1;
-	    team2lives = -1;
-	    team3lives = -1;
-	    team4lives = -1;
-
-	    illegalclasses1 = 0;
-	    illegalclasses2 = 0;
-	    illegalclasses3 = 0;
-	    illegalclasses4 = 0;
-
-	    team1maxplayers = 100;
-	    team2maxplayers = 100;
-	    team3maxplayers = 100;
-	    team4maxplayers = 100;
-	    civilianteams = 0;
-	}
-	bprint (PRINT_HIGH, "Mapname: ", mapname, "\n");
-
-	SetupTeamEqualiser ();
-
-	team1frags = 0;
-	team2frags = 0;
-	team3frags = 0;
-	team4frags = 0;
-
-	team1score = 0;
-	team2score = 0;
-	team3score = 0;
-	team4score = 0;
-
-	autokick_kills = 0;
-	autokick_time = 0;
-
-	cease_fire = 0;
-
-	toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
-	toggleflags = toggleflags - (toggleflags & TFLAG_CHEATCHECK);
-
-	st = infokey (world, "temp1");
-	toggleflags = (toggleflags | TFLAG_FIRSTENTRY) | stof (st);
-
-	local float autoteam_time;
-	autoteam_time = 30;
-
-	st = infokey (world, "bd");
-	if (st == string_null)
-	    st = infokey (world, "birthday");
-
-	if (st == "on") {
-
-	    birthday = TRUE;
-	    te = spawn ();
-	    te.weapon = 10;
-	    te.nextthink = time + 60;
-	    te.think = BirthdayTimer;
-
-	} else if (st == "off")
-	    birthday = FALSE;
-
-	st = infokey (world, "c");
-	if (st == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
-	    st = infokey (world, "clan");
-
-	if (st == "on") { // if prematch is set to on
-	    clanbattle = TRUE; // I assume from here that the prefix cb_ is clanbattle_
-	    clan_scores_dumped = 0;
-	    game_locked = 0;
-		localcmd ("serverinfo status Prematch\n");
-		
-		//You still have to start a map with "serverinfo c on"
-	    cb_prematch_time = time + 3600; // Ugly hack: set pm time to 1 hour.
-
-
-	    st = infokey (world, "cft");
-	    if (st == string_null)
-		st = infokey (world, "ceasefire_time");
-
-	    cb_ceasefire_time = stof (st);
-		
-	    if (cb_ceasefire_time != 0) {
-
-			cb_ceasefire_time = time + cb_ceasefire_time * 60;
-			if (cb_prematch_time < cb_ceasefire_time) {
-			
-				cb_prematch_time = cb_ceasefire_time + 5;
-				
-				if (timelimit && ((time + timelimit) < cb_prematch_time)) {
-
-				timelimit = timelimit + cb_ceasefire_time;
-				ti = ceil (timelimit / 60);
-				st = ftos (ti);
-				cvar_set ("timelimit", st);
-				}
+				ent = spawn ();
+				ent.nextthink = time + 30;
+				ent.think = CTF_FlagCheck;
+				number_of_teams = 2;
 			}
-			cease_fire = 1;
-			bprint (PRINT_HIGH, "CEASE FIRE\n");
+			else
+				number_of_teams = 4;
 
-			te = find (world, classname, "player");
-			while (te) {
-				centerprint (te, "CEASE FIRE\n");
-				te.immune_to_check = time + 10;
-				te.tfstate = te.tfstate | TFSTATE_CANT_MOVE;
-				TeamFortress_SetSpeed (te);
-				te = find (te, classname, "player");
-			}
+			team1lives = -1;
+			team2lives = -1;
+			team3lives = -1;
+			team4lives = -1;
+
+			illegalclasses1 = 0;
+			illegalclasses2 = 0;
+			illegalclasses3 = 0;
+			illegalclasses4 = 0;
+
+			team1maxplayers = 100;
+			team2maxplayers = 100;
+			team3maxplayers = 100;
+			team4maxplayers = 100;
+			civilianteams = 0;
+		}
+		bprint (PRINT_HIGH, "Mapname: ", mapname, "\n");
+
+		SetupTeamEqualiser ();
+
+		team1frags = 0;
+		team2frags = 0;
+		team3frags = 0;
+		team4frags = 0;
+
+		team1score = 0;
+		team2score = 0;
+		team3score = 0;
+		team4score = 0;
+
+		autokick_kills = 0;
+		autokick_time = 0;
+
+		cease_fire = 0;
+
+		toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+		toggleflags = toggleflags - (toggleflags & TFLAG_CHEATCHECK);
+
+		st = infokey (world, "temp1");
+		toggleflags = (toggleflags | TFLAG_FIRSTENTRY) | stof (st);
+
+		local float autoteam_time;
+		autoteam_time = 30;
+
+		st = infokey (world, "bd");
+		if (st == string_null)
+			st = infokey (world, "birthday");
+
+		if (st == "on") {
+			birthday = TRUE;
 			te = spawn ();
-			te.classname = "ceasefire";
-			te.think = CeaseFire_think;
-			te.nextthink = time + 5;
-			te.weapon = 1;
+			te.weapon = 10;
+			te.nextthink = time + 60;
+			te.think = BirthdayTimer;
+		}
+		else if (st == "off")
+			birthday = FALSE;
 
-	    }
-		
-	    st = infokey (world, "lg");
-	    if (st == string_null)
-		st = infokey (world, "locked_game");
+		st = infokey (world, "c");
+		if (st == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
+			st = infokey (world, "clan");
 
-	    if (st == "on")
-		game_locked = TRUE;
+		if (st == "on") { // if clan game is set to on
+			localcmd ("serverinfo status Prematch\n");
+			clanbattle = TRUE;
+			clan_scores_dumped = 0;
+			game_locked = 0;
+			
+			// Old PM code used to be here.
+				
+			st = infokey (world, "cft");
+			if (st == string_null)
+				st = infokey (world, "ceasefire_time");
 
-	} else
-	    clanbattle = FALSE;
+			cb_ceasefire_time = stof (st);
+			
+			if (cb_ceasefire_time != 0) {
+				cb_ceasefire_time = time + cb_ceasefire_time * 60;
+				if (cb_prematch_time < cb_ceasefire_time) { //up2 fix
+				
+					cb_prematch_time = cb_ceasefire_time + 5;
+					
+					if (timelimit && ((time + timelimit) < cb_prematch_time)) {
+						timelimit = timelimit + cb_ceasefire_time;
+						ti = ceil (timelimit / 60);
+						st = ftos (ti);
+						cvar_set ("timelimit", st);
+					}
+				}
+				cease_fire = 1;
+				bprint (PRINT_HIGH, "CEASE FIRE\n");
 
-	st = infokey (world, "a");
-	if (st == string_null)
-	    st = infokey (world, "autoteam");
-	if (st == "on")
-	    toggleflags = toggleflags | TFLAG_AUTOTEAM;
-	else if (st == "off")
-	    toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
-	else if (stof (st) != 0) {
-	    toggleflags = toggleflags | TFLAG_AUTOTEAM;
-	    autoteam_time = stof (st);
-	}
+				te = find (world, classname, "player");
+				while (te) {
+					centerprint (te, "CEASE FIRE\n");
+					te.immune_to_check = time + 10;
+					te.tfstate = te.tfstate | TFSTATE_CANT_MOVE;
+					TeamFortress_SetSpeed (te);
+					te = find (te, classname, "player");
+				}
+				te = spawn ();
+				te.classname = "ceasefire";
+				te.think = CeaseFire_think;
+				te.nextthink = time + 5;
+				te.weapon = 1;
 
-	st = infokey (world, "akt");
-	if (st == string_null)
-	    st = infokey (world, "autokick_time");
-	autokick_time = stof (st);
-	if (autokick_time != 0) {
-	    st = infokey (world, "akk");
-	    if (st == string_null)
-		st = infokey (world, "autokick_kills");
-	    autokick_kills = stof (st);
-	}
+			}
+			
+			st = infokey (world, "lg");
+			if (st == string_null)
+				st = infokey (world, "locked_game");
 
-	st = infokey (world, "t");
-	if (st == string_null)
-	    st = infokey (world, "teamfrags");
-	if (st == "on")
-	    toggleflags = toggleflags | TFLAG_TEAMFRAGS;
-	else if (st == "off")
-	    toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
+			if (st == "on")
+				game_locked = TRUE;
+		}
+		else {
+			clanbattle = FALSE;
+			localcmd ("serverinfo status Public\n");
+		}
 
-	st = infokey (world, "fts");
-	if (st == string_null)
-	    st = infokey (world, "fullteamscore");
-	if (st == "on")
-	    toggleflags = toggleflags | TFLAG_FULLTEAMSCORE;
+		st = infokey (world, "a");
+		if (st == string_null)
+			st = infokey (world, "autoteam");
+		if (st == "on")
+			toggleflags = toggleflags | TFLAG_AUTOTEAM;
+		else if (st == "off")
+			toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+		else if (stof (st) != 0) {
+			toggleflags = toggleflags | TFLAG_AUTOTEAM;
+			autoteam_time = stof (st);
+		}
 
-	st = infokey (world, "g");
-	if (st == string_null)
-	    st = infokey (world, "grapple");
-	if (st == "off")
-	    allow_hook = FALSE;
-	if (!(toggleflags & TFLAG_GRAPPLE) && (st != "on"))
-	    allow_hook = FALSE;
+		st = infokey (world, "akt");
+		if (st == string_null)
+			st = infokey (world, "autokick_time");
+		autokick_time = stof (st);
+		if (autokick_time != 0) {
+			st = infokey (world, "akk");
+			
+			if (st == string_null)
+				st = infokey (world, "autokick_kills");
+				
+			autokick_kills = stof (st);
+		}
 
-	st = infokey (world, "og");
-	if (st == string_null)
-	    st = infokey (world, "old_grenades");
-	if (st == string_null)
-	    st = infokey (world, "old_grens");
-	if (st == "on")
-	    old_grens = TRUE;
+		st = infokey (world, "t");
+		if (st == string_null)
+			st = infokey (world, "teamfrags");
+		if (st == "on")
+			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
+		else if (st == "off")
+			toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
 
-	st = infokey (world, "spy");
-	if (st == "off")
-	    spy_off = TRUE;
+		st = infokey (world, "fts");
+		if (st == string_null)
+			st = infokey (world, "fullteamscore");
+		if (st == "on")
+			toggleflags = toggleflags | TFLAG_FULLTEAMSCORE;
 
-	st = infokey (world, "s");
-	if (st == string_null)
-	    st = infokey (world, "spyinvis");
+		st = infokey (world, "g");
+		if (st == string_null)
+			st = infokey (world, "grapple");
+		if (st == "off")
+			allow_hook = FALSE;
+		if (!(toggleflags & TFLAG_GRAPPLE) && (st != "on"))
+			allow_hook = FALSE;
 
-	if ((st == "on") || (toggleflags & TFLAG_SPYINVIS))
-	    invis_only = TRUE;
-	else if (st == "off")
-	    invis_only = FALSE;
+		st = infokey (world, "og");
+		if (st == string_null)
+			st = infokey (world, "old_grenades");
+		if (st == string_null)
+			st = infokey (world, "old_grens");
+		if (st == "on")
+			old_grens = TRUE;
 
-	st = infokey (world, "rd");
-	if (st == string_null)
-	    st = infokey (world, "respawn_delay");
-	respawn_delay_time = stof (st);
-	if (respawn_delay_time)
-	    toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
+		st = infokey (world, "spy");
+		if (st == "off")
+			spy_off = TRUE;
 
-	if ((toggleflags & TFLAG_RESPAWNDELAY) && (respawn_delay_time == 0))
-	    respawn_delay_time = RESPAWN_DELAY_TIME;
+		st = infokey (world, "s");
+		if (st == string_null)
+			st = infokey (world, "spyinvis");
 
-	if (toggleflags & TFLAG_AUTOTEAM) {
-	    toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
-	    ent = spawn ();
-	    ent.nextthink = time + autoteam_time;
-	    ent.think = autoteam_think;
-	}
+		if ((st == "on") || (toggleflags & TFLAG_SPYINVIS))
+			invis_only = TRUE;
+		else if (st == "off")
+			invis_only = FALSE;
+
+		st = infokey (world, "rd");
+		if (st == string_null)
+			st = infokey (world, "respawn_delay");
+		respawn_delay_time = stof (st);
+		if (respawn_delay_time)
+			toggleflags = toggleflags | TFLAG_RESPAWNDELAY;
+
+		if ((toggleflags & TFLAG_RESPAWNDELAY) && (respawn_delay_time == 0))
+			respawn_delay_time = RESPAWN_DELAY_TIME;
+
+		if (toggleflags & TFLAG_AUTOTEAM) {
+			toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
+			ent = spawn ();
+			ent.nextthink = time + autoteam_time;
+			ent.think = autoteam_think;
+		}
     }
 
     if (parm11)
-	self.tfstate = parm11;
+		self.tfstate = parm11;
     if (self.playerclass == 0)
-	self.playerclass = parm12;
+		self.playerclass = parm12;
     if (parm13)
-	self.StatusBarRes = parm13;
+		self.StatusBarRes = parm13;
     if (parm14)
-	self.StatusBarSize = parm14;
+		self.StatusBarSize = parm14;
     if (parm15)
-	self.is_admin = parm15;
+		self.is_admin = parm15;
 };
 
 entity () FindIntermission =
@@ -1002,6 +998,9 @@ void () PutClientInServer =
     local float oldclass;
     local entity spot;
     local entity te;
+	
+	
+	server_status = infokey (world, "status");
 
     self.touch = player_touch;
     self.classname = "player";
@@ -1105,7 +1104,7 @@ void () PutClientInServer =
     self.angles = spot.angles;
     self.fixangle = 1;
 
-    if ((spot.classname == "info_player_teamspawn") && (cb_prematch_time < time)) {
+	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
 	if (spot.items != 0) {
 	    te = Finditem (spot.items);
 	    if (te)
@@ -1280,10 +1279,53 @@ void () NextLevel =
 
 void () CheckRules =
 {
-    if (timelimit && (time >= timelimit))
-	NextLevel ();
-    else if (fraglimit && (self.frags >= fraglimit))
-	NextLevel ();
+/*
+Well, with new /ready command, players can take as much time as they want before the Match starts. However, "time" will always keep increasing.
+We don't want the timer in timelimit to start until the match has started.
+Also, this function is executed every 0.1 seconds.
+*/
+	local string clanbattle;
+	local string minutes;
+	local float time_remaining;
+		
+	time_remaining = rint (timelimit - (time - (countdown_start_time + prematch_countdown) ));
+	
+	clanbattle = infokey (world, "c");
+	if (clanbattle == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
+		clanbattle = infokey (world, "clan");
+	
+	if (clanbattle == "on") {
+	
+		/*
+		Must fix this later. Currently it spams the bprints.
+		
+		if (server_status == "Match") {
+			if (timelimit && (time_remaining > 59) && (time_remaining < 61) ) {
+				minutes = ftos (time_remaining / 60);
+				//bprint2 (PRINT_HIGH, minutes, " minutes remaining.\n");
+			}
+			if (timelimit && (time_remaining == 60) ) {
+				bprint (PRINT_HIGH, "1 minute remaining.\n");
+				return;
+			}
+			if (timelimit && (time_remaining == 30) )
+				bprint (PRINT_HIGH, "30 seconds remaining.\n");
+			if (timelimit && (time_remaining == 10) )
+				bprint (PRINT_HIGH, "10 seconds remaining.\n");
+		}
+		*/
+	
+		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) )
+			NextLevel ();
+		else if (fraglimit && (self.frags >= fraglimit))
+			NextLevel ();
+	}
+	else { // not a team game
+		if (timelimit && (time >= timelimit))
+			NextLevel ();
+		else if (fraglimit && (self.frags >= fraglimit))
+			NextLevel ();
+	}
 };
 
 void () PlayerDeathThink =
@@ -1792,6 +1834,9 @@ void () ClientConnect =
     local entity te;
     local string st2;
     local float got_one;
+	
+	
+	server_status = infokey (world, "status");
 
     bprint (PRINT_HIGH, self.netname, " entered the game\n");
 
@@ -1891,7 +1936,7 @@ void () ClientConnect =
 	    }
 	}
 	if (!got_one) {
-	    if (game_locked && (cb_prematch_time < time)) {
+		if (game_locked && (server_status == "Match")) {
 		sprint (self, PRINT_HIGH, "Closed Server. Clan Battle in progress.\n");
 		KickCheater (self);
 		return;
@@ -1905,7 +1950,7 @@ void () ClientConnect =
 	    sprint (self, PRINT_HIGH, "Your Battle ID is ", st, "\n");
 	}
     }
-    if (cb_prematch_time > time)
+    if ((server_status == "Prematch") || (server_status == "Countdown"))
 	sprint (self, PRINT_HIGH, "CURRENTLY IN PREMATCH TIME\n");
 };
 
@@ -1918,6 +1963,9 @@ void () ClientDisconnect =
     local float rpickup_voter;
     local float total_players;
     local float rpickup_votes_needed;
+	
+	
+	server_status = infokey (world, "status");
     
     fr = rint (self.frags);
     st = ftos (fr);
@@ -1958,7 +2006,7 @@ void () ClientDisconnect =
     self.solid = 0;
     setsize (self, '0 0 0', '0 0 0');
     
-    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+	if ((server_status == "Prematch") || (server_status == "Countdown")) { // Prohibit rpickup use after pm
 		rpickup_voter = 0;
 		for (i = 0; i < rpickup_votes; i++) {
 			if (arr_rpickup_voters[i] == self.tf_id) {
@@ -1995,8 +2043,11 @@ void (entity targ, entity attacker) ClientObituary =
     local entity te;
 
     rnum = random ();
-    if ((cb_prematch_time + 3) > time)
-	return;
+	
+	server_status = infokey (world, "status");
+    //if ((cb_prematch_time + 3) > time)
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (targ.classname == "player") {
 	if (attacker.classname == "teledeath") {

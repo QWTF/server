@@ -5,6 +5,27 @@
 Changelog:
 
 --------------------------------------------
+Version 2.92beta	 		01/27/2014
+--------------------------------------------
+
+Features Added:
+	- No more prematch timer (yay!). Now, all players must type /ready for the match to begin. (Up2)
+	- New serverinfo status fields set by the game: (Up2)
+		"Prematch" when serverinfo "c" or "clan" is on but match hasn't started
+		"Countdown" when countdown is in progress
+		"Match" when a clan game is in progress
+		"Standby" after a match is over and scores are being displayed (before map resets)
+		
+	- In the future, I'll add serverinfo status:
+		"Practice" For practice mode (CURRENTLY PLANNED!)
+		"Public" for non-clan battle games (CURRENTLY PLANNED!)
+
+
+Changes:
+	- To use the "new" (broken) countdown menu, you must have "serverinfo newcountdown on". Off by default. (Up2)
+	- Misc small code changes, alignment changes, etc. (Up2)
+
+--------------------------------------------
 Version 2.92a	 			03/15/2012
 --------------------------------------------
 
@@ -27,7 +48,7 @@ Version 2.92	 			01/01/2012
 --------------------------------------------
 
 Features Added:
-	- "changeteam" is fully functional without and bugs (KillJoy)
+	- "changeteam" is fully functional without any bugs (KillJoy)
 	- New autoteam logic, fully random and supports all four teams (KillJoy/Up2)
 	- Added "rpickup" functionality, similar to KTX. Known bug: does not timeout (it should when prematch ends!) (KillJoy/Up2)
 	- New Match Results table which significantly reduces the console spam. (Up2)

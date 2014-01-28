@@ -20,6 +20,9 @@ void () player_touch =
     local float v1;
     local float v2;
     local float found;
+	
+	
+	server_status = infokey (world, "status");
 
     if ((invis_only == 0) && ((self.playerclass == 8) || (other.playerclass == 8))) {
 		if (other.classname == "player") {
@@ -39,7 +42,7 @@ void () player_touch =
 			}
 		}
     }
-    if ((self.tfstate & 16) && (cb_prematch_time < time)) {
+	if ((self.tfstate & 16) && (server_status == "Match")) {
 		if ((other.classname == "player") && (te.playerclass != 0)) {
 			if (!(other.tfstate & 16)) {
 				if (other.playerclass != 5) {

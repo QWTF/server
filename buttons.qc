@@ -53,26 +53,27 @@ void () button_use =
 void () button_touch =
 {
     local entity te;
-
-    if (cb_prematch_time > time)
-	return;
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player")
-	return;
+		return;
 
     if (self.goal_activation & TFGA_SPANNER)
-	return;
+		return;
 
     if (other.playerclass == 0)
-	return;
+		return;
 
     if (!Activated (self, other)) {
-	if (self.else_goal != 0) {
-	    te = Findgoal (self.else_goal);
-	    if (te)
-		AttemptToActivate (te, other, self);
-	}
-	return;
+		if (self.else_goal != 0) {
+			te = Findgoal (self.else_goal);
+			if (te)
+				AttemptToActivate (te, other, self);
+		}
+		return;
     }
     self.enemy = other;
     button_fire ();

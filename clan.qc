@@ -1,7 +1,7 @@
 
 void () PreMatch_Think =
 {
-    local float time_left;
+    local float pm_tl;
     local string st;
     local entity te;
     local entity oldself;
@@ -37,35 +37,35 @@ if (st == "on") {
 	local string scoutpad; local string snipepad; local string soldpad; local string demopad; local string medpad; local string hwpad; local string pyrpad; local string spypad; local string engpad; local string randpad;
 
     te = find (world, classname, "player");
-	time_left = rint (cb_prematch_time - time);
+	pm_tl = rint (cb_prematch_time - time);
 	
-	if (time_left > 0) {
+	if (pm_tl > 0) {
 		//localcmd ("serverinfo status Countdown\n"); // maybe later we put this in
 	}
 	
-	if (time_left > 60) {
-		st = ftos (time_left / 60); // convert from seconds to minutes for the next line
+	if (pm_tl > 60) {
+		st = ftos (pm_tl / 60); // convert from seconds to minutes for the next line
 		bprint2 (PRINT_HIGH, st, " minutes left till Match begins.\n");
-		if (time_left < 120) {
-			self.nextthink = time + time_left - 60;
+		if (pm_tl < 120) {
+			self.nextthink = time + pm_tl - 60;
 		}
 		else {
 			self.nextthink = time + 60;
 		}
 		return;
     }
-	else if (time_left >= 59) {
+	else if (pm_tl >= 59) {
 		bprint (PRINT_HIGH, "1 minute left till Match begins.\n");
 		self.nextthink = time + 30;
 		return;
     }
-	else if (time_left >= 29) {
+	else if (pm_tl >= 29) {
 		bprint (PRINT_HIGH, "30 seconds left till Match begins.\n");
 		self.nextthink = time + 20;
 		return;
     }
-	else if ((time_left >= 1) && (time_left < 11)) {
-		st = ftos (time_left);
+	else if ((pm_tl >= 1) && (pm_tl < 11)) {
+		st = ftos (pm_tl);
 		
 		while (te) { // Countdown menu
 			if (self.hook_out < time) {
@@ -424,36 +424,29 @@ if (st == "on") {
 		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
 }
 else { // no countdown menu, default countdown instead
+
+	local float time_left;
+	time_left = rint ((countdown_start_time + prematch_countdown) - time);
 	
-	local float i;
+	if (time_left > 1) {
+        st = ftos (time_left);
+        bprint2 (PRINT_HIGH, st, " seconds.\n");
+        self.nextthink = time + 1;
+        return;
+    }
+	else if (time_left > 0) {
+		bprint (PRINT_HIGH, "1 second.\n");
+        self.nextthink = time + 1;
+        return;
+    }
 	
-	time_left = rint (cb_prematch_time - time);
 	
-	for (i = 0; i < time_left; i++) {
-		st = ftos (time_left);
-		bprint2 (PRINT_HIGH, st, " seconds.\n");
-		//cb_prematch_time--;
-		self.nextthink = time + 1;
-		localcmd ("serverinfo status Countdown\n");
-		return;
-	}
-	
-	/*for (i = 0; i < cb_prematch_time; i++) {
-		st = ftos (cb_prematch_time);
-		bprint2 (PRINT_HIGH, st, " seconds.\n");
-		cb_prematch_time--;
-		self.nextthink = time + 1;
-		localcmd ("serverinfo status Countdown\n");
-		return;
-	}*/
-    	
-	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
 	localcmd ("serverinfo status Match\n");
-	
+	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
+		
 	if (game_locked)
 		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
 }
-
     team4score = 0;
     team3score = 0;
     team2score = 0;
@@ -504,7 +497,6 @@ void () DumpClanScores =
 {
 	
 	// If we are dumping scores, we have finished a match. Put server in standby
-	// Up2 fixme: set server to something like "ffa" or "regular game" when not in a match (not countdown/standby/mins left)
 	localcmd ("serverinfo status Standby\n");
     
 	local float winners;

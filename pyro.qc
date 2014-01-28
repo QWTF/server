@@ -10,47 +10,56 @@ float (string id_flame) RemoveFlameFromQueue;
 
 entity (string type, entity p_owner) FlameSpawn =
 {
-    if (cb_prematch_time > time) {
-	return (world);
-    }
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return (world);
+	
     if (type != "1") {
-	return (world);
+		return (world);
     }
+	
     num_world_flames = num_world_flames + 1;
+	
     while (num_world_flames > MAX_WORLD_FLAMES) {
-	if (!RemoveFlameFromQueue (type)) {
-	    return;
-	}
+		if (!RemoveFlameFromQueue (type)) {
+			return;
+		}
     }
+	
     newmis = spawn ();
+	
     if (type == "1") {
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	newmis.solid = SOLID_BBOX;
-	newmis.effects = EF_DIMLIGHT;
-	newmis.flame_id = "1";
-	setmodel (newmis, "progs/flame2.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
-    } else if (type == "2") {
-	newmis.movetype = MOVETYPE_BOUNCE;
-	newmis.solid = SOLID_BBOX;
-	newmis.flame_id = "2";
-	setmodel (newmis, "progs/flame2.mdl");
-	newmis.frame = 1;
-	setsize (newmis, '0 0 0', '0 0 0');
-    } else if (type == "3") {
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	newmis.solid = SOLID_BBOX;
-	newmis.flame_id = "3";
-	setmodel (newmis, "progs/flame2.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
-    } else if (type == "4") {
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	newmis.flame_id = "4";
-	newmis.frame = 1;
-	newmis.solid = SOLID_BBOX;
-	setmodel (newmis, "progs/flame2.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
+		newmis.effects = EF_DIMLIGHT;
+		newmis.flame_id = "1";
+		setmodel (newmis, "progs/flame2.mdl");
+		setsize (newmis, '0 0 0', '0 0 0');
     }
+	else if (type == "2") {
+		newmis.movetype = MOVETYPE_BOUNCE;
+		newmis.solid = SOLID_BBOX;
+		newmis.flame_id = "2";
+		setmodel (newmis, "progs/flame2.mdl");
+		newmis.frame = 1;
+		setsize (newmis, '0 0 0', '0 0 0');
+    }
+	else if (type == "3") {
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.solid = SOLID_BBOX;
+		newmis.flame_id = "3";
+		setmodel (newmis, "progs/flame2.mdl");
+		setsize (newmis, '0 0 0', '0 0 0');
+    }
+	else if (type == "4") {
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.flame_id = "4";
+		newmis.frame = 1;
+		newmis.solid = SOLID_BBOX;
+		setmodel (newmis, "progs/flame2.mdl");
+		setsize (newmis, '0 0 0', '0 0 0');
+    }
+	
     newmis.owner = p_owner;
     return (newmis);
 };
@@ -322,42 +331,46 @@ void () OnPlayerFlame_touch =
 {
     local entity flame;
     local vector vtemp;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (((other != world) && (other.health > 0)) && (other != self.enemy)) {
-	if (cb_prematch_time > time) {
-	    return;
-	}
-	if (other.numflames >= 4) {
-	    other.tfstate = other.tfstate | 131072;
-	    return;
-	}
-	if (other.classname == "player") {
-	    if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
-		return;
-	    }
-	    CenterPrint (other, "You are on fire!\n");
-	    stuffcmd (other, "bf\n");
-	}
-	if (other.numflames < 1) {
-	    flame = FlameSpawn ("1", other);
-	    sound (flame, 2, "ambience/fire1.wav", 1, 1);
-	} else {
-	    flame = FlameSpawn ("3", other);
-	    if (flame == world) {
-		return;
-	    }
-	}
-	flame.classname = "fire";
-	flame.health = 45;
-	other.numflames = other.numflames + 1;
-	flame.velocity = other.velocity;
-	flame.enemy = other;
-	flame.touch = OnPlayerFlame_touch;
-	flame.owner = self.owner;
-	vtemp = self.origin;
-	setorigin (flame, vtemp);
-	flame.nextthink = time + 0.1;
-	flame.think = FlameFollow;
+		if (other.numflames >= 4) {
+			other.tfstate = other.tfstate | 131072;
+			return;
+		}
+		if (other.classname == "player") {
+			if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
+			return;
+			}
+			CenterPrint (other, "You are on fire!\n");
+			stuffcmd (other, "bf\n");
+		}
+		if (other.numflames < 1) {
+			flame = FlameSpawn ("1", other);
+			sound (flame, 2, "ambience/fire1.wav", 1, 1);
+		}
+		else {
+			flame = FlameSpawn ("3", other);
+			if (flame == world) {
+				return;
+			}
+		}
+	
+		flame.classname = "fire";
+		flame.health = 45;
+		other.numflames = other.numflames + 1;
+		flame.velocity = other.velocity;
+		flame.enemy = other;
+		flame.touch = OnPlayerFlame_touch;
+		flame.owner = self.owner;
+		vtemp = self.origin;
+		setorigin (flame, vtemp);
+		flame.nextthink = time + 0.1;
+		flame.think = FlameFollow;
     }
 };
 
@@ -375,49 +388,54 @@ void () WorldFlame_touch =
     local entity flame;
     local vector dir;
     local vector vtemp;
-
+	
+	
     deathmsg = DMSG_FLAME;
     TF_T_Damage (other, self, self.enemy, 10, TF_TD_NOTTEAM, TF_TD_FIRE);
     self.touch = SUB_Null;
+	
     if (self.heat > (time + 1)) {
-	self.think = QW_Flame_ResetTouch;
-	self.nextthink = time + 1;
+		self.think = QW_Flame_ResetTouch;
+		self.nextthink = time + 1;
     }
     if (((other != world) && (other.solid != 1)) && (other.health > 0)) {
-	if (cb_prematch_time > time) {
-	    return;
-	}
-	if (other.numflames >= 4) {
-	    other.tfstate = other.tfstate | 131072;
-	    return;
-	}
-	if (other.classname == "player") {
-	    if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
-		return;
-	    }
-	    CenterPrint (other, "You are on fire!\n");
-	    stuffcmd (other, "bf\n");
-	}
-	if (other.numflames < 1) {
-	    flame = FlameSpawn ("1", other);
-	    sound (flame, 2, "ambience/fire1.wav", 1, 1);
-	} else {
-	    flame = FlameSpawn ("3", other);
-	    if (flame == world) {
-		return;
-	    }
-	}
-	flame.classname = "fire";
-	flame.health = 0;
-	other.numflames = other.numflames + 1;
-	flame.velocity = other.velocity;
-	flame.enemy = other;
-	flame.touch = OnPlayerFlame_touch;
-	flame.owner = self.owner;
-	vtemp = self.origin + '0 0 10';
-	setorigin (flame, vtemp);
-	flame.nextthink = time + 0.15;
-	flame.think = FlameFollow;
+	
+		server_status = infokey (world, "status");
+		if ((server_status == "Prematch") || (server_status == "Countdown"))
+			return;
+	
+		if (other.numflames >= 4) {
+			other.tfstate = other.tfstate | 131072;
+			return;
+		}
+		if (other.classname == "player") {
+			if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
+				return;
+			}
+			CenterPrint (other, "You are on fire!\n");
+			stuffcmd (other, "bf\n");
+		}
+		if (other.numflames < 1) {
+			flame = FlameSpawn ("1", other);
+			sound (flame, 2, "ambience/fire1.wav", 1, 1);
+		}
+		else {
+			flame = FlameSpawn ("3", other);
+			if (flame == world) {
+				return;
+			}
+		}
+		flame.classname = "fire";
+		flame.health = 0;
+		other.numflames = other.numflames + 1;
+		flame.velocity = other.velocity;
+		flame.enemy = other;
+		flame.touch = OnPlayerFlame_touch;
+		flame.owner = self.owner;
+		vtemp = self.origin + '0 0 10';
+		setorigin (flame, vtemp);
+		flame.nextthink = time + 0.15;
+		flame.think = FlameFollow;
     }
 };
 
@@ -426,69 +444,75 @@ void () Flamer_stream_touch =
     local entity flame;
     local vector dir;
     local vector vtemp;
-
+	
+	
     if (other.classname == "fire") {
-	return;
+		return;
     }
     if (other != world) {
-	if ((other.takedamage == 2) && (other.health > 0)) {
-	    deathmsg = DMSG_FLAME;
-	    TF_T_Damage (other, self, self.owner, 10, TF_TD_NOTTEAM, TF_TD_FIRE);
-	    if (cb_prematch_time > time) {
-		return;
-	    }
-	    if (other.numflames >= 4) {
-		other.tfstate = other.tfstate | 131072;
-		return;
-	    }
-	    if ((other.armorclass & 16) && (other.armorvalue > 0)) {
-		return;
-	    }
-	    if (other.classname == "player") {
-		if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
-		    return;
+		if ((other.takedamage == 2) && (other.health > 0)) {
+			deathmsg = DMSG_FLAME;
+			TF_T_Damage (other, self, self.owner, 10, TF_TD_NOTTEAM, TF_TD_FIRE);
+			
+				server_status = infokey (world, "status");
+				if ((server_status == "Prematch") || (server_status == "Countdown"))
+					return;
+					
+			if (other.numflames >= 4) {
+				other.tfstate = other.tfstate | 131072;
+				return;
+			}
+			if ((other.armorclass & 16) && (other.armorvalue > 0)) {
+				return;
+			}
+			if (other.classname == "player") {
+				if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
+					return;
+				}
+			
+				CenterPrint (other, "You are on fire!\n");
+				stuffcmd (other, "bf\n");
+			}
+			if (other.numflames < 1) {
+				flame = FlameSpawn ("1", other);
+				sound (flame, CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
+			}
+			else {
+				flame = FlameSpawn ("3", other);
+				if (flame == world) {
+					return;
+				}
+			}
+			flame.classname = "fire";
+			flame.health = 45;
+			other.numflames = other.numflames + 1;
+			flame.velocity = other.velocity;
+			flame.enemy = other;
+			flame.touch = OnPlayerFlame_touch;
+			flame.owner = self.owner;
+			vtemp = self.origin;
+			setorigin (flame, vtemp);
+			flame.nextthink = time + 0.1;
+			flame.think = FlameFollow;
 		}
-		CenterPrint (other, "You are on fire!\n");
-		stuffcmd (other, "bf\n");
-	    }
-	    if (other.numflames < 1) {
-		flame = FlameSpawn ("1", other);
-		sound (flame, CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
-	    } else {
-		flame = FlameSpawn ("3", other);
-		if (flame == world) {
-		    return;
+    }
+	else {
+		if ((random () < 0.3) || (pointcontents ((self.origin + '0 0 1')) != -1)) {
+			remove (self);
+			return;
 		}
-	    }
-	    flame.classname = "fire";
-	    flame.health = 45;
-	    other.numflames = other.numflames + 1;
-	    flame.velocity = other.velocity;
-	    flame.enemy = other;
-	    flame.touch = OnPlayerFlame_touch;
-	    flame.owner = self.owner;
-	    vtemp = self.origin;
-	    setorigin (flame, vtemp);
-	    flame.nextthink = time + 0.1;
-	    flame.think = FlameFollow;
-	}
-    } else {
-	if ((random () < 0.3) || (pointcontents ((self.origin + '0 0 1')) != -1)) {
-	    remove (self);
-	    return;
-	}
-	flame = FlameSpawn ("4", other);
-	if (flame != world) {
-	    flame.touch = WorldFlame_touch;
-	    flame.classname = "fire";
-	    vtemp = self.origin + '0 0 10';
-	    setorigin (flame, vtemp);
-	    flame.nextthink = time + 8;
-	    flame.heat = flame.nextthink;
-	    flame.think = Remove;
-	    flame.enemy = self.owner;
-	}
-	remove (self);
+		flame = FlameSpawn ("4", other);
+		if (flame != world) {
+			flame.touch = WorldFlame_touch;
+			flame.classname = "fire";
+			vtemp = self.origin + '0 0 10';
+			setorigin (flame, vtemp);
+			flame.nextthink = time + 8;
+			flame.heat = flame.nextthink;
+			flame.think = Remove;
+			flame.enemy = self.owner;
+		}
+		remove (self);
     }
 };
 
@@ -497,53 +521,58 @@ void () Napalm_touch =
     local entity flame;
     local vector dir;
     local vector vtemp;
-
+	
+	
     if (other.classname == "fire") {
-	return;
+		return;
     }
     if (other != world) {
-	if ((other.takedamage == 2) && (other.health > 0)) {
-	    deathmsg = DMSG_FLAME;
-	    TF_T_Damage (other, self, self.owner, 6, TF_TD_NOTTEAM, TF_TD_FIRE);
-	    if (cb_prematch_time > time) {
-		return;
-	    }
-	    if (other.numflames >= 4) {
-		other.tfstate = other.tfstate | 131072;
-		return;
-	    }
-	    if ((other.armorclass & 16) && (other.armorvalue > 0)) {
-		return;
-	    }
-	    if (other.classname == "player") {
-		if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
-		    return;
+		if ((other.takedamage == 2) && (other.health > 0)) {
+			deathmsg = DMSG_FLAME;
+			TF_T_Damage (other, self, self.owner, 6, TF_TD_NOTTEAM, TF_TD_FIRE);
+			
+			server_status = infokey (world, "status");
+			if ((server_status == "Prematch") || (server_status == "Countdown"))
+				return;
+			
+			if (other.numflames >= 4) {
+				other.tfstate = other.tfstate | 131072;
+				return;
+			}
+			if ((other.armorclass & 16) && (other.armorvalue > 0)) {
+				return;
+			}
+			if (other.classname == "player") {
+				if (((teamplay & 16) && (other.team_no > 0)) && (other.team_no == self.owner.team_no)) {
+					return;
+				}
+				CenterPrint (other, "You are on fire!\n");
+				stuffcmd (other, "bf\n");
+			}
+			if (other.numflames < 1) {
+				flame = FlameSpawn ("1", other);
+				sound (flame, CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
+			}
+			else {
+				flame = FlameSpawn ("3", other);
+				if (flame == world) {
+					return;
+				}
+			}
+			flame.classname = "fire";
+			flame.health = 45;
+			other.numflames = other.numflames + 1;
+			flame.velocity = other.velocity;
+			flame.enemy = other;
+			flame.touch = OnPlayerFlame_touch;
+			flame.owner = self.owner;
+			vtemp = self.origin;
+			setorigin (flame, vtemp);
+			flame.nextthink = time + 0.1;
+			flame.think = FlameFollow;
 		}
-		CenterPrint (other, "You are on fire!\n");
-		stuffcmd (other, "bf\n");
-	    }
-	    if (other.numflames < 1) {
-		flame = FlameSpawn ("1", other);
-		sound (flame, CHAN_VOICE, "ambience/fire1.wav", 1, ATTN_NORM);
-	    } else {
-		flame = FlameSpawn ("3", other);
-		if (flame == world) {
-		    return;
-		}
-	    }
-	    flame.classname = "fire";
-	    flame.health = 45;
-	    other.numflames = other.numflames + 1;
-	    flame.velocity = other.velocity;
-	    flame.enemy = other;
-	    flame.touch = OnPlayerFlame_touch;
-	    flame.owner = self.owner;
-	    vtemp = self.origin;
-	    setorigin (flame, vtemp);
-	    flame.nextthink = time + 0.1;
-	    flame.think = FlameFollow;
-	}
-    } else {
+    }
+	else {
 	if (pointcontents ((self.origin + '0 0 1')) != -1) {
 	    FlameDestroy (self);
 	    return;

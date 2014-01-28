@@ -1160,22 +1160,25 @@ void (entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate =
 {
     local entity te;
     local string st;
-
-    if (cb_prematch_time > time)
-	return;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (Activated (Goal, AP)) {
-	if (ActivatingGoal == Goal)
-	    DoResults (Goal, AP, 1);
-	else if (ActivatingGoal != world)
-	    DoResults (Goal, AP, ActivatingGoal.goal_result & 2);
-	else
-	    DoResults (Goal, AP, 0);
-    } else if (Goal.else_goal != 0) {
-	te = Findgoal (Goal.else_goal);
-	if (te) {
-	    AttemptToActivate (te, AP, Goal);
-	}
+		if (ActivatingGoal == Goal)
+			DoResults (Goal, AP, 1);
+		else if (ActivatingGoal != world)
+			DoResults (Goal, AP, ActivatingGoal.goal_result & 2);
+		else
+			DoResults (Goal, AP, 0);
+    }
+	else if (Goal.else_goal != 0) {
+		te = Findgoal (Goal.else_goal);
+		if (te) {
+			AttemptToActivate (te, AP, Goal);
+		}
     }
 };
 
@@ -1460,287 +1463,324 @@ void (entity Goal, entity AP, float addb) DoResults =
     local string st;
     local float winners;
     local float gotone;
-
-    if (cb_prematch_time > time) {
-	return;
-    }
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
+	
     if (Goal.goal_state == 1) {
-	return;
+		return;
     }
     if ((Goal.delay_time > 0) && (Goal.goal_state != 4)) {
-	Goal.goal_state = 4;
-	te = spawn ();
-	te.think = DelayedResult;
-	te.nextthink = time + Goal.delay_time;
-	te.owner = AP;
-	te.enemy = Goal;
-	te.weapon = addb;
-	return;
+		Goal.goal_state = 4;
+		te = spawn ();
+		te.think = DelayedResult;
+		te.nextthink = time + Goal.delay_time;
+		te.owner = AP;
+		te.enemy = Goal;
+		te.weapon = addb;
+		return;
     }
     UpdateAbbreviations (Goal);
     Goal.goal_state = 2;
     if ((Goal.classname == "info_tfgoal") && (Goal.mdl != string_null)) {
-	setmodel (Goal, string_null);
+		setmodel (Goal, string_null);
     }
     if (Goal.noise) {
-	sound (other, 3, Goal.noise, 1, 1);
+		sound (other, 3, Goal.noise, 1, 1);
     }
     winners = 0;
     if (Goal.increase_team1 != 0) {
-	TeamFortress_TeamIncreaseScore (1, Goal.increase_team1);
-	winners = 1;
+		TeamFortress_TeamIncreaseScore (1, Goal.increase_team1);
+		winners = 1;
     }
     if (Goal.increase_team2 != 0) {
-	TeamFortress_TeamIncreaseScore (2, Goal.increase_team2);
-	winners = 1;
+		TeamFortress_TeamIncreaseScore (2, Goal.increase_team2);
+		winners = 1;
     }
     if (Goal.increase_team3 != 0) {
-	TeamFortress_TeamIncreaseScore (3, Goal.increase_team3);
-	winners = 1;
+		TeamFortress_TeamIncreaseScore (3, Goal.increase_team3);
+		winners = 1;
     }
     if (Goal.increase_team4 != 0) {
-	TeamFortress_TeamIncreaseScore (4, Goal.increase_team4);
-	winners = 1;
+		TeamFortress_TeamIncreaseScore (4, Goal.increase_team4);
+		winners = 1;
     }
     if (winners == 1) {
-	TeamFortress_TeamShowScores (2);
+		TeamFortress_TeamShowScores (2);
     }
     if (CTF_Map == 1) {
-	if (AP != world) {
-	    if (Goal.goal_no == 1) {
-		te = find (world, classname, "player");
-		while (te != world) {
-		    if (te.team_no == 2) {
-			if (te == AP) {
-			    winners = random ();
-			    if (winners < 0.1) {
-				CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nFlee!");
-			    } else {
-				if (winners < 0.2) {
-				    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nHead for home!");
-				} else {
-				    if (winners < 0.6) {
-					CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nReturn to base!");
-				    } else {
-					if (winners < 0.7) {
-					    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n<Insert witty comment here>");
-					} else {
-					    if (winners < 0.8) {
-						CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
-					    } else {
-						if (winners < 0.95) {
-						    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
-						} else {
-						    CenterPrint2 (te, "\n\n\n", "Is that a flag in your pocket\nor a you just happy to see me?");
+		if (AP != world) {
+			if (Goal.goal_no == 1) {
+				te = find (world, classname, "player");
+				while (te != world) {
+					if (te.team_no == 2) {
+						if (te == AP) {
+							winners = random ();
+							if (winners < 0.1) {
+								CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nFlee!");
+							}
+							else {
+								if (winners < 0.2) {
+									CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nHead for home!");
+								}
+								else {
+									if (winners < 0.6) {
+										CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nReturn to base!");
+									}
+									else {
+										if (winners < 0.7) {
+											CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n<Insert witty comment here>");
+										}
+										else {
+											if (winners < 0.8) {
+												CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
+											}
+											else {
+												if (winners < 0.95) {
+													CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
+												}
+												else {
+													CenterPrint2 (te, "\n\n\n", "Is that a flag in your pocket\nor a you just happy to see me?");
+												}
+											}
+										}
+									}
+								}
+							}
 						}
-					    }
-					}
-				    }
-				}
-			    }
-			} else {
-			    CenterPrint2 (te, "\n\n\n", "Your team гот the енемы flag!!");
-			}
-		    } else {
-			CenterPrint2 (te, "\n\n\n", "Your flag has been такен!!");
-		    }
-		    te = find (te, classname, "player");
-		}
-		bprint (PRINT_HIGH, AP.netname, " гот the блуе flag!\n");
-		AP.items = AP.items | IT_KEY1;
-	    } else {
-		if (Goal.goal_no == 2) {
-		    te = find (world, classname, "player");
-		    while (te != world) {
-			if (te.team_no == 1) {
-			    if (te == AP) {
-				winners = random ();
-				if (winners < 0.1) {
-				    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nFlee!");
-				} else {
-				    if (winners < 0.2) {
-					CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nHead for home!");
-				    } else {
-					if (winners < 0.6) {
-					    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nReturn to base!");
-					} else {
-					    if (winners < 0.7) {
-						CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n<Insert witty comment here>");
-					    } else {
-						if (winners < 0.8) {
-						    CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nRed's dead baby, Red's dead...");
-						} else {
-						    if (winners < 0.95) {
-							CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
-						    } else {
-							CenterPrint2 (te, "\n\n\n", "Is that a flag in your pocket\nor a you just happy to see me?");
-						    }
+						else {
+							CenterPrint2 (te, "\n\n\n", "Your team гот the енемы flag!!");
 						}
-					    }
 					}
-				    }
+					else {
+					CenterPrint2 (te, "\n\n\n", "Your flag has been такен!!");
+					}
+					te = find (te, classname, "player");
 				}
-			    } else {
-				CenterPrint2 (te, "\n\n\n", "Your team гот the енемы flag!!");
-			    }
-			} else {
-			    CenterPrint2 (te, "\n\n\n", "Your flag has been такен!!");
+				bprint (PRINT_HIGH, AP.netname, " гот the блуе flag!\n");
+				AP.items = AP.items | IT_KEY1;
 			}
-			te = find (te, classname, "player");
-		    }
-		    bprint (PRINT_HIGH, AP.netname, " гот the ред flag!\n");
-		    AP.items = AP.items | IT_KEY2;
-		} else {
-		    if (Goal.goal_no == 3) {
-			te = find (world, classname, "player");
-			while (te != world) {
-			    if (te.team_no == 2) {
-				if (te == AP) {
-				    CenterPrint2 (te, "\n\n\n", "You цаптуред the flag!!");
-				} else {
-				    CenterPrint2 (te, "\n\n\n", "Your flag was цаптуред!!");
+			else {
+				if (Goal.goal_no == 2) {
+					te = find (world, classname, "player");
+					while (te != world) {
+						if (te.team_no == 1) {
+							if (te == AP) {
+								winners = random ();
+								if (winners < 0.1) {
+									CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nFlee!");
+								}
+								else {
+									if (winners < 0.2) {
+										CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nHead for home!");
+									}
+									else {
+										if (winners < 0.6) {
+											CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nReturn to base!");
+										}
+										else {
+											if (winners < 0.7) {
+												CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n<Insert witty comment here>");
+											}
+											else {
+												if (winners < 0.8) {
+													CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\nRed's dead baby, Red's dead...");
+												}
+												else {
+													if (winners < 0.95) {
+														CenterPrint2 (te, "\n\n\n", "You got the enemy flag!\n\n");
+													}
+													else {
+														CenterPrint2 (te, "\n\n\n", "Is that a flag in your pocket\nor a you just happy to see me?");
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+							else {
+								CenterPrint2 (te, "\n\n\n", "Your team гот the енемы flag!!");
+							}
+						}
+						else {
+							CenterPrint2 (te, "\n\n\n", "Your flag has been такен!!");
+						}
+						te = find (te, classname, "player");
+					}
+					bprint (PRINT_HIGH, AP.netname, " гот the ред flag!\n");
+					AP.items = AP.items | IT_KEY2;
 				}
-			    } else {
-				CenterPrint2 (te, "\n\n\n", "Your team цаптуред the flag!!");
-			    }
-			    te = find (te, classname, "player");
-			}
-			bprint (PRINT_HIGH, AP.netname, " цаптуред the ред flag!\n");
-			AP.items = AP.items - (AP.items & IT_KEY2);
-		    } else {
-			if (Goal.goal_no == 4) {
-			    te = find (world, classname, "player");
-			    while (te != world) {
-				if (te.team_no == 1) {
-				    if (te == AP) {
-					CenterPrint2 (te, "\n\n\n", "You цаптуред the flag!!");
-				    } else {
-					CenterPrint2 (te, "\n\n\n", "Your flag was цаптуред!!");
-				    }
-				} else {
-				    CenterPrint2 (te, "\n\n\n", "Your team цаптуред the flag!!");
+				else {
+					if (Goal.goal_no == 3) {
+						te = find (world, classname, "player");
+						while (te != world) {
+							if (te.team_no == 2) {
+								if (te == AP) {
+									CenterPrint2 (te, "\n\n\n", "You цаптуред the flag!!");
+								}
+								else {
+									CenterPrint2 (te, "\n\n\n", "Your flag was цаптуред!!");
+								}
+							}
+							else {
+								CenterPrint2 (te, "\n\n\n", "Your team цаптуред the flag!!");
+							}
+							te = find (te, classname, "player");
+						}
+						bprint (PRINT_HIGH, AP.netname, " цаптуред the ред flag!\n");
+						AP.items = AP.items - (AP.items & IT_KEY2);
+					}
+					else {
+						if (Goal.goal_no == 4) {
+							te = find (world, classname, "player");
+							while (te != world) {
+								if (te.team_no == 1) {
+									if (te == AP) {
+										CenterPrint2 (te, "\n\n\n", "You цаптуред the flag!!");
+									}
+									else {
+										CenterPrint2 (te, "\n\n\n", "Your flag was цаптуред!!");
+									}
+								}
+								else {
+									CenterPrint2 (te, "\n\n\n", "Your team цаптуред the flag!!");
+								}
+								te = find (te, classname, "player");
+							}
+							bprint (PRINT_HIGH, AP.netname, " цаптуред the блуе flag!\n");
+							AP.items = AP.items - (AP.items & IT_KEY1);
+						}
+					}
 				}
-				te = find (te, classname, "player");
-			    }
-			    bprint (PRINT_HIGH, AP.netname, " цаптуред the блуе flag!\n");
-			    AP.items = AP.items - (AP.items & IT_KEY1);
 			}
-		    }
 		}
-	    }
-	}
     }
     gotone = 0;
     te = find (world, classname, "player");
     while (te != world) {
-	if ((Goal.broadcast != string_null) && (CTF_Map == 0)) {
-	    CenterPrint2 (te, "\n\n\n", Goal.broadcast);
-	}
-	if ((Goal.netname_broadcast != string_null) && (CTF_Map == 0)) {
-	    sprint (te, PRINT_HIGH, AP.netname, Goal.netname_broadcast);
-	}
-	if (AP == te) {
-	    if (Goal.message != string_null) {
-		CenterPrint2 (te, "\n\n\n", Goal.message);
-	    }
-	} else {
-	    if (AP.team_no == te.team_no) {
-		if ((Goal.owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
-		    CenterPrint2 (te, "\n\n\n", Goal.owners_team_broadcast);
-		} else {
-		    if (Goal.team_broadcast != string_null) {
-			CenterPrint2 (te, "\n\n\n", Goal.team_broadcast);
-		    }
+		if ((Goal.broadcast != string_null) && (CTF_Map == 0)) {
+			CenterPrint2 (te, "\n\n\n", Goal.broadcast);
 		}
-		if ((Goal.netname_owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
-		    sprint (te, PRINT_HIGH, AP.netname, Goal.netname_owners_team_broadcast);
-		} else {
-		    if (Goal.netname_team_broadcast != string_null) {
-			sprint (te, PRINT_HIGH, AP.netname, Goal.netname_team_broadcast);
-		    }
+		if ((Goal.netname_broadcast != string_null) && (CTF_Map == 0)) {
+			sprint (te, PRINT_HIGH, AP.netname, Goal.netname_broadcast);
 		}
-	    } else {
-		if ((Goal.owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
-		    CenterPrint2 (te, "\n\n\n", Goal.owners_team_broadcast);
-		} else {
-		    if (Goal.non_team_broadcast != string_null) {
-			CenterPrint2 (te, "\n\n\n", Goal.non_team_broadcast);
-		    }
+		if (AP == te) {
+			if (Goal.message != string_null) {
+				CenterPrint2 (te, "\n\n\n", Goal.message);
+			}
 		}
-		if ((Goal.netname_owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
-		    sprint (te, PRINT_HIGH, AP.netname, Goal.netname_owners_team_broadcast);
-		} else {
-		    if (Goal.netname_non_team_broadcast != string_null) {
-			sprint (te, PRINT_HIGH, AP.netname, Goal.netname_non_team_broadcast);
-		    }
+		else {
+			if (AP.team_no == te.team_no) {
+				if ((Goal.owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
+					CenterPrint2 (te, "\n\n\n", Goal.owners_team_broadcast);
+				}
+				else {
+					if (Goal.team_broadcast != string_null) {
+						CenterPrint2 (te, "\n\n\n", Goal.team_broadcast);
+					}
+				}
+				
+				if ((Goal.netname_owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
+					sprint (te, PRINT_HIGH, AP.netname, Goal.netname_owners_team_broadcast);
+				}
+				else {
+					if (Goal.netname_team_broadcast != string_null) {
+						sprint (te, PRINT_HIGH, AP.netname, Goal.netname_team_broadcast);
+					}
+				}
+			}
+			else {
+				if ((Goal.owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
+					CenterPrint2 (te, "\n\n\n", Goal.owners_team_broadcast);
+				}
+				else {
+					if (Goal.non_team_broadcast != string_null) {
+						CenterPrint2 (te, "\n\n\n", Goal.non_team_broadcast);
+					}
+				}
+				
+				if ((Goal.netname_owners_team_broadcast != string_null) && (te.team_no == Goal.owned_by)) {
+					sprint (te, PRINT_HIGH, AP.netname, Goal.netname_owners_team_broadcast);
+				}
+				else {
+					if (Goal.netname_non_team_broadcast != string_null) {
+						sprint (te, PRINT_HIGH, AP.netname, Goal.netname_non_team_broadcast);
+					}
+				}
+			}
 		}
-	    }
-	}
-	if (IsAffectedBy (Goal, te, AP)) {
-	    if ((Goal.search_time != 0) && (Goal.goal_effects & 64)) {
-		if (APMeetsCriteria (Goal, te)) {
-		    Apply_Results (Goal, te, AP, addb);
-		    gotone = 1;
+		if (IsAffectedBy (Goal, te, AP)) {
+			if ((Goal.search_time != 0) && (Goal.goal_effects & 64)) {
+				if (APMeetsCriteria (Goal, te)) {
+					Apply_Results (Goal, te, AP, addb);
+					gotone = 1;
+				}
+			}
+			else {
+				Apply_Results (Goal, te, AP, addb);
+				gotone = 1;
+			}
 		}
-	    } else {
-		Apply_Results (Goal, te, AP, addb);
-		gotone = 1;
-	    }
-	}
-	te = find (te, classname, "player");
+		te = find (te, classname, "player");
     }
     if (Goal.classname != "item_tfgoal") {
-	Goal.goal_state = 1;
+		Goal.goal_state = 1;
     }
     if (Goal.goal_result & 4) {
-	TeamFortress_TeamShowScores (1);
-	winners = TeamFortress_TeamGetWinner ();
-	te = find (world, classname, "player");
-	while (te) {
-	    te.takedamage = 0;
-	    te.movetype = 0;
-	    te.velocity = '0 0 0';
-	    te.avelocity = '0 0 0';
-	    te = find (te, classname, "player");
-	}
-	te = spawn ();
-	te.nextthink = time + 5;
-	te.think = execute_changelevel;
-	dremove (Goal);
-	return;
+		TeamFortress_TeamShowScores (1);
+		winners = TeamFortress_TeamGetWinner ();
+		te = find (world, classname, "player");
+		while (te) {
+			te.takedamage = 0;
+			te.movetype = 0;
+			te.velocity = '0 0 0';
+			te.avelocity = '0 0 0';
+			te = find (te, classname, "player");
+		}
+		te = spawn ();
+		te.nextthink = time + 5;
+		te.think = execute_changelevel;
+		dremove (Goal);
+		return;
     }
     DoGroupWork (Goal, AP);
     DoGoalWork (Goal, AP);
     DoTriggerWork (Goal, AP);
     if (Goal.classname == "info_tfgoal") {
-	SetupRespawn (Goal);
+		SetupRespawn (Goal);
     }
 };
 
 void () tfgoal_touch =
 {
     local entity te;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (!(self.goal_activation & TFGA_TOUCH))
-	return;
+		return;
     if (other.classname != "player")
-	return;
-    if (cb_prematch_time > time)
-	return;
+		return;
     if (self.goal_state == TFGS_ACTIVE)
-	return;
+		return;
 
     if (CTF_Map == 1) {
-	if ((self.goal_no == 3) && (other.team_no == 1)) {
-	    te = Finditem (1);
-	    if ((te.goal_state == 1) || (te.origin != te.oldorigin))
-		return;
-	}
-	if ((self.goal_no == 4) && (other.team_no == 2)) {
-	    te = Finditem (2);
-	    if ((te.goal_state == 1) || (te.origin != te.oldorigin))
-		return;
-	}
+		if ((self.goal_no == 3) && (other.team_no == 1)) {
+			te = Finditem (1);
+			if ((te.goal_state == 1) || (te.origin != te.oldorigin))
+				return;
+		}
+		if ((self.goal_no == 4) && (other.team_no == 2)) {
+			te = Finditem (2);
+			if ((te.goal_state == 1) || (te.origin != te.oldorigin))
+				return;
+		}
     }
     AttemptToActivate (self, other, self);
 };
@@ -1767,91 +1807,100 @@ void () item_tfgoal_touch =
 {
     local string st;
     local entity te;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player")
-	return;
+		return;
     if (other.health <= 0)
-	return;
-    if (cb_prematch_time > time)
-	return;
+		return;
     if (other.is_feigning)
-	return;
+		return;
     if (other == self.owner)
-	return;
+		return;
 
     if (CTF_Map == 1) {
-	if (self.goal_no == 1) {
-	    if (self.origin != self.oldorigin) {
-		if (other.team_no == 1) {
-		    bprint (2, other.netname);
-		    bprint (2, " ретурнед the блуе flag!\n");
-		    te = find (world, classname, "player");
-		    while (te != world) {
-			if (te.team_no == 1) {
-			    CenterPrint2 (te, "\n\n\n", "Your flag was ретурнед!!");
-			} else {
-			    CenterPrint2 (te, "\n\n\n", "The енемы flag was ретурнед!!");
+		if (self.goal_no == 1) {
+			if (self.origin != self.oldorigin) {
+				if (other.team_no == 1) {
+					bprint (2, other.netname);
+					bprint (2, " ретурнед the блуе flag!\n");
+					te = find (world, classname, "player");
+					while (te != world) {
+						if (te.team_no == 1) {
+							CenterPrint2 (te, "\n\n\n", "Your flag was ретурнед!!");
+						}
+						else {
+							CenterPrint2 (te, "\n\n\n", "The енемы flag was ретурнед!!");
+						}
+						te = find (te, classname, "player");
+					}
+					self.goal_state = 2;
+					self.solid = 1;
+					self.touch = item_tfgoal_touch;
+					self.origin = self.oldorigin;
+					setmodel (self, self.mdl);
+					setorigin (self, self.origin);
+					sound (self, 2, "items/itembk2.wav", 1, 1);
+					return;
+				}
 			}
-			te = find (te, classname, "player");
-		    }
-		    self.goal_state = 2;
-		    self.solid = 1;
-		    self.touch = item_tfgoal_touch;
-		    self.origin = self.oldorigin;
-		    setmodel (self, self.mdl);
-		    setorigin (self, self.origin);
-		    sound (self, 2, "items/itembk2.wav", 1, 1);
-		    return;
-		}
-	    } else {
-		if (other.team_no == 1) {
-		    return;
-		}
-	    }
-	} else {
-	    if (self.goal_no == 2) {
-		if (self.origin != self.oldorigin) {
-		    if (other.team_no == 2) {
-			bprint (2, other.netname);
-			bprint (2, " ретурнед the ред flag!\n");
-			te = find (world, classname, "player");
-			while (te != world) {
-			    if (te.team_no == 2) {
-				CenterPrint (te, "\n\n\n Your flag was ретурнед!!");
-			    } else {
-				CenterPrint (te, "\n\n\n The енемы flag was ретурнед!!");
-			    }
-			    te = find (te, classname, "player");
+			else {
+				if (other.team_no == 1) {
+					return;
+				}
 			}
-			self.goal_state = 2;
-			self.solid = 1;
-			self.touch = item_tfgoal_touch;
-			self.origin = self.oldorigin;
-			setmodel (self, self.mdl);
-			setorigin (self, self.origin);
-			sound (self, 2, "items/itembk2.wav", 1, 1);
-			return;
-		    }
-		} else {
-		    if (other.team_no == 2) {
-			return;
-		    }
 		}
-	    }
-	}
+		else {
+			if (self.goal_no == 2) {
+				if (self.origin != self.oldorigin) {
+					if (other.team_no == 2) {
+						bprint (2, other.netname);
+						bprint (2, " ретурнед the ред flag!\n");
+						te = find (world, classname, "player");
+						while (te != world) {
+							if (te.team_no == 2) {
+								CenterPrint (te, "\n\n\n Your flag was ретурнед!!");
+							}
+							else {
+								CenterPrint (te, "\n\n\n The енемы flag was ретурнед!!");
+							}
+							te = find (te, classname, "player");
+						}
+						self.goal_state = 2;
+						self.solid = 1;
+						self.touch = item_tfgoal_touch;
+						self.origin = self.oldorigin;
+						setmodel (self, self.mdl);
+						setorigin (self, self.origin);
+						sound (self, 2, "items/itembk2.wav", 1, 1);
+						return;
+					}
+				}
+				else {
+					if (other.team_no == 2) {
+						return;
+					}
+				}
+			}
+		}
     }
     if (Activated (self, other)) {
-	tfgoalitem_GiveToPlayer (self, other, self);
-	if (other.health > 0) {
-	    self.goal_state = 1;
-	}
-    } else {
-	if (self.else_goal != 0) {
-	    te = Findgoal (self.else_goal);
-	    if (te) {
-		AttemptToActivate (te, other, self);
-	    }
-	}
+		tfgoalitem_GiveToPlayer (self, other, self);
+		if (other.health > 0) {
+			self.goal_state = 1;
+		}
+    }
+	else {
+		if (self.else_goal != 0) {
+			te = Findgoal (self.else_goal);
+			if (te) {
+				AttemptToActivate (te, other, self);
+			}
+		}
     }
 };
 
@@ -2445,51 +2494,58 @@ void (entity P) ForceRespawn =
     local entity te;
     local entity oldself;
     local string st;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     oldself = self;
     self = P;
     spot = SelectSpawnPoint ();
     if (self.playerclass != 0) {
-	spawn_tdeath (spot.origin, self);
+		spawn_tdeath (spot.origin, self);
     }
     self.observer_list = spot;
     self.origin = spot.origin + '0 0 1';
     self.angles = spot.angles;
     self.fixangle = 1;
-    if ((spot.classname == "info_player_teamspawn") && (cb_prematch_time < time)) {
-	if (spot.items != 0) {
-	    te = Finditem (spot.items);
-	    if (te) {
-		tfgoalitem_GiveToPlayer (te, self, self);
-	    }
-	    if (!(spot.goal_activation & 1)) {
-		spot.items = 0;
-	    }
-	}
-	if (spot.message) {
-	    CenterPrint (self, spot.message);
-	    if (!(spot.goal_activation & 2)) {
-		spot.message = string_null;
-	    }
-	}
-	if (spot.activate_goal_no != 0) {
-	    te = Findgoal (spot.activate_goal_no);
-	    if (te) {
-		AttemptToActivate (te, self, spot);
-	    }
-	}
-	if (spot.goal_effects == 1) {
-	    spot.classname = "deadpoint";
-	    spot.team_str_home = string_null;
-	    spot.nextthink = time + 1;
-	    spot.think = SUB_Remove;
-	}
+	
+	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
+		if (spot.items != 0) {
+			te = Finditem (spot.items);
+			if (te) {
+				tfgoalitem_GiveToPlayer (te, self, self);
+			}
+			if (!(spot.goal_activation & 1)) {
+				spot.items = 0;
+			}
+		}
+		if (spot.message) {
+			CenterPrint (self, spot.message);
+			if (!(spot.goal_activation & 2)) {
+				spot.message = string_null;
+			}
+		}
+		if (spot.activate_goal_no != 0) {
+			te = Findgoal (spot.activate_goal_no);
+			if (te) {
+				AttemptToActivate (te, self, spot);
+			}
+		}
+		if (spot.goal_effects == 1) {
+			spot.classname = "deadpoint";
+			spot.team_str_home = string_null;
+			spot.nextthink = time + 1;
+			spot.think = SUB_Remove;
+		}
     }
+	
     if (deathmatch || coop) {
-	makevectors (self.angles);
-	if (self.playerclass != 0) {
-	    spawn_tfog ((self.origin + (v_forward * 20)));
-	}
+		makevectors (self.angles);
+		if (self.playerclass != 0) {
+			spawn_tfog ((self.origin + (v_forward * 20)));
+		}
     }
     self = oldself;
 };

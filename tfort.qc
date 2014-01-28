@@ -70,7 +70,8 @@ void () UseSpecialSkill =
 //Ready code
 void () TeamFortress_PlayersReady =
 {
-    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+	server_status = infokey (world, "status");
+    if (server_status == "Prematch") { // You can /ready up/down ONLY during prematch (not even countdown!)
 		local float ready_votes_needed;
 		local float total_players;
 		local float i;
@@ -97,32 +98,34 @@ void () TeamFortress_PlayersReady =
 		}
 
 		// Capture this player's vote
-		arr_ready_voters[ready_votes] = self.tf_id;
-		ready_votes++;
-    
-		bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
-
-		// If required number of votes are set, end pm an start the match
+		if (self.team_no != 0) { // You must be on a team to /ready
+			arr_ready_voters[ready_votes] = self.tf_id;
+			ready_votes++;
+			bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
+		}
+		
+		// If required number of votes are set, end pm and start the match
 		local entity ent;
 		if (ready_votes == total_players) {
-			clanbattle = TRUE; // I assume from here that the prefix cb_ is clanbattle_
-			clan_scores_dumped = 0;
-			game_locked = 0;
-		
-			cb_prematch_time = 10;
-			time = 0;
+			countdown_start_time = time; // All players are ready at this time, mark the start time for countdown
+			
 			ent = spawn ();
 			ent.think = PreMatch_Think; // This starts the countdown in clan.qc
-			ent.nextthink = 0.1; // How long after players are ready to start the countdown
+			//ent.nextthink = time + 5; // Up2: I don't know why +5
+			ent.nextthink = time + 1;
+
+			
+			localcmd ("serverinfo status Countdown\n");
 		}
-    
 		return;
 	}
 }
 
+//Rpickup code
 void () TeamFortress_Rpickup =
 {
-    if (cb_prematch_time > time) { // Prohibit rpickup use after pm
+	server_status = infokey (world, "status");
+    if (server_status == "Prematch") { // You can rpickup only during prematch
 		local float rpickup_votes_needed;
 		local float total_players;
 		local float i;
@@ -248,9 +251,12 @@ void () TeamFortress_ChangeClass =
     local entity te;
     local float tc;
     local string st;
+	
+	
+	server_status = infokey (world, "status");
 
     if (self.playerclass != 0) {
-	if ((deathmatch != 3) && (cb_prematch_time < time))
+	if ((deathmatch != 3) && (server_status == "Match"))
 	    return;
 
 	if (TeamFortress_TeamIsCivilian (self.team_no)) {
@@ -339,7 +345,7 @@ void () TeamFortress_ChangeClass =
 	self.tfstate = self.tfstate | TFSTATE_RANDOMPC;
 	self.playerclass = 1 + floor (random () * 9);
     }
-    if ((spot.classname == "info_player_teamspawn") && (cb_prematch_time < time)) {
+	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
 	if (spot.items != 0) {
 	    te = Finditem (spot.items);
 	    if (te)
@@ -2015,6 +2021,9 @@ void (float Suicided) TeamFortress_SetupRespawn =
 {
     local float restime;
     local string db;
+	
+	
+	server_status = infokey (world, "status");
 
     if (self.respawn_time > time)
 	return;
@@ -2024,14 +2033,14 @@ void (float Suicided) TeamFortress_SetupRespawn =
     else
 	restime = 0;
 
-    if (cb_prematch_time < time) {
+    if (server_status == "Match") {
 		if (Suicided) {
 			if (self.lives > 0)
 			self.lives = self.lives - 1;
 			restime = restime + 7;
 		}
     }
-    if (cb_prematch_time > time) {
+    if ((server_status == "Prematch") || (server_status == "Countdown")) {
 	if (self.lives > 0)
 	    self.lives = self.lives - 1;
 

@@ -333,8 +333,13 @@ void () InitBodyQue =
 
 void (entity ent) CopyToBodyQue =
 {
-    if ((cb_prematch_time + 3) > time)
-	return;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
+    //if ((cb_prematch_time + 3) > time)
+	//	return;
 
     bodyque_head.angles = ent.angles;
     bodyque_head.model = ent.model;

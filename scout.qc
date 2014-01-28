@@ -271,7 +271,7 @@ void () ConcussionGrenadeTimer =
 /*
 Up2 fixme
 For later:
-if ( (practice == on) && (cb_prematch_time > time) && (clanbattle = TRUE) {
+if ( (practice == on) && (clanbattle = TRUE) {
 }
 else {
 */

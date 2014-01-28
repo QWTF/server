@@ -51,6 +51,11 @@ float toggleflags;	// toggleable flags
 
 float respawn_delay_time;
 
+//Up2: For new prematch countdown. Maybe make this a field taken from serverinfo
+float prematch_countdown = 11;
+float countdown_start_time;
+string server_status;
+
 //
 // FortressMap stuff
 //

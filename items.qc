@@ -230,78 +230,91 @@ void () health_touch =
     local float amount;
     local float medi;
     local string s;
-
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
+	
     if (other.classname != "player") {
-	return;
+		return;
     }
     if (other.is_feigning) {
-	return;
+		return;
     }
     if ((other.tfstate & 65536) || (other.tfstate & 2048)) {
-	return;
+		return;
     }
-    if (cb_prematch_time > time) {
-	return;
-    }
+	
     medi = 0;
     if (self.healtype == 2) {
-	if (!(other.tfstate & 16)) {
-	    if (other.health >= 250) {
-		return;
-	    }
-	    if (!T_Heal (other, self.healamount, 1)) {
-		return;
-	    }
-	}
-    } else {
-	if (!T_Heal (other, self.healamount, 0)) {
-	    if (other.weapons_carried & 4) {
-		if (other.ammo_medikit < other.maxammo_medikit) {
-		    other.ammo_medikit = other.ammo_medikit + self.healamount;
-		    if (other.ammo_medikit > other.maxammo_medikit) {
-			other.ammo_medikit = other.maxammo_medikit;
-		    }
-		    s = ftos (self.healamount);
-		    sprint (other, PRINT_LOW, "You gather ", s, " medikit ammo\n");
-		    sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
-		    stuffcmd (other, "bf\n");
-		    self.model = string_null;
-		    self.solid = 0;
-		    if (deathmatch != 2) {
-			if (deathmatch) {
-			    self.nextthink = time + 20;
+		if (!(other.tfstate & 16)) {
+			if (other.health >= 250) {
+			return;
 			}
-			self.think = SUB_regen;
-		    }
-		    activator = other;
-		    W_SetCurrentAmmo ();
-		    SUB_UseTargets ();
+			if (!T_Heal (other, self.healamount, 1)) {
+			return;
+			}
 		}
-	    }
-	    return;
-	}
     }
+	else {
+		if (!T_Heal (other, self.healamount, 0)) {
+			if (other.weapons_carried & 4) {
+				if (other.ammo_medikit < other.maxammo_medikit) {
+					other.ammo_medikit = other.ammo_medikit + self.healamount;
+					if (other.ammo_medikit > other.maxammo_medikit) {
+						other.ammo_medikit = other.maxammo_medikit;
+					}
+					
+					s = ftos (self.healamount);
+					sprint (other, PRINT_LOW, "You gather ", s, " medikit ammo\n");
+					sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+					stuffcmd (other, "bf\n");
+					self.model = string_null;
+					self.solid = 0;
+					
+					if (deathmatch != 2) {
+						if (deathmatch) {
+							self.nextthink = time + 20;
+						}
+						self.think = SUB_regen;
+					}
+					
+					activator = other;
+					W_SetCurrentAmmo ();
+					SUB_UseTargets ();
+				}
+			}
+			return;
+		}
+    }
+	
     if ((other.tfstate & 16) && (self.healamount > 80)) {
-	sprint (other, PRINT_MEDIUM, "You have been healed of your infection!");
-	other.tfstate = other.tfstate - (other.tfstate & 16);
-    } else {
-	s = ftos (self.healamount);
-	sprint (other, PRINT_LOW, "You receive ", s, " health\n");
+		sprint (other, PRINT_MEDIUM, "You have been healed of your infection!");
+		other.tfstate = other.tfstate - (other.tfstate & 16);
     }
+	else {
+		s = ftos (self.healamount);
+		sprint (other, PRINT_LOW, "You receive ", s, " health\n");
+    }
+	
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
     self.model = string_null;
     self.solid = 0;
+	
     if (self.healtype == 2) {
-	other.items = other.items | IT_SUPERHEALTH;
-	self.nextthink = time + 5;
-	self.think = item_megahealth_rot;
-	self.owner = other;
-    } else if (deathmatch != 2) {
-	if (deathmatch)
-	    self.nextthink = time + 20;
-	self.think = SUB_regen;
+		other.items = other.items | IT_SUPERHEALTH;
+		self.nextthink = time + 5;
+		self.think = item_megahealth_rot;
+		self.owner = other;
     }
+	else if (deathmatch != 2) {
+		if (deathmatch)
+			self.nextthink = time + 20;
+		self.think = SUB_regen;
+    }
+	
     activator = other;
     SUB_UseTargets ();
 };
@@ -332,105 +345,127 @@ void () armor_touch =
     local float bit;
     local string s;
     local entity oldself;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.health <= 0) {
-	return;
+		return;
     }
     if (other.classname != "player") {
-	return;
+		return;
     }
     if (other.is_feigning) {
-	return;
+		return;
     }
     if ((other.tfstate & 65536) || (other.tfstate & 2048)) {
-	return;
-    }
-    if (cb_prematch_time > time) {
-	return;
-    }
-    if (self.classname == "item_armor1") {
-	type = 0.300;
-	value = 100;
-	bit = 8192;
-    } else {
-	if (self.classname == "item_armor2") {
-	    type = 0.600;
-	    value = 150;
-	    bit = 16384;
-	} else {
-	    type = 0.800;
-	    value = 200;
-	    bit = 32768;
-	}
-    }
-    if ((other.armortype * other.armorvalue) >= (type * value)) {
-	if (other.playerclass == 9) {
-	    if (other.ammo_cells >= other.maxammo_cells) {
 		return;
-	    }
-	} else {
-	    return;
-	}
     }
-    if ((other.armor_allowed * other.maxarmor) <= (type * value)) {
-	if (other.armor_allowed == other.armortype) {
-	    if (other.maxarmor == other.armorvalue) {
+
+    if (self.classname == "item_armor1") {
+		type = 0.300;
+		value = 100;
+		bit = 8192;
+    }
+	else {
+		if (self.classname == "item_armor2") {
+			type = 0.600;
+			value = 150;
+			bit = 16384;
+		}
+		else {
+			type = 0.800;
+			value = 200;
+			bit = 32768;
+		}
+    }
+	
+    if ((other.armortype * other.armorvalue) >= (type * value)) {
 		if (other.playerclass == 9) {
-		    if (other.ammo_cells >= other.maxammo_cells) {
+			if (other.ammo_cells >= other.maxammo_cells) {
 			return;
-		    }
-		} else {
-		    return;
+			}
 		}
-	    }
-	}
+		else {
+			return;
+		}
     }
+	
+    if ((other.armor_allowed * other.maxarmor) <= (type * value)) {
+		if (other.armor_allowed == other.armortype) {
+			if (other.maxarmor == other.armorvalue) {
+				if (other.playerclass == 9) {
+					if (other.ammo_cells >= other.maxammo_cells) {
+						return;
+					}
+				}
+				else {
+					return;
+				}
+			}
+		}
+    }
+	
     if (type > other.armor_allowed) {
-	type = other.armor_allowed;
-	if (type == 0.300) {
-	    bit = 8192;
-	} else {
-	    if (type == 0.600) {
-		bit = 16384;
-	    } else {
-		if (type == 0.800) {
-		    bit = 32768;
+		type = other.armor_allowed;
+		if (type == 0.300) {
+			bit = 8192;
 		}
-	    }
-	}
+		else {
+			if (type == 0.600) {
+				bit = 16384;
+			}
+			else {
+				if (type == 0.800) {
+				bit = 32768;
+				}
+			}
+		}
     }
+	
     sprint (other, PRINT_LOW, "You got armor\n");
+	
     if (value > other.maxarmor) {
-	if ((other.playerclass == 9) && (other.ammo_cells < other.maxammo_cells)) {
-	    s = ftos ((value - other.maxarmor));
-	    sprint (other, PRINT_LOW, s, " metal\n");
-	    other.ammo_cells = other.ammo_cells + (value - other.maxarmor);
-	    if (other.ammo_cells > other.maxammo_cells) {
-		other.ammo_cells = other.maxammo_cells;
-	    }
-	    oldself = self;
-	    self = other;
-	    W_SetCurrentAmmo ();
-	    self = oldself;
-	}
-	value = other.maxarmor;
+		if ((other.playerclass == 9) && (other.ammo_cells < other.maxammo_cells)) {
+			s = ftos ((value - other.maxarmor));
+			sprint (other, PRINT_LOW, s, " metal\n");
+			other.ammo_cells = other.ammo_cells + (value - other.maxarmor);
+			
+			if (other.ammo_cells > other.maxammo_cells) {
+				other.ammo_cells = other.maxammo_cells;
+			}
+			
+			oldself = self;
+			self = other;
+			W_SetCurrentAmmo ();
+			self = oldself;
+		}
+		value = other.maxarmor;
     }
+	
     if ((other.armortype * other.armorvalue) < (type * value)) {
-	other.armortype = type;
-	other.armorvalue = value;
-	other.items = (other.items - (other.items & ((8192 | 16384) | 32768))) + bit;
+		other.armortype = type;
+		other.armorvalue = value;
+		other.items = (other.items - (other.items & ((8192 | 16384) | 32768))) + bit;
     }
+	
     if (self.armorclass > 0) {
-	other.armorclass = self.armorclass;
+		other.armorclass = self.armorclass;
     }
+	
     self.solid = 0;
     self.model = string_null;
+	
     if (deathmatch != 2) {
-	self.nextthink = time + 20;
+		self.nextthink = time + 20;
     }
+	
     if (coop) {
-	self.nextthink = time + 40;
+		self.nextthink = time + 40;
     }
+	
     self.think = SUB_regen;
     sound (other, 3, "items/armor1.wav", 1, 1);
     stuffcmd (other, "bf\n");
@@ -577,14 +612,17 @@ void () weapon_touch =
     local float old;
     local entity stemp;
     local float leave;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;	
 
     if (!(other.flags & 8))
 	return;
     if (other.is_feigning)
 	return;
     if ((other.tfstate & 65536) || (other.tfstate & 2048))
-	return;
-    if (cb_prematch_time > time)
 	return;
 
     stemp = self;
@@ -852,6 +890,11 @@ void () ammo_touch =
     local float best;
     local float gotgren;
     local float gotbox;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player") {
 	return;
@@ -862,9 +905,7 @@ void () ammo_touch =
     if ((other.tfstate & 65536) || (other.tfstate & 2048)) {
 	return;
     }
-    if (cb_prematch_time > time) {
-	return;
-    }
+	
     gotgren = 0;
     gotbox = 0;
     stemp = self;
@@ -1061,6 +1102,11 @@ void () key_touch =
 {
     local entity stemp;
     local float best;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player") {
 	return;
@@ -1077,9 +1123,7 @@ void () key_touch =
     if ((other.tfstate & 65536) || (other.tfstate & 2048)) {
 	return;
     }
-    if (cb_prematch_time > time) {
-	return;
-    }
+
     sprint (other, PRINT_LOW, "You got the ", self.netname, "\n");
     sound (other, 3, self.noise, 1, 1);
     stuffcmd (other, "bf\n");
@@ -1175,6 +1219,11 @@ void () sigil_touch =
 {
     local entity stemp;
     local float best;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player")
 	return;
@@ -1184,8 +1233,7 @@ void () sigil_touch =
 	return;
     if ((other.tfstate & 65536) || (other.tfstate & 2048))
 	return;
-    if (cb_prematch_time > time)
-	return;
+
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -1233,6 +1281,11 @@ void () powerup_touch =
 {
     local entity stemp;
     local float best;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (other.classname != "player")
 	return;
@@ -1242,8 +1295,7 @@ void () powerup_touch =
 	return;
     if ((other.tfstate & 65536) || (other.tfstate & 2048))
 	return;
-    if (cb_prematch_time > time)
-	return;
+
 
     sprint (other, PRINT_LOW, "You got the ");
     sprint (other, PRINT_LOW, self.netname);
@@ -1422,8 +1474,11 @@ void () BackpackTouch =
 
 void () DropBackpack =
 {
-    if ((cb_prematch_time + 3) > time)
-	return;
+	
+	
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown"))
+		return;
 
     if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells))
 	return;

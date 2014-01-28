@@ -326,200 +326,200 @@ void () W_FireMedikit =
     local float healam;
     local entity te;
     local entity BioInfection;
-
-    source = self.origin + '0 0 16';
+	
+	
+	source = self.origin + '0 0 16';
     traceline (source, (source + (v_forward * 64)), 0, self);
     if ( (trace_fraction == 1) ) {
-
-	return;
-
+		return;
     }
     org = trace_endpos - v_forward * 4;
-    if (trace_ent.takedamage) {
+	if (trace_ent.takedamage) {
+		if (trace_ent.classname == "player") {
+			if (((trace_ent.team_no == self.team_no) && (self.team_no != 0)) || coop) {
+				healam = 200;
+				te = find (world, classname, "timer");
+				while (((te.owner != trace_ent)
+					|| ((te.think != ConcussionGrenadeTimer)
+						&& (te.think != OldConcussionGrenadeTimer)))
+					   && (te != world))
+					te = find (te, classname, "timer");
 
-	if (trace_ent.classname == "player") {
+				if (te != world) {
 
-	    if (((trace_ent.team_no == self.team_no) && (self.team_no != 0)) || coop) {
+					if (old_grens == TRUE)
+					stuffcmd (trace_ent, "v_idlescale 0\nfov 90\n");
 
-		healam = 200;
-		te = find (world, classname, "timer");
-		while (((te.owner != trace_ent)
-			|| ((te.think != ConcussionGrenadeTimer)
-			    && (te.think != OldConcussionGrenadeTimer)))
-		       && (te != world))
-		    te = find (te, classname, "timer");
+					SpawnBlood (org, 20);
 
-		if (te != world) {
+					bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s concussion\n");
 
-		    if (old_grens == TRUE)
-			stuffcmd (trace_ent, "v_idlescale 0\nfov 90\n");
+					if (te.team_no != self.team_no)
+					TF_AddFrags (self, 1);
 
-		    SpawnBlood (org, 20);
+					dremove (te);
+				}
+				if (trace_ent.tfstate & TFSTATE_HALLUCINATING) {
 
-		    bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s concussion\n");
+					te = find (world, classname, "timer");
+					while (((te.owner != trace_ent) || (te.think != HallucinationTimer)) && (te != world))
+					te = find (te, classname, "timer");
 
-		    if (te.team_no != self.team_no)
-			TF_AddFrags (self, 1);
+					if (te != world) {
 
-		    dremove (te);
-		}
-		if (trace_ent.tfstate & TFSTATE_HALLUCINATING) {
+					trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_HALLUCINATING);
+					SpawnBlood (org, 20);
 
-		    te = find (world, classname, "timer");
-		    while (((te.owner != trace_ent) || (te.think != HallucinationTimer)) && (te != world))
-			te = find (te, classname, "timer");
+					bprint (PRINT_MEDIUM, self.netname, " healed ",
+						trace_ent.netname, " of his hallucinations\n");
 
-		    if (te != world) {
+					if (old_grens == TRUE)
+						stuffcmd (trace_ent, "v_cshift; wait; bf\n");
 
-			trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_HALLUCINATING);
-			SpawnBlood (org, 20);
+					if (te.team_no != self.team_no)
+						TF_AddFrags (self, 1);
 
-			bprint (PRINT_MEDIUM, self.netname, " healed ",
-				trace_ent.netname, " of his hallucinations\n");
+					dremove (te);
+					} else
+					dprint ("Warning: Error in Hallucination Timer logic.\n");
+				}
+				if (trace_ent.tfstate & TFSTATE_TRANQUILISED) {
 
-			if (old_grens == TRUE)
-			    stuffcmd (trace_ent, "v_cshift; wait; bf\n");
+					te = find (world, classname, "timer");
+					while (((te.owner != trace_ent) || (te.think != TranquiliserTimer)) && (te != world))
+						te = find (te, classname, "timer");
 
-			if (te.team_no != self.team_no)
-			    TF_AddFrags (self, 1);
+					if (te != world) {
+						trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_TRANQUILISED);
+						TeamFortress_SetSpeed (trace_ent);
+						SpawnBlood (org, 20);
 
-			dremove (te);
-		    } else
-			dprint ("Warning: Error in Hallucination Timer logic.\n");
-		}
-		if (trace_ent.tfstate & TFSTATE_TRANQUILISED) {
+						bprint (PRINT_MEDIUM, self.netname, " healed ",
+							trace_ent.netname, "'s tranquilisation\n");
 
-		    te = find (world, classname, "timer");
-		    while (((te.owner != trace_ent) || (te.think != TranquiliserTimer)) && (te != world))
-			te = find (te, classname, "timer");
+						if (te.team_no != self.team_no)
+							TF_AddFrags (self, 1);
 
-		    if (te != world) {
+						dremove (te);
+					}
+					else
+						dprint ("Warning: Error in Tranquilisation Timer logic.\n");
+				}
+				if (trace_ent.FlashTime > 0) {
 
-			trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_TRANQUILISED);
-			TeamFortress_SetSpeed (trace_ent);
-			SpawnBlood (org, 20);
+					te = find (world, netname, "flashtimer");
+					while (((te.owner != trace_ent) || (te.classname != "timer")) && (te != world))
+					te = find (te, netname, "flashtimer");
 
-			bprint (PRINT_MEDIUM, self.netname, " healed ",
-				trace_ent.netname, "'s tranquilisation\n");
+					if (te != world) {
+						trace_ent.FlashTime = 0;
+						SpawnBlood (org, 20);
 
-			if (te.team_no != self.team_no)
-			    TF_AddFrags (self, 1);
+						bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s blindness\n");
 
-			dremove (te);
-		    } else
-			dprint ("Warning: Error in Tranquilisation Timer logic.\n");
-		}
-		if (trace_ent.FlashTime > 0) {
+						if (te.team_no != self.team_no)
+							TF_AddFrags (self, 1);
 
-		    te = find (world, netname, "flashtimer");
-		    while (((te.owner != trace_ent) || (te.classname != "timer")) && (te != world))
-			te = find (te, netname, "flashtimer");
+						dremove (te);
+					}
+					else {
+						dprint ("Warning: Error in Flash Timer logic.\n");
+						trace_ent.FlashTime = 0;
+					}
+				}
+				if (trace_ent.tfstate & TFSTATE_INFECTED) {
 
-		    if (te != world) {
+					healam = rint (trace_ent.health / 2);
+					trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_INFECTED);
+					deathmsg = DMSG_MEDIKIT;
+					T_Damage (trace_ent, self, self, healam);
+					SpawnBlood (org, 30);
 
-			trace_ent.FlashTime = 0;
-			SpawnBlood (org, 20);
+					if (self.classname == "player") {
+						bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s infection\n");
 
-			bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s blindness\n");
+						if (trace_ent.infection_team_no != self.team_no)
+							TF_AddFrags (self, 1);
+					}
+					return;
+				}
+				if (trace_ent.numflames > 0) {
 
-			if (te.team_no != self.team_no)
-			    TF_AddFrags (self, 1);
+					sound (trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
+					trace_ent.numflames = 0;
 
-			dremove (te);
-		    } else {
-			dprint ("Warning: Error in Flash Timer logic.\n");
-			trace_ent.FlashTime = 0;
-		    }
-		}
-		if (trace_ent.tfstate & TFSTATE_INFECTED) {
+					if (self.classname == "player") {
+						bprint (PRINT_MEDIUM, self.netname, " put out ", trace_ent.netname, "'s fire.\n");
+					}
+					return;
+				}
+				if ((healam > 0) && (trace_ent.health < trace_ent.max_health)) {
 
-		    healam = rint (trace_ent.health / 2);
-		    trace_ent.tfstate = trace_ent.tfstate - (trace_ent.tfstate & TFSTATE_INFECTED);
-		    deathmsg = DMSG_MEDIKIT;
-		    T_Damage (trace_ent, self, self, healam);
-		    SpawnBlood (org, 30);
+					sound (trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
+					trace_ent.axhitme = 1;
+					SpawnBlood (org, 20);
+					T_Heal (trace_ent, healam, 0);
 
-		    if (self.classname == "player") {
+				}
+				else if ((trace_ent.health >= trace_ent.max_health) && (trace_ent.health < (trace_ent.max_health + 50))) {
 
-			bprint (PRINT_MEDIUM, self.netname, " cured ", trace_ent.netname, "'s infection\n");
+					healam = 5;
+					if (healam > (self.ammo_medikit * 5))
+						healam = self.ammo_medikit * 5;
 
-			if (trace_ent.infection_team_no != self.team_no)
-			    TF_AddFrags (self, 1);
-		    }
-		    return;
-		}
-		if (trace_ent.numflames > 0) {
+					if (healam > 0) {
+						sound (trace_ent, CHAN_ITEM, "items/r_item2.wav", 1, ATTN_NORM);
+						T_Heal (trace_ent, healam, 1);
+						self.ammo_medikit = self.ammo_medikit - rint (healam / 5);
 
-		    sound (trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
-		    trace_ent.numflames = 0;
-
-		    if (self.classname == "player") {
-			bprint (PRINT_MEDIUM, self.netname, " put out ", trace_ent.netname, "'s fire.\n");
-		    }
-		    return;
-		}
-		if ((healam > 0) && (trace_ent.health < trace_ent.max_health)) {
-
-		    sound (trace_ent, CHAN_WEAPON, "items/r_item1.wav", 1, ATTN_NORM);
-		    trace_ent.axhitme = 1;
-		    SpawnBlood (org, 20);
-		    T_Heal (trace_ent, healam, 0);
-
-		} else if ((trace_ent.health >= trace_ent.max_health)
-			   && (trace_ent.health < (trace_ent.max_health + 50))) {
-
-		    healam = 5;
-		    if (healam > (self.ammo_medikit * 5))
-			healam = self.ammo_medikit * 5;
-
-		    if (healam > 0) {
-			sound (trace_ent, CHAN_ITEM, "items/r_item2.wav", 1, ATTN_NORM);
-			T_Heal (trace_ent, healam, 1);
-			self.ammo_medikit = self.ammo_medikit - rint (healam / 5);
-
-			if (!(trace_ent.items & IT_SUPERHEALTH)) {
-			    trace_ent.items = trace_ent.items | IT_SUPERHEALTH;
-			    newmis = spawn ();
-			    newmis.nextthink = time + 5;
-			    newmis.think = item_megahealth_rot;
-			    newmis.owner = trace_ent;
+						if (!(trace_ent.items & IT_SUPERHEALTH)) {
+							trace_ent.items = trace_ent.items | IT_SUPERHEALTH;
+							newmis = spawn ();
+							newmis.nextthink = time + 5;
+							newmis.think = item_megahealth_rot;
+							newmis.owner = trace_ent;
+						}
+					}
+				}
 			}
-		    }
+			else {
+				// musn't be on their team, so we infect them
+				trace_ent.axhitme = 1;
+				SpawnBlood (org, 20);
+				deathmsg = DMSG_BIOWEAPON_ATT;
+				T_Damage (trace_ent, self, self, 10);
+
+				if (trace_ent.playerclass == PC_MEDIC)
+					return;
+					
+				server_status = infokey (world, "status");
+				if ((server_status == "Prematch") || (server_status == "Countdown"))
+					return;
+
+				if (trace_ent.tfstate & TFSTATE_INFECTED)
+					return;
+
+				trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
+				BioInfection = spawn ();
+				BioInfection.classname = "timer";
+				BioInfection.owner = trace_ent;
+				BioInfection.nextthink = time + 2;
+				BioInfection.think = BioInfection_Decay;
+				BioInfection.enemy = self;
+				trace_ent.infection_team_no = self.team_no;
+			}
 		}
-	    } else {
-		// musn't be on their team, so we infect them
-		trace_ent.axhitme = 1;
-		SpawnBlood (org, 20);
-		deathmsg = DMSG_BIOWEAPON_ATT;
-		T_Damage (trace_ent, self, self, 10);
-
-		if (trace_ent.playerclass == PC_MEDIC)
-		    return;
-		if (cb_prematch_time > time)
-		    return;
-		if (trace_ent.tfstate & TFSTATE_INFECTED)
-		    return;
-
-		trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
-		BioInfection = spawn ();
-		BioInfection.classname = "timer";
-		BioInfection.owner = trace_ent;
-		BioInfection.nextthink = time + 2;
-		BioInfection.think = BioInfection_Decay;
-		BioInfection.enemy = self;
-		trace_ent.infection_team_no = self.team_no;
-	    }
-	}
-    } else {
-	// hit wall
-	sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-	WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-	WriteByte (MSG_MULTICAST, 3);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
-	multicast (org, MULTICAST_PVS);
+    }
+	else {
+		// hit wall
+		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, 3);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
+		multicast (org, MULTICAST_PVS);
     }
 };
 
@@ -529,69 +529,73 @@ void () W_FireBioweapon =
     local vector org;
     local float healam;
     local entity BioInfection;
-
+	
+	
     source = self.origin + '0 0 16';
     traceline (source, source + v_forward * 64, 0, self);
     if (trace_fraction == 1)
-	return;
+		return;
 
     org = trace_endpos - v_forward * 4;
 
     if (trace_ent.takedamage) {
-	if (trace_ent.classname == "player") {
-	    if (((trace_ent.team_no != self.team_no) && (self.team_no != 0) && teamplay)
-		|| (teamplay == 0)) {
+		if (trace_ent.classname == "player") {
+			if (((trace_ent.team_no != self.team_no) && (self.team_no != 0) && teamplay) || (teamplay == 0)) {
+				trace_ent.axhitme = 1;
+				SpawnBlood (org, 20);
+				deathmsg = DMSG_BIOWEAPON_ATT;
+				T_Damage (trace_ent, self, self, 10);
 
-		trace_ent.axhitme = 1;
-		SpawnBlood (org, 20);
-		deathmsg = DMSG_BIOWEAPON_ATT;
-		T_Damage (trace_ent, self, self, 10);
+				if (trace_ent.playerclass == PC_MEDIC)
+					return;
+				
+				server_status = infokey (world, "status");
+				if ((server_status == "Prematch") || (server_status == "Countdown"))
+					return;
 
-		if (trace_ent.playerclass == PC_MEDIC)
-		    return;
-		if (cb_prematch_time > time)
-		    return;
+				trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
 
-		trace_ent.tfstate = trace_ent.tfstate | TFSTATE_INFECTED;
+				BioInfection = spawn ();
+				BioInfection.classname = "timer";
+				BioInfection.owner = trace_ent;
+				BioInfection.nextthink = time + 2;
+				BioInfection.think = BioInfection_Decay;
+				BioInfection.enemy = self;
 
-		BioInfection = spawn ();
-		BioInfection.classname = "timer";
-		BioInfection.owner = trace_ent;
-		BioInfection.nextthink = time + 2;
-		BioInfection.think = BioInfection_Decay;
-		BioInfection.enemy = self;
+				trace_ent.infection_team_no = self.team_no;
+			}
+		}
+		else if (trace_ent.flags & FL_MONSTER) {
 
-		trace_ent.infection_team_no = self.team_no;
-	    }
-	} else if (trace_ent.flags & FL_MONSTER) {
+			if (trace_ent.classname == "monster_zombie")
+				T_Damage (trace_ent, self, self, 200);
 
-	    if (trace_ent.classname == "monster_zombie")
-		T_Damage (trace_ent, self, self, 200);
+			trace_ent.axhitme = 1;
+			SpawnBlood (org, 20);
+			T_Damage (trace_ent, self, self, 10);
 
-	    trace_ent.axhitme = 1;
-	    SpawnBlood (org, 20);
-	    T_Damage (trace_ent, self, self, 10);
-
-	    BioInfection = spawn ();
-	    BioInfection.classname = "timer";
-	    BioInfection.nextthink = time + 2;
-	    BioInfection.think = BioInfection_MonsterDecay;
-	    BioInfection.owner = self;
-	    BioInfection.enemy = trace_ent;
-	} else {
-	    trace_ent.axhitme = 1;
-	    SpawnBlood (org, 30);
-	    T_Damage (trace_ent, self, self, 40);
-	}
-    } else {
-	sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-	WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-	WriteByte (MSG_MULTICAST, 3);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
-	multicast (org, MULTICAST_PVS);
+			BioInfection = spawn ();
+			BioInfection.classname = "timer";
+			BioInfection.nextthink = time + 2;
+			BioInfection.think = BioInfection_MonsterDecay;
+			BioInfection.owner = self;
+			BioInfection.enemy = trace_ent;
+		}
+		else {
+			trace_ent.axhitme = 1;
+			SpawnBlood (org, 30);
+			T_Damage (trace_ent, self, self, 40);
+		}
+    }
+	else {
+		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, 3);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
+		multicast (org, MULTICAST_PVS);
     }
 };
 
@@ -1295,58 +1299,67 @@ void () GrenadeTouch =
 
 void () W_FireGrenade =
 {
-   self.ammo_rockets = self.ammo_rockets - 1;
-   self.currentammo = self.ammo_rockets - 1;
-   sound (self, 1, "weapons/grenade.wav", 1, 1);
-   KickPlayer (-2, self);
-   newmis = spawn ();
-   newmis.voided = 0;
-   newmis.owner = self;
-   newmis.movetype = 10;
-   newmis.solid = 2;
-   if ((self.weaponmode == 0) || (cb_prematch_time > time)) {
-      newmis.weapon = 5;
-      newmis.classname = "grenade";
-      newmis.skin = 1;
-      newmis.touch = GrenadeTouch;
-      newmis.nextthink = time + 2.5;
-   } else {
-      if (self.team_no != 0) {
-         increment_team_pipebombs (self.team_no);
-         if (num_team_pipebombs (self.team_no) > (15 / number_of_teams)) {
-            ExplodeOldPipebomb (self.team_no);
-         }
-      } else {
-         num_world_pipebombs = num_world_pipebombs + 1;
-         if (num_world_pipebombs > 15) {
-            ExplodeOldPipebomb (0);
-         }
-      }
-      newmis.classname = "pipebomb";
-      newmis.skin = 2;
-      newmis.touch = PipebombTouch;
-      newmis.nextthink = time + 120;
-      newmis.weapon = 11;
-      newmis.team_no = self.team_no;
-   }
-   makevectors (self.v_angle);
-   if (self.v_angle_x) {
-      newmis.velocity = (((v_forward * 600) + (v_up * 200)) + ((crandom () * v_right) * 10)) + ((crandom () * v_up) * 10);
-   } else {
-      newmis.velocity = aim (self, 10000);
-      newmis.velocity = newmis.velocity * 600;
-      newmis.velocity_z = 200;
-   }
-   newmis.avelocity = '300 300 300';
-   newmis.angles = vectoangles (newmis.velocity);
-   newmis.think = GrenadeExplode;
-   if ((birthday == 1) && (random () < 0.2)) {
-      setmodel (newmis, "progs/grenade3.mdl");
-   } else {
-      setmodel (newmis, "progs/grenade2.mdl");
-   }
-   setsize (newmis, '0 0 0', '0 0 0');
-   setorigin (newmis, self.origin);
+	
+
+	server_status = infokey (world, "status");
+
+	self.ammo_rockets = self.ammo_rockets - 1;
+	self.currentammo = self.ammo_rockets - 1;
+	sound (self, 1, "weapons/grenade.wav", 1, 1);
+	KickPlayer (-2, self);
+	newmis = spawn ();
+	newmis.voided = 0;
+	newmis.owner = self;
+	newmis.movetype = 10;
+	newmis.solid = 2;
+   
+	if ((self.weaponmode == 0) || (server_status == "Prematch") || (server_status == "Countdown")) {
+		newmis.weapon = 5;
+		newmis.classname = "grenade";
+		newmis.skin = 1;
+		newmis.touch = GrenadeTouch;
+		newmis.nextthink = time + 2.5;
+	}
+	else {
+		if (self.team_no != 0) {
+				increment_team_pipebombs (self.team_no);
+			if (num_team_pipebombs (self.team_no) > (15 / number_of_teams)) {
+				ExplodeOldPipebomb (self.team_no);
+			}
+		}
+		else {
+				num_world_pipebombs = num_world_pipebombs + 1;
+				if (num_world_pipebombs > 15) {
+					ExplodeOldPipebomb (0);
+				}
+		}
+		newmis.classname = "pipebomb";
+		newmis.skin = 2;
+		newmis.touch = PipebombTouch;
+		newmis.nextthink = time + 120;
+		newmis.weapon = 11;
+		newmis.team_no = self.team_no;
+	}
+	makevectors (self.v_angle);
+	if (self.v_angle_x) {
+		newmis.velocity = (((v_forward * 600) + (v_up * 200)) + ((crandom () * v_right) * 10)) + ((crandom () * v_up) * 10);
+	}
+	else {
+		newmis.velocity = aim (self, 10000);
+		newmis.velocity = newmis.velocity * 600;
+		newmis.velocity_z = 200;
+	}
+	newmis.avelocity = '300 300 300';
+	newmis.angles = vectoangles (newmis.velocity);
+	newmis.think = GrenadeExplode;
+	if ((birthday == 1) && (random () < 0.2)) {
+		setmodel (newmis, "progs/grenade3.mdl");
+	}
+	else {
+		setmodel (newmis, "progs/grenade2.mdl");
+	}
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, self.origin);
 };
 
 void () spike_touch;
@@ -2030,28 +2043,32 @@ void () W_Attack =
 
 void () W_PrintWeaponMessage =
 {
+	server_status = infokey (world, "status");
+	
     if ((self.current_weapon == WEAP_AXE) && allow_hook) {
-	if (self.playerclass != PC_SPY)
-	    sprint (self, PRINT_MEDIUM, "Axe selected\n");
-    } else if (self.current_weapon == WEAP_HOOK)
-	sprint (self, PRINT_MEDIUM, "grappling hook selected\n");
+		if (self.playerclass != PC_SPY)
+			sprint (self, PRINT_MEDIUM, "Axe selected\n");
+    }
+	else if (self.current_weapon == WEAP_HOOK)
+		sprint (self, PRINT_MEDIUM, "grappling hook selected\n");
     else if (self.current_weapon == WEAP_GRENADE_LAUNCHER) {
-	if (self.weaponmode == GL_NORMAL)
-	    sprint (self, PRINT_MEDIUM, "Normal grenade mode\n");
-	else if (cb_prematch_time > time)
-	    sprint (self, PRINT_MEDIUM, "Pipebomb mode not available in PreMatch\n");
-	else if (self.weaponmode == GL_PIPEBOMB)
-	    sprint (self, PRINT_MEDIUM, "Pipebomb mode\n");
-    } else if (self.current_weapon == WEAP_SNIPER_RIFLE)
-	sprint (self, PRINT_MEDIUM, "Sniper rifle ready\n");
-    else if (self.current_weapon == WEAP_AUTO_RIFLE)
-	sprint (self, PRINT_MEDIUM, "rifle on fully auto\n");
+		if (self.weaponmode == GL_NORMAL)
+			sprint (self, PRINT_MEDIUM, "Normal grenade mode\n");
+		else if ( (server_status == "Prematch") || (server_status == "Countdown") )
+			sprint (self, PRINT_MEDIUM, "Pipebomb mode not available in PreMatch\n");
+		else if (self.weaponmode == GL_PIPEBOMB)
+			sprint (self, PRINT_MEDIUM, "Pipebomb mode\n");
+    }
+	else if (self.current_weapon == WEAP_SNIPER_RIFLE)
+		sprint (self, PRINT_MEDIUM, "Sniper rifle ready\n");
+	else if (self.current_weapon == WEAP_AUTO_RIFLE)
+		sprint (self, PRINT_MEDIUM, "rifle on fully auto\n");
     else if (self.current_weapon == WEAP_TRANQ)
-	sprint (self, PRINT_MEDIUM, "Tranquiliser gun selected\n");
+		sprint (self, PRINT_MEDIUM, "Tranquiliser gun selected\n");
     else if (self.current_weapon == WEAP_BIOWEAPON)
-	sprint (self, PRINT_MEDIUM, "BioWeapon readied\n");
+		sprint (self, PRINT_MEDIUM, "BioWeapon readied\n");
     else if (self.current_weapon == WEAP_MEDIKIT)
-	sprint (self, PRINT_MEDIUM, "Medikit/Bioweapon readied\n");
+		sprint (self, PRINT_MEDIUM, "Medikit/Bioweapon readied\n");
 };
 
 void () W_ChangeWeapon =
@@ -2401,106 +2418,110 @@ void () ImpulseCommands =
 {
     local entity te;
     local string st;
+	
+	
+	server_status = infokey (world, "status");
 
     if ((self.last_impulse == TF_DETPACK) && self.impulse)
-	TeamFortress_SetDetpack (self.impulse);
+		TeamFortress_SetDetpack (self.impulse);
 
     if ((self.impulse == 8) && (self.current_menu != MENU_CLASSHELP)) {
-	self.current_menu = MENU_CLASSHELP;
-	self.menu_count = 25;
-	self.menu_displaytime = 0;
+		self.current_menu = MENU_CLASSHELP;
+		self.menu_count = 25;
+		self.menu_displaytime = 0;
     }
     if ((self.impulse == 242) && (birthday == 0)) {
-	st = infokey (world, "birthday");
-	if (st != "off") {
-	    self.current_menu = 23;
-	    self.menu_count = 25;
-	    self.menu_displaytime = 0;
-	    self.impulse = 0;
-	    return;
-	}
+		st = infokey (world, "birthday");
+		if (st != "off") {
+			self.current_menu = 23;
+			self.menu_count = 25;
+			self.menu_displaytime = 0;
+			self.impulse = 0;
+			return;
+		}
     }
-    if ((cb_prematch_time > time) || cease_fire) {
-	PreMatchImpulses ();
-	DeadImpulses ();
-	self.impulse = 0;
-	return;
+    if ((server_status == "Prematch") || (server_status == "Countdown") || cease_fire) {
+		PreMatchImpulses ();
+		DeadImpulses ();
+		self.impulse = 0;
+		return;
     }
     if (self.impulse == TF_SPECIAL_SKILL)
-	UseSpecialSkill ();
+		UseSpecialSkill ();
 
     if ((!self.is_building && !self.is_detpacking) && !self.is_feigning) {
-	if (((self.impulse >= 1) && (self.impulse < 8)) || (self.impulse == TF_MEDIKIT))
-	    W_ChangeWeapon ();
-	else if (allow_hook && ((self.impulse == HOOK_IMP1) || (self.impulse == HOOK_IMP2)))
-	    W_ChangeWeapon ();
-	else if (self.impulse == AXE_IMP)
-	    W_ChangeWeapon ();
-	else if ((self.impulse == 10) || (self.impulse == 12))
-	    CycleWeaponCommand ();
-	else if ((self.impulse == 69) && (self.last_weapon != 0))
-	    W_ChangeWeapon ();
-	else if (self.impulse == TF_GRENADE_1)
-	    TeamFortress_PrimeGrenade ();
-	else if (self.impulse == TF_GRENADE_2)
-	    TeamFortress_PrimeGrenade ();
-	else if (self.impulse == TF_RELOAD)
-	    TeamFortress_ReloadCurrentWeapon ();
-	else if (self.impulse == TF_DETPACK_5)
-	    TeamFortress_SetDetpack (5);
-	else if (self.impulse == TF_DETPACK_20)
-	    TeamFortress_SetDetpack (20);
-	else if (self.impulse == TF_DETPACK_50)
-	    TeamFortress_SetDetpack (50);
-	else if (self.impulse == TF_DROP_AMMO) {
-	    self.current_menu = MENU_DROP;
-	    self.menu_count = 20;
-	} else if (self.impulse == TF_DISCARD)
-	    TeamFortress_Discard ();
+		if (((self.impulse >= 1) && (self.impulse < 8)) || (self.impulse == TF_MEDIKIT))
+			W_ChangeWeapon ();
+		else if (allow_hook && ((self.impulse == HOOK_IMP1) || (self.impulse == HOOK_IMP2)))
+			W_ChangeWeapon ();
+		else if (self.impulse == AXE_IMP)
+			W_ChangeWeapon ();
+		else if ((self.impulse == 10) || (self.impulse == 12))
+			CycleWeaponCommand ();
+		else if ((self.impulse == 69) && (self.last_weapon != 0))
+			W_ChangeWeapon ();
+		else if (self.impulse == TF_GRENADE_1)
+			TeamFortress_PrimeGrenade ();
+		else if (self.impulse == TF_GRENADE_2)
+			TeamFortress_PrimeGrenade ();
+		else if (self.impulse == TF_RELOAD)
+			TeamFortress_ReloadCurrentWeapon ();
+		else if (self.impulse == TF_DETPACK_5)
+			TeamFortress_SetDetpack (5);
+		else if (self.impulse == TF_DETPACK_20)
+			TeamFortress_SetDetpack (20);
+		else if (self.impulse == TF_DETPACK_50)
+			TeamFortress_SetDetpack (50);
+		else if (self.impulse == TF_DROP_AMMO) {
+			self.current_menu = MENU_DROP;
+			self.menu_count = 20;
+		}
+		else if (self.impulse == TF_DISCARD)
+			TeamFortress_Discard ();
     }
 
     if (self.impulse == TF_INVENTORY)
-	TeamFortress_Inventory ();
+		TeamFortress_Inventory ();
     else if ((self.playerclass != 0) && (self.impulse == TF_MEDIC_HELPME))
-	TeamFortress_SaveMe ();
+		TeamFortress_SaveMe ();
     else if ((self.playerclass != 0) && (self.impulse == 82))
-	TeamFortress_Message (1);
+		TeamFortress_Message (1);
     else if ((self.playerclass != 0) && (self.impulse == 83))
-	TeamFortress_Message (2);
+		TeamFortress_Message (2);
     else if ((self.playerclass != 0) && (self.impulse == 84))
-	TeamFortress_Message (3);
+		TeamFortress_Message (3);
     else if ((self.playerclass != 0) && (self.impulse == 85))
-	TeamFortress_Message (4);
+		TeamFortress_Message (4);
     else if ((self.playerclass != 0) && (self.impulse == 86))
-	TeamFortress_Message (5);
+		TeamFortress_Message (5);
     else if (self.impulse == TF_GRENADE_T)
-	TeamFortress_ThrowGrenade ();
+		TeamFortress_ThrowGrenade ();
     else if (self.impulse == TF_ID)
-	TeamFortress_ID ();
+		TeamFortress_ID ();
     else if (self.impulse == TF_SHOW_IDS)
-	TeamFortress_ShowIDs ();
+		TeamFortress_ShowIDs ();
     else if ((self.playerclass != 0) && (self.impulse == 194))
-	DropGoalItems ();
+		DropGoalItems ();
     else if (self.impulse == TF_PB_DETONATE)
-	TeamFortress_DetonatePipebombs ();
+		TeamFortress_DetonatePipebombs ();
     else if (self.impulse == TF_DETPACK_STOP)
-	TeamFortress_DetpackStop ();
+		TeamFortress_DetpackStop ();
     else if ((self.impulse == TF_ENGINEER_DETSENTRY) && (self.playerclass == PC_ENGINEER))
-	DestroyBuilding (self, "building_sentrygun");
+		DestroyBuilding (self, "building_sentrygun");
     else if ((self.impulse == TF_ENGINEER_DETDISP) && (self.playerclass == PC_ENGINEER))
-	DestroyBuilding (self, "building_dispenser");
+		DestroyBuilding (self, "building_dispenser");
     else if ((self.impulse == 196) && (self.playerclass == PC_ENGINEER))
-	DestroyBuilding (self, "building_teleporter_exit");
+		DestroyBuilding (self, "building_teleporter_exit");
     else if ((self.impulse == 197) && (self.playerclass == PC_ENGINEER))
-	DestroyBuilding (self, "building_teleporter_entrance");
+		DestroyBuilding (self, "building_teleporter_entrance");
     else if ((self.impulse == TF_SPY_SPY) && (self.playerclass == PC_SPY))
-	TeamFortress_SpyGoUndercover ();
+		TeamFortress_SpyGoUndercover ();
     else if ((self.impulse == TF_SPY_DIE) && (self.playerclass == PC_SPY))
-	TeamFortress_SpyFeignDeath (0);
+		TeamFortress_SpyFeignDeath (0);
     else if ((self.impulse == TF_SPY_SILENT_DIE) && (self.playerclass == PC_SPY))
-	TeamFortress_SpyFeignDeath (1);
+		TeamFortress_SpyFeignDeath (1);
     else if ((self.impulse == TF_ENGINEER_BUILD) && (self.playerclass == PC_ENGINEER))
-	TeamFortress_EngineerBuild ();
+		TeamFortress_EngineerBuild ();
     else if (self.impulse == FLAG_INFO) {
         if (CTF_Map == 1)
             TeamFortress_CTF_FlagInfo ();
@@ -2513,7 +2534,7 @@ void () ImpulseCommands =
         DeadImpulses ();
 
     if (self.impulse == TF_DETPACK)
-	self.last_impulse = self.impulse;
+		self.last_impulse = self.impulse;
 
     self.impulse = 0;
 };
@@ -2552,107 +2573,120 @@ void () PreMatchImpulses =
 
 void () DeadImpulses =
 {
+	
+	
+	server_status = infokey (world, "status");
+	
     if (self.impulse == TF_SHOWTF)
-	TeamFortress_ShowTF ();
+		TeamFortress_ShowTF ();
     else if (self.impulse == TF_AUTOZOOM)
-	TeamFortress_AutoZoomToggle ();
+		TeamFortress_AutoZoomToggle ();
     else if (self.impulse == TF_SHOWLEGALCLASSES)
-	TeamFortress_DisplayLegalClasses ();
+		TeamFortress_DisplayLegalClasses ();
 	else if (self.impulse == TF_CHANGETEAM)
-	TeamFortress_ChangeTeam ();
+		TeamFortress_ChangeTeam ();
     else if ((self.impulse > 100) && (self.impulse <= (100 + 10))) {
-    TeamFortress_ChangeClass ();
-    } else if ((self.playerclass != 0) && (self.impulse == 99)
-	       && (deathmatch == 3) && (cb_prematch_time < time)) {
-	self.current_menu = 20;
-	self.menu_count = 25;
-    } else if (self.is_admin == 1) {
-	if (self.impulse == 193)
-	    Admin_CeaseFire ();
-	else if (self.impulse == 192)
-	    Admin_CountPlayers ();
-	else if (self.impulse == 189)
-	    Admin_CycleDeal ();
-	else if ((self.impulse == 190) && (self.admin_mode == 1))
-	    Admin_DoKick ();
-	else if ((self.impulse == 191) && (self.admin_mode == 1))
-	    Admin_DoBan ();
-	else if ((self.impulse == 195) && (self.admin_mode == 1))
-	    Admin_CycleDeal ();
-	else if (self.impulse == 198)
-	    Admin_ListIPs ();
+		TeamFortress_ChangeClass ();
+    }
+	else if ((self.playerclass != 0) && (self.impulse == 99) && (deathmatch == 3) && (server_status == "Match")) {
+		self.current_menu = 20;
+		self.menu_count = 25;
+    }
+	else if (self.is_admin == 1) {
+		if (self.impulse == 193)
+			Admin_CeaseFire ();
+		else if (self.impulse == 192)
+			Admin_CountPlayers ();
+		else if (self.impulse == 189)
+			Admin_CycleDeal ();
+		else if ((self.impulse == 190) && (self.admin_mode == 1))
+			Admin_DoKick ();
+		else if ((self.impulse == 191) && (self.admin_mode == 1))
+			Admin_DoBan ();
+		else if ((self.impulse == 195) && (self.admin_mode == 1))
+			Admin_CycleDeal ();
+		else if (self.impulse == 198)
+			Admin_ListIPs ();
     }
     if (self.impulse == TF_HELP_MAP)
-	TeamFortress_HelpMap ();
+		TeamFortress_HelpMap ();
     else if (self.impulse == TF_STATUS_QUERY)
-	TeamFortress_StatusQuery ();
+		TeamFortress_StatusQuery ();
     else if (self.impulse == TF_TEAM_1)
-	TeamFortress_TeamSet (1, 0);
+		TeamFortress_TeamSet (1, 0);
     else if (self.impulse == TF_TEAM_2)
-	TeamFortress_TeamSet (2, 0);
+		TeamFortress_TeamSet (2, 0);
     else if (self.impulse == TF_TEAM_3)
-	TeamFortress_TeamSet (3, 0);
+		TeamFortress_TeamSet (3, 0);
     else if (self.impulse == TF_TEAM_4)
-	TeamFortress_TeamSet (4, 0);
+		TeamFortress_TeamSet (4, 0);
     else if (self.impulse == TF_TEAM_SCORES)
-	TeamFortress_TeamShowScores (0);
+		TeamFortress_TeamShowScores (0);
     else if (self.impulse == TF_TEAM_CLASSES)
-	TeamFortress_TeamShowMemberClasses (self);
+		TeamFortress_TeamShowMemberClasses (self);
     else if ((self.playerclass == PC_SCOUT) && (self.impulse == TF_SCAN))
-	ScannerSwitch ();
+		ScannerSwitch ();
     else if ((self.playerclass == PC_SCOUT) && (self.impulse == TF_SCAN_SOUND)) {
-	sprint (self, PRINT_HIGH, "Scanner sound: ");
-	if (self.tf_items_flags & 4) {
-	    self.tf_items_flags = self.tf_items_flags - 4;
-	    sprint (self, PRINT_HIGH, "Off\n");
-	} else {
-	    self.tf_items_flags = self.tf_items_flags | 4;
-	    sprint (self, PRINT_HIGH, "On\n");
-	}
-    } else if ((self.playerclass == 1) && (self.impulse == TF_SCAN_ENEMY)) {
-	sprint (self, PRINT_HIGH, "Scanning for: ");
-	if (self.tf_items_flags & NIT_SCANNER_ENEMY) {
-	    self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_ENEMY;
-	    if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
-		sprint (self, PRINT_HIGH, "Friendlies Only.\n");
-	    else
-		sprint (self, PRINT_HIGH, "Nothing\n");
-	} else {
-	    self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
-	    if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
-		sprint (self, PRINT_HIGH, "Friendlies and Enemies\n");
-	    else
-		sprint (self, PRINT_HIGH, "Enemies Only\n");
-	}
-    } else if ((self.playerclass == 1) && (self.impulse == TF_SCAN_FRIENDLY)) {
-	sprint (self, PRINT_HIGH, "Scanning for: ");
-	if (self.tf_items_flags & NIT_SCANNER_FRIENDLY) {
-	    self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_FRIENDLY;
-	    if (self.tf_items_flags & NIT_SCANNER_ENEMY)
-		sprint (self, PRINT_HIGH, "Enemies Only.\n");
-	    else
-		sprint (self, PRINT_HIGH, "Nothing\n");
-	} else {
-	    self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_FRIENDLY;
-	    if (self.tf_items_flags & NIT_SCANNER_ENEMY)
-		sprint (self, PRINT_HIGH, "Friendlies and Enemies\n");
-	    else
-		sprint (self, PRINT_HIGH, "Friendlies Only\n");
-	}
-    } else if (self.impulse == TF_STATUSBAR_ON) {
-	self.StatusRefreshTime = time + 0.2;
-	self.StatusBarSize = self.StatusBarSize + 1;
-	if (self.StatusBarSize > 2)
-	    self.StatusBarSize = 1;
-    } else if (self.impulse == TF_STATUSBAR_OFF) {
-	self.StatusRefreshTime = time + 60;
-	self.StatusBarSize = 0;
-    } else if ((self.impulse >= 71) && (self.impulse <= 81))
-	StatusRes (self.impulse - 71);
+		sprint (self, PRINT_HIGH, "Scanner sound: ");
+		if (self.tf_items_flags & 4) {
+			self.tf_items_flags = self.tf_items_flags - 4;
+			sprint (self, PRINT_HIGH, "Off\n");
+		}
+		else {
+			self.tf_items_flags = self.tf_items_flags | 4;
+			sprint (self, PRINT_HIGH, "On\n");
+		}
+    }
+	else if ((self.playerclass == 1) && (self.impulse == TF_SCAN_ENEMY)) {
+		sprint (self, PRINT_HIGH, "Scanning for: ");
+		if (self.tf_items_flags & NIT_SCANNER_ENEMY) {
+			self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_ENEMY;
+			if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
+				sprint (self, PRINT_HIGH, "Friendlies Only.\n");
+			else
+				sprint (self, PRINT_HIGH, "Nothing\n");
+		}
+		else {
+			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_ENEMY;
+			if (self.tf_items_flags & NIT_SCANNER_FRIENDLY)
+				sprint (self, PRINT_HIGH, "Friendlies and Enemies\n");
+			else
+				sprint (self, PRINT_HIGH, "Enemies Only\n");
+		}
+    }
+	else if ((self.playerclass == 1) && (self.impulse == TF_SCAN_FRIENDLY)) {
+		sprint (self, PRINT_HIGH, "Scanning for: ");
+		if (self.tf_items_flags & NIT_SCANNER_FRIENDLY) {
+			self.tf_items_flags = self.tf_items_flags - NIT_SCANNER_FRIENDLY;
+			if (self.tf_items_flags & NIT_SCANNER_ENEMY)
+				sprint (self, PRINT_HIGH, "Enemies Only.\n");
+			else
+				sprint (self, PRINT_HIGH, "Nothing\n");
+		}
+		else {
+			self.tf_items_flags = self.tf_items_flags | NIT_SCANNER_FRIENDLY;
+			if (self.tf_items_flags & NIT_SCANNER_ENEMY)
+				sprint (self, PRINT_HIGH, "Friendlies and Enemies\n");
+			else
+				sprint (self, PRINT_HIGH, "Friendlies Only\n");
+		}
+    }
+	else if (self.impulse == TF_STATUSBAR_ON) {
+		self.StatusRefreshTime = time + 0.2;
+		self.StatusBarSize = self.StatusBarSize + 1;
+		if (self.StatusBarSize > 2)
+			self.StatusBarSize = 1;
+    }
+	else if (self.impulse == TF_STATUSBAR_OFF) {
+		self.StatusRefreshTime = time + 60;
+		self.StatusBarSize = 0;
+    }
+	else if ((self.impulse >= 71) && (self.impulse <= 81))
+		StatusRes (self.impulse - 71);
     else if (self.impulse == TF_ALIAS_CHECK) {
-	sprint (self, PRINT_HIGH, "Aliases checked.\n");
-	self.got_aliases = 1;
-	self.impulse = 0;
+		sprint (self, PRINT_HIGH, "Aliases checked.\n");
+		self.got_aliases = 1;
+		self.impulse = 0;
     }
 };
 
