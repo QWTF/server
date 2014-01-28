@@ -1,0 +1,22 @@
+FTEQCC Changes:
+
+Changes from build 3343 to version 1.00:
+- Multiple fixes and patches from Blub\0 and divVerrent
+- Fixes to temps and array references
+- Resolve parameter conflict in statements like func(array[idx], func2(blah))
+- local float blob = someforumla; works now
+- Support for -TDP and #pragma TARGET DP for DarkPlaces specific progs target
+- Fix for #if defined(A) && defined(B)
+- Reject double dot macro names
+- #if 0 works in QC code
+- Intrinsics patch
+- New line counting in multi-line comments corrected
+- Unary operators favor single term except for unary not (warning if it consumes multiple terms)
+- Added more ways to optimize logic (a+0 = a)
+- Added -fassumeint so assume constants are ints instead of floats
+- __NULL__ no longer triggers deprecation warnings
+- Removed limit on macro content length
+- Added -ffiletimes argument, causes FTEQCC to ignore the compile if there were no changes, possibly incompatible with other features
+- Support for version 3 progs, use -TQTEST or #pragma TARGET QTEST at your own risk!
+- Accept trailing commans on enum and enumflags
+- Misc fixes
