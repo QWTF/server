@@ -55,6 +55,8 @@ float respawn_delay_time;
 float prematch_countdown = 11;
 float countdown_start_time;
 string server_status;
+float time_remaining_check;
+
 
 //
 // FortressMap stuff

@@ -5,19 +5,21 @@
 Changelog:
 
 --------------------------------------------
-Version 2.92beta	 		01/27/2014
+Version 2.92beta	 		01/28/2014
 --------------------------------------------
 
 Features Added:
-	- No more prematch timer (yay!). Now, all players must type /ready for the match to begin. (Up2)
+	- No more prematch timer (yay!). Now, all players must type /ready for the match to begin. The
+	  serverinfo pm field is ignored. However, serverinfo c/clan must be "on" (Up2)
 	- New serverinfo status fields set by the game: (Up2)
 		"Prematch" when serverinfo "c" or "clan" is on but match hasn't started
 		"Countdown" when countdown is in progress
 		"Match" when a clan game is in progress
 		"Standby" after a match is over and scores are being displayed (before map resets)
+	- Reminders every minute, 30 seconds, and 10 seconds of time remaining. (Up2)
 		
 	- In the future, I'll add serverinfo status:
-		"Practice" For practice mode (CURRENTLY PLANNED!)
+		"Practice" for practice mode (CURRENTLY PLANNED!)
 		"Public" for non-clan battle games (CURRENTLY PLANNED!)
 
 

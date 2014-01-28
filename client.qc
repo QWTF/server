@@ -1287,34 +1287,48 @@ Also, this function is executed every 0.1 seconds.
 	local string clanbattle;
 	local string minutes;
 	local float time_remaining;
+	local float minutes_round;
+	local string bracket_open;
 		
 	time_remaining = rint (timelimit - (time - (countdown_start_time + prematch_countdown) ));
+	bracket_open = "\[";
 	
 	clanbattle = infokey (world, "c");
 	if (clanbattle == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
 		clanbattle = infokey (world, "clan");
 	
 	if (clanbattle == "on") {
-	
-		/*
-		Must fix this later. Currently it spams the bprints.
 		
-		if (server_status == "Match") {
-			if (timelimit && (time_remaining > 59) && (time_remaining < 61) ) {
-				minutes = ftos (time_remaining / 60);
-				//bprint2 (PRINT_HIGH, minutes, " minutes remaining.\n");
+		if ((server_status == "Match") && (time_remaining_check < time) && timelimit) {
+			if (time_remaining > 121) {
+				if ( ( time_remaining / 60) > (rint (time_remaining / 60) ) ) {
+					time_remaining_check = time + (time_remaining - ( ( rint(time_remaining / 60) ) * 60 ) );
+				}
+				else {
+					time_remaining_check = time + 59;
+					minutes_round = rint (time_remaining / 60); // or else we would get " x.0 minutes.." after the first iteration
+					minutes = ftos (minutes_round);
+					
+					bprint2 (PRINT_HIGH, bracket_open, "");
+					bprint2 (PRINT_HIGH, minutes, "\] minutes remaining\n");
+				}
 			}
-			if (timelimit && (time_remaining == 60) ) {
-				bprint (PRINT_HIGH, "1 minute remaining.\n");
-				return;
+			if (time_remaining == 120) {
+				time_remaining_check = time + 59;
+				bprint (PRINT_HIGH, "\[2\] minutes remaining\n");
 			}
-			if (timelimit && (time_remaining == 30) )
-				bprint (PRINT_HIGH, "30 seconds remaining.\n");
-			if (timelimit && (time_remaining == 10) )
-				bprint (PRINT_HIGH, "10 seconds remaining.\n");
+			if (time_remaining == 60) {
+				time_remaining_check = time + 29;
+				bprint (PRINT_HIGH, "\[1\] minute remaining\n");
+			}
+			if (time_remaining == 30) {
+				time_remaining_check = time + 19;
+				bprint (PRINT_HIGH, "\[30\] seconds remaining\n");
+			}
+			if (time_remaining == 10)
+				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
 		}
-		*/
-	
+		
 		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) )
 			NextLevel ();
 		else if (fraglimit && (self.frags >= fraglimit))
