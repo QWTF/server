@@ -98,7 +98,7 @@ void () TeamFortress_PlayersReady =
 		}
 
 		// Capture this player's vote
-		if (self.team_no != 0) { // You must be on a team to /ready
+		if ( (self.team_no != 0) && (self.playerclass != 0) ) { // You must be on a team and have picked a class to /ready
 			arr_ready_voters[ready_votes] = self.tf_id;
 			ready_votes++;
 			bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
