@@ -1,5 +1,5 @@
 *============================================================================*
-* TeamFortress v2.92a                                            versions.txt *
+* TeamFortress v2.92beta                                        versions.txt *
 *============================================================================*
 
 Changelog:
@@ -21,6 +21,9 @@ Features Added:
 	- In the future, I'll add serverinfo status:
 		"Practice" for practice mode (CURRENTLY PLANNED!)
 		"Public" for non-clan battle games (CURRENTLY PLANNED!)
+		
+		todo:
+		enable gren1, gren2, pipebomb, dispenser, sentrygun during pm. detdispenser, detsentry, and detpipe at countdown
 
 
 Changes:

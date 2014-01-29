@@ -1325,8 +1325,10 @@ Also, this function is executed every 0.1 seconds.
 				time_remaining_check = time + 19;
 				bprint (PRINT_HIGH, "\[30\] seconds remaining\n");
 			}
-			if (time_remaining == 10)
+			if (time_remaining == 10) {
 				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
+				time_remaining_check = time + 5; // so we don't spam
+				}
 		}
 		
 		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) )
