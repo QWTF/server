@@ -72,7 +72,6 @@ void () TeamFortress_PlayersReady =
 {
 	server_status = infokey (world, "status");
     if (server_status == "Prematch") { // You can /ready up/down ONLY during prematch (not even countdown!)
-		local float ready_votes_needed;
 		local float total_players;
 		local float i;
 		local entity search;
@@ -84,15 +83,12 @@ void () TeamFortress_PlayersReady =
 			total_players += TeamFortress_TeamGetNoPlayers (i);
 		}
     
-		// Calculate how many votes are still needed
-		ready_votes_needed = (total_players - ready_votes);
-    
 		// If player has already voted, withdraw their vote
 		for (i = 0; i < ready_votes; i++) {
 			if (arr_ready_voters[i] == self.tf_id) {
 				ready_votes--;
 				arr_ready_voters[i] = -1;
-				bprint(PRINT_HIGH, self.netname, " is not ready ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
+				bprint(PRINT_HIGH, self.netname, " is not ready ", ftos (ready_votes), "¯", ftos (total_players), "‘\n");
 				return;
 			}
 		}
@@ -101,7 +97,7 @@ void () TeamFortress_PlayersReady =
 		if ( (self.team_no != 0) && (self.playerclass != 0) ) { // You must be on a team and have picked a class to /ready
 			arr_ready_voters[ready_votes] = self.tf_id;
 			ready_votes++;
-			bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (ready_votes_needed), "‘\n");
+			bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (total_players), "‘\n");
 		}
 		
 		// If required number of votes are set, end pm and start the match
@@ -792,14 +788,13 @@ void () TeamFortress_GrenadePrimed =
 
     user = self.owner;
     if (!(user.tfstate & 1024) && !user.deadflag) {
-	self.nextthink = time + 0.1;
-	if (!self.think)
-	    dremove (self);
+		self.nextthink = time + 0.1;
+		if (!self.think)
+			dremove (self);
 
-	if (time > self.heat)
-	    TeamFortress_ExplodePerson ();
-
-	return;
+		if (time > self.heat)
+			TeamFortress_ExplodePerson ();
+		return;
     }
     if (!(user.tfstate & 1))
 	dprint ("GrenadePrimed logic error\n");
