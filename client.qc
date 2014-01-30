@@ -1299,13 +1299,13 @@ Also, this function is executed every 0.1 seconds.
 	
 	if (clanbattle == "on") {
 		
-		if ((server_status == "Match") && (time_remaining_check < time) && timelimit) {
+		if ((server_status == "Match") && (anti_spam_timer < time) && timelimit) {
 			if (time_remaining > 121) {
 				if ( ( time_remaining / 60) > (rint (time_remaining / 60) ) ) {
-					time_remaining_check = time + (time_remaining - ( ( rint(time_remaining / 60) ) * 60 ) );
+					anti_spam_timer = time + (time_remaining - ( ( rint(time_remaining / 60) ) * 60 ) );
 				}
 				else {
-					time_remaining_check = time + 59;
+					anti_spam_timer = time + 59;
 					minutes_round = rint (time_remaining / 60); // or else we would get " x.0 minutes.." after the first iteration
 					minutes = ftos (minutes_round);
 					
@@ -1314,21 +1314,21 @@ Also, this function is executed every 0.1 seconds.
 				}
 			}
 			if (time_remaining == 120) {
-				time_remaining_check = time + 59;
+				anti_spam_timer = time + 59;
 				bprint (PRINT_HIGH, "\[2\] minutes remaining\n");
 			}
 			if (time_remaining == 60) {
-				time_remaining_check = time + 29;
+				anti_spam_timer = time + 29;
 				bprint (PRINT_HIGH, "\[1\] minute remaining\n");
 			}
 			if (time_remaining == 30) {
-				time_remaining_check = time + 19;
+				anti_spam_timer = time + 19;
 				bprint (PRINT_HIGH, "\[30\] seconds remaining\n");
 			}
 			if (time_remaining == 10) {
+				anti_spam_timer = time + 5;
 				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
-				time_remaining_check = time + 5; // so we don't spam
-				}
+			}
 		}
 		
 		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) )
