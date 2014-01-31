@@ -2305,9 +2305,9 @@ void () CycleWeaponCommand =
     local float lw;
 
     if ((self.weaponmodel == string_null) || (self.current_weapon == 0))
-	return;
+		return;
     if (self.tfstate & TFSTATE_RELOADING)
-	return;
+		return;
 
     it = self.weapons_carried;
     self.impulse = 0;
@@ -2315,99 +2315,115 @@ void () CycleWeaponCommand =
     lw = self.current_weapon;
 
     while (TRUE) {
-	am = 0;
-	cont = 0;
+		am = 0;
+		cont = 0;
 
-	if (self.current_weapon == WEAP_AXE)
-	    self.current_weapon = WEAP_SPANNER;
-	else if (self.current_weapon == WEAP_SPANNER) {
-	    self.current_weapon = WEAP_SHOTGUN;
-	    if (self.ammo_shells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_SHOTGUN) {
-	    self.current_weapon = WEAP_LASER;
-	    if (self.ammo_nails < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_LASER) {
-	    self.current_weapon = WEAP_TRANQ;
-	    if (self.ammo_shells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_TRANQ) {
-	    self.current_weapon = WEAP_SNIPER_RIFLE;
-	    if (self.ammo_shells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
-	    self.current_weapon = WEAP_AUTO_RIFLE;
-	    if (self.ammo_shells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_AUTO_RIFLE) {
-	    self.current_weapon = WEAP_SUPER_SHOTGUN;
-	    if (self.ammo_shells < 2)
-		am = 1;
-	} else if (self.current_weapon == WEAP_SUPER_SHOTGUN) {
-	    self.current_weapon = WEAP_NAILGUN;
-	    if (self.ammo_nails < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_NAILGUN) {
-	    self.current_weapon = WEAP_SUPER_NAILGUN;
-	    if (self.ammo_nails < 2)
-		am = 1;
-	} else if (self.current_weapon == WEAP_SUPER_NAILGUN) {
-	    self.current_weapon = WEAP_GRENADE_LAUNCHER;
-	    self.weaponmode = 0;
-	    if (self.ammo_rockets < 1)
-		am = 1;
-	} else if ((self.current_weapon == WEAP_GRENADE_LAUNCHER) && (self.weaponmode == GL_NORMAL)) {
-	    self.current_weapon = WEAP_GRENADE_LAUNCHER;
-	    self.weaponmode = GL_PIPEBOMB;
-	    if (self.ammo_rockets < 1)
-		am = 1;
-	} else if ((self.current_weapon == WEAP_GRENADE_LAUNCHER) && (self.weaponmode == GL_PIPEBOMB)) {
-	    self.current_weapon = WEAP_ROCKET_LAUNCHER;
-	    if (self.ammo_rockets < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_ROCKET_LAUNCHER) {
-	    self.current_weapon = WEAP_LIGHTNING;
-	    if (self.ammo_cells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_LIGHTNING) {
-	    self.current_weapon = WEAP_FLAMETHROWER;
-	    if (self.ammo_cells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_FLAMETHROWER) {
-	    self.current_weapon = WEAP_INCENDIARY;
-	    if (self.ammo_rockets < 3)
-		am = 1;
-	} else if (self.current_weapon == WEAP_INCENDIARY) {
-	    self.current_weapon = WEAP_ASSAULT_CANNON;
-	    if (self.ammo_cells < 7)
-		am = 1;
-	    if (self.ammo_shells < 1)
-		am = 1;
-	} else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
-	    self.current_weapon = WEAP_HOOK;
-	    if (!allow_hook)
-		am = 1;
-	} else if (self.current_weapon == WEAP_HOOK)
-	    self.current_weapon = WEAP_MEDIKIT;
-	else if (self.current_weapon == WEAP_BIOWEAPON)
-	    self.current_weapon = WEAP_MEDIKIT;
-	else if (self.current_weapon == WEAP_MEDIKIT)
-	    self.current_weapon = WEAP_AXE;
+		if (self.current_weapon == WEAP_AXE)
+			self.current_weapon = WEAP_SPANNER;
+		else if (self.current_weapon == WEAP_SPANNER) {
+			self.current_weapon = WEAP_SHOTGUN;
+			if (self.ammo_shells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_SHOTGUN) {
+			self.current_weapon = WEAP_LASER;
+			if (self.ammo_nails < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_LASER) {
+			self.current_weapon = WEAP_TRANQ;
+			if (self.ammo_shells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_TRANQ) {
+			self.current_weapon = WEAP_SNIPER_RIFLE;
+			if (self.ammo_shells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_SNIPER_RIFLE) {
+			self.current_weapon = WEAP_AUTO_RIFLE;
+			if (self.ammo_shells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_AUTO_RIFLE) {
+			self.current_weapon = WEAP_SUPER_SHOTGUN;
+			if (self.ammo_shells < 2)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_SUPER_SHOTGUN) {
+			self.current_weapon = WEAP_NAILGUN;
+			if (self.ammo_nails < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_NAILGUN) {
+			self.current_weapon = WEAP_SUPER_NAILGUN;
+			if (self.ammo_nails < 2)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_SUPER_NAILGUN) {
+			self.current_weapon = WEAP_GRENADE_LAUNCHER;
+			self.weaponmode = 0;
+			if (self.ammo_rockets < 1)
+				am = 1;
+		}
+		else if ((self.current_weapon == WEAP_GRENADE_LAUNCHER) && (self.weaponmode == GL_NORMAL)) {
+			self.current_weapon = WEAP_GRENADE_LAUNCHER;
+			self.weaponmode = GL_PIPEBOMB;
+			if (self.ammo_rockets < 1)
+				am = 1;
+		}
+		else if ((self.current_weapon == WEAP_GRENADE_LAUNCHER) && (self.weaponmode == GL_PIPEBOMB)) {
+			self.current_weapon = WEAP_ROCKET_LAUNCHER;
+			if (self.ammo_rockets < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_ROCKET_LAUNCHER) {
+			self.current_weapon = WEAP_LIGHTNING;
+			if (self.ammo_cells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_LIGHTNING) {
+			self.current_weapon = WEAP_FLAMETHROWER;
+			if (self.ammo_cells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_FLAMETHROWER) {
+			self.current_weapon = WEAP_INCENDIARY;
+			if (self.ammo_rockets < 3)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_INCENDIARY) {
+			self.current_weapon = WEAP_ASSAULT_CANNON;
+			if (self.ammo_cells < 7)
+				am = 1;
+			if (self.ammo_shells < 1)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_ASSAULT_CANNON) {
+			self.current_weapon = WEAP_HOOK;
+			if (!allow_hook)
+				am = 1;
+		}
+		else if (self.current_weapon == WEAP_HOOK)
+			self.current_weapon = WEAP_MEDIKIT;
+		else if (self.current_weapon == WEAP_BIOWEAPON)
+			self.current_weapon = WEAP_MEDIKIT;
+		else if (self.current_weapon == WEAP_MEDIKIT)
+			self.current_weapon = WEAP_AXE;
 
-	if (loopcount > 30)
-	    return;
+		if (loopcount > 30)
+			return;
 
-	loopcount = loopcount + 1;
-	if ((self.weapons_carried & self.current_weapon) && (am == 0)) {
-	    if (self.current_weapon != WEAP_GRENADE_LAUNCHER)
-		self.weaponmode = 0;
-	    self.last_weapon = lw;
-	    W_SetCurrentAmmo ();
-	    W_PrintWeaponMessage ();
-	    self.StatusRefreshTime = time + 0.1;
-	    return;
-	}
+		loopcount = loopcount + 1;
+		if ((self.weapons_carried & self.current_weapon) && (am == 0)) {
+			if (self.current_weapon != WEAP_GRENADE_LAUNCHER)
+				self.weaponmode = 0;
+			self.last_weapon = lw;
+			W_SetCurrentAmmo ();
+			W_PrintWeaponMessage ();
+			self.StatusRefreshTime = time + 0.1;
+			return;
+		}
     }
 };
 
@@ -2542,25 +2558,26 @@ void () ImpulseCommands =
 void () PreMatchImpulses =
 {
     if (((self.impulse >= 1) && (self.impulse < 8)) || (self.impulse == TF_MEDIKIT))
-	W_ChangeWeapon ();
+		W_ChangeWeapon ();
     else if (allow_hook && ((self.impulse == HOOK_IMP1) || (self.impulse == HOOK_IMP2)))
-	W_ChangeWeapon ();
+		W_ChangeWeapon ();
     else if (self.impulse == AXE_IMP)
-	W_ChangeWeapon ();
+		W_ChangeWeapon ();
     else if ((self.impulse == 10) || (self.impulse == 12))
-	CycleWeaponCommand ();
+		CycleWeaponCommand ();
 
     if (self.impulse == TF_INVENTORY)
-	TeamFortress_Inventory ();
+		TeamFortress_Inventory ();
     else if (self.impulse == TF_ID)
-	TeamFortress_ID ();
+		TeamFortress_ID ();
     else if (self.impulse == FLAG_INFO) {
-	if (CTF_Map == TRUE)
-	    TeamFortress_CTF_FlagInfo ();
-	else
-	    TeamFortress_DisplayDetectionItems ();
-    } else if (self.impulse == TF_DISPLAYLOCATION)
-	display_location ();
+		if (CTF_Map == TRUE)
+			TeamFortress_CTF_FlagInfo ();
+		else
+			TeamFortress_DisplayDetectionItems ();
+    }
+	else if (self.impulse == TF_DISPLAYLOCATION)
+		display_location ();
     
     if (self.impulse == TF_RPICKUP) {
         TeamFortress_Rpickup ();
@@ -2573,8 +2590,6 @@ void () PreMatchImpulses =
 
 void () DeadImpulses =
 {
-	
-	
 	server_status = infokey (world, "status");
 	
     if (self.impulse == TF_SHOWTF)
@@ -2806,34 +2821,32 @@ void () RemoveGrenade =
     local entity te;
 
     if (self.no_active_napalm_grens > 0) {
+		self.no_active_napalm_grens = 0;
+		self.owner.no_active_napalm_grens = self.owner.no_active_napalm_grens - 1;
+		if (self.owner.no_active_napalm_grens < 0)
+			self.owner.no_active_napalm_grens = 0;
 
-	self.no_active_napalm_grens = 0;
-	self.owner.no_active_napalm_grens = self.owner.no_active_napalm_grens - 1;
-	if (self.owner.no_active_napalm_grens < 0)
-	    self.owner.no_active_napalm_grens = 0;
-
-	te = find (world, classname, "grentimer");
-	while (te) {
-	    if ((te.owner == self.owner) && (te.no_active_napalm_grens > 0))
-		te.no_active_napalm_grens = te.no_active_napalm_grens - 1;
-	    te = find (te, classname, "grentimer");
-	}
-	dremove (self.enemy);
-	dremove (self);
+		te = find (world, classname, "grentimer");
+		while (te) {
+			if ((te.owner == self.owner) && (te.no_active_napalm_grens > 0))
+				te.no_active_napalm_grens = te.no_active_napalm_grens - 1;
+			te = find (te, classname, "grentimer");
+		}
+		dremove (self.enemy);
+		dremove (self);
     }
     if (self.no_active_gas_grens > 0) {
+		self.no_active_gas_grens = 0;
+		self.owner.no_active_gas_grens = self.owner.no_active_gas_grens - 1;
+		if (self.owner.no_active_gas_grens < 0)
+			self.owner.no_active_gas_grens = 0;
 
-	self.no_active_gas_grens = 0;
-	self.owner.no_active_gas_grens = self.owner.no_active_gas_grens - 1;
-	if (self.owner.no_active_gas_grens < 0)
-	    self.owner.no_active_gas_grens = 0;
-
-	te = find (world, classname, "grentimer");
-	while (te) {
-	    if ((te.owner == self.owner) && (te.no_active_gas_grens > 0))
-		te.no_active_gas_grens = te.no_active_gas_grens - 1;
-	    te = find (te, classname, "grentimer");
-	}
-	dremove (self);
+		te = find (world, classname, "grentimer");
+		while (te) {
+			if ((te.owner == self.owner) && (te.no_active_gas_grens > 0))
+				te.no_active_gas_grens = te.no_active_gas_grens - 1;
+			te = find (te, classname, "grentimer");
+		}
+		dremove (self);
     }
 };
