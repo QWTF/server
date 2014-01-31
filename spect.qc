@@ -21,6 +21,8 @@ void () SpectatorConnect =
     self.playerclass = PC_UNDEFINED;
     self.classname = "spectator";
     self.flags = 8;
+	
+	TeamFortress_Alias ("id", TF_ID, 0);
 
     st2 = infokey (world, "apw");
     if (st2 == string_null)
