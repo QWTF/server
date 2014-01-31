@@ -55,7 +55,9 @@ float respawn_delay_time;
 float prematch_countdown = 11;
 float countdown_start_time;
 string server_status;
-float anti_spam_timer;
+float anti_spam_timer_reminder;
+float anti_spam_timer_ready;
+float anti_spam_timer_rpickup;
 
 
 //

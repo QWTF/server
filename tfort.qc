@@ -76,7 +76,6 @@ void () TeamFortress_PlayersReady =
 		local float i;
 		local entity search;
 		local entity tempself;
-		local float anti_spam_timer;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -95,10 +94,10 @@ void () TeamFortress_PlayersReady =
 		}
 
 		// Capture this player's vote
-		if ( (self.team_no != 0) && (self.playerclass != 0) && (anti_spam_timer < time) ) { // You must be on a team and have picked a class to /ready
+		if ( (self.team_no != 0) && (self.playerclass != 0) && (anti_spam_timer_ready < time) ) { // You must be on a team and have picked a class to /ready
 			arr_ready_voters[ready_votes] = self.tf_id;
 			ready_votes++;
-			anti_spam_timer = time + 2; // You can ready up/down once every two seconds
+			anti_spam_timer_ready = time + 2; // You can ready up/down once every two seconds
 			bprint(PRINT_HIGH, self.netname, " is \sready\s ", ftos (ready_votes), "¯", ftos (total_players), "‘\n");
 		}
 		
@@ -129,7 +128,6 @@ void () TeamFortress_Rpickup =
 		local float i;
 		local entity search;
 		local entity tempself;
-		local float anti_spam_timer;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -151,10 +149,10 @@ void () TeamFortress_Rpickup =
 		}
 
 		// Capture this player's vote
-		if (anti_spam_timer < time) {
+		if (anti_spam_timer_rpickup < time) {
 			arr_rpickup_voters[rpickup_votes] = self.tf_id;
 			rpickup_votes++;
-			anti_spam_timer = time + 2; // You can rpickup once every two seconds
+			anti_spam_timer_rpickup = time + 2; // You can rpickup once every two seconds
 			bprint(PRINT_HIGH, self.netname, " votes for \srpickup\s! ", ftos (rpickup_votes), "¯", ftos (rpickup_votes_needed), "‘\n");
 		}
 
