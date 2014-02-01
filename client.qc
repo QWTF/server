@@ -1860,114 +1860,116 @@ void () ClientConnect =
     self.got_aliases = 0;
 
     if (self.netname == string_null)
-	KickCheater (self);
+		KickCheater (self);
 
     TeamFortress_Alias ("id", TF_ID, 0);
 
     local string st;
     st = infokey (self, "sbr");
     if (st == string_null)
-	st = infokey (self, "sbar_res");
+		st = infokey (self, "sbar_res");
 
     if (st == "768")
-	self.StatusBarRes = 8;
+		self.StatusBarRes = 8;
     else if (st == "600")
-	self.StatusBarRes = 7;
+		self.StatusBarRes = 7;
     else if (st == "480")
-	self.StatusBarRes = 6;
+		self.StatusBarRes = 6;
     else if (st == "400")
-	self.StatusBarRes = 5;
+		self.StatusBarRes = 5;
     else if (st == "384")
-	self.StatusBarRes = 4;
+		self.StatusBarRes = 4;
     else if (st == "350")
-	self.StatusBarRes = 3;
+		self.StatusBarRes = 3;
     else if (st == "300")
-	self.StatusBarRes = 2;
+		self.StatusBarRes = 2;
     else if (st == "240")
-	self.StatusBarRes = 1;
+		self.StatusBarRes = 1;
     else
-	self.StatusBarRes = 0;
+		self.StatusBarRes = 0;
 
     st = infokey (self, "sbs");
     if (st == string_null)
-	st = infokey (self, "sbar_size");
+		st = infokey (self, "sbar_size");
 
     self.StatusBarSize = stof (st);
     if ((self.StatusBarSize > 2) || (self.StatusBarSize < 0))
-	self.StatusBarSize = 0;
+		self.StatusBarSize = 0;
 
     TeamFortress_ExecMapScript (self);
     self.has_disconnected = 0;
 
     if (intermission_running)
-	GotoNextMap ();
+		GotoNextMap ();
 
     local string st2;
     st2 = infokey (world, "apw");
     if (st2 == string_null)
-	st2 = infokey (world, "adminpwd");
+		st2 = infokey (world, "adminpwd");
 
     st = infokey (self, "apw");
     if (st == string_null)
-	st = infokey (self, "adminpwd");
+		st = infokey (self, "adminpwd");
 
     if ((st2 != string_null) && (st != string_null) && (st == st2)) {
-	self.is_admin = TRUE;
-	stuffcmd (self, "setinfo apw \"");
-	stuffcmd (self, "\"\n");
-	stuffcmd (self, "setinfo adminpwd \"");
-	stuffcmd (self, "\"\n");
-	TeamFortress_Alias ("countplayers", 192, 0);
-	TeamFortress_Alias ("deal", 189, 0);
-	TeamFortress_Alias ("kick", 190, 0);
-	TeamFortress_Alias ("ban", 191, 0);
-	TeamFortress_Alias ("next", 195, 0);
-	TeamFortress_Alias ("ceasefire", 193, 0);
-	TeamFortress_Alias ("listips", 198, 0);
-    } else
-	self.is_admin = FALSE;
+		self.is_admin = TRUE;
+		stuffcmd (self, "setinfo apw \"");
+		stuffcmd (self, "\"\n");
+		stuffcmd (self, "setinfo adminpwd \"");
+		stuffcmd (self, "\"\n");
+		TeamFortress_Alias ("countplayers", 192, 0);
+		TeamFortress_Alias ("deal", 189, 0);
+		TeamFortress_Alias ("kick", 190, 0);
+		TeamFortress_Alias ("ban", 191, 0);
+		TeamFortress_Alias ("next", 195, 0);
+		TeamFortress_Alias ("ceasefire", 193, 0);
+		TeamFortress_Alias ("listips", 198, 0);
+    }
+	else
+		self.is_admin = FALSE;
 
     if (clanbattle && (self.has_disconnected != 1)) {
-	got_one = 0;
-	st = infokey (self, "tf_id");
-	self.tf_id = stof (st);
-	if ((st != string_null) && (self.tf_id != 0)) {
-	    sprint (self, PRINT_HIGH, "Welcome back!\n");
-	    te = find (world, classname, "ghost");
-	    while (te) {
-		if (te.tf_id == self.tf_id) {
-		    got_one = 1;
-		    TeamFortress_TeamSet (te.team_no, 0);
-		    self.frags = te.frags;
-		    self.real_frags = te.real_frags;
-		    if (!(toggleflags & TFLAG_TEAMFRAGS) && !(toggleflags & TFLAG_FULLTEAMSCORE)) {
-			self.frags = self.real_frags;
-		    }
-		    self.playerclass = te.playerclass;
-		    self.tfstate = te.tfstate;
-		    dremove (te);
-		    te = world;
-		} else
-		    te = find (te, classname, "ghost");
-	    }
-	}
-	if (!got_one) {
-		if (game_locked && (server_status == "Match")) {
-		sprint (self, PRINT_HIGH, "Closed Server. Clan Battle in progress.\n");
-		KickCheater (self);
-		return;
-	    }
-	    last_id = last_id + 20 + random () * 10;
-	    self.tf_id = rint (random () * 10 + last_id);
-	    st = ftos (self.tf_id);
-	    stuffcmd (self, "setinfo tf_id ");
-	    stuffcmd (self, st);
-	    stuffcmd (self, "\n");
-	    sprint (self, PRINT_HIGH, "Your Battle ID is ", st, "\n");
-	}
+		got_one = 0;
+		st = infokey (self, "tf_id");
+		self.tf_id = stof (st);
+		if ((st != string_null) && (self.tf_id != 0)) {
+			sprint (self, PRINT_HIGH, "Welcome back!\n");
+			te = find (world, classname, "ghost");
+			while (te) {
+				if (te.tf_id == self.tf_id) {
+					got_one = 1;
+					TeamFortress_TeamSet (te.team_no, 0);
+					self.frags = te.frags;
+					self.real_frags = te.real_frags;
+					if (!(toggleflags & TFLAG_TEAMFRAGS) && !(toggleflags & TFLAG_FULLTEAMSCORE)) {
+					self.frags = self.real_frags;
+					}
+					self.playerclass = te.playerclass;
+					self.tfstate = te.tfstate;
+					dremove (te);
+					te = world;
+				}
+				else
+					te = find (te, classname, "ghost");
+			}
+		}
+		if (!got_one) {
+			if (game_locked && (server_status == "Match")) {
+				sprint (self, PRINT_HIGH, "Closed Server. Clan Battle in progress.\n");
+				KickCheater (self);
+				return;
+			}
+			last_id = last_id + 20 + random () * 10;
+			self.tf_id = rint (random () * 10 + last_id);
+			st = ftos (self.tf_id);
+			stuffcmd (self, "setinfo tf_id ");
+			stuffcmd (self, st);
+			stuffcmd (self, "\n");
+			sprint (self, PRINT_HIGH, "Your Battle ID is ", st, "\n");
+		}
     }
     if ((server_status == "Prematch") || (server_status == "Countdown"))
-	sprint (self, PRINT_HIGH, "CURRENTLY IN PREMATCH TIME\n");
+		sprint (self, PRINT_HIGH, "CURRENTLY IN PREMATCH TIME\n");
 };
 
 void () ClientDisconnect =
@@ -1992,29 +1994,29 @@ void () ClientDisconnect =
     Engineer_RemoveBuildings (self);
     te = find (world, classname, "detpack");
     while (te) {
-	if (te.owner == self) {
-	    if (te.weaponmode == 1) {
-		TeamFortress_SetSpeed (te.enemy);
-		dremove (te.oldenemy);
-		dremove (te.observer_list);
-	    }
-	    dremove (te);
-	    te = world;
-	}
-	te = find (te, classname, "detpack");
+		if (te.owner == self) {
+			if (te.weaponmode == 1) {
+				TeamFortress_SetSpeed (te.enemy);
+				dremove (te.oldenemy);
+				dremove (te.observer_list);
+			}
+			dremove (te);
+			te = world;
+		}
+		te = find (te, classname, "detpack");
     }
     if (clanbattle && (self.tf_id != 0)) {
-	te = spawn ();
-	te.classname = "ghost";
-	te.tf_id = self.tf_id;
-	te.team_no = self.team_no;
-	te.frags = self.frags;
-	te.real_frags = self.real_frags;
-	te.netname = self.netname;
-	te.playerclass = self.playerclass;
-	if (self.tfstate & 8) {
-	    te.tfstate = 8;
-	}
+		te = spawn ();
+		te.classname = "ghost";
+		te.tf_id = self.tf_id;
+		te.team_no = self.team_no;
+		te.frags = self.frags;
+		te.real_frags = self.real_frags;
+		te.netname = self.netname;
+		te.playerclass = self.playerclass;
+		if (self.tfstate & 8) {
+			te.tfstate = 8;
+		}
     }
     set_suicide_frame ();
     self.netname = string_null;
