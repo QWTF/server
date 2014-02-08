@@ -11,23 +11,25 @@ Version 2.92beta	 		01/28/2014
 Features Added:
 	- No more prematch timer (yay!). Now, all players must type /ready for the match to begin. The
 	  serverinfo pm field is ignored. However, serverinfo c/clan must be "on" (Up2)
+	- Typing /list will print a list of people who are not yet /ready. Works once every 10 seconds. (Up2/gnounc)
 	- New serverinfo status fields set by the game: (Up2)
+		"Public" when serverinfo "c" or "clan" is off
 		"Prematch" when serverinfo "c" or "clan" is on but match hasn't started
 		"Countdown" when countdown is in progress
 		"Match" when a clan game is in progress
 		"Standby" after a match is over and scores are being displayed (before map resets)
 	- Reminders every minute, 30 seconds, and 10 seconds of time remaining. (Up2)
-		
-	- In the future, I'll add serverinfo status:
-		"Practice" for practice mode (CURRENTLY PLANNED!)
-		"Public" for non-clan battle games (CURRENTLY PLANNED!)
-		
-		todo:
-		enable gren1, gren2, pipebomb, dispenser, sentrygun during pm. detdispenser, detsentry, and detpipe at countdown
-
+	- Added "id" command to spectators for two reasons: 1) If you have bind x "+attack;id" bound and change
+	  from player to spectator, you would get unknown alias "id" spam. 2) Doesn't hurt. (Up2)
+	- New countdown menu (similar to KTX) has been fixed. It will automatically detect if you have sbar on,
+	  and if so, turn it off during countdown and then turn it back on when countdown is over. No more flickering.
+	  Must use "serverinfo newcountdown on" at the moment to use it. (Up2/KillJoy)
 
 Changes:
-	- To use the "new" (broken) countdown menu, you must have "serverinfo newcountdown on". Off by default. (Up2)
+	- Cease fire time (serverinfo ceasefire_time or cft) removed, unnecessary with /ready command
+	  Note: This is different than doing ceasefire. cease fire time was a like prematch, except players
+	  were not able to move or shoot before match started. (Up2)
+	- Fixed setinfo sbs/sbr not being detected if you are a spectator. (Up2)
 	- Misc small code changes, alignment changes, etc. (Up2)
 
 --------------------------------------------

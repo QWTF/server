@@ -447,6 +447,7 @@
 
 // "ready" support to get rid of prematch time
 #define TF_READY      200 //Up2: I don't know if 200 is a good number or not. Let's hope it doesnt break anything
+#define TF_LIST      201
 
 /*======================================================*/
 /*	Colors						*/

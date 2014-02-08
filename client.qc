@@ -296,7 +296,6 @@ void () DecodeLevelParms =
 				te.think = CeaseFire_think;
 				te.nextthink = time + 5;
 				te.weapon = 1;
-
 			}
 			
 			st = infokey (world, "lg");
@@ -743,20 +742,22 @@ void () set_suicide_frame;
 void () respawn =
 {
     if (self.has_disconnected == 1)
-	return;
+		return;
     if (cease_fire)
-	return;
+		return;
 
     if (coop) {
-	CopyToBodyQue (self);
-	setspawnparms (self);
-	PutClientInServer ();
-    } else if (deathmatch) {
-	CopyToBodyQue (self);
-	SetNewParms ();
-	PutClientInServer ();
-    } else
-	localcmd ("restart\n");
+		CopyToBodyQue (self);
+		setspawnparms (self);
+		PutClientInServer ();
+    }
+	else if (deathmatch) {
+		CopyToBodyQue (self);
+		SetNewParms ();
+		PutClientInServer ();
+    }
+	else
+		localcmd ("restart\n");
 };
 
 void () ClientKill =
@@ -1159,10 +1160,10 @@ void () PutClientInServer =
 	rj = 1;
 
     if (cease_fire) {
-	sprint (self, PRINT_HIGH, "\n\nCEASE FIRE MODE\n");
-	self.immune_to_check = time + 10;
-	self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
-	TeamFortress_SetSpeed (self);
+		sprint (self, PRINT_HIGH, "\n\nCEASE FIRE MODE\n");
+		self.immune_to_check = time + 10;
+		self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+		TeamFortress_SetSpeed (self);
     }
 };
 
@@ -1615,7 +1616,7 @@ void () PlayerPreThink =
 	self.velocity_z = -100;
     }
     if ((time < self.pausetime) || (cease_fire == 1)) {
-	self.velocity = '0 0 0';
+		self.velocity = '0 0 0';
     }
     if (((time > self.attack_finished) && (self.currentammo == 0)) && (self.weapon > 16)) {
 	self.weapon = W_BestWeapon ();
@@ -1865,36 +1866,43 @@ void () ClientConnect =
     TeamFortress_Alias ("id", TF_ID, 0);
 
     local string st;
-    st = infokey (self, "sbr");
-    if (st == string_null)
-		st = infokey (self, "sbar_res");
+	local string status_bar_size;
+	local string status_bar_res;	
+	
+    status_bar_res = infokey (self, "sbr");
+    if (status_bar_res == string_null)
+		status_bar_res = infokey (self, "sbar_res");
 
-    if (st == "768")
+    if (status_bar_res == "768")
 		self.StatusBarRes = 8;
-    else if (st == "600")
+    else if (status_bar_res == "600")
 		self.StatusBarRes = 7;
-    else if (st == "480")
+    else if (status_bar_res == "480")
 		self.StatusBarRes = 6;
-    else if (st == "400")
+    else if (status_bar_res == "400")
 		self.StatusBarRes = 5;
-    else if (st == "384")
+    else if (status_bar_res == "384")
 		self.StatusBarRes = 4;
-    else if (st == "350")
+    else if (status_bar_res == "350")
 		self.StatusBarRes = 3;
-    else if (st == "300")
+    else if (status_bar_res == "300")
 		self.StatusBarRes = 2;
-    else if (st == "240")
+    else if (status_bar_res == "240")
 		self.StatusBarRes = 1;
     else
 		self.StatusBarRes = 0;
 
-    st = infokey (self, "sbs");
-    if (st == string_null)
-		st = infokey (self, "sbar_size");
+    status_bar_size = infokey (self, "sbs");
+    if (status_bar_size == string_null)
+		status_bar_size = infokey (self, "sbar_size");
 
-    self.StatusBarSize = stof (st);
+    self.StatusBarSize = stof (status_bar_size);
     if ((self.StatusBarSize > 2) || (self.StatusBarSize < 0))
 		self.StatusBarSize = 0;
+		
+	if ( (status_bar_res != string_null) && (status_bar_size != string_null) ) {
+		is_sbar_on = "1";
+	}
 
     TeamFortress_ExecMapScript (self);
     self.has_disconnected = 0;

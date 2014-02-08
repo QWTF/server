@@ -61,30 +61,44 @@ void () SpectatorConnect =
 		stuffcmd (self, ".cfg\n");
     }
     self.motd = 0;
-    st = infokey (self, "sbar_res");
-    if (st == "768")
+	
+	local string status_bar_size;
+	local string status_bar_res;	
+	
+    status_bar_res = infokey (self, "sbr");
+    if (status_bar_res == string_null)
+		status_bar_res = infokey (self, "sbar_res");
+
+    if (status_bar_res == "768")
 		self.StatusBarRes = 8;
-    else if (st == "600")
-        self.StatusBarRes = 7;
-    else if (st == "480")
+    else if (status_bar_res == "600")
+		self.StatusBarRes = 7;
+    else if (status_bar_res == "480")
 		self.StatusBarRes = 6;
-    else if (st == "400")
+    else if (status_bar_res == "400")
 		self.StatusBarRes = 5;
-    else if (st == "384")
+    else if (status_bar_res == "384")
 		self.StatusBarRes = 4;
-    else if (st == "350")
+    else if (status_bar_res == "350")
 		self.StatusBarRes = 3;
-    else if (st == "300")
+    else if (status_bar_res == "300")
 		self.StatusBarRes = 2;
-    else if (st == "240")
+    else if (status_bar_res == "240")
 		self.StatusBarRes = 1;
     else
 		self.StatusBarRes = 0;
 
-    st = infokey (self, "sbar_size");
-    self.StatusBarSize = stof (st);
+    status_bar_size = infokey (self, "sbs");
+    if (status_bar_size == string_null)
+		status_bar_size = infokey (self, "sbar_size");
+
+    self.StatusBarSize = stof (status_bar_size);
     if ((self.StatusBarSize > 2) || (self.StatusBarSize < 0))
 		self.StatusBarSize = 0;
+		
+	if ( (status_bar_res != string_null) && (status_bar_size != string_null) ) {
+		is_sbar_on = "1";
+	}
 };
 
 void () SpectatorDisconnect = {};

@@ -71,11 +71,10 @@ void () UseSpecialSkill =
 void () TeamFortress_PlayersReady =
 {
 	server_status = infokey (world, "status");
-    if (server_status == "Prematch") { // You can /ready up/down ONLY during prematch (not even countdown!)
+    if (server_status == "Prematch") { // You can /ready up/down during prematch only
 		local float total_players;
 		local float i;
 		local entity search;
-		local entity tempself;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -110,13 +109,42 @@ void () TeamFortress_PlayersReady =
 			ent.think = PreMatch_Think; // This starts the countdown in clan.qc
 			//ent.nextthink = time + 5; // Up2: I don't know why +5
 			ent.nextthink = time + 1;
-
 			
 			localcmd ("serverinfo status Countdown\n");
 		}
 		return;
 	}
 }
+
+void () TeamFortress_List_Not_Ready =
+{
+	server_status = infokey (world, "status");
+	
+	if (server_status == "Prematch") {
+		local float i;
+		local entity search;
+				
+		if ( (ready_votes == 0) || (arr_ready_voters[i] != self.tf_id) )
+			sprint (self, PRINT_HIGH, "Please type /ready\n");
+		else if (ready_votes > 0) {
+			if (anti_spam_timer_list < time) {
+				search = find (world, classname, "player");
+				bprint (PRINT_HIGH, "\sPlayers not ready:\s\n");
+				
+				while (search) {
+					for (i = 0; i < ready_votes; i++) {
+						if (arr_ready_voters[i] != search.tf_id) {
+							anti_spam_timer_list = time + 10;
+							bprint2(PRINT_HIGH, search.netname, "\n");
+						}
+					}
+					search = find (search, classname, "player");
+				}
+			}
+		}
+	}
+}
+
 
 //Rpickup code
 void () TeamFortress_Rpickup =
@@ -127,7 +155,6 @@ void () TeamFortress_Rpickup =
 		local float total_players;
 		local float i;
 		local entity search;
-		local entity tempself;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -384,10 +411,10 @@ void () TeamFortress_ChangeClass =
     TeamFortress_SetSkin (self);
     TeamFortress_ExecClassScript (self);
     if (cease_fire) {
-	sprint (self, PRINT_HIGH, "\n\nCEASE FIRE MODE\n");
-	self.immune_to_check = time + 10;
-	self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
-	TeamFortress_SetSpeed (self);
+		sprint (self, PRINT_HIGH, "\n\nCEASE FIRE MODE\n");
+		self.immune_to_check = time + 10;
+		self.tfstate = self.tfstate | TFSTATE_CANT_MOVE;
+		TeamFortress_SetSpeed (self);
     }
 };
 
