@@ -59,32 +59,32 @@ float arr_ready_voters[32];
 void () info_intermission =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
 };
 
 void () SetChangeParms =
 {
     if (self.health <= 0) {
-	SetNewParms ();
-	return;
+		SetNewParms ();
+		return;
     }
     self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY
 					     | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
     if (self.health > 100)
-	self.health = 100;
+		self.health = 100;
     if (self.health < 50)
-	self.health = 50;
+		self.health = 50;
 
     parm1 = self.items;
     parm2 = self.health;
     parm3 = self.armorvalue;
 
     if (self.ammo_shells < 25)
-	parm4 = 25;
+		parm4 = 25;
     else
-	parm4 = self.ammo_shells;
+		parm4 = self.ammo_shells;
 
     parm5 = self.ammo_nails;
     parm6 = self.ammo_rockets;
