@@ -31,6 +31,8 @@ Changes:
 	  were not able to move or shoot before match started. (Up2)
 	- Fixed setinfo sbs/sbr not being detected if you are a spectator. (Up2)
 	- Misc small code changes, alignment changes, etc. (Up2)
+	- Fixed bug where TF didn't detect a match is a draw is four teams were playing (Up2)
+	- Rewrote match output code for alignment bugfixes (Up2)
 
 --------------------------------------------
 Version 2.92a	 			03/15/2012

@@ -1,13 +1,15 @@
 
 void () PreMatch_Think =
 {
-    local float pm_tl;
     local string st;
     local entity te;
     local entity oldself;
     local entity gren;
+	
+	local float time_left;
+	time_left = rint ((countdown_start_time + prematch_countdown) - time);
 
-// Quick and ugly hack. New countdown is currently buggy. Leave it off by default, have user set serverinfo newcountdown 1 to use it.
+// Quick and ugly hack. Leave countdown menu off by default, have user set serverinfo newcountdown on to use it.
 st = infokey (world, "newcountdown");
 if (st == "on") {
 	local string countdown;
@@ -35,38 +37,26 @@ if (st == "on") {
 	local string limhwlong; local string limpyrlong; local string limspylong; local string limenglong; local string limrandlong;
 	
 	local string scoutpad; local string snipepad; local string soldpad; local string demopad; local string medpad; local string hwpad; local string pyrpad; local string spypad; local string engpad; local string randpad;
-
-    te = find (world, classname, "player");
-	pm_tl = rint (cb_prematch_time - time);
 	
-	if (pm_tl > 0) {
-		//localcmd ("serverinfo status Countdown\n"); // maybe later we put this in
+	
+	// If the countdown becomes default, move this code to tfort.qc in ready function, then remove the check for sbar_code_executed
+	local entity search;
+	search = find (world, classname, "player");
+	if ( (is_sbar_on == "1")  && (sbar_code_executed != "1") ) {
+		while (search) {
+			if (search.netname != string_null){
+				stuffcmd (search, "impulse 183\n"); // sbar_off because it causes the countdown menu to flicker
+				sbar_code_executed = "1";
+			}
+			search = find (search, classname, "player");
+		}
 	}
-	
-	if (pm_tl > 60) {
-		st = ftos (pm_tl / 60); // convert from seconds to minutes for the next line
-		bprint2 (PRINT_HIGH, st, " minutes left till Match begins.\n");
-		if (pm_tl < 120) {
-			self.nextthink = time + pm_tl - 60;
-		}
-		else {
-			self.nextthink = time + 60;
-		}
-		return;
-    }
-	else if (pm_tl >= 59) {
-		bprint (PRINT_HIGH, "1 minute left till Match begins.\n");
-		self.nextthink = time + 30;
-		return;
-    }
-	else if (pm_tl >= 29) {
-		bprint (PRINT_HIGH, "30 seconds left till Match begins.\n");
-		self.nextthink = time + 20;
-		return;
-    }
-	else if ((pm_tl >= 1) && (pm_tl < 11)) {
-		st = ftos (pm_tl);
 		
+	if (time_left > 0) {
+		st = ftos (time_left);
+		
+	te = find (world, classname, "player");	
+	
 		while (te) { // Countdown menu
 			if (self.hook_out < time) {
 				sound (te, 0, "buttons/switch04.wav", 1, 0);
@@ -93,10 +83,7 @@ if (st == "on") {
 				else if ((strlen(infokey (world, "rj"))) > 4)
 					rjvalue = "9999";
 				else
-					rjvalue = (infokey (world, "rj"));
-					
-					//add pm
-				
+					rjvalue = (infokey (world, "rj"));				
 				
 				countdown = strcat("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\sCountdown\s: ", st);
 				
@@ -414,19 +401,20 @@ if (st == "on") {
 			centerprint (te, countdown, sinfo_timelimit, sinfo_fraglimit, sinfo_rj, limits, sinfo_map); // Print countdown menu
 			te = find(te, classname, "player");
 		}
-		self.nextthink = time + 0.1;
+		self.nextthink = time + 1;
 		return;
     }
 	
+	if (sbar_code_executed == "1")
+		stuffcmd (search, "impulse 182\n"); // sbar_on
+		
+	localcmd ("serverinfo status Match\n");
     bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
     
 	if (game_locked)
 		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
 }
 else { // no countdown menu, default countdown instead
-
-	local float time_left;
-	time_left = rint ((countdown_start_time + prematch_countdown) - time);
 	
 	if (time_left > 1) {
         st = ftos (time_left);
@@ -508,21 +496,16 @@ void () DumpClanScores =
     local float teamfrags;
     local string st;
     local entity te;
-    local float t1_pl;
-    local float t1_unacc;
-    local float t2_pl;
-    local float t2_unacc;
-    local float t3_pl;
-    local float t3_unacc;
-    local float t4_pl;
-    local float t4_unacc;
-
-    t1_pl = TeamFortress_TeamGetNoPlayers (1);
+    local float t1_pl;	local string players1;	local float t1_unacc;	local string t1frags;	local string t1unaccfrags;	local string t1score;
+    local float t2_pl;	local string players2;	local float t2_unacc;	local string t2frags;	local string t2unaccfrags;	local string t2score;
+    local float t3_pl;	local string players3;	local float t3_unacc;	local string t3frags;	local string t3unaccfrags;	local string t3score;
+    local float t4_pl;	local string players4;	local float t4_unacc;	local string t4frags;	local string t4unaccfrags;	local string t4score;
+    local string space1;	local string space2;	local string space3;
+	
+	t1_pl = TeamFortress_TeamGetNoPlayers (1);
     t2_pl = TeamFortress_TeamGetNoPlayers (2);
     t3_pl = TeamFortress_TeamGetNoPlayers (3);
-    t4_pl = TeamFortress_TeamGetNoPlayers (4);
-	
-	local string t1brown; local string t2brown; local string t3brown; local string t4brown;
+    t4_pl = TeamFortress_TeamGetNoPlayers (4);	
 
     printed = 0;
     no_teams = 0;
@@ -571,7 +554,7 @@ void () DumpClanScores =
 
     winners = TeamFortress_TeamGetWinner ();
 
-    bprint (PRINT_HIGH, "\n\n=------= \sMatch Results\s =------=");
+    bprint (PRINT_HIGH, "\n\n=-------= \sMatch Results\s =-------="); //covers all four teams
     	
 	//Print team names
 	bprint (PRINT_HIGH, "\nTeam:        ");
@@ -583,555 +566,470 @@ void () DumpClanScores =
 	else { bprint (PRINT_HIGH, "     "); }
 	if (t4_pl > 0) { bprint (PRINT_HIGH, "  yell"); }
 	
-	//Print the number of players per team, assume 99 max players (two digits)
+	//Print the number of PLAYERS per team, assume 99 max players (two digits)
 	bprint (PRINT_HIGH, "\nPlayers:     ");
 	
-	if (t1_pl > 0) {
-		tno = TeamFortress_TeamGetNoPlayers (1);
-		st = ftos (tno);
+	players1 = "     ";
+	players2 = "     ";
+	players3 = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // players1 + space1 should add to "5" (4 chars for score, 1 for space)
+		players1 = ftos (TeamFortress_TeamGetNoPlayers (1));
 		
-		if (t1_pl < 10) {
-			bprint2 (PRINT_HIGH, st, " ");
+		if (strlen(players1) == 1)
+			space1 = "    ";
+		else if (strlen(players1) == 2)
+			space1 = "   ";
+		else if (strlen(players1) == 3)
+			space1 = "  ";
+		else if (strlen(players1) > 3) { // it's 4 or more?
+			players1 = substring(players1, 0, 4); // just take first 4 chars of score
+			space1 = " ";
 		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t2_pl > 0) {
-		bprint (PRINT_HIGH, "   ");
-		tno = TeamFortress_TeamGetNoPlayers (2);
-		st = ftos (tno);
+		players2 = ftos (TeamFortress_TeamGetNoPlayers (2));
 		
-		if (t2_pl < 10) {
-			bprint2 (PRINT_HIGH, st, " ");
+		if (strlen(players2) == 1)
+			space2 = "    ";
+		if (strlen(players2) == 2)
+			space2 = "   ";
+		else if (strlen(players2) == 3)
+			space2 = "  ";
+		else if (strlen(players2) > 3) { // it's 4 or more?
+			players2 = substring(players2, 0, 4);
+			space2 = " ";
 		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t3_pl > 0) {
-		bprint (PRINT_HIGH, "   ");
-		tno = TeamFortress_TeamGetNoPlayers (3);
-		st = ftos (tno);
+		players3 = ftos (TeamFortress_TeamGetNoPlayers (3));
 		
-		if (t3_pl < 10) {
-			bprint2 (PRINT_HIGH, st, " ");
+		if (strlen(players3) == 1)
+			space3 = "    ";
+		if (strlen(players3) == 2)
+			space3 = "   ";
+		else if (strlen(players3) == 3)
+			space3 = "  ";
+		else if (strlen(players3) > 3) { // it's 4 or more?
+			players3 = substring(players3, 0, 4);
+			space3 = " ";
 		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
-	}
-	
+	}	
+
 	if (t4_pl > 0) {
-		bprint (PRINT_HIGH, "   ");
-		tno = TeamFortress_TeamGetNoPlayers (4);
-		st = ftos (tno);
-		
-		if (t4_pl < 10) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
+		players4 = ftos (TeamFortress_TeamGetNoPlayers (4));
+		players4 = substring(players4, 0, 4); //let's just make sure it's at most 4 characters
 	}
 	
-	//Print the number of frags per team, assuming 9999 max frags
+	bprint2 (PRINT_HIGH, players1, space1, players2, space2, players3, space3, players4);
+
+	//Print the number of FRAGS per team, assuming 9999 max frags
 	bprint (PRINT_HIGH, "\nFrags:       ");
-	
-	if (t1_pl > 0) {
-		st = ftos (team1frags);
+
+	t1frags = "     ";
+	t2frags = "     ";
+	t3frags = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1frags + space1 should add to "5" (4 chars for score, 1 for space)
+		t1frags = ftos (team1frags);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t1frags) == 1)
+			space1 = "    ";
+		else if (strlen(t1frags) == 2)
+			space1 = "   ";
+		else if (strlen(t1frags) == 3)
+			space1 = "  ";
+		else if (strlen(t1frags) > 3) { // it's 4 or more?
+			t1frags = substring(t1frags, 0, 4); // just take first 4 chars of score
+			space1 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t2_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team2frags);
+		t2frags = ftos (team2frags);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t2frags) == 1)
+			space2 = "    ";
+		if (strlen(t2frags) == 2)
+			space2 = "   ";
+		else if (strlen(t2frags) == 3)
+			space2 = "  ";
+		else if (strlen(t2frags) > 3) { // it's 4 or more?
+			t2frags = substring(t2frags, 0, 4);
+			space2 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t3_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team3frags);
+		t3frags = ftos (team3frags);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t3frags) == 1)
+			space3 = "    ";
+		if (strlen(t3frags) == 2)
+			space3 = "   ";
+		else if (strlen(t3frags) == 3)
+			space3 = "  ";
+		else if (strlen(t3frags) > 3) { // it's 4 or more?
+			t3frags = substring(t3frags, 0, 4);
+			space3 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
-	}
-	
+	}	
+
 	if (t4_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team4frags);
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
+		t4frags = ftos (team4frags);
+		t4frags = substring(t4frags, 0, 4); //let's just make sure it's at most 4 characters
 	}
 	
-	//Print unnaccounted for frags per team, assuming 9999 max
+	bprint2 (PRINT_HIGH, t1frags, space1, t2frags, space2, t3frags, space3, t4frags);	
+
+	
+	//Print UNACCOUNTED FRAGS per team, assuming 9999 max
 	bprint (PRINT_HIGH, "\nUnacc Frags: ");
 	
-	if (t1_pl > 0) {
-		st = ftos (t1_unacc);
+	t1unaccfrags = "     ";
+	t2unaccfrags = "     ";
+	t3unaccfrags = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1unaccfrags + space1 should add to "5" (4 chars for score, 1 for space)
+		t1unaccfrags = ftos (t1_unacc);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t1unaccfrags) == 1)
+			space1 = "    ";
+		else if (strlen(t1unaccfrags) == 2)
+			space1 = "   ";
+		else if (strlen(t1unaccfrags) == 3)
+			space1 = "  ";
+		else if (strlen(t1unaccfrags) > 3) { // it's 4 or more?
+			t1unaccfrags = substring(t1unaccfrags, 0, 4); // just take first 4 chars of score
+			space1 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t2_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (t2_unacc);
+		t2unaccfrags = ftos (t2_unacc);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t2unaccfrags) == 1)
+			space2 = "    ";
+		if (strlen(t2unaccfrags) == 2)
+			space2 = "   ";
+		else if (strlen(t2unaccfrags) == 3)
+			space2 = "  ";
+		else if (strlen(t2unaccfrags) > 3) { // it's 4 or more?
+			t2unaccfrags = substring(t2unaccfrags, 0, 4);
+			space2 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
 	}
 	
 	if (t3_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (t3_unacc);
+		t3unaccfrags = ftos (t3_unacc);
 		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
+		if (strlen(t3unaccfrags) == 1)
+			space3 = "    ";
+		if (strlen(t3unaccfrags) == 2)
+			space3 = "   ";
+		else if (strlen(t3unaccfrags) == 3)
+			space3 = "  ";
+		else if (strlen(t3unaccfrags) > 3) { // it's 4 or more?
+			t3unaccfrags = substring(t3unaccfrags, 0, 4);
+			space3 = " ";
 		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-	}
-	else {
-		bprint (PRINT_HIGH, "  ");
-	}
-	
+	}	
+
 	if (t4_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (t4_unacc);
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
+		t4unaccfrags = ftos (t4_unacc);
+		t4unaccfrags = substring(t4unaccfrags, 0, 4); //let's just make sure it's at most 4 characters
 	}
 	
-	//Print Team Scores, assuming 9999 max
+	bprint2 (PRINT_HIGH, t1unaccfrags, space1, t2unaccfrags, space2, t3unaccfrags, space3, t4unaccfrags);
+	
+	//Print TEAM SCORE, assuming 9999 max 
 	bprint (PRINT_HIGH, "\nTeam Score:  ");
-	
-	if (t1_pl > 0) {
-		st = ftos (team1score);
+
+	t1score = "     ";
+	t2score = "     ";
+	t3score = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1score + space1 should add to "5" (4 chars for score, 1 for space)
+		t1score = ftos (team1score);
 		
-		if (team1score > (team2score && team3score && team4score)) {
-			t1brown = strcat("\s", (ftos(team1score)));
-			st = strcat(t1brown, "\s");
+		if (strlen(t1score) == 1)
+			space1 = "    ";
+		else if (strlen(t1score) == 2)
+			space1 = "   ";
+		else if (strlen(t1score) == 3)
+			space1 = "  ";
+		else if (strlen(t1score) > 3) { // it's 4 or more?
+			t1score = substring(t1score, 0, 4); // just take first 4 chars of score
+			space1 = " ";
 		}
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-    }
-	else {
-		bprint (PRINT_HIGH, "    ");
 	}
 	
 	if (t2_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team2score);
+		t2score = ftos (team2score);
 		
-		if (team2score > (team1score && team3score && team4score)) {
-			t2brown = strcat("\s", (ftos(team2score)));
-			st = strcat(t2brown, "\s");
+		if (strlen(t2score) == 1)
+			space2 = "    ";
+		if (strlen(t2score) == 2)
+			space2 = "   ";
+		else if (strlen(t2score) == 3)
+			space2 = "  ";
+		else if (strlen(t2score) > 3) { // it's 4 or more?
+			t2score = substring(t2score, 0, 4);
+			space2 = " ";
 		}
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-    }
-	else {
-		bprint (PRINT_HIGH, "    ");
 	}
 	
 	if (t3_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team3score);
+		t3score = ftos (team3score);
 		
-		if (team3score > (team1score && team2score && team4score)) {
-			t3brown = strcat("\s", (ftos(team3score)));
-			st = strcat(t3brown, "\s");
+		if (strlen(t3score) == 1)
+			space3 = "    ";
+		if (strlen(t3score) == 2)
+			space3 = "   ";
+		else if (strlen(t3score) == 3)
+			space3 = "  ";
+		else if (strlen(t3score) > 3) { // it's 4 or more?
+			t3score = substring(t3score, 0, 4);
+			space3 = " ";
 		}
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-    }
-	else {
-		bprint (PRINT_HIGH, "    ");
+	}	
+
+	if (t4_pl > 0) {
+		t4score = ftos (team4score);
+		t4score = substring(t4score, 0, 4); //let's just make sure it's at most 4 characters
 	}
 	
-	if (t4_pl > 0) {
-		bprint (PRINT_HIGH, " ");
-		st = ftos (team4score);
-		
-		if (team4score > (team1score && team2score && team3score)) {
-			t4brown = strcat("\s", (ftos(team4score)));
-			st = strcat(t4brown, "\s");
-		}
-		
-		if (stof(st) < 10) {
-			bprint2 (PRINT_HIGH, st, "   ");
-		}
-		else if (stof(st) < 100) {
-			bprint2 (PRINT_HIGH, st, "  ");
-		}
-		else if (stof(st) < 1000) {
-			bprint2 (PRINT_HIGH, st, " ");
-		}
-		else {
-			bprint2 (PRINT_HIGH, st);
-		}
-    }
+	bprint2 (PRINT_HIGH, t1score, space1, t2score, space2, t3score, space3, t4score);
+	//End print Team Scores
+	
 	
 	bprint (PRINT_HIGH, "\n");
-	if ((no_teams == 2) && (((team1score == team2score) && teamfrags)
-			    || ((team1frags == team2frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
-    } else if ((no_teams == 3) && ((((team1score == team2score) == team3score) && teamfrags)
-				   || (((team1frags == team2frags) == team3frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
-    } else if ((no_teams == 3)
-	       && (((((team1score == team2score) == team3score) == team4score) && teamfrags)
-		   || ((((team1frags == team2frags) == team3frags) == team4frags) && !teamfrags))) {
-	bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
-    } else {
-	st = GetTeamName (winners);
-	bprint (PRINT_HIGH, st, " defeated ");
-	if ((winners != 1) && (t1_pl != 0)) {
-	    st = GetTeamName (1);
-	    bprint (PRINT_HIGH, st);
-	    printed = printed + 1;
-	}
-	if ((winners != 2) && (t2_pl != 0)) {
-	    st = GetTeamName (2);
-	    if (printed == no_teams) {
-		bprint2 (PRINT_HIGH, " and ", st);
-	    } else if (printed) {
-		bprint2 (PRINT_HIGH, ", ", st);
-	    } else {
-		bprint (PRINT_HIGH, st);
-	    }
-	    printed = printed + 1;
-	}
-	if ((winners != 3) && (t3_pl != 0)) {
-	    st = GetTeamName (3);
-	    if (printed == no_teams) {
-		bprint2 (PRINT_HIGH, " and ", st);
-	    } else if (printed) {
-		bprint2 (PRINT_HIGH, ", ", st);
-	    } else {
-		bprint (PRINT_HIGH, st);
-	    }
-	    printed = printed + 1;
-	}
-	if ((winners != 4) && (t4_pl != 0)) {
-	    st = GetTeamName (4);
-	    if (printed == no_teams) {
-		bprint2 (PRINT_HIGH, " and ", st);
-	    } else if (printed) {
-		bprint2 (PRINT_HIGH, ", ", st);
-	    } else {
-		bprint (PRINT_HIGH, st);
-	    }
-	}
+	
+	if ( (no_teams == 2) && (((team1score == team2score) && teamfrags) || ((team1frags == team2frags) && !teamfrags)) )
+		bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
+	else if ((no_teams == 3) && ((((team1score == team2score) == team3score) && teamfrags) || (((team1frags == team2frags) == team3frags) && !teamfrags)))
+		bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
+	else if ((no_teams == 4) && (((((team1score == team2score) == team3score) == team4score) && teamfrags) || ((((team1frags == team2frags) == team3frags) == team4frags) && !teamfrags)))
+		bprint (PRINT_HIGH, "\sThe match is a DRAW.\s");
+	else {
+		st = GetTeamName (winners);
+		bprint (PRINT_HIGH, st, " defeated ");
+		
+		if ((winners != 1) && (t1_pl != 0)) {
+			st = GetTeamName (1);
+			bprint (PRINT_HIGH, st);
+			printed = printed + 1;
+		}
+		if ((winners != 2) && (t2_pl != 0)) {
+			st = GetTeamName (2);
+			if (printed == no_teams)
+				bprint2 (PRINT_HIGH, " and ", st);
+			else if (printed)
+				bprint2 (PRINT_HIGH, ", ", st);
+			else
+				bprint (PRINT_HIGH, st);
+			printed = printed + 1;
+		}
+		if ((winners != 3) && (t3_pl != 0)) {
+			st = GetTeamName (3);
+			if (printed == no_teams)
+				bprint2 (PRINT_HIGH, " and ", st);
+			else if (printed)
+				bprint2 (PRINT_HIGH, ", ", st);
+			else
+				bprint (PRINT_HIGH, st);
+			printed = printed + 1;
+		}
+		if ((winners != 4) && (t4_pl != 0)) {
+			st = GetTeamName (4);
+			if (printed == no_teams)
+				bprint2 (PRINT_HIGH, " and ", st);
+			else if (printed)
+				bprint2 (PRINT_HIGH, ", ", st);
+			else
+				bprint (PRINT_HIGH, st);
+		}
     }
     bprint (PRINT_HIGH, "\n\n");
 
     st = infokey (world, "dtf");
     if (st == string_null)
-	st = infokey (world, "dont_tweak_frags");
+		st = infokey (world, "dont_tweak_frags");
 
     if (st != "on") {
-	if (teamfrags != 0) {
-	    if (t1_pl > 0) {
-		printed = floor (team1score / t1_pl);
-		ti = 0;
-		if ((printed * t1_pl) != team1score) {
-		    ti = team1score - (printed * t1_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 1) {
-			te.frags = printed;
-		    }
-		    if (ti) {
-			te.frags = te.frags + 1;
-			ti = ti - 1;
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if (t2_pl > 0) {
-		printed = floor ((team2score / t2_pl));
-		ti = 0;
-		if ((printed * t2_pl) != team2score) {
-		    ti = team2score - (printed * t2_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 2) {
-			te.frags = printed;
-		    }
-		    if (ti) {
-			te.frags = te.frags + 1;
-			ti = ti - 1;
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if (t3_pl > 0) {
-		printed = floor ((team3score / t3_pl));
-		ti = 0;
-		if ((printed * t3_pl) != team3score) {
-		    ti = team3score - (printed * t3_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 3) {
-			te.frags = printed;
-		    }
-		    if (ti) {
-			te.frags = te.frags + 1;
-			ti = ti - 1;
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if (t4_pl > 0) {
-		printed = floor ((team4score / t4_pl));
-		ti = 0;
-		if ((printed * t4_pl) != team4score) {
-		    ti = team4score - (printed * t4_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 4) {
-			te.frags = printed;
-		    }
-		    if (ti) {
-			te.frags = te.frags + 1;
-			ti = ti - 1;
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	} else {
-	    if ((t1_pl > 0) && (t1_unacc > 0)) {
-		printed = floor (t1_unacc / t1_pl);
-		ti = 0;
-		if ((printed * t1_pl) != t1_unacc) {
-		    ti = t1_unacc - (printed * t1_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 1) {
-			te.frags = te.real_frags + printed;
-			if (ti) {
-			    te.frags = te.frags + 1;
-			    ti = ti - 1;
+		if (teamfrags != 0) {
+			if (t1_pl > 0) {
+				printed = floor (team1score / t1_pl);
+				ti = 0;
+				if ((printed * t1_pl) != team1score) {
+					ti = team1score - (printed * t1_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 1) {
+						te.frags = printed;
+					}
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					te = find (te, classname, "player");
+				}
 			}
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if ((t2_pl > 0) && (t2_unacc > 0)) {
-		printed = floor ((t2_unacc / t2_pl));
-		ti = 0;
-		if ((printed * t2_pl) != t2_unacc) {
-		    ti = t2_unacc - (printed * t2_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 2) {
-			te.frags = te.real_frags + printed;
-			if (ti) {
-			    te.frags = te.frags + 1;
-			    ti = ti - 1;
+			if (t2_pl > 0) {
+				printed = floor ((team2score / t2_pl));
+				ti = 0;
+				if ((printed * t2_pl) != team2score) {
+					ti = team2score - (printed * t2_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 2) {
+						te.frags = printed;
+					}
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					te = find (te, classname, "player");
+				}
 			}
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if ((t3_pl > 0) && (t3_unacc > 0)) {
-		printed = floor ((t3_unacc / t3_pl));
-		ti = 0;
-		if ((printed * t3_pl) != t3_unacc) {
-		    ti = t3_unacc - (printed * t3_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 3) {
-			te.frags = te.real_frags + printed;
-			if (ti) {
-			    te.frags = te.frags + 1;
-			    ti = ti - 1;
+			if (t3_pl > 0) {
+				printed = floor ((team3score / t3_pl));
+				ti = 0;
+				if ((printed * t3_pl) != team3score) {
+					ti = team3score - (printed * t3_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 3) {
+						te.frags = printed;
+					}
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					te = find (te, classname, "player");
+				}
 			}
-		    }
-		    te = find (te, classname, "player");
-		}
-	    }
-	    if ((t4_pl > 0) && (t4_unacc > 0)) {
-		printed = floor ((t4_unacc / t4_pl));
-		ti = 0;
-		if ((printed * t4_pl) != t4_unacc) {
-		    ti = t4_unacc - (printed * t4_pl);
-		}
-		te = find (world, classname, "player");
-		while (te) {
-		    if (te.team_no == 4) {
-			te.frags = te.real_frags + printed;
-			if (ti) {
-			    te.frags = te.frags + 1;
-			    ti = ti - 1;
+			if (t4_pl > 0) {
+				printed = floor ((team4score / t4_pl));
+				ti = 0;
+				if ((printed * t4_pl) != team4score) {
+					ti = team4score - (printed * t4_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 4) {
+						te.frags = printed;
+					}
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					te = find (te, classname, "player");
+				}
 			}
-		    }
-		    te = find (te, classname, "player");
 		}
-	    }
-	}
+		else {
+			if ((t1_pl > 0) && (t1_unacc > 0)) {
+				printed = floor (t1_unacc / t1_pl);
+				ti = 0;
+				if ((printed * t1_pl) != t1_unacc) {
+					ti = t1_unacc - (printed * t1_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 1) {
+						te.frags = te.real_frags + printed;
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					}
+					te = find (te, classname, "player");
+				}
+			}
+			if ((t2_pl > 0) && (t2_unacc > 0)) {
+				printed = floor ((t2_unacc / t2_pl));
+				ti = 0;
+				if ((printed * t2_pl) != t2_unacc) {
+					ti = t2_unacc - (printed * t2_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 2) {
+						te.frags = te.real_frags + printed;
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					}
+					te = find (te, classname, "player");
+				}
+			}
+			if ((t3_pl > 0) && (t3_unacc > 0)) {
+				printed = floor ((t3_unacc / t3_pl));
+				ti = 0;
+				if ((printed * t3_pl) != t3_unacc) {
+					ti = t3_unacc - (printed * t3_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 3) {
+						te.frags = te.real_frags + printed;
+					if (ti) {
+						te.frags = te.frags + 1;
+						ti = ti - 1;
+					}
+					}
+					te = find (te, classname, "player");
+				}
+			}
+			if ((t4_pl > 0) && (t4_unacc > 0)) {
+				printed = floor ((t4_unacc / t4_pl));
+				ti = 0;
+				if ((printed * t4_pl) != t4_unacc) {
+					ti = t4_unacc - (printed * t4_pl);
+				}
+				te = find (world, classname, "player");
+				while (te) {
+					if (te.team_no == 4) {
+						te.frags = te.real_frags + printed;
+						if (ti) {
+							te.frags = te.frags + 1;
+							ti = ti - 1;
+						}
+					}
+					te = find (te, classname, "player");
+				}
+			}
+		}
     }
 	
 	//End of match results output
 	te = find (world, classname, "player");
     while (te) {
-	st = infokey (te, "take_sshot");
-	if (st != string_null) {
-	    stuffcmd (te, "screenshot\n");
-	}
-	te = find (te, classname, "player");
+		st = infokey (te, "take_sshot");
+		if (st != string_null)
+			stuffcmd (te, "screenshot\n");
+		te = find (te, classname, "player");
     }
+	
 };
 
 void () TeamFortress_ShowIDs =
@@ -1141,37 +1039,37 @@ void () TeamFortress_ShowIDs =
     local string st;
 
     if (self.team_no == 0) {
-	sprint (self, PRINT_HIGH, "You aren't in a team.\n");
-	return;
+		sprint (self, PRINT_HIGH, "You aren't in a team.\n");
+		return;
     }
     got_one = 0;
     sprint (self, PRINT_HIGH, "Existing Team Member IDs:\n");
 
     te = find (world, classname, "player");
     while (te) {
-	if (te.team_no == self.team_no) {
-	    got_one = 1;
-	    st = ftos (te.tf_id);
-	    sprint (self, PRINT_HIGH, te.netname, " : ", st, "\n");
-	}
-	te = find (te, classname, "player");
+		if (te.team_no == self.team_no) {
+			got_one = 1;
+			st = ftos (te.tf_id);
+			sprint (self, PRINT_HIGH, te.netname, " : ", st, "\n");
+		}
+		te = find (te, classname, "player");
     }
 
     if (!got_one)
-	sprint (self, PRINT_HIGH, "NONE\n"); 
+		sprint (self, PRINT_HIGH, "NONE\n"); 
     got_one = 0;
     sprint (self, PRINT_HIGH, "Disconnected Team Member IDs:\n");
 
     te = find (world, classname, "ghost");
     while (te) {
-	if (te.team_no == self.team_no) {
-	    got_one = 1;
-	    st = ftos (te.tf_id);
-	    sprint2 (self, 2, st, "\n");
-	}
-	te = find (te, classname, "ghost");
+		if (te.team_no == self.team_no) {
+			got_one = 1;
+			st = ftos (te.tf_id);
+			sprint2 (self, 2, st, "\n");
+		}
+		te = find (te, classname, "ghost");
     }
 
     if (!got_one)
-	sprint (self, PRINT_HIGH, "NONE\n");
+		sprint (self, PRINT_HIGH, "NONE\n");
 };

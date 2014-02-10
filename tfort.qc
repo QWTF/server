@@ -93,7 +93,7 @@ void () TeamFortress_PlayersReady =
 		}
 
 		// Capture this player's vote
-		if ( (self.team_no != 0) && (self.playerclass != 0) && (anti_spam_timer_ready < time) ) { // You must be on a team and have picked a class to /ready
+		if ( (self.team_no != 0) /*&& (self.playerclass != 0)*/ && (anti_spam_timer_ready < time) ) { // You must be on a team to /ready (don't have to pick a class)
 			arr_ready_voters[ready_votes] = self.tf_id;
 			ready_votes++;
 			anti_spam_timer_ready = time + 2; // You can ready up/down once every two seconds
