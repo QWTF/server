@@ -1001,7 +1001,7 @@ void () PutClientInServer =
     local entity te;
 	
 	
-	server_status = infokey (world, "status");
+	server_status = infokey (world, "status2");
 
     self.touch = player_touch;
     self.classname = "player";
@@ -1300,9 +1300,11 @@ Also, this function is executed every 0.1 seconds.
 	
 	if (clanbattle == "on") {
 		
+		server_status = infokey (world, "status2");
+		
 		if ((server_status == "Match") && (anti_spam_timer_reminder < time) && timelimit) {
 			if (time_remaining > 121) {
-				if ( ( time_remaining / 60) > (rint (time_remaining / 60) ) ) {
+				if ( (time_remaining / 60) > (rint (time_remaining / 60) ) ) {
 					anti_spam_timer_reminder = time + (time_remaining - ( ( rint(time_remaining / 60) ) * 60 ) );
 				}
 				else {
@@ -1312,15 +1314,29 @@ Also, this function is executed every 0.1 seconds.
 					
 					bprint2 (PRINT_HIGH, bracket_open, "");
 					bprint2 (PRINT_HIGH, minutes, "\] minutes remaining\n");
+					
+					localcmd("serverinfo status \"");
+					localcmd(minutes);
+					localcmd(" min left");
+					localcmd("\"\n");
 				}
 			}
 			if (time_remaining == 120) {
 				anti_spam_timer_reminder = time + 59;
 				bprint (PRINT_HIGH, "\[2\] minutes remaining\n");
+				
+				localcmd("serverinfo status \"");
+				localcmd("2 min left");
+				localcmd("\"\n");
+				
 			}
 			if (time_remaining == 60) {
 				anti_spam_timer_reminder = time + 29;
 				bprint (PRINT_HIGH, "\[1\] minute remaining\n");
+				
+				localcmd("serverinfo status \"");
+				localcmd("1 min left");
+				localcmd("\"\n");
 			}
 			if (time_remaining == 30) {
 				anti_spam_timer_reminder = time + 19;
@@ -1961,6 +1977,7 @@ void () ClientConnect =
 					te = find (te, classname, "ghost");
 			}
 		}
+		server_status = infokey (world, "status2");
 		if (!got_one) {
 			if (game_locked && (server_status == "Match")) {
 				sprint (self, PRINT_HIGH, "Closed Server. Clan Battle in progress.\n");
@@ -1976,6 +1993,7 @@ void () ClientConnect =
 			sprint (self, PRINT_HIGH, "Your Battle ID is ", st, "\n");
 		}
     }
+	server_status = infokey (world, "status");
     if ((server_status == "Prematch") || (server_status == "Countdown"))
 		sprint (self, PRINT_HIGH, "CURRENTLY IN PREMATCH TIME\n");
 };

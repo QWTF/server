@@ -2511,6 +2511,7 @@ void (entity P) ForceRespawn =
     self.angles = spot.angles;
     self.fixangle = 1;
 	
+	server_status = infokey (world, "status2");
 	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
 		if (spot.items != 0) {
 			te = Finditem (spot.items);

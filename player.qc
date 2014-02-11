@@ -22,7 +22,7 @@ void () player_touch =
     local float found;
 	
 	
-	server_status = infokey (world, "status");
+	server_status = infokey (world, "status2");
 
     if ((invis_only == 0) && ((self.playerclass == 8) || (other.playerclass == 8))) {
 		if (other.classname == "player") {

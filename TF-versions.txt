@@ -1,11 +1,11 @@
 *============================================================================*
-* TeamFortress v2.93beta                                        versions.txt *
+* TeamFortress v2.93	                                        versions.txt *
 *============================================================================*
 
 Changelog:
 
 --------------------------------------------
-Version 2.92beta	 		02/08/2014
+Version 2.93					  02/08/2014
 --------------------------------------------
 
 Features Added:
@@ -16,8 +16,9 @@ Features Added:
 		"Public" when serverinfo "c" or "clan" is off
 		"Prematch" when serverinfo "c" or "clan" is on but match hasn't started
 		"Countdown" when countdown is in progress
-		"Match" when a clan game is in progress
+		"x min left" when a clan game is in progress - This syncs ezQuake gameclock if players/specs come mid-game.
 		"Standby" after a match is over and scores are being displayed (before map resets)
+	- New serverinfo status2 "Match" set when a clan game is in progress for easier parsing (Up2)
 	- Reminders every minute, 30 seconds, and 10 seconds of time remaining. (Up2)
 	- Added "id" command to spectators for two reasons: 1) If you have bind x "+attack;id" bound and change
 	  from player to spectator, you would get unknown alias "id" spam. 2) Doesn't hurt. (Up2)
@@ -29,13 +30,13 @@ Changes:
 	- Cease fire time (serverinfo ceasefire_time or cft) removed, unnecessary with /ready command
 	  Note: This is different than doing ceasefire. cease fire time was a like prematch, except players
 	  were not able to move or shoot before match started. (Up2)
-	- Fixed setinfo sbs/sbr not being detected if you are a spectator. (Up2)
-	- Misc small code changes, alignment changes, etc. (Up2)
-	- Fixed bug where TF didn't detect a match is a draw is four teams were playing (Up2)
+	- Bugfix from tf2.9: setinfo sbs/sbr not being detected if you are a spectator. (Up2)
+	- Bugfix from tf2.9: Fixed bug where TF didn't detect a match is a draw is four teams were playing (Up2)
+	- Misc small code changes, alignment updates, etc. (Up2)
 	- Rewrote match output code for alignment bugfixes (Up2)
 
 --------------------------------------------
-Version 2.92a	 			03/15/2012
+Version 2.92a					  03/15/2012
 --------------------------------------------
 
 Features Added:
@@ -53,7 +54,7 @@ Changes:
 	- Rpickup bug fixed. Rpickup will now only work in prematch. (Up2)
 
 --------------------------------------------
-Version 2.92	 			01/01/2012
+Version 2.92					  01/01/2012
 --------------------------------------------
 
 Features Added:

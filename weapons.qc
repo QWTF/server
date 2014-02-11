@@ -2595,7 +2595,7 @@ void () PreMatchImpulses =
 
 void () DeadImpulses =
 {
-	server_status = infokey (world, "status");
+	server_status = infokey (world, "status2");
 	
     if (self.impulse == TF_SHOWTF)
 		TeamFortress_ShowTF ();

@@ -104,7 +104,7 @@ void () TeamFortress_PlayersReady =
 		local entity ent;
 		if (ready_votes == total_players) {
 			countdown_start_time = time; // All players are ready at this time, mark the start time for countdown
-			
+		
 			ent = spawn ();
 			ent.think = PreMatch_Think; // This starts the countdown in clan.qc
 			//ent.nextthink = time + 5; // Up2: I don't know why +5
@@ -279,7 +279,7 @@ void () TeamFortress_ChangeClass =
     local string st;
 	
 	
-	server_status = infokey (world, "status");
+	server_status = infokey (world, "status2");
 
     if (self.playerclass != 0) {
 	if ((deathmatch != 3) && (server_status == "Match"))
@@ -2048,7 +2048,7 @@ void (float Suicided) TeamFortress_SetupRespawn =
     local string db;
 	
 	
-	server_status = infokey (world, "status");
+	server_status = infokey (world, "status2");
 
     if (self.respawn_time > time)
 	return;
@@ -2065,6 +2065,7 @@ void (float Suicided) TeamFortress_SetupRespawn =
 			restime = restime + 7;
 		}
     }
+	server_status = infokey (world, "status");
     if ((server_status == "Prematch") || (server_status == "Countdown")) {
 	if (self.lives > 0)
 	    self.lives = self.lives - 1;

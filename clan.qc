@@ -408,7 +408,8 @@ if (st == "on") {
 	if (sbar_code_executed == "1")
 		stuffcmd (search, "impulse 182\n"); // sbar_on
 		
-	localcmd ("serverinfo status Match\n");
+	localcmd ("serverinfo status2 Match\n");
+	
     bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
     
 	if (game_locked)
@@ -429,7 +430,7 @@ else { // no countdown menu, default countdown instead
     }
 	
 	
-	localcmd ("serverinfo status Match\n");
+	localcmd ("serverinfo status2 Match\n");
 	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
 		
 	if (game_locked)
