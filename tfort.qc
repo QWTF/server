@@ -74,7 +74,6 @@ void () TeamFortress_PlayersReady =
     if (server_status == "Prematch") { // You can /ready up/down during prematch only
 		local float total_players;
 		local float i;
-		local entity search;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -154,7 +153,6 @@ void () TeamFortress_Rpickup =
 		local float rpickup_votes_needed;
 		local float total_players;
 		local float i;
-		local entity search;
     
 		total_players = 0;
 		// Get the total players in the server
@@ -275,8 +273,6 @@ void () TeamFortress_ChangeClass =
 {
     local entity spot;
     local entity te;
-    local float tc;
-    local string st;
 	
 	
 	server_status = infokey (world, "status2");
@@ -1453,7 +1449,6 @@ string (entity p) TeamFortress_GetSkin =
 void (entity p) TeamFortress_SetSkin =
 {
     local string st;
-    local float tn;
 
     p.immune_to_check = time + 10;
     if ((p.playerclass == PC_SPY) && (p.undercover_skin != 0))
@@ -1894,8 +1889,6 @@ float (entity Retriever, float WeaponType) TeamFortress_CanGetWeapon =
 
 void (entity Player, float Armorclass) TeamFortress_DescribeArmor =
 {
-    local string st;
-
     if (Armorclass == 0)
 	return;
 
@@ -2412,8 +2405,6 @@ void (float tno) decrement_team_ammoboxes =
 
 void () TeamFortress_AssaultWeapon =
 {
-    local float it;
-
     self.impulse = 0;
     if (self.tfstate & TFSTATE_RELOADING)
 	return;
@@ -2767,7 +2758,6 @@ void () TeamFortress_CheckforCheats =
 {
     local float tf;
     local float pf;
-    local string st;
     local vector vplf;
     local vector vf;
 
@@ -2940,6 +2930,5 @@ void (entity p) KickCheater =
 
 void (entity p) BanCheater =
 {
-    local string st;
     stuffcmd (p, "disconnect\n");
 };

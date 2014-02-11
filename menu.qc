@@ -351,8 +351,6 @@ void (float inp) Menu_Drop_Input =
 
 void (float inp) Menu_DoBindings_Input =
 {
-    local string st;
-
     if (inp < 4) {
 	self.impulse = 0;
 	if (inp == 1) {
@@ -429,14 +427,13 @@ void () Menu_Intro =
 {
     local string st1;
     local string st2;
-    local string st3;
 
     st1 = infokey (world, "motd1");
     if (st1 != string_null) {
 	st2 = infokey (world, "motd2");
 	centerprint (self, st1, "\n", st2);
    } else {
-       centerprint (self, "Welcome to TeamFortress v", tf_version, "\n\nCreated by TeamFortress Software\nUpdated by clan FOLD‘\n======================================\n", website);
+       centerprint (self, "Welcome to TeamFortress v", tf_version, "\n\nCreated by TeamFortress Software\nUpdated by clan \[FOLD\]\n======================================\n", website);
    }
 };
 
@@ -594,9 +591,6 @@ void () Menu_Spy =
 
 void (float inp) Menu_Spy_Input =
 {
-    local float tc;
-    local string st;
-
     if ((inp == 1) || (inp == 2)) {
 	if (self.effects & (8 | 4)) {
 	    sprint (self, PRINT_HIGH, "You can't go undercover while glowing.\n");
@@ -696,8 +690,6 @@ void () Menu_Engineer =
     local string s_action;
     local string s_disp;
     local string s_sentry;
-    local string s_tpent;
-    local string s_tpexit;
     local string s_nothing;
 
     s_action = "Action:                           \n";
@@ -725,8 +717,6 @@ void () Menu_Engineer =
 
 void (float inp) Menu_Engineer_Input =
 {
-   local entity te;
-
    if (((inp == 1) && (self.ammo_cells >= 100)) && (self.has_dispenser != 1)) {
       TeamFortress_Build (1);
       ResetMenu ();
@@ -766,7 +756,6 @@ void (float inp) Menu_EngineerFix_Dispenser_Input =
 {
     local float metalcost;
     local float am;
-    local string f1;
 
     if ((self.classname != "player") || (self.building == world)) {
 	return;

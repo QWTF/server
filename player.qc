@@ -17,8 +17,6 @@ void () player_touch =
 {
     local entity Bio;
     local entity te;
-    local float v1;
-    local float v2;
     local float found;
 	
 	
@@ -397,8 +395,6 @@ void () player_assaultcannon1 = [ 103, player_assaultcannon2 ]
 
 void () player_assaultcannon2 = [ 104, player_assaultcannon1 ]
 {
-    local string st;
-
     stuffcmd (self, "v_idlescale 0\n");
     if (vlen (self.velocity) < 20) {
 	if (self.weaponframe == 2) {
@@ -433,8 +429,6 @@ void () player_assaultcannon2 = [ 104, player_assaultcannon1 ]
 
 void () player_assaultcannondown1 = [ 103, player_assaultcannondown1 ]
 {
-    local entity tcool;
-
     if (self.count == 1) {
 	sound (self, 1, "weapons/asscan3.wav", 1, 1);
     }
@@ -823,7 +817,6 @@ void () PlayerDie =
 {
     local float i;
     local entity te;
-    local string s;
 
     if (self.hook_out) {
 	Reset_Grapple (self.hook);

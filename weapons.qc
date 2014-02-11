@@ -205,7 +205,6 @@ void () W_FireSpanner =
 {
     local vector source;
     local vector org;
-    local vector def;
     local float healam;
     local entity te;
 
@@ -528,7 +527,6 @@ void () W_FireBioweapon =
 {
     local vector source;
     local vector org;
-    local float healam;
     local entity BioInfection;
 	
 	
@@ -1390,7 +1388,6 @@ void (vector org, vector dir) launch_spike =
 void () W_FireSuperSpikes =
 {
     local vector dir;
-    local entity old;
 
     sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 
@@ -1408,7 +1405,6 @@ void () W_FireSuperSpikes =
 void (float ox) W_FireSpikes =
 {
     local vector dir;
-    local entity old;
 
     makevectors (self.v_angle);
     if ((self.ammo_nails >= 4) && (self.current_weapon == WEAP_SUPER_NAILGUN)) {
@@ -1517,8 +1513,6 @@ void () superspike_touch =
 
 void () W_SetCurrentAmmo =
 {
-    local string st;
-
     if ((self.health <= 0) || (self.current_weapon == 0))
 	return;
 
@@ -1894,9 +1888,6 @@ void () player_chain5;
 void () W_Attack =
 {
     local float r;
-    local float tc;
-    local entity tcool;
-    local string st;
 
     if (!W_CheckNoAmmo ())
 	return;
@@ -2433,9 +2424,7 @@ void () DeadImpulses;
 
 void () ImpulseCommands =
 {
-    local entity te;
     local string st;
-	
 	
 	server_status = infokey (world, "status");
 

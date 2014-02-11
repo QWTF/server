@@ -822,8 +822,6 @@ float (float tno) TeamFortress_TeamGetIllegalClasses =
 
 float (float tno) TeamFortress_TeamIsCivilian =
 {
-    local entity te;
-
     if (tno == 1) {
 	if (civilianteams & 1)
 	    return (1);

@@ -170,8 +170,6 @@ void () plat_use =
 
 void () func_plat =
 {
-    local entity t;
-
     if (CheckExistence () == FALSE) {
 	dremove (self);
 	return;

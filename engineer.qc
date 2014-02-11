@@ -324,7 +324,6 @@ float (entity obj, entity builder) CheckArea =
 void (float objtobuild) TeamFortress_Build =
 {
     local float btime;
-    local entity te;
     local vector tmp1;
     local vector tmp2;
 
@@ -439,9 +438,6 @@ void () DispenserThink =
 void () TeamFortress_FinishedBuilding =
 {
     local entity oldself;
-    local entity te;
-    local float current_yaw;
-    local vector source;
 
     if (self.owner.is_building != 1) {
 	return;

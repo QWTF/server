@@ -438,7 +438,6 @@ entity () FindIntermission =
 entity (entity start_point) FindNextIntermission =
 {
     local entity spot;
-    local float cyc;
 
     if (deathmatch) {
 
@@ -488,7 +487,6 @@ void () GotoNextMap =
     local float nextlevel;
     local string sl;
     local string st;
-    local entity te;
 
     if (nextmap != mapname) {
 	changelevel (nextmap);
@@ -700,10 +698,6 @@ void () execute_changelevel =
 
 void () changelevel_touch =
 {
-    local entity pos;
-    local float ne;
-    local string st;
-
     if (other.classname != "player")
 	return;
 
@@ -994,7 +988,6 @@ void () player_touch;
 
 void () PutClientInServer =
 {
-    local string st;
     local float iszoom;
     local float oldclass;
     local entity spot;
@@ -1266,7 +1259,6 @@ float already_cycled;
 void () NextLevel =
 {
     local entity o;
-    local string st;
 
     if (already_cycled)
 	return;
@@ -1363,7 +1355,6 @@ Also, this function is executed every 0.1 seconds.
 
 void () PlayerDeathThink =
 {
-    local entity old_self;
     local float forward;
 
     if (self.flags & FL_ONGROUND) {
@@ -1405,8 +1396,6 @@ void () PlayerDeathThink =
 
 void () PlayerJump =
 {
-    local vector start;
-    local vector end;
     local entity te;
     local float stumble;
 
@@ -1577,11 +1566,6 @@ void () CheckWaterJump =
 
 void () PlayerPreThink =
 {
-    local float mspeed;
-    local float aspeed;
-    local float r;
-    local vector src;
-
     if (self.is_feigning && (self.waterlevel == 1)) {
 	self.watertype = -3;
 	self.waterlevel = 3;
@@ -1806,9 +1790,6 @@ void () CheckPowerups =
 
 void () PlayerPostThink =
 {
-    local float mspeed;
-    local float aspeed;
-    local float r;
     local float fdmg;
 
     if (self.view_ofs == '0 0 0') {
@@ -2082,9 +2063,6 @@ void (entity targ, entity attacker) ClientObituary =
     local float rnum;
     local string deathstring;
     local string deathstring2;
-    local float attackerteam;
-    local float targteam;
-    local entity te;
 
     rnum = random ();
 	

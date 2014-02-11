@@ -450,7 +450,6 @@ void () GasGrenadeTouch =
 
 void () GasGrenadeExplode =
 {
-    local vector tmpv;
     local entity te;
     local float pos;
 
@@ -837,7 +836,6 @@ void (entity spy) Spy_RemoveDisguise =
 {
     local string st;
     local float tc;
-    local float reset;
 
     if (invis_only != 1) {
 	if (spy.playerclass == 8) {

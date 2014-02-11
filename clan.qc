@@ -489,11 +489,9 @@ void () DumpClanScores =
 	localcmd ("serverinfo status Standby\n");
     
 	local float winners;
-    local float second;
     local float no_teams;
     local float printed;
     local float ti;
-    local float tno;
     local float teamfrags;
     local string st;
     local entity te;

@@ -399,7 +399,7 @@ void () TeamFortress_ReloadCurrentWeapon =
 
 void (float messageno) TeamFortress_Message =
 {
-    local entity te, tl;
+    local entity te;
     local string wstr;
 
     wstr = infokey (world, "clanmsgs");

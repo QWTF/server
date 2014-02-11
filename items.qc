@@ -24,8 +24,6 @@ void () noclass =
 
 void () q_touch =
 {
-    local entity stemp;
-    local float best;
     local string s;
 
     if (other.classname != "player")
@@ -71,8 +69,6 @@ void (float timeleft) DropQuad =
 
 void () r_touch =
 {
-    local entity stemp;
-    local float best;
     local string s;
 
     if (other.classname != "player")
@@ -227,7 +223,6 @@ void () item_health =
 
 void () health_touch =
 {
-    local float amount;
     local float medi;
     local string s;
 	
@@ -1099,11 +1094,7 @@ void () item_weapon =
 };
 
 void () key_touch =
-{
-    local entity stemp;
-    local float best;
-	
-	
+{	
 	server_status = infokey (world, "status");
 	if ((server_status == "Prematch") || (server_status == "Countdown"))
 		return;
@@ -1216,11 +1207,7 @@ void () item_key2 =
 };
 
 void () sigil_touch =
-{
-    local entity stemp;
-    local float best;
-	
-	
+{	
 	server_status = infokey (world, "status");
 	if ((server_status == "Prematch") || (server_status == "Countdown"))
 		return;
@@ -1279,10 +1266,6 @@ void () item_sigil =
 
 void () powerup_touch =
 {
-    local entity stemp;
-    local float best;
-	
-	
 	server_status = infokey (world, "status");
 	if ((server_status == "Prematch") || (server_status == "Countdown"))
 		return;
@@ -1424,8 +1407,6 @@ void () item_artifact_super_damage =
 void () BackpackTouch =
 {
     local string s;
-    local float best;
-    local entity stemp;
 
     if (other.classname != "player")
 	return;

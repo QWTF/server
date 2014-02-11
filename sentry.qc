@@ -76,7 +76,6 @@ void () lvl3_sentry_atk3 = [ 6, lvl3_sentry_atk1 ] { ai_face (); Sentry_Fire ();
 void () Sentry_Rotate =
 {
     local float ay;
-    local entity gunhead;
 
     self.effects = self.effects - (self.effects & EF_DIMLIGHT);
     CheckSentry (self);
