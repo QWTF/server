@@ -43,20 +43,19 @@ void (entity pl) RefreshStatusBar =
 	local string t1name, t2name, t3name, t4name;
 	local string t1score, t2score, t3score, t4score;
 	local string t1full, t2full, t3full, t4full, t12full, t34full;
-	local string st, print_scores;
+	local string st, print_scores, gren1, gren2, gren_print, detpack_print;
 	
-	   if (pl.StatusBarSize == 0) {
+	if (pl.StatusBarSize == 0) {
 		pl.StatusRefreshTime = time + 60;
 		return;
-    }
-    pl.StatusRefreshTime = time + 1.5;
+	}
+	pl.StatusRefreshTime = time + 1.5;
 
-    if (pl.playerclass == PC_UNDEFINED)
+	if (pl.playerclass == PC_UNDEFINED)
 		return;
 	
-	
 	no_teams = 0;
-		t1_pl = TeamFortress_TeamGetNoPlayers (1);
+	t1_pl = TeamFortress_TeamGetNoPlayers (1);
     t2_pl = TeamFortress_TeamGetNoPlayers (2);
 	t3_pl = TeamFortress_TeamGetNoPlayers (3);
 	t4_pl = TeamFortress_TeamGetNoPlayers (4);
@@ -100,33 +99,43 @@ void (entity pl) RefreshStatusBar =
 	t12full = strcat(t1full,t2full);
 	t34full = strcat(t3full,t4full);
 	print_scores = strcat(t12full,t34full);
+	
+	
+	gren1 = strcat(" \sG1\s:", ftos (self.no_grenades_1));
+	gren2 = strcat(" \sG2\s:", ftos (self.no_grenades_2));
+	gren_print = strcat(gren1, gren2);
+	
+	if (pl.playerclass == PC_DEMOMAN) {
+		if (self.ammo_detpack > 0)
+			detpack_print = strcat(" \sDpack\s:", ftos (self.ammo_detpack));
+	}
 
     status_size = GetStatusSize (pl);
     clip_print = ClipSize (pl);
     misc = "\n";
 	
-    if (pl.playerclass == PC_SCOUT) {
+	if (pl.playerclass == PC_SCOUT) {
 		local string scanner_to_string, range_to_string;
 		
 		scanner_to_string = ScannerScanned (pl);
 		range_to_string = ScannerRange (pl);
-		centerprint (pl, status_size, scanner_to_string, range_to_string, "\n", print_scores, clip_print);
+		centerprint (pl, status_size, scanner_to_string, range_to_string, "\n", print_scores, clip_print, gren_print);
 		return;
-    }
+	}
 	else if (pl.playerclass == PC_SPY) {
 		local string disguise_state;
 		disguise_state = DisguiseString (pl);
 		
-		centerprint (pl, status_size, disguise_state, print_scores, clip_print);
+		centerprint (pl, status_size, disguise_state, print_scores, clip_print, gren_print);
 		return;
-    }
+	}
 	else if (pl.playerclass == PC_ENGINEER) {
 		if (self.has_sentry) {
 			local string sentry_health, sentry_details;
 			sentry_health = SentryHealth (pl);
 			sentry_details = SentryDetails (pl);
 			
-			centerprint (pl, status_size, sentry_health, sentry_details, print_scores, clip_print);
+			centerprint (pl, status_size, sentry_health, sentry_details, print_scores, clip_print, gren_print);
 			return;
 		}
 		else if (self.is_building) {
@@ -134,7 +143,7 @@ void (entity pl) RefreshStatusBar =
 		}
 	}
 	
-	centerprint (pl, status_size, misc, print_scores, clip_print);
+	centerprint (pl, status_size, misc, print_scores, clip_print, gren_print, detpack_print);
 
 };
 
