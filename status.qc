@@ -390,11 +390,13 @@ string (entity pl) SentryHealth =
 {
     local entity te;
 	local string sg_print;
+	local float st;
 
     te = find (world, classname, "building_sentrygun");
     while (te) {
 		if (te.real_owner == self) {
-			sg_print = strcat("SENTRY: ", ftos(te.health));
+			st = rint (te.health);
+			sg_print = strcat("SENTRY: ", ftos(st));
 			return(sg_print);
 		}
 		te = find (te, classname, "building_sentrygun");
