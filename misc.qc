@@ -525,14 +525,14 @@ void () func_wall =
 void () func_illusionary =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     self.angles = '0 0 0';
     self.movetype = MOVETYPE_NONE;
     self.solid = SOLID_NOT;
     setmodel (self, self.model);
-    makestatic ();
+    makestatic (self);
 };
 
 void () func_episodegate =

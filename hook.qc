@@ -22,7 +22,7 @@ void () Grapple_Track =
     self.nextthink = time + 0.1;
 };
 
-entity (float head) MakeLink =
+entity (void) MakeLink =
 {
     newmis = spawn ();
     newmis.movetype = MOVETYPE_FLYMISSILE;

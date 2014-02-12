@@ -125,11 +125,11 @@ void () PlaceItem =
     oldz = self.origin_z;
 
     if (!droptofloor ()) {
-	dprint ("Bonus item fell out of level at ");
-	dprint (vtos (self.origin));
-	dprint ("\n");
-	dremove (self);
-	return;
+		dprint ("Bonus item fell out of level at ");
+		dprint (vtos (self.origin));
+		dprint ("\n");
+		dremove (self);
+		return;
     }
 };
 

@@ -415,24 +415,25 @@ entity () FindIntermission =
 
     spot = find (world, classname, "info_intermission");
     if (spot)
-	return (spot);
+		return (spot);
 
     spot = find (world, classname, "info_player_start");
     if (spot)
-	return (spot);
+		return (spot);
 
     spot = find (world, classname, "info_player_deathmatch");
     if (spot) {
-	cyc = random () * 6;
-	while (cyc > 1) {
-	    spot = find (spot, classname, "info_player_deathmatch");
-	    if (!spot)
-		spot = find (spot, classname, "info_player_deathmatch");
-	    cyc = cyc - 1;
-	}
-	return (spot);
+		cyc = random () * 6;
+		while (cyc > 1) {
+			spot = find (spot, classname, "info_player_deathmatch");
+			if (!spot)
+				spot = find (spot, classname, "info_player_deathmatch");
+			cyc = cyc - 1;
+		}
+		return (spot);
     }
     objerror ("FindIntermission: no spot");
+	return (world);
 };
 
 entity (entity start_point) FindNextIntermission =
