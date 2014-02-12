@@ -1003,91 +1003,91 @@ void (entity p) TeamFortress_SetSpeed =
 
     stuffcmd (p, "cl_movespeedkey 1\n");
     if (p.tfstate & TFSTATE_CANT_MOVE) {
-#ifdef STOP_MOUSE_MOVEMENT
-	stuffcmd (p, "m_forward 0\n");
-	stuffcmd (p, "m_side 0\n");
-#endif
-	p.velocity = '0 0 0';
-	stuffcmd (p, "cl_backspeed 0\n");
-	stuffcmd (p, "cl_forwardspeed 0\n");
-	stuffcmd (p, "cl_sidespeed 0\n");
-	p.maxspeed = 0;
-	return;
+		#ifdef STOP_MOUSE_MOVEMENT
+		stuffcmd (p, "m_forward 0\n");
+		stuffcmd (p, "m_side 0\n");
+		#endif
+		p.velocity = '0 0 0';
+		stuffcmd (p, "cl_backspeed 0\n");
+		stuffcmd (p, "cl_forwardspeed 0\n");
+		stuffcmd (p, "cl_sidespeed 0\n");
+		p.maxspeed = 0;
+		return;
     }
 #ifdef STOP_MOUSE_MOVEMENT
     else {
-	stuffcmd(p,"m_forward 1\n");
-	stuffcmd(p,"m_side 0.8\n");
+		stuffcmd(p,"m_forward 1\n");
+		stuffcmd(p,"m_side 0.8\n");
     }
 #endif
     if (p.playerclass == PC_SCOUT) {
-	p.maxfbspeed = PC_SCOUT_MAXSPEED;
-	p.maxstrafespeed = PC_SCOUT_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_SCOUT_MAXSPEED;
+		p.maxstrafespeed = PC_SCOUT_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_SNIPER) {
-	p.maxfbspeed = PC_SNIPER_MAXSPEED;
-	p.maxstrafespeed = PC_SNIPER_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_SNIPER_MAXSPEED;
+		p.maxstrafespeed = PC_SNIPER_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_SOLDIER) {
-	p.maxfbspeed = PC_SOLDIER_MAXSPEED;
-	p.maxstrafespeed = PC_SOLDIER_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_SOLDIER_MAXSPEED;
+		p.maxstrafespeed = PC_SOLDIER_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_DEMOMAN) {
-	p.maxfbspeed = PC_DEMOMAN_MAXSPEED;
-	p.maxstrafespeed = PC_DEMOMAN_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_DEMOMAN_MAXSPEED;
+		p.maxstrafespeed = PC_DEMOMAN_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_MEDIC) {
-	p.maxfbspeed = PC_MEDIC_MAXSPEED;
-	p.maxstrafespeed = PC_MEDIC_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_MEDIC_MAXSPEED;
+		p.maxstrafespeed = PC_MEDIC_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_HVYWEAP) {
-	p.maxfbspeed = PC_HVYWEAP_MAXSPEED;
-	p.maxstrafespeed = PC_HVYWEAP_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_HVYWEAP_MAXSPEED;
+		p.maxstrafespeed = PC_HVYWEAP_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_PYRO) {
-	p.maxfbspeed = PC_PYRO_MAXSPEED;
-	p.maxstrafespeed = PC_PYRO_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_PYRO_MAXSPEED;
+		p.maxstrafespeed = PC_PYRO_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_CIVILIAN) {
-	p.maxfbspeed = PC_CIVILIAN_MAXSPEED;
-	p.maxstrafespeed = PC_CIVILIAN_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_CIVILIAN_MAXSPEED;
+		p.maxstrafespeed = PC_CIVILIAN_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_SPY) {
-	p.maxfbspeed = PC_SPY_MAXSPEED;
-	p.maxstrafespeed = PC_SPY_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_SPY_MAXSPEED;
+		p.maxstrafespeed = PC_SPY_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_ENGINEER) {
-	p.maxfbspeed = PC_ENGINEER_MAXSPEED;
-	p.maxstrafespeed = PC_ENGINEER_MAXSTRAFESPEED;
+		p.maxfbspeed = PC_ENGINEER_MAXSPEED;
+		p.maxstrafespeed = PC_ENGINEER_MAXSTRAFESPEED;
     } else if (p.playerclass == PC_UNDEFINED) {
-//	p.maxfbspeed = 320;
-//	p.maxstrafespeed = 320;
-	p.maxfbspeed = 0;
-	p.maxstrafespeed = 0;
-	p.maxspeed = 0;
-	return;
+	//	p.maxfbspeed = 320;
+	//	p.maxstrafespeed = 320;
+		p.maxfbspeed = 0;
+		p.maxstrafespeed = 0;
+		p.maxspeed = 0;
+		return;
     }
     tf = 0;
     te = find (world, classname, "item_tfgoal");
     while ((te != world) && (tf == 0)) {
-	if (te.owner == p) {
-	    if (te.goal_activation & TFGI_SLOW) {
-		tf = 1;
-		p.maxfbspeed = p.maxfbspeed / 2;
-		p.maxstrafespeed = p.maxstrafespeed / 2;
-	    }
-	}
-	te = find (te, classname, "item_tfgoal");
+		if (te.owner == p) {
+			if (te.goal_activation & TFGI_SLOW) {
+				tf = 1;
+				p.maxfbspeed = p.maxfbspeed / 2;
+				p.maxstrafespeed = p.maxstrafespeed / 2;
+			}
+		}
+		te = find (te, classname, "item_tfgoal");
     }
     if (p.tfstate & TFSTATE_TRANQUILISED) {
-	p.maxfbspeed = p.maxfbspeed / 2;
-	p.maxstrafespeed = p.maxstrafespeed / 2;
+		p.maxfbspeed = p.maxfbspeed / 2;
+		p.maxstrafespeed = p.maxstrafespeed / 2;
     }
     if (p.leg_damage) {
-	if (p.leg_damage > 6) {
-	    p.leg_damage = 6;
-	}
-	p.maxfbspeed = p.maxfbspeed * (10 - p.leg_damage) / 10;
-	p.maxstrafespeed = p.maxstrafespeed * (10 - p.leg_damage) / 10;
+		if (p.leg_damage > 6) {
+			p.leg_damage = 6;
+		}
+		p.maxfbspeed = p.maxfbspeed * (10 - p.leg_damage) / 10;
+		p.maxstrafespeed = p.maxstrafespeed * (10 - p.leg_damage) / 10;
     }
     if (p.tfstate & TFSTATE_AIMING) {
-	if (p.maxfbspeed > 80) {
-	    p.maxfbspeed = 80;
-	}
-	if (p.maxstrafespeed > 80) {
-	    p.maxstrafespeed = 80;
-	}
+		if (p.maxfbspeed > 80) {
+			p.maxfbspeed = 80;
+		}
+		if (p.maxstrafespeed > 80) {
+			p.maxstrafespeed = 80;
+		}
     }
     sp = ftos (p.maxfbspeed);
     stuffcmd (p, "cl_backspeed ");
@@ -1106,344 +1106,292 @@ void (entity p) TeamFortress_SetSpeed =
 void () TeamFortress_SetHealth =
 {
     if (self.playerclass == PC_SCOUT) {
-	self.max_health = PC_SCOUT_MAXHEALTH;
+		self.max_health = PC_SCOUT_MAXHEALTH;
     } else if (self.playerclass == PC_SNIPER) {
-	self.max_health = PC_SNIPER_MAXHEALTH;
+		self.max_health = PC_SNIPER_MAXHEALTH;
     } else if (self.playerclass == PC_SOLDIER) {
-	self.max_health = PC_SOLDIER_MAXHEALTH;
+		self.max_health = PC_SOLDIER_MAXHEALTH;
     } else if (self.playerclass == PC_DEMOMAN) {
-	self.max_health = PC_DEMOMAN_MAXHEALTH;
+		self.max_health = PC_DEMOMAN_MAXHEALTH;
     } else if (self.playerclass == PC_MEDIC) {
-	self.max_health = PC_MEDIC_MAXHEALTH;
+		self.max_health = PC_MEDIC_MAXHEALTH;
     } else if (self.playerclass == PC_HVYWEAP) {
-	self.max_health = PC_HVYWEAP_MAXHEALTH;
+		self.max_health = PC_HVYWEAP_MAXHEALTH;
     } else if (self.playerclass == PC_PYRO) {
-	self.max_health = PC_PYRO_MAXHEALTH;
+		self.max_health = PC_PYRO_MAXHEALTH;
     } else if (self.playerclass == PC_CIVILIAN) {
-	self.max_health = PC_CIVILIAN_MAXHEALTH;
+		self.max_health = PC_CIVILIAN_MAXHEALTH;
     } else if (self.playerclass == PC_SPY) {
-	self.max_health = PC_SPY_MAXHEALTH;
+		self.max_health = PC_SPY_MAXHEALTH;
     } else if (self.playerclass == PC_ENGINEER) {
-	self.max_health = PC_ENGINEER_MAXHEALTH;
+		self.max_health = PC_ENGINEER_MAXHEALTH;
     } else {
-	self.max_health = 1;
-	self.takedamage = DAMAGE_NO;
+		self.max_health = 1;
+		self.takedamage = DAMAGE_NO;
     }
     self.health = self.max_health;
 };
 
 string (entity p) TeamFortress_GetSkin =
 {
-    local float tn;
-    local float pc;
+    local float team_number;
+    local float player_class;
     local string st;
-
+	local string c11,c12,c13,c14,c15,c16,c17,c18,c19;
+	local string c21,c22,c23,c24,c25,c26,c27,c28,c29;
+	local string c31,c32,c33,c34,c35,c36,c37,c38,c39;
+	local string c41,c42,c43,c44,c45,c46,c47,c48,c49;
+	
     if ((p.playerclass == 11) || (p.team_no == 0)) {
-	return ( "base" );
+		return ( "base" );
     }
-    tn = p.team_no;
-    pc = p.playerclass;
-    if (p.playerclass == 8) {
-	if (p.undercover_team != 0) {
-	    tn = p.undercover_team;
-	}
-	if (p.undercover_skin != 0) {
-	    pc = p.undercover_skin;
-	}
+	
+    team_number = p.team_no;
+    player_class = p.playerclass;
+	
+    if (p.playerclass == 8) { //Spy
+		if (p.undercover_team != 0) {
+			team_number = p.undercover_team;
+		}
+		if (p.undercover_skin != 0) {
+			player_class = p.undercover_skin;
+		}
     }
-    if (tn == 4) {
-	if (pc == 1) {
-	    st = infokey (world, "sk_t4_scout");
-	    if (st != string_null) {
-		return ( st );
-	    }
-	    return ( "tf_scout" );
-	} else {
-	    if (pc == 2) {
-		st = infokey (world, "sk_t4_sniper");
-		if (st != string_null) {
-		    return ( st );
-		}
-		return ( "tf_snipe" );
-	    } else {
-		if (pc == 3) {
-		    st = infokey (world, "sk_t4_soldier");
-		    if (st != string_null) {
-			return ( st );
-		    }
-		    return ( "tf_sold" );
-		} else {
-		    if (pc == 4) {
-			st = infokey (world, "sk_t4_demoman");
-			if (st != string_null) {
-			    return ( st );
-			}
-			return ( "tf_demo" );
-		    } else {
-			if (pc == 5) {
-			    st = infokey (world, "sk_t4_medic");
-			    if (st != string_null) {
-				return ( st );
-			    }
-			    return ( "tf_medic" );
-			} else {
-			    if (pc == 6) {
-				st = infokey (world, "sk_t4_hwguy");
-				if (st != string_null) {
-				    return ( st );
-				}
-				return ( "tf_hwguy" );
-			    } else {
-				if (pc == 7) {
-				    st = infokey (world, "sk_t4_pyro");
-				    if (st != string_null) {
-					return ( st );
-				    }
-				    return ( "tf_pyro" );
-				} else {
-				    if (pc == 8) {
-					st = infokey (world, "sk_t4_spy");
-					if (st != string_null) {
-					    return ( st );
-					}
-					return ( "tf_spy" );
-				    } else {
-					if (pc == 9) {
-					    st = infokey (world, "sk_t4_engineer");
-					    if (st != string_null) {
-						return ( st );
-					    }
-					    return ( "tf_eng" );
-					}
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+
+	//team 1
+	if ( (infokey (world, "sk_t1_scout")) != string_null)
+		c11 = infokey (world, "sk_t1_scout");
+	else
+		c11 = ("tf_scout");
+	if ( (infokey (world, "sk_t1_sniper")) != string_null)
+		c12 = infokey (world, "sk_t1_sniper");
+	else
+		c12 = ("tf_snipe");
+	if ( (infokey (world, "sk_t1_soldier")) != string_null)
+		c13 = infokey (world, "sk_t1_soldier");
+	else
+		c13 = ("tf_sold");
+	if ( (infokey (world, "sk_t1_demoman")) != string_null)
+		c14 = infokey (world, "sk_t1_demoman");
+	else
+		c14 = ("tf_demo");
+	if ( (infokey (world, "sk_t1_medic")) != string_null)
+		c15 = infokey (world, "sk_t1_medic");
+	else
+		c15 = ("tf_medic");
+	if ( (infokey (world, "sk_t1_hwguy")) != string_null)
+		c16 = infokey (world, "sk_t1_hwguy");
+	else
+		c16 = ("tf_hwguy");
+	if ( (infokey (world, "sk_t1_pyro")) != string_null)
+		c17 = infokey (world, "sk_t1_pyro");
+	else
+		c17 = ("tf_pyro");
+	if ( (infokey (world, "sk_t1_spy")) != string_null)
+		c18 = infokey (world, "sk_t1_spy");
+	else
+		c18 = ("tf_spy");
+	if ( (infokey (world, "sk_t1_engineer")) != string_null)
+		c19 = infokey (world, "sk_t1_engineer");
+	else
+		c19 = ("tf_eng");
+	
+	//team 2
+	if ( (infokey (world, "sk_t2_scout")) != string_null)
+		c21 = infokey (world, "sk_t2_scout");
+	else
+		c21 = ("tf_scout");
+	if ( (infokey (world, "sk_t2_sniper")) != string_null)
+		c22 = infokey (world, "sk_t2_sniper");
+	else
+		c22 = ("tf_snipe");
+	if ( (infokey (world, "sk_t2_soldier")) != string_null)
+		c23 = infokey (world, "sk_t2_soldier");
+	else
+		c23 = ("tf_sold");
+	if ( (infokey (world, "sk_t2_demoman")) != string_null)
+		c24 = infokey (world, "sk_t2_demoman");
+	else
+		c24 = ("tf_demo");
+	if ( (infokey (world, "sk_t2_medic")) != string_null)
+		c25 = infokey (world, "sk_t2_medic");
+	else
+		c25 = ("tf_medic");
+	if ( (infokey (world, "sk_t2_hwguy")) != string_null)
+		c26 = infokey (world, "sk_t2_hwguy");
+	else
+		c26 = ("tf_hwguy");
+	if ( (infokey (world, "sk_t2_pyro")) != string_null)
+		c27 = infokey (world, "sk_t2_pyro");
+	else
+		c27 = ("tf_pyro");
+	if ( (infokey (world, "sk_t2_spy")) != string_null)
+		c28 = infokey (world, "sk_t2_spy");
+	else
+		c28 = ("tf_spy");
+	if ( (infokey (world, "sk_t2_engineer")) != string_null)
+		c29 = infokey (world, "sk_t2_engineer");
+	else
+		c29 = ("tf_eng");
+	
+	// team 3
+	if ( (infokey (world, "sk_t3_scout")) != string_null)
+		c31 = infokey (world, "sk_t3_scout");
+	else
+		c31 = ("tf_scout");
+	if ( (infokey (world, "sk_t3_sniper")) != string_null)
+		c32 = infokey (world, "sk_t3_sniper");
+	else
+		c32 = ("tf_snipe");
+	if ( (infokey (world, "sk_t3_soldier")) != string_null)
+		c33 = infokey (world, "sk_t3_soldier");
+	else
+		c33 = ("tf_sold");
+	if ( (infokey (world, "sk_t3_demoman")) != string_null)
+		c34 = infokey (world, "sk_t3_demoman");
+	else
+		c34 = ("tf_demo");
+	if ( (infokey (world, "sk_t3_medic")) != string_null)
+		c35 = infokey (world, "sk_t3_medic");
+	else
+		c35 = ("tf_medic");
+	if ( (infokey (world, "sk_t3_hwguy")) != string_null)
+		c36 = infokey (world, "sk_t3_hwguy");
+	else
+		c36 = ("tf_hwguy");
+	if ( (infokey (world, "sk_t3_pyro")) != string_null)
+		c37 = infokey (world, "sk_t3_pyro");
+	else
+		c37 = ("tf_pyro");
+	if ( (infokey (world, "sk_t3_spy")) != string_null)
+		c38 = infokey (world, "sk_t3_spy");
+	else
+		c38 = ("tf_spy");
+	if ( (infokey (world, "sk_t3_engineer")) != string_null)
+		c39 = infokey (world, "sk_t3_engineer");
+	else
+		c39 = ("tf_eng");	
+	
+	//team 4
+	if ( (infokey (world, "sk_t4_scout")) != string_null)
+		c41 = infokey (world, "sk_t4_scout");
+	else
+		c41 = ("tf_scout");
+	if ( (infokey (world, "sk_t4_sniper")) != string_null)
+		c42 = infokey (world, "sk_t4_sniper");
+	else
+		c42 = ("tf_snipe");
+	if ( (infokey (world, "sk_t4_soldier")) != string_null)
+		c43 = infokey (world, "sk_t4_soldier");
+	else
+		c43 = ("tf_sold");
+	if ( (infokey (world, "sk_t4_demoman")) != string_null)
+		c44 = infokey (world, "sk_t4_demoman");
+	else
+		c44 = ("tf_demo");
+	if ( (infokey (world, "sk_t4_medic")) != string_null)
+		c45 = infokey (world, "sk_t4_medic");
+	else
+		c45 = ("tf_medic");
+	if ( (infokey (world, "sk_t4_hwguy")) != string_null)
+		c46 = infokey (world, "sk_t4_hwguy");
+	else
+		c46 = ("tf_hwguy");
+	if ( (infokey (world, "sk_t4_pyro")) != string_null)
+		c47 = infokey (world, "sk_t4_pyro");
+	else
+		c47 = ("tf_pyro");
+	if ( (infokey (world, "sk_t4_spy")) != string_null)
+		c48 = infokey (world, "sk_t4_spy");
+	else
+		c48 = ("tf_spy");
+	if ( (infokey (world, "sk_t4_engineer")) != string_null)
+		c49 = infokey (world, "sk_t4_engineer");
+	else
+		c49 = ("tf_eng");
+		
+	if (team_number == 1) {
+		if (player_class == 1)
+			st = c11;
+		if (player_class == 2)
+			st = c12;
+		if (player_class == 3)
+			st = c13;
+		if (player_class == 4)
+			st = c14;
+		if (player_class == 5)
+			st = c15;
+		if (player_class == 6)
+			st = c16;
+		if (player_class == 7)
+			st = c17;
+		if (player_class == 8)
+			st = c18;
+		if (player_class == 9)
+			st = c19;
 	}
-    } else {
-	if (tn == 3) {
-	    if (pc == 1) {
-		st = infokey (world, "sk_t3_scout");
-		if (st != string_null) {
-		    return ( st );
-		}
-		return ( "tf_scout" );
-	    } else {
-		if (pc == 2) {
-		    st = infokey (world, "sk_t3_sniper");
-		    if (st != string_null) {
-			return ( st );
-		    }
-		    return ( "tf_snipe" );
-		} else {
-		    if (pc == 3) {
-			st = infokey (world, "sk_t3_soldier");
-			if (st != string_null) {
-			    return ( st );
-			}
-			return ( "tf_sold" );
-		    } else {
-			if (pc == 4) {
-			    st = infokey (world, "sk_t3_demoman");
-			    if (st != string_null) {
-				return ( st );
-			    }
-			    return ( "tf_demo" );
-			} else {
-			    if (pc == 5) {
-				st = infokey (world, "sk_t3_medic");
-				if (st != string_null) {
-				    return ( st );
-				}
-				return ( "tf_medic" );
-			    } else {
-				if (pc == 6) {
-				    st = infokey (world, "sk_t3_hwguy");
-				    if (st != string_null) {
-					return ( st );
-				    }
-				    return ( "tf_hwguy" );
-				} else {
-				    if (pc == 7) {
-					st = infokey (world, "sk_t3_pyro");
-					if (st != string_null) {
-					    return ( st );
-					}
-					return ( "tf_pyro" );
-				    } else {
-					if (pc == 8) {
-					    st = infokey (world, "sk_t3_spy");
-					    if (st != string_null) {
-						return ( st );
-					    }
-					    return ( "tf_spy" );
-					} else {
-					    if (pc == 9) {
-						st = infokey (world, "sk_t3_engineer");
-						if (st != string_null) {
-						    return ( st );
-						}
-						return ( "tf_eng" );
-					    }
-					}
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
-	} else {
-	    if (tn == 2) {
-		if (pc == 1) {
-		    st = infokey (world, "sk_t2_scout");
-		    if (st != string_null) {
-			return ( st );
-		    }
-		    return ( "tf_scout" );
-		} else {
-		    if (pc == 2) {
-			st = infokey (world, "sk_t2_sniper");
-			if (st != string_null) {
-			    return ( st );
-			}
-			return ( "tf_snipe" );
-		    } else {
-			if (pc == 3) {
-			    st = infokey (world, "sk_t2_soldier");
-			    if (st != string_null) {
-				return ( st );
-			    }
-			    return ( "tf_sold" );
-			} else {
-			    if (pc == 4) {
-				st = infokey (world, "sk_t2_demoman");
-				if (st != string_null) {
-				    return ( st );
-				}
-				return ( "tf_demo" );
-			    } else {
-				if (pc == 5) {
-				    st = infokey (world, "sk_t2_medic");
-				    if (st != string_null) {
-					return ( st );
-				    }
-				    return ( "tf_medic" );
-				} else {
-				    if (pc == 6) {
-					st = infokey (world, "sk_t2_hwguy");
-					if (st != string_null) {
-					    return ( st );
-					}
-					return ( "tf_hwguy" );
-				    } else {
-					if (pc == 7) {
-					    st = infokey (world, "sk_t2_pyro");
-					    if (st != string_null) {
-						return ( st );
-					    }
-					    return ( "tf_pyro" );
-					} else {
-					    if (pc == 8) {
-						st = infokey (world, "sk_t2_spy");
-						if (st != string_null) {
-						    return ( st );
-						}
-						return ( "tf_spy" );
-					    } else {
-						if (pc == 9) {
-						    st = infokey (world, "sk_t2_engineer");
-						    if (st != string_null) {
-							return ( st );
-						    }
-						    return ( "tf_eng" );
-						}
-					    }
-					}
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    } else {
-		if (pc == 1) {
-		    st = infokey (world, "sk_t1_scout");
-		    if (st != string_null) {
-			return ( st );
-		    }
-		    return ( "tf_scout" );
-		} else {
-		    if (pc == 2) {
-			st = infokey (world, "sk_t1_sniper");
-			if (st != string_null) {
-			    return ( st );
-			}
-			return ( "tf_snipe" );
-		    } else {
-			if (pc == 3) {
-			    st = infokey (world, "sk_t1_soldier");
-			    if (st != string_null) {
-				return ( st );
-			    }
-			    return ( "tf_sold" );
-			} else {
-			    if (pc == 4) {
-				st = infokey (world, "sk_t1_demoman");
-				if (st != string_null) {
-				    return ( st );
-				}
-				return ( "tf_demo" );
-			    } else {
-				if (pc == 5) {
-				    st = infokey (world, "sk_t1_medic");
-				    if (st != string_null) {
-					return ( st );
-				    }
-				    return ( "tf_medic" );
-				} else {
-				    if (pc == 6) {
-					st = infokey (world, "sk_t1_hwguy");
-					if (st != string_null) {
-					    return ( st );
-					}
-					return ( "tf_hwguy" );
-				    } else {
-					if (pc == 7) {
-					    st = infokey (world, "sk_t1_pyro");
-					    if (st != string_null) {
-						return ( st );
-					    }
-					    return ( "tf_pyro" );
-					} else {
-					    if (pc == 8) {
-						st = infokey (world, "sk_t1_spy");
-						if (st != string_null) {
-						    return ( st );
-						}
-						return ( "tf_spy" );
-					    } else {
-						if (pc == 9) {
-						    st = infokey (world, "sk_t1_engineer");
-						    if (st != string_null) {
-							return ( st );
-						    }
-						    return ( "tf_eng" );
-						}
-					    }
-					}
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+	if (team_number == 2) {
+		if (player_class == 1)
+			st = c21;
+		if (player_class == 2)
+			st = c22;
+		if (player_class == 3)
+			st = c23;
+		if (player_class == 4)
+			st = c24;
+		if (player_class == 5)
+			st = c25;
+		if (player_class == 6)
+			st = c26;
+		if (player_class == 7)
+			st = c27;
+		if (player_class == 8)
+			st = c28;
+		if (player_class == 9)
+			st = c29;
 	}
-    }
+	if (team_number == 3) {
+		if (player_class == 1)
+			st = c31;
+		if (player_class == 2)
+			st = c32;
+		if (player_class == 3)
+			st = c33;
+		if (player_class == 4)
+			st = c34;
+		if (player_class == 5)
+			st = c35;
+		if (player_class == 6)
+			st = c36;
+		if (player_class == 7)
+			st = c37;
+		if (player_class == 8)
+			st = c38;
+		if (player_class == 9)
+			st = c39;
+	}
+	if (team_number == 4) {
+		if (player_class == 1)
+			st = c41;
+		if (player_class == 2)
+			st = c42;
+		if (player_class == 3)
+			st = c43;
+		if (player_class == 4)
+			st = c44;
+		if (player_class == 5)
+			st = c45;
+		if (player_class == 6)
+			st = c46;
+		if (player_class == 7)
+			st = c47;
+		if (player_class == 8)
+			st = c48;
+		if (player_class == 9)
+			st = c49;
+	}
+	
+	return (st);
 };
 
 void (entity p) TeamFortress_SetSkin =

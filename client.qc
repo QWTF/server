@@ -440,33 +440,34 @@ entity (entity start_point) FindNextIntermission =
     local entity spot;
 
     if (deathmatch) {
+		if ((start_point.classname == "info_intermission") || (start_point == world)) {
+			spot = find (start_point, classname, "info_intermission");
+			if (spot)
+				return (spot);
+			else
+				start_point = world;
+		}
+		
+		if ((start_point.classname == "info_player_deathmatch") || (start_point == world)) {
+			spot = find (start_point, classname, "info_player_deathmatch");
+			if (spot)
+				return (spot);
+		}
+		
+		spot = find (world, classname, "info_intermission");
+		
+		if (spot)
+			return (spot);
 
-	if ((start_point.classname == "info_intermission") || (start_point == world)) {
-
-	    spot = find (start_point, classname, "info_intermission");
-	    if (spot)
-		return (spot);
-	    else
-		start_point = world;
-	}
-	if ((start_point.classname == "info_player_deathmatch") || (start_point == world)) {
-
-	    spot = find (start_point, classname, "info_player_deathmatch");
-	    if (spot)
-		return (spot);
-	}
-	spot = find (world, classname, "info_intermission");
-	if (spot)
-	    return (spot);
-
-	spot = find (world, classname, "info_player_deathmatch");
-	if (spot)
-	    return (spot);
-
-    } else {
-	spot = find (world, classname, "info_player_start");
-	if (spot)
-	    return (spot);
+		spot = find (world, classname, "info_player_deathmatch");
+		
+		if (spot)
+			return (spot);
+    }
+	else {
+		spot = find (world, classname, "info_player_start");
+		if (spot)
+			return (spot);
     }
     return (FindIntermission ());
 };
@@ -1277,7 +1278,7 @@ Well, with new /ready command, players can take as much time as they want before
 We don't want the timer in timelimit to start until the match has started.
 Also, this function is executed every 0.1 seconds.
 */
-	local string clanbattle;
+	local string clan_battle;
 	local string minutes;
 	local float time_remaining;
 	local float minutes_round;
@@ -1286,11 +1287,11 @@ Also, this function is executed every 0.1 seconds.
 	time_remaining = rint (timelimit - (time - (countdown_start_time + prematch_countdown) ));
 	bracket_open = "\[";
 	
-	clanbattle = infokey (world, "c");
-	if (clanbattle == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
-		clanbattle = infokey (world, "clan");
+	clan_battle = infokey (world, "c");
+	if (clan_battle == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
+		clan_battle = infokey (world, "clan");
 	
-	if (clanbattle == "on") {
+	if (clan_battle == "on") {
 		
 		server_status = infokey (world, "status2");
 		
