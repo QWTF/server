@@ -1,11 +1,11 @@
 *============================================================================*
-* TeamFortress v2.93	                                        versions.txt *
+* TeamFortress v2.93.2	                                        versions.txt *
 *============================================================================*
 
 Changelog:
 
 --------------------------------------------
-Version 2.93					  02/08/2014
+Version 2.93.2			  02/08/2014
 --------------------------------------------
 
 Features Added:
@@ -27,12 +27,16 @@ Features Added:
 	  Must use "serverinfo newcountdown on" at the moment to use it. (Up2/KillJoy)
 
 Changes:
+	- Status bar updated. For spies it will display "Not undercover" when not disguised. Lots of bugs fixed and
+	  colors added. Displaying all four teams and their scores works properly. Sentry Gun health displayed to
+	  the ones place (instead of 10's). (Up2)
+	- Medic/Engineer will see teammates' health/armor displayed to the ones digit instead of tens when using "id" (Up2)
 	- Cease fire time (serverinfo ceasefire_time or cft) removed, unnecessary with /ready command
 	  Note: This is different than doing ceasefire. cease fire time was a like prematch, except players
 	  were not able to move or shoot before match started. (Up2)
 	- Bugfix from tf2.9: setinfo sbs/sbr not being detected if you are a spectator. (Up2)
 	- Bugfix from tf2.9: Fixed bug where TF didn't detect a match is a draw is four teams were playing (Up2)
-	- Misc small code changes, alignment updates, etc. (Up2)
+	- Large amounts of unused/unnecessary code removed/rewrote (Up2)
 	- Rewrote match output code for alignment bugfixes (Up2)
 
 --------------------------------------------
