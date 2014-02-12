@@ -504,7 +504,7 @@ void () DumpClanScores =
 	t1_pl = TeamFortress_TeamGetNoPlayers (1);
     t2_pl = TeamFortress_TeamGetNoPlayers (2);
     t3_pl = TeamFortress_TeamGetNoPlayers (3);
-    t4_pl = TeamFortress_TeamGetNoPlayers (4);	
+    t4_pl = TeamFortress_TeamGetNoPlayers (4);
 
     printed = 0;
     no_teams = 0;
@@ -687,7 +687,7 @@ void () DumpClanScores =
 		t4frags = substring(t4frags, 0, 4); //let's just make sure it's at most 4 characters
 	}
 	
-	bprint2 (PRINT_HIGH, t1frags, space1, t2frags, space2, t3frags, space3, t4frags);	
+	bprint2 (PRINT_HIGH, t1frags, space1, t2frags, space2, t3frags, space3, t4frags);
 
 	
 	//Print UNACCOUNTED FRAGS per team, assuming 9999 max

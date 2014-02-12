@@ -28,7 +28,6 @@ void () TeamFortress_ChangeClass;
 void (entity p) TeamFortress_SetSkin;
 
 void (float type) TeamFortress_DropAmmo;
-string (float num) NumberToString100;
 
 void (entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType) TF_T_Damage;
 
@@ -1061,141 +1060,144 @@ void () BirthdayTimer =
     local float rnum;
 
     if (self.weapon > 5) {
-	self.weapon = 0;
-	self.nextthink = time + 180 + (random () * 60);
-	rnum = random ();
-	self.team_str_home = string_null;
-	if (rnum < 0.02) {
-	    self.team_str_moved = "\n\n\n\nHAPPY BIRTHDAY TEAMFORTRESS!\n";
-	} else if (rnum < 0.04) {
-            self.team_str_moved = "\n\n\n\nCurrent number of Snipers on\nthe Battlements:\n";
-            rnum = TeamFortress_GetNoPlayers () / 2;
-            rnum = rnum + (random () * rnum);
-            rnum = rint (rnum);
-            self.team_str_home = NumberToString100 (rnum);
-	} else if (rnum < 0.06) {
-	    self.team_str_moved = "\n\n\n\nYeeha!\nThe 505, 672nd detpack was\njust laid on the bridge!\n";
-	} else if (rnum < 0.08) {
-	    self.team_str_moved = "\n\n\n\nIs that an assault cannon in your\n pocket, or are you just playing TF?\n(Blame Ian)\n";
-	} else if (rnum < 0.1) {
-	    self.team_str_moved = "\n\n\n\n25, 000 downloads\n50 donations\nDamn, but we rock!\n";
-	} else if (rnum < 0.12) {
-	    self.team_str_moved = "\n\n\n\nTeamFortress is one year old today!\n";
-	} else if (rnum < 0.14) {
-	    self.team_str_moved = "\n\n\n\nTF II available 2nd quarter 98\n";
-	} else if (rnum < 0.16) {
-	    self.team_str_moved = "\n\n\n\nhmm.... I wonder what the next\nmessage will be...\n";
-	} else if (rnum < 0.18) {
-	    self.team_str_moved = "\n\n\n\nKill your friends! Kill your family!\nSnipe your pets! Detpack your house!\nGet TF Now!\n";
-	} else if (rnum < 0.2) {
-	    self.team_str_moved = "\n\n\n\nDeath to Potatoes!\n";
-	} else if (rnum < 0.22) {
-	    self.team_str_moved = "\n\n\n\n\"You guys have really fucked up\n urinals, you know that?\"\n   - TyR in Australia\n";
-	} else if (rnum < 0.24) {
-	    self.team_str_moved = "\n\n\n\nMany potatoes were harmed in the\nmaking of this product.\n";
-	} else if (rnum < 0.25) {
-	    self.team_str_moved = "\n\n\n\nBAH! I shoulda put the Demoman\nblast armor back while I was at it!\n   - Gudlyf\n";
-	} else if (rnum < 0.26) {
-	    self.team_str_moved = "\n\n\n\nTwin Peaks will be out... uhh...\nerr... soon.\n";
-	} else if (rnum < 0.28) {
-	    self.team_str_moved = "\n\n\n\n\"Twin Peaks will be finished tomorrow.\"\n   - TyR, 16th July, 25th July, 2nd August...";
-	} else if (rnum < 0.3) {
-	    self.team_str_moved = "\n\n\n\n\"After all, TF is an INSULT to the\npurity of CTF!\"\n   - Mjollnir, who was joking... really!";
-	} else if (rnum < 0.32) {
-	    self.team_str_moved = "\n\n\n\n\"I force them to work.\nElse I cut back their supplies\"\n   - Vomitgod, on TFS\n";
-	} else if (rnum < 0.34) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen you had to use imin1 & imin2\nto join a team.\n";
-	} else if (rnum < 0.36) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen there were 2 TF servers...\nand they were always down.";
-	} else if (rnum < 0.38) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen no-one knew how to use\nhand grenades...\n";
-	} else if (rnum < 0.4) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen 2fort was the only TF map.\nWe sure have come a long\nway since then... sigh";
-	} else if (rnum < 0.42) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen the sniper rifle just\nkilled in one hit... everytime\n";
-	} else if (rnum < 0.44) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen I could download TF in\n1 minute 20 seconds\n";
-	} else if (rnum < 0.46) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen I didn't have to download\nANYTHING to play TF\n";
-	} else if (rnum < 0.48) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen players used to say\n\"What's that bubble?\"\n";
-	} else if (rnum < 0.5) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen The Well actually had a well...\n";
-	} else if (rnum < 0.52) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen the motion detector was officially\nthe Scout's best friend, at least\naccording to the readme.txt\n";
-	} else if (rnum < 0.54) {
-	    self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen  Ian went to jail for punching\nRobin out\n";
-	} else if (rnum < 0.56) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #1:\nUmm... How do I set a detpack?\n";
-	} else if (rnum < 0.58) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #2:\nUmm... How do I throw a grenade?\n";
-	} else if (rnum < 0.6) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #3:\nHey, he is cheating, that soldier just jumped up to the roof!!\n";
-	} else if (rnum < 0.62) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #4:\nHow do I throw the pins?\n";
-	} else if (rnum < 0.64) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #5:\nWhere do I take the flag!?!?!\n";
-	} else if (rnum < 0.66) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #6:\nWhere's the control room?\n";
-	} else if (rnum < 0.68) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #7:\nWhy the hell are these backpacks\nexploding?\n";
-	} else if (rnum < 0.7) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #8:\nWho's the maniac with the axe?\n";
-	} else if (rnum < 0.72) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #9:\nStop shooting me!\nI'm on your team!\nYou tried to attack my with the axe!\n";
-	} else if (rnum < 0.74) {
-	    self.team_str_moved = "\n\n\n\nTF Newbie Quote #10:\nWhat's this key? I thought this\nwas a CTF style map, guys?\n";
-	} else if (rnum < 0.76) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #1:\nUm, Red Medics, please don't\nheal the President.\n";
-	} else if (rnum < 0.78) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #2:\nGuys could you NOT set up\nsentries in hunted?\n";
-	} else if (rnum < 0.8) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #3:\nWho the hell is on\nthe lift?\n";
-	} else if (rnum < 0.82) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #4:\nDISCARD!!\n";
-	} else if (rnum < 0.84) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #5:\nDamn Snipers!\n";
-	} else if (rnum < 0.86) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #6:\nDamn Snipers!\n";
-	} else if (rnum < 0.88) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #7:\nGet a mask or\nget in the WATER!!\n";
-	} else if (rnum < 0.9) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #8:\nSpy's, please change colors\noutside our base.\n";
-	} else if (rnum < 0.92) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #9:\nI was typing!!\n";
-	} else if (rnum < 0.94) {
-	    self.team_str_moved = "\n\n\n\nTF Veteran Quote #10:\nWhy is that guy running\nout of our yard with\nthe flag???\n";
-	} else if (rnum < 0.96) {
-	    self.team_str_moved = "\n\n\n\nTF's original design docs!\nCheck it out!\nwww.teamfortress.com/files/teamfortress/tfdes_1.gif";
-	} else if (rnum < 0.98) {
-	    self.team_str_moved = "\n\n\n\nTF's original design docs!\nCheck it out!\nwww.teamfortress.com/files/teamfortress/tfdes_2.gif";
-	} else
-	    self.team_str_moved = "\n\n\n\n\"MJ: Did you hear John Cash wrote TF?\"\n   - VomitGod";
-
-	return;
-    } else {
-	self.nextthink = time + 1.5;
-	self.weapon = self.weapon + 1;
+		self.weapon = 0;
+		self.nextthink = time + 180 + (random () * 60);
+		rnum = random ();
+		self.team_str_home = string_null;
+		if (rnum < 0.02) {
+			self.team_str_moved = "\n\n\n\nHAPPY BIRTHDAY TEAMFORTRESS!\n";
+		} else if (rnum < 0.04) {
+			self.team_str_moved = "\n\n\n\nCurrent number of Snipers on\nthe Battlements:\n";
+			rnum = TeamFortress_GetNoPlayers () / 2;
+			rnum = rnum + (random () * rnum);
+			rnum = rint (rnum);
+			self.team_str_home = ftos (rnum);
+		} else if (rnum < 0.06) {
+			self.team_str_moved = "\n\n\n\nYeeha!\nThe 505, 672nd detpack was\njust laid on the bridge!\n";
+		} else if (rnum < 0.08) {
+			self.team_str_moved = "\n\n\n\nIs that an assault cannon in your\n pocket, or are you just playing TF?\n(Blame Ian)\n";
+		} else if (rnum < 0.1) {
+			self.team_str_moved = "\n\n\n\n25, 000 downloads\n50 donations\nDamn, but we rock!\n";
+		} else if (rnum < 0.12) {
+			self.team_str_moved = "\n\n\n\nTeamFortress is one year old today!\n";
+		} else if (rnum < 0.14) {
+			self.team_str_moved = "\n\n\n\nTF II available 2nd quarter 98\n";
+		} else if (rnum < 0.16) {
+			self.team_str_moved = "\n\n\n\nhmm.... I wonder what the next\nmessage will be...\n";
+		} else if (rnum < 0.18) {
+			self.team_str_moved = "\n\n\n\nKill your friends! Kill your family!\nSnipe your pets! Detpack your house!\nGet TF Now!\n";
+		} else if (rnum < 0.2) {
+			self.team_str_moved = "\n\n\n\nDeath to Potatoes!\n";
+		} else if (rnum < 0.22) {
+			self.team_str_moved = "\n\n\n\n\"You guys have really fucked up\n urinals, you know that?\"\n   - TyR in Australia\n";
+		} else if (rnum < 0.24) {
+			self.team_str_moved = "\n\n\n\nMany potatoes were harmed in the\nmaking of this product.\n";
+		} else if (rnum < 0.25) {
+			self.team_str_moved = "\n\n\n\nBAH! I shoulda put the Demoman\nblast armor back while I was at it!\n   - Gudlyf\n";
+		} else if (rnum < 0.26) {
+			self.team_str_moved = "\n\n\n\nTwin Peaks will be out... uhh...\nerr... soon.\n";
+		} else if (rnum < 0.28) {
+			self.team_str_moved = "\n\n\n\n\"Twin Peaks will be finished tomorrow.\"\n   - TyR, 16th July, 25th July, 2nd August...";
+		} else if (rnum < 0.3) {
+			self.team_str_moved = "\n\n\n\n\"After all, TF is an INSULT to the\npurity of CTF!\"\n   - Mjollnir, who was joking... really!";
+		} else if (rnum < 0.32) {
+			self.team_str_moved = "\n\n\n\n\"I force them to work.\nElse I cut back their supplies\"\n   - Vomitgod, on TFS\n";
+		} else if (rnum < 0.34) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen you had to use imin1 & imin2\nto join a team.\n";
+		} else if (rnum < 0.36) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen there were 2 TF servers...\nand they were always down.";
+		} else if (rnum < 0.38) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen no-one knew how to use\nhand grenades...\n";
+		} else if (rnum < 0.4) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen 2fort was the only TF map.\nWe sure have come a long\nway since then... sigh";
+		} else if (rnum < 0.42) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen the sniper rifle just\nkilled in one hit... everytime\n";
+		} else if (rnum < 0.44) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen I could download TF in\n1 minute 20 seconds\n";
+		} else if (rnum < 0.46) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen I didn't have to download\nANYTHING to play TF\n";
+		} else if (rnum < 0.48) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen players used to say\n\"What's that bubble?\"\n";
+		} else if (rnum < 0.5) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen The Well actually had a well...\n";
+		} else if (rnum < 0.52) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen the motion detector was officially\nthe Scout's best friend, at least\naccording to the readme.txt\n";
+		} else if (rnum < 0.54) {
+			self.team_str_moved = "\n\n\n\nI remember the good ol' days...\nwhen  Ian went to jail for punching\nRobin out\n";
+		} else if (rnum < 0.56) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #1:\nUmm... How do I set a detpack?\n";
+		} else if (rnum < 0.58) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #2:\nUmm... How do I throw a grenade?\n";
+		} else if (rnum < 0.6) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #3:\nHey, he is cheating, that soldier just jumped up to the roof!!\n";
+		} else if (rnum < 0.62) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #4:\nHow do I throw the pins?\n";
+		} else if (rnum < 0.64) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #5:\nWhere do I take the flag!?!?!\n";
+		} else if (rnum < 0.66) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #6:\nWhere's the control room?\n";
+		} else if (rnum < 0.68) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #7:\nWhy the hell are these backpacks\nexploding?\n";
+		} else if (rnum < 0.7) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #8:\nWho's the maniac with the axe?\n";
+		} else if (rnum < 0.72) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #9:\nStop shooting me!\nI'm on your team!\nYou tried to attack my with the axe!\n";
+		} else if (rnum < 0.74) {
+			self.team_str_moved = "\n\n\n\nTF Newbie Quote #10:\nWhat's this key? I thought this\nwas a CTF style map, guys?\n";
+		} else if (rnum < 0.76) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #1:\nUm, Red Medics, please don't\nheal the President.\n";
+		} else if (rnum < 0.78) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #2:\nGuys could you NOT set up\nsentries in hunted?\n";
+		} else if (rnum < 0.8) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #3:\nWho the hell is on\nthe lift?\n";
+		} else if (rnum < 0.82) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #4:\nDISCARD!!\n";
+		} else if (rnum < 0.84) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #5:\nDamn Snipers!\n";
+		} else if (rnum < 0.86) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #6:\nDamn Snipers!\n";
+		} else if (rnum < 0.88) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #7:\nGet a mask or\nget in the WATER!!\n";
+		} else if (rnum < 0.9) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #8:\nSpy's, please change colors\noutside our base.\n";
+		} else if (rnum < 0.92) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #9:\nI was typing!!\n";
+		} else if (rnum < 0.94) {
+			self.team_str_moved = "\n\n\n\nTF Veteran Quote #10:\nWhy is that guy running\nout of our yard with\nthe flag???\n";
+		} else if (rnum < 0.96) {
+			self.team_str_moved = "\n\n\n\nTF's original design docs!\nCheck it out!\nwww.teamfortress.com/files/teamfortress/tfdes_1.gif";
+		} else if (rnum < 0.98) {
+			self.team_str_moved = "\n\n\n\nTF's original design docs!\nCheck it out!\nwww.teamfortress.com/files/teamfortress/tfdes_2.gif";
+		} else
+			self.team_str_moved = "\n\n\n\n\"MJ: Did you hear John Cash wrote TF?\"\n   - VomitGod";
+		return;
+    }
+	else {
+		self.nextthink = time + 1.5;
+		self.weapon = self.weapon + 1;
     }
     rnum = random ();
     te = find (world, classname, "player");
     while (te) {
-	if (self.team_str_home != string_null)
-	    centerprint (te, self.team_str_moved, self.team_str_home);
-	else
-	    centerprint (te, self.team_str_moved);
+		if (self.team_str_home != string_null)
+			centerprint (te, self.team_str_moved, self.team_str_home);
+		else
+			centerprint (te, self.team_str_moved);
 
-	if (self.weapon == 1) {
-	    sound (te, 3, "misc/b1.wav", 1, 1);
-	} else if (self.weapon <= 4) {
-            if (rnum < 0.33) {
-		sound (te, 3, "misc/b2.wav", 1, 1);
-            } else if (rnum < 0.66) {
-		sound (te, 3, "misc/b3.wav", 1, 1);
-	    } else 
-                sound (te, 3, "misc/b4.wav", 1, 1);
-	}
-	te = find (te, classname, "player");
+		if (self.weapon == 1) {
+			sound (te, 3, "misc/b1.wav", 1, 1);
+		}
+		else if (self.weapon <= 4) {
+			if (rnum < 0.33) {
+				sound (te, 3, "misc/b2.wav", 1, 1);
+			}
+			else if (rnum < 0.66) {
+				sound (te, 3, "misc/b3.wav", 1, 1);
+			}
+			else 
+				sound (te, 3, "misc/b4.wav", 1, 1);
+		}
+		te = find (te, classname, "player");
     }
 };
 

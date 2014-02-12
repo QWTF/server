@@ -5,8 +5,8 @@ defs.qc
 constants.qc
 qw.qc
 debug.qc
-status.qc
 menu.qc
+status.qc
 subs.qc
 combat.qc
 items.qc

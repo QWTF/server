@@ -136,12 +136,12 @@ void () TeamFortress_ID =
 			if (((self.team_no != 0) && (self.team_no == trace_ent.team_no)) || (self.classname == "observer")) {
 				cls = TeamFortress_GetClassName (trace_ent.playerclass);
 				if (self.playerclass == PC_MEDIC) {
-					st = NumberToString1000 (trace_ent.health);
+					st = ftos (trace_ent.health);
 					centerprint (self, "\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " health\n");
 					return;
 				}
 				else if (self.playerclass == PC_ENGINEER) {
-					st = NumberToString1000 (trace_ent.armorvalue);
+					st = ftos (trace_ent.armorvalue);
 					centerprint (self, "\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " armor\n");
 					return;
 				}
@@ -152,7 +152,7 @@ void () TeamFortress_ID =
 				cls = TeamFortress_GetClassName (trace_ent.undercover_skin);
 				if ((self.team_no != 0) && (self.team_no == trace_ent.undercover_team)) {
 					if (self.playerclass == 5) {
-						st = NumberToString1000 (trace_ent.health);
+						st = ftos (trace_ent.health);
 						if (trace_ent.undercover_skin != 0) {
 							centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " health\n");
 						}
@@ -163,7 +163,7 @@ void () TeamFortress_ID =
 					}
 					else {
 						if (self.playerclass == 9) {
-							st = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (trace_ent.armorvalue);
 							if (trace_ent.undercover_skin != 0) {
 								centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " armor\n");
 							}
@@ -173,7 +173,7 @@ void () TeamFortress_ID =
 							return;
 						}
 						else {
-							st = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (trace_ent.armorvalue);
 							if (trace_ent.undercover_skin != 0) {
 								centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls);
 							}
