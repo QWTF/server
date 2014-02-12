@@ -219,7 +219,7 @@ void () Menu_Team =
 	return;
     }
 
-    if (CTF_Map == TRUE) {
+    if (CTF_Map == 1) {
 	CenterPrint (self, "=== Choose Your Team ===\n\n“‘ Blue Team           \n”‘ Red Team            \n\n\n\n™‘ Bind my keys for me!\n\nFor full details on this patch:\nhttp://www.planetfortress.com/teamfortress/\n");
     } else if (number_of_teams == 1) {
 	CenterPrint (self, "=== Choose Your Team ===\n\n“‘ Team One  \n");

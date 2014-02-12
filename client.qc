@@ -179,7 +179,7 @@ void () DecodeLevelParms =
 
 			ent = find (world, classname, "info_player_team1");
 			if ((ent != world) || (CTF_Map == 1)) {
-				CTF_Map = TRUE;
+				//CTF_Map = TRUE; // up2: makes no sense
 				if (teamplay == 0)
 					cvar_set ("teamplay", "21?TeamFortress");
 
@@ -1908,7 +1908,6 @@ void () ClientConnect =
     if (intermission_running)
 		GotoNextMap ();
 
-    local string st2;
     st2 = infokey (world, "apw");
     if (st2 == string_null)
 		st2 = infokey (world, "adminpwd");

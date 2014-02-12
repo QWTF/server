@@ -101,7 +101,7 @@ float team4advantage;
 .float infection_team_no; // The team_no of the person who infected you
 
 // CTF stuff
-float CTF_Map = 0;
+float CTF_Map;
 
 float coop;
 

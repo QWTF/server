@@ -542,14 +542,14 @@ void (entity AD) ParseTFDetect =
 
 entity (float ino) Finditem =
 {
-    local entity tg;
+    local entity tfgoal;
     local string st;
 
-    tg = find (world, classname, "item_tfgoal");
-    while (tg) {
-	if (tg.goal_no == ino)
-	    return (tg);
-	tg = find (tg, classname, "item_tfgoal");
+    tfgoal = find (world, classname, "item_tfgoal");
+    while (tfgoal) {
+		if (tfgoal.goal_no == ino)
+			return (tfgoal);
+		tfgoal = find (tfgoal, classname, "item_tfgoal");
     }
     dprint ("Could not find an item with a goal_no of ");
     st = ftos (ino);
@@ -559,14 +559,14 @@ entity (float ino) Finditem =
 
 entity (float gno) Findgoal =
 {
-    local entity tg;
+    local entity tfgoal;
     local string st;
 
-    tg = find (world, classname, "info_tfgoal");
-    while (tg) {
-	if (tg.goal_no == gno)
-	    return (tg);
-	tg = find (tg, classname, "info_tfgoal");
+    tfgoal = find (world, classname, "info_tfgoal");
+    while (tfgoal) {
+		if (tfgoal.goal_no == gno)
+			return (tfgoal);
+		tfgoal = find (tfgoal, classname, "info_tfgoal");
     }
     dprint ("Could not find a goal with a goal_no of ");
     st = ftos (gno);
@@ -576,14 +576,14 @@ entity (float gno) Findgoal =
 
 entity (float gno) Findteamspawn =
 {
-    local entity tg;
+    local entity tfgoal;
     local string st;
 
-    tg = find (world, classname, "info_player_teamspawn");
-    while (tg) {
-	if (tg.goal_no == gno)
-	    return (tg);
-	tg = find (tg, classname, "info_player_teamspawn");
+    tfgoal = find (world, classname, "info_player_teamspawn");
+    while (tfgoal) {
+	if (tfgoal.goal_no == gno)
+	    return (tfgoal);
+	tfgoal = find (tfgoal, classname, "info_player_teamspawn");
     }
     dprint ("Could not find a Teamspawn with a goal_no of ");
     st = ftos (gno);

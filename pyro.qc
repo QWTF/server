@@ -75,32 +75,34 @@ float (string id_flame) RemoveFlameFromQueue =
     local entity tmp;
 
     if (num_world_flames < MAX_WORLD_FLAMES) {
-	dprint ("ERROR in RemoveFlameFromQueue\n");
-	return;
+		dprint ("ERROR in RemoveFlameFromQueue\n");
+		return;
     }
+	
     num_world_flames = num_world_flames - 1;
     tmp = find (world, flame_id, "4");
+	
     if (!tmp) {
-	if (id_flame == "4") {
-	    return (0);
-	}
-	tmp = find (world, flame_id, "3");
-	if (!tmp) {
-	    if (id_flame == "3") {
-		return (0);
-	    }
-	    tmp = find (world, flame_id, "2");
-	    if (!tmp) {
-		if (id_flame == "2") {
-		    return (0);
+		if (id_flame == "4") {
+			return (0);
 		}
-		tmp = find (world, flame_id, "1");
+		tmp = find (world, flame_id, "3");
 		if (!tmp) {
-		    dprint ("\n\nRemoveFlameFromQueue():BOOM!\n");
-		    return (0);
+			if (id_flame == "3") {
+				return (0);
+			}
+			tmp = find (world, flame_id, "2");
+			if (!tmp) {
+				if (id_flame == "2") {
+					return (0);
+				}
+				tmp = find (world, flame_id, "1");
+				if (!tmp) {
+					dprint ("\n\nRemoveFlameFromQueue():BOOM!\n");
+					return (0);
+				}
+			}
 		}
-	    }
-	}
     }
     remove (tmp);
     return (1);

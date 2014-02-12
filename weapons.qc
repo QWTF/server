@@ -2561,7 +2561,7 @@ void () PreMatchImpulses =
     else if (self.impulse == TF_ID)
 		TeamFortress_ID ();
     else if (self.impulse == FLAG_INFO) {
-		if (CTF_Map == TRUE)
+		if (CTF_Map == 1)
 			TeamFortress_CTF_FlagInfo ();
 		else
 			TeamFortress_DisplayDetectionItems ();

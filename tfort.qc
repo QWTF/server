@@ -1859,39 +1859,39 @@ void (entity Retriever, entity Items) TeamFortress_AddBackpackItems =
     return;
 };
 
-string (float pc) TeamFortress_GetClassName =
+string (float player_class) TeamFortress_GetClassName =
 {
-    if (pc == PC_SCOUT)
-	return "Scout";
-    else if (pc == PC_SNIPER)
-	return "Sniper";
-    else if (pc == PC_SOLDIER)
-	return "Soldier";
-    else if (pc == PC_DEMOMAN)
-	return "Demolitions Man";
-    else if (pc == PC_MEDIC)
-	return "Combat Medic";
-    else if (pc == PC_HVYWEAP)
-	return "Heavy Weapons Guy";
-    else if (pc == PC_PYRO)
-	return "Pyro";
-    else if (pc == PC_SPY)
-	return "Spy";
-    else if (pc == PC_ENGINEER)
-	return "Engineer";
-    else if (pc == PC_CIVILIAN)
-	return "Civilian";
-    else if (pc == PC_UNDEFINED)
-	return "Observer";
-    else if (pc == PC_RANDOM)
-	return "Random Playerclass";
+    if (player_class == PC_SCOUT)
+		return "Scout";
+    else if (player_class == PC_SNIPER)
+		return "Sniper";
+    else if (player_class == PC_SOLDIER)
+		return "Soldier";
+    else if (player_class == PC_DEMOMAN)
+		return "Demolitions Man";
+    else if (player_class == PC_MEDIC)
+		return "Combat Medic";
+    else if (player_class == PC_HVYWEAP)
+		return "Heavy Weapons Guy";
+    else if (player_class == PC_PYRO)
+		return "Pyro";
+    else if (player_class == PC_SPY)
+		return "Spy";
+    else if (player_class == PC_ENGINEER)
+		return "Engineer";
+    else if (player_class == PC_CIVILIAN)
+		return "Civilian";
+    else if (player_class == PC_RANDOM)
+		return "Random Playerclass";
+	else //(player_class == PC_UNDEFINED)
+		return "Observer";
 };
 
-void (entity Viewer, float pc, float rpc) TeamFortress_PrintClassName =
+void (entity Viewer, float player_class, float rpc) TeamFortress_PrintClassName =
 {
     local string st;
 
-    st = TeamFortress_GetClassName (pc);
+    st = TeamFortress_GetClassName (player_class);
     sprint (Viewer, PRINT_HIGH, st);
 
     if (rpc != 0)
