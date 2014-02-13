@@ -121,9 +121,18 @@ void () TeamFortress_List_Not_Ready =
 	
 	if (server_status == "Prematch") {
 		local float i;
+		local float found;
 		local entity search;
-				
-		if ( (ready_votes == 0) || (arr_ready_voters[i] != self.tf_id) )
+		local float selfready;
+		
+		selfready = 0;
+		for (i = 0; i < ready_votes; i++) {
+				if (arr_ready_voters[i] == self.tf_id) {
+					selfready = 1;
+				}
+		}
+		
+		if ( (ready_votes == 0) || (selfready ==0) )
 			sprint (self, PRINT_HIGH, "Please type /ready\n");
 		else if (ready_votes > 0) {
 			if (anti_spam_timer_list < time) {
@@ -131,12 +140,18 @@ void () TeamFortress_List_Not_Ready =
 				bprint (PRINT_HIGH, "\sPlayers not ready:\s\n");
 				
 				while (search) {
+					found = 0;
 					for (i = 0; i < ready_votes; i++) {
-						if (arr_ready_voters[i] != search.tf_id) {
-							anti_spam_timer_list = time + 10;
-							bprint2(PRINT_HIGH, search.netname, "\n");
+						if (arr_ready_voters[i] == search.tf_id) {
+							found = 1; // Player found in ready-players-list.
 						}
 					}
+					if ( found == 0)  // Player NOT found in ready-players-list.
+					{
+						anti_spam_timer_list = time + 10;
+						bprint2(PRINT_HIGH, search.netname, "\n");
+					}
+					
 					search = find (search, classname, "player");
 				}
 			}
