@@ -34,7 +34,7 @@ void () t_movetarget;
 void () movetarget_f =
 {
     if (!self.targetname)
-	objerror ("monster_movetarget: no targetname");
+		objerror ("monster_movetarget: no targetname");
 
     self.solid = SOLID_TRIGGER;
     self.touch = t_movetarget;
@@ -44,8 +44,8 @@ void () movetarget_f =
 void () path_corner =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     movetarget_f ();
 };
@@ -133,19 +133,19 @@ float () FindTarget =
 
     client = checkclient ();
     if (!client)
-	return (FALSE);
+		return (FALSE);
 
     if (client.flags & FL_NOTARGET)
-	return (FALSE);
+		return (FALSE);
 
     if (client.items & IT_INVISIBILITY)
-	return (FALSE);
+		return (FALSE);
 
     if (!visible (client))
-	return (FALSE);
+		return (FALSE);
 
     if (client.classname != "player")
-	return;
+		return;
 
     self.enemy = client;
     HuntTarget ();
