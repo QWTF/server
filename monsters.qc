@@ -145,7 +145,7 @@ float () FindTarget =
 		return (FALSE);
 
     if (client.classname != "player")
-		return;
+		return (FALSE);
 
     self.enemy = client;
     HuntTarget ();

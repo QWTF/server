@@ -22,7 +22,7 @@ entity (string type, entity p_owner) FlameSpawn =
 	
     while (num_world_flames > MAX_WORLD_FLAMES) {
 		if (!RemoveFlameFromQueue (type)) {
-			return;
+			return (world);
 		}
     }
 	
@@ -76,7 +76,7 @@ float (string id_flame) RemoveFlameFromQueue =
 
     if (num_world_flames < MAX_WORLD_FLAMES) {
 		dprint ("ERROR in RemoveFlameFromQueue\n");
-		return;
+		return (0);
     }
 	
     num_world_flames = num_world_flames - 1;
