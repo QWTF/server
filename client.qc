@@ -255,6 +255,8 @@ void () DecodeLevelParms =
 
 		if (st == "on") { // if clan game is set to on
 			localcmd ("serverinfo status Prematch\n");
+			localcmd ("serverinfo status2 Prematch\n");
+			
 			clanbattle = TRUE;
 			clan_scores_dumped = 0;
 			game_locked = 0;
@@ -1340,12 +1342,21 @@ Also, this function is executed every 0.1 seconds.
 				anti_spam_timer_reminder = time + 5;
 				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
 			}
+
+	
+
 		}
 		
-		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) )
+		
+		
+		server_status = infokey (world, "status");
+		
+		 
+		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) && (server_status != "Prematch") && (server_status != "Countdown") )
 			NextLevel ();
 		else if (fraglimit && (self.frags >= fraglimit))
 			NextLevel ();
+		
 	}
 	else { // not a team game
 		if (timelimit && (time >= timelimit))

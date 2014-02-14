@@ -118,7 +118,7 @@ void () TeamFortress_PlayersReady =
 void () TeamFortress_List_Not_Ready =
 {
 	server_status = infokey (world, "status");
-	
+		
 	if (server_status == "Prematch") {
 		local float i;
 		local float found;

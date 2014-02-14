@@ -409,6 +409,7 @@ if (st == "on") {
 		stuffcmd (search, "impulse 182\n"); // sbar_on
 		
 	localcmd ("serverinfo status2 Match\n");
+	localcmd ("serverinfo status Match\n");
 	
     bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
     
@@ -431,6 +432,7 @@ else { // no countdown menu, default countdown instead
 	
 	
 	localcmd ("serverinfo status2 Match\n");
+	localcmd ("serverinfo status Match\n");
 	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
 		
 	if (game_locked)
