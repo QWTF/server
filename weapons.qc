@@ -2422,6 +2422,24 @@ void () CycleWeaponCommand =
 void () PreMatchImpulses;
 void () DeadImpulses;
 
+void () GrenadeImpulses =
+{
+	server_status = infokey (world, "status");
+	if ((server_status == "Prematch") || (server_status == "Countdown") || cease_fire) {
+		return;
+	}
+	
+	if ((!self.is_building && !self.is_detpacking) && !self.is_feigning) {
+		if (self.impulse == TF_GRENADE_1)
+			TeamFortress_PrimeGrenade ();
+		else if (self.impulse == TF_GRENADE_2)
+			TeamFortress_PrimeGrenade ();
+	}
+	
+	if (self.impulse == TF_GRENADE_T)
+		TeamFortress_ThrowGrenade ();
+}
+
 void () ImpulseCommands =
 {
     local string st;
@@ -2466,10 +2484,6 @@ void () ImpulseCommands =
 			CycleWeaponCommand ();
 		else if ((self.impulse == 69) && (self.last_weapon != 0))
 			W_ChangeWeapon ();
-		else if (self.impulse == TF_GRENADE_1)
-			TeamFortress_PrimeGrenade ();
-		else if (self.impulse == TF_GRENADE_2)
-			TeamFortress_PrimeGrenade ();
 		else if (self.impulse == TF_RELOAD)
 			TeamFortress_ReloadCurrentWeapon ();
 		else if (self.impulse == TF_DETPACK_5)
@@ -2500,8 +2514,6 @@ void () ImpulseCommands =
 		TeamFortress_Message (4);
     else if ((self.playerclass != 0) && (self.impulse == 86))
 		TeamFortress_Message (5);
-    else if (self.impulse == TF_GRENADE_T)
-		TeamFortress_ThrowGrenade ();
     else if (self.impulse == TF_ID)
 		TeamFortress_ID ();
     else if (self.impulse == TF_SHOW_IDS)
@@ -2585,6 +2597,14 @@ void () PreMatchImpulses =
 void () DeadImpulses =
 {
 	server_status = infokey (world, "status2");
+	
+	if (self.impulse == TF_READY) {
+        TeamFortress_PlayersReady ();
+    }
+	
+	if (self.impulse == TF_LIST) {
+        TeamFortress_List_Not_Ready ();
+    }
 	
     if (self.impulse == TF_SHOWTF)
 		TeamFortress_ShowTF ();
@@ -2729,10 +2749,21 @@ void () W_WeaponFrame =
 	    }
     }
 	}
-    if (time < self.attack_finished) {
+    server_status = infokey (world, "instantgrenades");
+	if (server_status == "1")
+	{
+		GrenadeImpulses();
+	}
+	
+	if (time < self.attack_finished) {
 	return;
     }
     if ((self.impulse != 0) && (self.has_disconnected == 0)) {
+		if (server_status != "1")
+		{
+			GrenadeImpulses();
+		}
+	
 	ImpulseCommands ();
     }
     if (cease_fire) {
