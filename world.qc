@@ -126,9 +126,9 @@ void () worldspawn =
     number_of_teams = 0;
     InitBodyQue ();
     if (self.model == "maps/e1m8.bsp")
-	cvar_set ("sv_gravity", "100");
+		cvar_set ("sv_gravity", "100");
     else
-	cvar_set ("sv_gravity", "800");
+		cvar_set ("sv_gravity", "800");
 
     cvar_set ("pausable", "0");
     cvar_set ("sv_friction", "6");
@@ -136,10 +136,10 @@ void () worldspawn =
 
     st = infokey (world, "*sv_gamedir");
     if ((st != string_null) && (st != "fortress"))
-	objerror ("QW TF must be run with a sv_gamedir of \"fortress\".\n");
+		objerror ("QW TF must be run with a sv_gamedir of \"fortress\".\n");
     else if (st == string_null) {
-	if (infokey (world, "*gamedir") != "fortress")
-	    objerror ("QW TF must be run with a gamedir or sv_gamedir of \"fortress\".\n");
+		if (infokey (world, "*gamedir") != "fortress")
+			objerror ("QW TF must be run with a gamedir or sv_gamedir of \"fortress\".\n");
     }
 
     st = infokey (world, "exec_map_cfgs");

@@ -46,47 +46,45 @@ void () info_notnull = {};
 void () light_use =
 {
     if (self.spawnflags & 1) {
-	lightstyle (self.style, "m");
-	self.spawnflags = self.spawnflags - 1;
+		lightstyle (self.style, "m");
+		self.spawnflags = self.spawnflags - 1;
     } else {
-	lightstyle (self.style, "a");
-	self.spawnflags = self.spawnflags + 1;
+		lightstyle (self.style, "a");
+		self.spawnflags = self.spawnflags + 1;
     }
 };
 
 void () light =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     if (!self.targetname) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     if (self.style >= 32) {
-
-	self.use = light_use;
-	if (self.spawnflags & 1)
-	    lightstyle (self.style, "a");
-	else
-	    lightstyle (self.style, "m");
+		self.use = light_use;
+		if (self.spawnflags & 1)
+			lightstyle (self.style, "a");
+		else
+			lightstyle (self.style, "m");
     }
 };
 
 void () light_fluoro =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     if (self.style >= 32) {
-
-	self.use = light_use;
-	if (self.spawnflags & 1)
-	    lightstyle (self.style, "a");
-	else
-	    lightstyle (self.style, "m");
+		self.use = light_use;
+		if (self.spawnflags & 1)
+			lightstyle (self.style, "a");
+		else
+			lightstyle (self.style, "m");
     }
     precache_sound ("ambience/fl_hum1.wav");
     ambientsound (self.origin, "ambience/fl_hum1.wav", 0.5, 3);
@@ -95,8 +93,8 @@ void () light_fluoro =
 void () light_fluorospark =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
    }
    if (!self.style)
        self.style = 10;
@@ -108,8 +106,8 @@ void () light_fluorospark =
 void () light_globe =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/s_light.spr");
     setmodel (self, "progs/s_light.spr");
@@ -125,8 +123,8 @@ void () FireAmbient =
 void () light_torch_small_walltorch =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/flame.mdl");
     setmodel (self, "progs/flame.mdl");
@@ -137,8 +135,8 @@ void () light_torch_small_walltorch =
 void () light_flame_large_yellow =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/flame2.mdl");
     setmodel (self, "progs/flame2.mdl");
@@ -150,8 +148,8 @@ void () light_flame_large_yellow =
 void () light_flame_small_yellow =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/flame2.mdl");
     setmodel (self, "progs/flame2.mdl");
@@ -162,8 +160,8 @@ void () light_flame_small_yellow =
 void () light_flame_small_white =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/flame2.mdl");
     setmodel (self, "progs/flame2.mdl");
@@ -177,15 +175,15 @@ void () fire_touch;
 void () misc_fireball =
 {
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_model ("progs/lavaball.mdl");
     self.classname = "fireball";
     self.nextthink = time + random () * 5;
     self.think = fire_fly;
     if (!self.speed)
-	self.speed = 1000;
+		self.speed = 1000;
 };
 
 void () fire_fly =
@@ -211,7 +209,7 @@ void () fire_fly =
 void () fire_touch =
 {
     if (other.takedamage)
-	TF_T_Damage (other, self, self, 20, 0, 16);
+		TF_T_Damage (other, self, self, 20, 0, 16);
 
     dremove (self);
 };
@@ -235,8 +233,8 @@ void () misc_explobox =
     local float oldz;
 
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     self.solid = 2;
     self.movetype = 0;
@@ -251,11 +249,10 @@ void () misc_explobox =
     oldz = self.origin_z;
     droptofloor ();
     if ((oldz - self.origin_z) > 250) {
-
-	dprint ("item fell out of level at ");
-	dprint (vtos (self.origin));
-	dprint ("\n");
-	dremove (self);
+		dprint ("item fell out of level at ");
+		dprint (vtos (self.origin));
+		dprint ("\n");
+		dremove (self);
     }
 };
 
@@ -264,8 +261,8 @@ void () misc_explobox2 =
     local float oldz;
 
     if (CheckExistence () == 0) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     self.solid = 2;
     self.movetype = 0;
@@ -279,12 +276,11 @@ void () misc_explobox2 =
     self.origin_z = (self.origin_z + 2);
     oldz = self.origin_z;
     droptofloor ();
-    if ((oldz - self.origin_z) > 250) {
-       
-	dprint ("item fell out of level at ");
-	dprint (vtos (self.origin));
-	dprint ("\n");
-	dremove (self);
+    if ((oldz - self.origin_z) > 250) {   
+		dprint ("item fell out of level at ");
+		dprint (vtos (self.origin));
+		dprint ("\n");
+		dremove (self);
     }
 };
 
@@ -295,25 +291,25 @@ void () Laser_Touch =
     local vector org;
 
     if (other == self.owner)
-	return;
+		return;
 
     if (pointcontents (self.origin) == -6) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     sound (self, CHAN_WEAPON, "enforcer/enfstop.wav", 1, ATTN_STATIC);
     org = self.origin - 8 * normalize (self.velocity);
     if (other.health) {
-	SpawnBlood (org, 15);
-	TF_T_Damage (other, self, self.owner, 15, 0, TF_TD_ELECTRICITY);
+		SpawnBlood (org, 15);
+		TF_T_Damage (other, self, self.owner, 15, 0, TF_TD_ELECTRICITY);
     } else {
-	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-	WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-	WriteByte (MSG_MULTICAST, 5);
-	WriteCoord (MSG_MULTICAST, org_x);
-	WriteCoord (MSG_MULTICAST, org_y);
-	WriteCoord (MSG_MULTICAST, org_z);
-	multicast (org, 2);
+		WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+		WriteByte (MSG_MULTICAST, TE_GUNSHOT);
+		WriteByte (MSG_MULTICAST, 5);
+		WriteCoord (MSG_MULTICAST, org_x);
+		WriteCoord (MSG_MULTICAST, org_y);
+		WriteCoord (MSG_MULTICAST, org_z);
+		multicast (org, 2);
     }
     dremove (self);
 };
@@ -321,7 +317,7 @@ void () Laser_Touch =
 void (vector org, vector vec) LaunchLaser =
 {
     if (self.classname == "monster_enforcer")
-	sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
+		sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
 
     vec = normalize (vec);
     newmis = spawn ();
@@ -342,16 +338,16 @@ void (vector org, vector vec) LaunchLaser =
 void () spikeshooter_use =
 {
     if (self.spawnflags & 2) {
-	sound (self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM);
-	LaunchLaser (self.origin, self.movedir);
+		sound (self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM);
+		LaunchLaser (self.origin, self.movedir);
     } else {
-	sound (self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM);
+		sound (self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM);
 
-	launch_spike (self.origin, self.movedir);
-	newmis.velocity = self.movedir * 500;
+		launch_spike (self.origin, self.movedir);
+		newmis.velocity = self.movedir * 500;
 
-	if (self.spawnflags & 1)
-	    newmis.touch = superspike_touch;
+		if (self.spawnflags & 1)
+			newmis.touch = superspike_touch;
     }
 };
 
@@ -365,25 +361,25 @@ void () shooter_think =
 void () trap_spikeshooter =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     SetMovedir ();
     self.use = spikeshooter_use;
 
     if (self.spawnflags & 2) {
-	precache_model2 ("progs/laser.mdl");
-	precache_sound2 ("enforcer/enfire.wav");
-	precache_sound2 ("enforcer/enfstop.wav");
+		precache_model2 ("progs/laser.mdl");
+		precache_sound2 ("enforcer/enfire.wav");
+		precache_sound2 ("enforcer/enfstop.wav");
     } else
-	precache_sound ("weapons/spike2.wav");
+		precache_sound ("weapons/spike2.wav");
 };
 
 void () trap_shooter =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     trap_spikeshooter ();
 
@@ -400,8 +396,8 @@ void () bubble_remove;
 void () air_bubbles =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     dremove (self);
 };
@@ -444,13 +440,13 @@ void () bubble_split =
     self.cnt = 10;
 
     if (self.waterlevel != 3)
-	remove (self);
+		remove (self);
 };
 
 void () bubble_remove =
 {
     if (other.classname == self.classname)
-	return;
+		return;
     dremove (self);
 };
 
@@ -460,29 +456,29 @@ void () bubble_bob =
 
     self.cnt = self.cnt + 1;
     if (self.cnt == 4)
-	bubble_split ();
+		bubble_split ();
 
     if (self.cnt == 20)
-	dremove (self);
+		dremove (self);
 
     rnd1 = self.velocity_x + (-10 + random () * 20);
     rnd2 = self.velocity_y + (-10 + random () * 20);
     rnd3 = self.velocity_z + 10 + random () * 10;
 
     if (rnd1 > 10)
-	rnd1 = 5;
+		rnd1 = 5;
     else if (rnd1 < -10)
-	rnd1 = -5;
+		rnd1 = -5;
 
     if (rnd2 > 10)
-	rnd2 = 5;
+		rnd2 = 5;
     else if (rnd2 < -10)
-	rnd2 = -5;
+		rnd2 = -5;
 
     if (rnd3 < 10)
-	rnd3 = 15;
+		rnd3 = 15;
     else if (rnd3 > 30)
-	rnd3 = 25;
+		rnd3 = 25;
 
     self.velocity_x = rnd1;
     self.velocity_y = rnd2;
@@ -495,8 +491,8 @@ void () bubble_bob =
 void () viewthing =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     self.movetype = MOVETYPE_NONE;
     self.solid = SOLID_NOT;
@@ -512,8 +508,8 @@ void () func_wall_use =
 void () func_wall =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     self.angles = '0 0 0';
     self.movetype = MOVETYPE_PUSH;
@@ -538,11 +534,11 @@ void () func_illusionary =
 void () func_episodegate =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     if (!(serverflags & self.spawnflags))
-	return;
+		return;
 
     self.angles = '0 0 0';
     self.movetype = MOVETYPE_PUSH;
@@ -554,12 +550,12 @@ void () func_episodegate =
 void () func_bossgate =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
 
     if ((serverflags & 15) == 15)
-	return;
+		return;
 
     self.angles = '0 0 0';
     self.movetype = MOVETYPE_PUSH;
@@ -571,8 +567,8 @@ void () func_bossgate =
 void () ambient_suck_wind =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/suck1.wav");
     ambientsound (self.origin, "ambience/suck1.wav", 1, ATTN_STATIC);
@@ -581,8 +577,8 @@ void () ambient_suck_wind =
 void () ambient_drone =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/drone6.wav");
     ambientsound (self.origin, "ambience/drone6.wav", 0.5, ATTN_STATIC);
@@ -591,8 +587,8 @@ void () ambient_drone =
 void () ambient_flouro_buzz =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/buzz1.wav");
     ambientsound (self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC);
@@ -601,8 +597,8 @@ void () ambient_flouro_buzz =
 void () ambient_drip =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/drip1.wav");
     ambientsound (self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC);
@@ -611,8 +607,8 @@ void () ambient_drip =
 void () ambient_comp_hum =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/comp1.wav");
     ambientsound (self.origin, "ambience/comp1.wav", 1, ATTN_STATIC);
@@ -621,8 +617,8 @@ void () ambient_comp_hum =
 void () ambient_thunder =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/thunder1.wav");
     ambientsound (self.origin, "ambience/thunder1.wav", 0.5, ATTN_STATIC);
@@ -631,8 +627,8 @@ void () ambient_thunder =
 void () ambient_light_buzz =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/fl_hum1.wav");
     ambientsound (self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC);
@@ -641,8 +637,8 @@ void () ambient_light_buzz =
 void () ambient_swamp1 =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/swamp1.wav");
     ambientsound (self.origin, "ambience/swamp1.wav", 0.5, ATTN_STATIC);
@@ -651,8 +647,8 @@ void () ambient_swamp1 =
 void () ambient_swamp2 =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound ("ambience/swamp2.wav");
     ambientsound (self.origin, "ambience/swamp2.wav", 0.5, ATTN_STATIC);
@@ -674,8 +670,8 @@ void () noise_think =
 void () misc_noisemaker =
 {
     if (CheckExistence () == FALSE) {
-	dremove (self);
-	return;
+		dremove (self);
+		return;
     }
     precache_sound2 ("enforcer/enfire.wav");
     precache_sound2 ("enforcer/enfstop.wav");
