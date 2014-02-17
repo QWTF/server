@@ -2454,7 +2454,10 @@ void () ImpulseCommands =
 		self.menu_count = 25;
 		self.menu_displaytime = 0;
     }
-    if ((self.impulse == 242) && (birthday == 0)) {
+    
+	
+	
+	if ((self.impulse == 242) && (birthday == 0)) {
 		st = infokey (world, "birthday");
 		if (st != "off") {
 			self.current_menu = 23;
@@ -2464,12 +2467,14 @@ void () ImpulseCommands =
 			return;
 		}
     }
-    if ((server_status == "Prematch") || (server_status == "Countdown") || cease_fire) {
+    
+	if ((server_status == "Prematch") || (server_status == "Countdown") || cease_fire) {
 		PreMatchImpulses ();
 		DeadImpulses ();
 		self.impulse = 0;
 		return;
     }
+	
     if (self.impulse == TF_SPECIAL_SKILL)
 		UseSpecialSkill ();
 
@@ -2587,11 +2592,15 @@ void () PreMatchImpulses =
 	
 	if (self.impulse == TF_READY) {
         TeamFortress_PlayersReady ();
-    }
+		self.impulse = 0;
+		return;
+	}
 	
 	if (self.impulse == TF_LIST) {
         TeamFortress_List_Not_Ready ();
-    }
+		self.impulse = 0;
+		return;
+	}
 };
 
 void () DeadImpulses =
@@ -2600,11 +2609,16 @@ void () DeadImpulses =
 	
 	if (self.impulse == TF_READY) {
         TeamFortress_PlayersReady ();
-    }
+		self.impulse = 0;
+		return;
+	}
 	
 	if (self.impulse == TF_LIST) {
         TeamFortress_List_Not_Ready ();
-    }
+		self.impulse = 0;
+		return;
+	}
+	
 	
     if (self.impulse == TF_SHOWTF)
 		TeamFortress_ShowTF ();

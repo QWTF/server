@@ -27,7 +27,8 @@ float () TeamFortress_TeamPutPlayerInTeam =
     local float teams_to_balance;
     local float total_players_on_maxed_teams;
     
-    total_players_to_balance = 0;
+    
+	total_players_to_balance = 0;
     teams_to_balance = number_of_teams;
     total_players_on_maxed_teams = 0;
     
@@ -35,7 +36,7 @@ float () TeamFortress_TeamPutPlayerInTeam =
     for (i = 0; i <= number_of_teams; i++) {
         arr_team_sizes[i] = TeamFortress_TeamGetNoPlayers (i);
         total_players_to_balance += arr_team_sizes[i];
-        
+        		
         // If team is at max players keep track of it
         if (arr_team_sizes[i] == TeamFortress_TeamGetMaxPlayers (i)) {
             teams_to_balance--;
