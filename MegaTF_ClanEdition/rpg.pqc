@@ -1,0 +1,617 @@
+void () RemoveVote;
+void () MapNotFound;
+void () RemoveVote2;
+string() votesneededtostring;
+float(string mapstr) validatemap;
+float nomap;
+#ifdef fte_rankings
+float (string arg1, string arg2, string arg3, string arg4) MoreClientCommands;
+void (entity plyr) Rank_PrintRank;
+void (entity plyr) Rank_PrintStats;
+#endif
+#ifdef clan_progs
+float (string arg1) ShowReadyPlayers;
+#endif
+
+//TEMP
+#define	PRINT_HIGH		 2
+
+void() voteyes = 
+{
+	local string checkallowvote;
+	checkallowvote = infokey (world, "allowvote");
+	if ((checkallowvote != "1"))
+	{
+		sprint (self, 2, "Voting has not been enabled on this server.\n");
+		return;
+	}
+	if (votestarted == 0)
+	{
+		sprint (self, 2, "There is no vote started. To start a vote, type [cmd votemap mapname] in console.\n");
+		return;
+	}
+	if ((self.has_voted == 1))
+	{
+		sprint (self, 2, "You've already voted!\n");
+		return;
+	}
+	if ((self.vote_wait < 1))
+	{
+		sprint (self, 2, "You must join the game in order to vote.\n");
+		return;
+	}
+	else
+	{
+		self.has_voted = 1;
+		bprint (1.000000, self.netname);
+		bprint (1.000000, " has agreed on the map vote.\n");
+		num_votes = num_votes + 1;
+		if (num_votes > (num_players * 0.5))
+		{
+			self.has_voted = 0;
+			themap = infokey (world, "themap");
+			if (infokey(world, "fteserver") == "1" || infokey(world, "fteserver") == "on")
+				themap = strzone(themap);
+			bprint (1.000000, themap);
+			bprint (1.000000, " it is!\n");
+#ifdef fte_rankings
+			if (FTE_Server == 1)
+				Rank_UpdateStatsGlobal ();
+#endif
+			if (prozacmethod == 1)
+			{
+				localcmd ("exec qwmcycle/");
+				localcmd (themap);
+				localcmd (".cfg\n");
+				changelevel (themap);
+				newmis = spawn();
+				newmis.classname = "timer";
+				newmis.nextthink = time + 2;
+				newmis.think = MapNotFound;
+				return;
+			}
+			localcmd ("exec qwmcycle/");
+			localcmd (themap);
+			localcmd (".cfg\n");
+//			changelevel (themap); //changed for map error compatability reasons
+			localcmd ("map ");
+			localcmd (themap);
+			localcmd ("\n");
+			newmis = spawn();
+			newmis.classname = "timer";
+			newmis.nextthink = time + 2;
+			newmis.think = MapNotFound;
+			if (infokey(world, "fteserver") == "1" || infokey(world, "fteserver") == "on")
+				strunzone(themap);
+			return;
+		}
+		local string votesneeded;
+		votesneeded = votesneededtostring ();
+		if (votesneeded == "1")
+		{
+			bprint (1.000000, votesneeded);
+			bprint (1.000000, " more vote needed.\n");
+		}
+		else
+		{
+			bprint (1.000000, votesneeded);
+			bprint (1.000000, " more votes needed");
+			bprint (1, " ");
+			themap = infokey (world, "themap");
+			bprint (1, themap);
+			bprint (1, "‘ \n");
+		}
+	}
+};
+
+void(string put) votemap_start = 
+{
+	local string checkallowvote;
+
+	if ((self.is_ingame != 1))
+	{
+		sprint (self, 2, "You must join the game in order to vote.\n");
+		return;
+	}
+	if ((self.has_voted == 1))
+	{
+		sprint (self, 2, "You've already voted!\n");
+		return;
+	}
+	if ((self.startedvote == 1))
+	{
+		sprint (self, 2, "You can only initiate one vote per game!\n");
+		return;
+	}
+	if (votestarted == 1)
+	{
+		sprint (self, 2, "A vote is already in progress. Please use voteyes or wait until the vote ends.\n");
+		return;
+	}
+	checkallowvote = infokey (world, "allowvote");
+	if ((checkallowvote != "1"))
+	{
+		sprint (self, 2, "Voting has not been enabled on this server.\n");
+		return;
+	}
+	if ((self.has_voted == 1))
+	{
+		sprint (self, 2, "You've already voted!\n");
+		return;
+	}
+	else
+	{
+            string mapdispfix;
+		votestarted = 1;
+		themap = put;
+		if (prozacmethod == 1)
+		{
+			themap = prozacmap;
+		}
+		localcmd ("localinfo  themap ");
+		localcmd (put);
+		localcmd ("\n");
+		bprint (1.000000, self.netname);
+		bprint (1.000000, " has voted for ");
+		bprint (1.000000, put);
+            mapdispfix = put;
+		bprint (1.000000, " - use voteyes to agree. If more than 50% is not agreed before one minute the vote will end.\n");
+//		sound (world, 4.000000, "misc/runekey.wav", 1.000000, 0.000000);
+// Since the sound would not play for everyone in the game with the old sound code, I make it play the sound
+// individually for all players
+		local entity head;
+		head = nextent(world);
+		while (head != world)
+		{
+		if (head.classname == "player") { stuffcmd(head, "play misc/runekey.wav \n"); }
+		head = nextent(head); 
+		}
+		num_votes = num_votes + 1;
+		self.has_voted = 1;
+//		self.startedvote = 1;
+		self.vote_wait = (time + 90);
+		RemoveVote();
+		if (num_votes > (num_players * 0.6))
+		{
+#ifdef fte_rankings
+			if (FTE_Server == 1)
+				Rank_UpdateStatsGlobal ();
+#endif
+			self.has_voted = 0;
+			localcmd ("exec qwmcycle/");
+			localcmd (put);
+			localcmd (".cfg\n");
+//			changelevel (put); // just wasnt working after map fails for some reason..
+			localcmd ("map ");
+			localcmd (put);
+			localcmd ("\n");
+
+			newmis = spawn();
+			newmis.classname = "timer";
+			newmis.nextthink = time + 2;
+			newmis.think = MapNotFound;
+			return;
+		}
+		local string votesneeded;
+		votesneeded = votesneededtostring ();
+		if (votesneeded == "1")
+		{
+			bprint (1.000000, votesneeded);
+			bprint (1.000000, " more vote needed.\n");
+		}
+		else
+		{
+			bprint (1.000000, votesneeded);
+			bprint (1.000000, " more votes needed");
+			bprint (1, " ");
+			themap = infokey (world, "themap");
+			bprint (1, mapdispfix);
+			bprint (1, "‘ \n");
+		}
+	}
+};
+
+string() votesneededtostring =
+{
+	local float needed;
+	needed = ((num_players * 0.5) - num_votes);
+
+	if (needed < 1)
+	{
+		return ("1‘");
+	}
+	if (needed < 2)
+	{
+		return ("2‘");
+	}
+	if (needed < 3)
+	{
+		return ("3‘");
+	}
+	if (needed < 4)
+	{
+		return ("4‘");
+	}
+	if (needed < 5)
+	{
+		return ("5‘");
+	}
+	if (needed < 6)
+	{
+		return ("6‘");
+	}
+	if (needed < 7)
+	{
+		return ("7‘");
+	}
+	if (needed < 8)
+	{
+		return ("8‘");
+	}
+	if (needed < 9)
+	{
+		return ("9‘");
+	}
+	if (needed < 10)
+	{
+		return ("10‘");
+	}
+	if (needed < 11)
+	{
+		return ("11‘");
+	}
+	if (needed < 12)
+	{
+		return ("12‘");
+	}
+	if (needed >= 13)
+	{
+		return ("over 12‘");
+	}
+	return ("ERROR");
+};
+
+void() MapNotFound =
+{
+	local entity finder_ent;
+
+	localcmd("say --  Map Not Found  --\n");
+	nomap = 1;
+#ifdef fte_rankings
+	if (FTE_Server == 1 && Ranks_Updated == 1)
+		Ranks_Updated = 0;
+#endif
+	finder_ent = find (world,classname,"VoteFailed");
+	while (finder_ent)
+	{
+		if ((finder_ent.classname == "VoteFailed"))
+		{
+			dremove (finder_ent);
+		}
+		finder_ent = find (finder_ent, classname, "VoteFailed");
+	}
+	RemoveVote2 ();
+	dremove (self);
+}
+
+void() RemoveVote =
+{
+	newmis = spawn();
+	newmis.classname = "VoteFailed";
+//	newmis.classname = "timer"; // changed to "VoteFailed"
+	newmis.nextthink = time + 60;
+	newmis.think = RemoveVote2;
+	nomap = 0;
+	//dremove (self);// <- would have removed the player O.o
+}
+
+void() RemoveVote2 =
+{
+	prozacmethod = 0;
+	local entity head;
+	localcmd("say -- VOTE HAS FAILED --");
+
+	votestarted = 0;
+	num_votes = 0;
+	self.startedvote = 0;
+	self.vote_wait = (time + 30);
+
+	head = nextent(world);
+	while (head != world)
+	{
+	if (head.classname == "player") { head.has_voted = 0; }
+	head = nextent(head); 
+	}
+	return;
+	dremove (self);
+};
+
+// PROZAC STUFF (Needs Often's Prozac Server.)
+// Thank you Often for your wonderful help coding this. Credit for this vote system belongs to you, man!
+float(string st1, string st2) strcasecmp = #87;
+
+float(float num_args, string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7) ClientCommand =
+{
+	if (!strcasecmp("votemap",arg1))
+	{
+		if ((self.vote_wait < 1))
+		{
+			sprint (self, 2, "You must join the game in order to vote.\n");
+			return 1;
+		}
+		local string thisiscnn;
+		thisiscnn = arg2;
+		if (!arg2)
+		{
+			sprint (self, 2.000000, "Please use [cmd votemap mapname] in the console.\n");
+			return 1;
+		}
+		if (validatemap(arg2))
+		{
+			pmap_backup = thisiscnn;
+			prozacmethod = 1;
+			prozacmap = thisiscnn;
+			votemap_start(thisiscnn);
+			return 1;
+		}
+ 		else
+		{
+			sprint(self,2,"The server doesn't have the ¢");
+			sprint(self,2,arg2);
+			sprint(self,2,"¢ map\n");
+			return 1;
+		}
+	}
+#ifdef clan_progs
+	else if (ShowReadyPlayers(arg1) == 1)
+		return 1;
+#endif
+	return 0;
+};
+
+float(string mapstr) validatemap =
+{
+    mapstr = strcat("maps/",mapstr);
+    mapstr = strcat(mapstr,".bsp");
+
+    return validatefile(mapstr);
+};
+
+void (string d, string st) FTE_VoteMap =
+{
+			if (d == "")
+			{
+				sprint (self, 2.000000, "Please specify a map name (EX: cmd votemap 2mach1)\n");
+				return;
+			}
+			local float handle;
+			local string t_mapname;
+			t_mapname = d;
+//if it's not an FTE server we cant use FTE's map check :\
+			if (infokey(world, "fteserver") != "1")
+			{
+				votemap_start (d);
+				return;
+			}
+			handle = search_begin(strcat("maps/", t_mapname, ".bsp"), false, true);
+			if (handle>=0)
+			{
+				clientcommand(self, st);
+				votemap_start (d);
+				search_end(handle);
+				return;
+			}
+			else
+			{
+				clientcommand(self, st);
+				sprint (self, 2, "Couldn't find ", t_mapname, "\n");
+				return;
+			}
+			t_mapname = "dm9";
+			handle = search_begin(strcat("maps/", t_mapname, ".bsp"), false, true);
+			if (handle>=0)
+			{
+				search_end(handle);
+			}
+			else
+			{
+				bprint("done\n");
+			}
+};
+
+//Basically this allows FTE/Fuh/EZQuake servers to use cmd.
+//In the case of FTE, saying !map actually works (map check too)
+void SV_ParseClientCommand (string st)
+{
+	local float args;
+//	local float h; // no refs yet (maybe for use in future release?)
+	local string c;
+	local string d;
+	local string f;
+	local string g;
+	local string i;
+	args = tokenize(st);
+	c = argv(0);
+	d = argv(1);
+	f = argv(2);
+	g = argv(3);
+	i = argv(4);
+
+	if (c == "pm")
+        	{
+		if (!d)
+		{
+			sprint (self, 2.000000, "Please use [cmd pm userid \"message\"] in the console:\n");
+			pm_list ();
+			return;
+		}
+		if (d)
+		{
+			if (!f)
+			{
+				sprint (self, 2.000000, "Please use [cmd pm userid \"message\"] in the console:\n");
+				pm_list ();
+				return;
+			}
+			if (g != "")
+			{
+				sprint (self, 2.000000, "Use your message text inside \"quotes like this\"!\n");
+				return;
+			}
+			else
+			{
+				local entity te;
+				local float gotthrough;
+				local float getid;
+				getid = stof(d);
+				te = find(world,classname,"player");
+				while (te)
+				{
+					if (te.userid == getid)
+					{
+						gotthrough = 1;
+						stuffcmd(te, "play misc/talk.wav\n");
+						sprint(te, 2, "ÐÍ ¨",self.netname,"©º ",f,"\n");
+						sprint(self, 2, "PM to ",te.netname," sent\n");
+						stuffcmd(self, "play misc/talk.wav\n");
+						self.cooldown = (time + 4);
+						return;
+					}
+					te = find(te,classname,"player");
+				}
+				sprint (self, 2.000000, "User not found. Please choose a userid from this list:\n");
+				pm_list ();
+				return;
+			}
+		}
+		return;
+	}
+	// edit this to do what you want with the received commands
+	else if (c == "votemap")
+	{
+		if (d)
+		{
+			FTE_VoteMap(d, st);
+		}
+		clientcommand(self, st);
+		sprint (self, 2, "Please use cmd votemap mapname\n");
+		return;
+	}
+	else if (c == "say")
+	{
+		if (d == "!voteyes")
+		{
+			voteyes ();
+			return;
+		}
+		else if (d == "!map" || d == "!votemap")
+		{
+			FTE_VoteMap(f, st);
+			return;
+		}
+		clientcommand(self, st);
+	}
+#ifdef fte_rankings
+	else if (MoreClientCommands(c, d, f, g) == 1)
+		return;
+#endif
+#ifdef clan_progs
+	else if (ShowReadyPlayers(c) == 1)
+		return;
+#endif
+	else
+	{
+		clientcommand(self, st);
+	}
+
+};
+
+#ifdef fte_rankings
+float (string arg1, string arg2, string arg3, string arg4) MoreClientCommands =
+{
+	local entity te;
+
+	if (arg1 == "showrank")
+	{
+		if (!arg2)
+		{
+			sprint(self, 2, "Please use as: CMD showrank userid, or CMD showrank all.\n");
+			pm_list ();
+			return 1;
+		}
+		else if (arg2 == "all")
+		{
+			te = find(world,classname,"player");
+			while (te)
+			{
+				if (te.has_disconnected == 0)
+				{
+					Rank_PrintRank(te);
+				}
+				te = find(te,classname,"player");
+			}
+			return 1;
+		}
+		else
+		{
+			if (stof(arg2) == 0 || !stof(arg2))
+			{
+				sprint (self, 2, "User not found. Please choose a userid from this list:\n");
+				pm_list ();
+				return 1;
+			}
+			te = find(world,classname,"player");
+			while (te)
+			{
+				if (te.userid == stof(arg2))
+				{
+					//Rank_PrintRank(te);
+					sprint(self, 2, "Ranks for ");
+					sprint(self, 2, te.rank_name);
+					sprint(self, 2, ":\n");
+					Rank_PrintStats(te);
+					return 1;
+				}
+				te = find(te,classname,"player");
+			}
+			sprint (self, 2, "User not found. Please choose a userid from this list:\n");
+			pm_list ();
+			return 1;
+		}
+	}
+	return 0;
+};
+#endif
+
+#ifdef clan_progs
+float (string arg1) ShowReadyPlayers =
+{
+	local entity te;
+
+	if (arg1 == "showready")
+	{
+		if (clan_prematch < 1)
+		{
+			sprint(self, 2, "There is currently no Clan Prematch in progress.\n");
+			return 1;
+		}
+		te = find(world,classname,"player");
+		while (te)
+		{
+			if (te.userid > 0)
+			{
+				sprint(self, 2, te.netname);
+				sprint(self, 2, " (");
+				if (te.is_ready == 1)
+					sprint(self, 2, "ready");
+				else
+					sprint(self, 2, "not ready");
+				sprint(self, 2, ")\n");
+			}
+			te = find(te,classname,"player");
+		}
+		return 1;
+	}
+	return 0;
+};
+#endif

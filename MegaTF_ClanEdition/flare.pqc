@@ -1,0 +1,105 @@
+void() FlareGrenadeTouch = 
+{
+	self.touch = SUB_Null;
+	self.velocity = '0 0 0';
+	if (pointcontents(self.origin) == -6)
+	{
+		newmis = spawn();
+		setmodel(newmis, "progs/flare.spr");
+		setorigin(newmis, self.origin - '0 0 30');
+		newmis.movetype = 8;
+		newmis.solid = TF_FLARE_OFF;
+		newmis.effects = 4;
+		newmis.effects = newmis.effects + TF_FLARE_OFF;
+		sound(newmis, 3, "items/flare1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		newmis.velocity_z = -30;
+		newmis.velocity_x = random() * 10;
+		newmis.velocity_y = random() * 10;
+		newmis.nextthink = time + 30;
+		newmis.think = SUB_Remove;
+		newmis.touch = SUB_Remove;
+		newmis.classname = "flare";
+		dremove(self);
+	}
+	else
+	{
+		sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		self.movetype = 6;
+	}
+};
+
+void () FlareGrenadeThink =
+{
+	local float _l_8723;
+	local float _l_8724;
+
+	_l_8724 = self.health - time;
+	if ((_l_8724 > 37.000000))
+	{
+		_l_8723 = random ();
+		if ((_l_8723 < 0.500000))
+		{
+			self.effects = 8.000000;
+		}
+		else
+		{
+			self.effects = 0.000000;
+		}
+		self.nextthink = ((time + 0.050000) + (random () * 0.100000));
+	}
+	else
+	{
+		if ((_l_8724 > 34.000000))
+		{
+			_l_8723 = random ();
+			if ((_l_8723 < 0.500000))
+			{
+				self.effects = 4.000000;
+			}
+			else
+			{
+				self.effects = 8.000000;
+			}
+			self.nextthink = ((time + 0.050000) + (random () * 0.100000));
+		}
+		else
+		{
+			if ((_l_8724 > 15.000000))
+			{
+				self.effects = 4.000000;
+				self.nextthink = (time + 10.000000);
+			}
+			else
+			{
+				if ((_l_8724 < 1.000000))
+				{
+					self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+					remove (self);
+				}
+				else
+				{
+					self.effects = 8.000000;
+					self.nextthink = (time + _l_8724);
+				}
+			}
+		}
+	}
+};
+
+void() FlareGrenadeExplode = 
+{
+	self.skin = TF_FLARE_OFF;
+	self.health = time + 40;
+	self.nextthink = time + 0.05 + random() * 0.1;
+	sound(self, 3, "items/flare1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.solid = TF_FLARE_LIT;
+	self.think = FlareGrenadeThink;
+};
+
+void () RemoveFlare =
+{
+	self.owner.effects = (self.owner.effects - (self.owner.effects & 4.000000));
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	dremove (self);
+};
+

@@ -1,0 +1,1239 @@
+void (float tno) TeamFortress_TeamSetColor;
+void (float tno,float scoretoadd) TeamFortress_TeamIncreaseScore;
+float (float tno) TeamFortress_TeamGetLives;
+float (float tno) TeamFortress_TeamGetMaxPlayers;
+string (float tno) TeamFortress_TeamGetColorString;
+float (float tno) TeamFortress_TeamGetIllegalClasses;
+float quadscore;
+
+// pablo. get score.
+float (float tno) TeamFortress_GetRealScore =
+{
+	local entity te;
+	local float total;
+
+	te = find (world, classname, "player");
+	while (te)
+	{
+		if (te.team_no == tno)
+		{			
+			total = total + te.real_frags;
+		}
+		te = find (te, classname, "player");
+	}
+	return total;
+}
+//
+
+float() TeamFortress_TeamPutPlayerInTeam = 
+{
+	local float i;
+	local float j;
+	local float score1;
+	local float score2;
+
+	local float lowest;
+	local float likely_team;
+
+	i = 1;
+	likely_team = random() * number_of_teams;
+	likely_team = ceil(likely_team);
+	if (likely_team == 0)
+	{
+		likely_team = number_of_teams;
+	}
+
+	lowest = 33;
+	while (i < number_of_teams + 1)
+	{
+		j = TeamFortress_TeamGetNoPlayers(i);
+		
+		if (j < lowest)
+		{
+			if (TeamFortress_TeamGetMaxPlayers(i) > j)
+			{
+				lowest = j;
+				likely_team = i;
+			}
+		}
+		// pablo. fancier autoteam for even teams.
+		else if (j == lowest)
+		{
+			
+			if (TeamFortress_TeamGetMaxPlayers(i) > j)
+			{
+				score1 = TeamFortress_GetRealScore(i);
+				score2 = TeamFortress_GetRealScore(likely_team);
+
+				if ( score1 < score2 )
+				{
+					likely_team = i;
+				}
+				else if (score1 == score2)
+				{
+					if (random() > 0.5)
+					{
+						likely_team = i;
+					}
+				}
+			}
+		}
+		//
+		i = i + 1;
+	}
+	return TeamFortress_TeamSet(likely_team);
+};
+
+float(float tno) TeamFortress_TeamGetColor = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		return 14;
+	}
+	if (tno == 2)
+	{
+		return 5;
+	}
+	if (tno == 3)
+	{
+		return 13;
+	}
+	if (tno == 4)
+	{
+		return 12;
+	}
+	return 0;
+};
+
+void(float tno) TeamFortress_TeamSetColor = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		team1col = 14;
+		return;
+	}
+	if (tno == 2)
+	{
+		team2col = 5;
+		return;
+	}
+	if (tno == 3)
+	{
+		team3col = 13;
+		return;
+	}
+	if (tno == 4)
+	{
+		team4col = 12;
+		return;
+	}
+};
+
+string(float tno) GetTeamName = 
+{
+	local string st;
+	if (tno == TF_FLARE_OFF)
+	{
+		st = infokey(world, "team1");
+		if (st == string_null)
+		{
+			st = infokey(world, "t1");
+		}
+		if (st == string_null || st == "")
+		{
+			return "blue";
+		}
+	}
+	else
+	{
+		if (tno == 2)
+		{
+			st = infokey(world, "team2");
+			if (st == string_null)
+			{
+				st = infokey(world, "t2");
+			}
+			if (st == string_null || st == "")
+			{
+				return "red";
+			}
+		}
+		else
+		{
+			if (tno == 3)
+			{
+				st = infokey(world, "team3");
+				if (st == string_null)
+				{
+					st = infokey(world, "t3");
+				}
+				if (st == string_null || st == "")
+				{
+					return "yell";
+				}
+			}
+			else
+			{
+				if (tno == 4)
+				{
+					st = infokey(world, "team4");
+					if (st == string_null)
+					{
+						st = infokey(world, "t4");
+					}
+					if (st == string_null || st == "")
+					{
+						return "gren";
+					}
+				}
+				else
+				{
+					st = "\"\"";
+				}
+			}
+		}
+	}
+	return st;
+};
+
+void(entity p) SetTeamName = 
+{
+	local string st;
+	stuffcmd(p, "team ");
+	st = GetTeamName(p.team_no);
+	stuffcmd(p, st);
+	stuffcmd(p, "\n");
+};
+
+float(float tno) TeamFortress_TeamSet = 
+{
+	local string st;
+	local float tc;
+	if (teamplay < TF_FLARE_OFF)
+	{
+		sprint(self, 2, "Teamplay is not On, so FortressTeams are inactive.\n");
+		return 0;
+	}
+	if (tno > number_of_teams && number_of_teams != 0)
+	{
+		sprint(self, 2, "There can be only ");
+		st = ftos(number_of_teams);
+		sprint(self, 2, st);
+		sprint(self, 2, " teams on this map.\nTry again\n");
+		return 0;
+	}
+	if (self.team_no > 0)
+	{
+		sprint(self, 2, "You're already in Team No ");
+		st = ftos(self.team_no);
+		sprint(self, 2, st);
+		sprint(self, 2, ".\n");
+		return 0;
+	}
+	tc = TeamFortress_TeamGetNoPlayers(tno);
+	if (tc >= TeamFortress_TeamGetMaxPlayers(tno))
+	{
+		sprint(self, 2, "That team is full. Pick another.\n");
+		return 0;
+	}
+	if (TeamFortress_TeamGetColor(tno) == 0)
+	{
+		TeamFortress_TeamSetColor(tno);
+		if (TeamFortress_TeamGetColor(tno) == 0)
+		{
+			sprint(self, 2, "You can't start a new team with your color, since another ");
+			sprint(self, 2, "already using that color. Change your pants color, then try again.\n");
+			return 0;
+		}
+		bprint(2, self.netname);
+		bprint(2, " has started Team No ");
+		st = ftos(tno);
+		bprint(2, st);
+		bprint(2, ".\n");
+		self.immune_to_check = time + 10;
+		stuffcmd(self, "color ");
+		tc = TeamFortress_TeamGetColor(tno) - TF_FLARE_OFF;
+		st = ftos(tc);
+		stuffcmd(self, st);
+		stuffcmd(self, "\n");
+		self.team_no = tno;
+		self.lives = TeamFortress_TeamGetLives(tno);
+		SetTeamName(self);
+		if (self.playerclass == 0)
+		{
+			if (TeamFortress_TeamIsCivilian(self.team_no))
+			{
+				self.impulse = TF_FLARE_OFF;
+				TeamFortress_ChangeClass();
+			}
+		}
+		return TF_FLARE_OFF;
+	}
+	bprint(2, self.netname);
+	bprint(2, " has joined Team No ");
+	st = ftos(tno);
+	bprint(2, st);
+	bprint(2, ".\n");
+	stuffcmd(self, "color ");
+	tc = TeamFortress_TeamGetColor(tno) - TF_FLARE_OFF;
+	st = ftos(tc);
+	stuffcmd(self, st);
+	stuffcmd(self, "\n");
+	self.team_no = tno;
+	self.immune_to_check = time + 10;
+	self.lives = TeamFortress_TeamGetLives(tno);
+	TeamFortress_TeamShowMemberClasses(self);
+	SetTeamName(self);
+	if (self.playerclass == 0)
+	{
+		if (TeamFortress_TeamIsCivilian(self.team_no))
+		{
+			self.impulse = TF_FLARE_OFF;
+			TeamFortress_ChangeClass();
+		}
+	}
+	return TF_FLARE_OFF;
+};
+
+void() TeamFortress_CheckTeamCheats = 
+{
+	local string st;
+	local string sk;
+	local float tc;
+	if (self.immune_to_check > time)
+	{
+		return;
+	}
+	if (self.deadflag)
+	{
+		return;
+	}
+	if (self.team_no > 0 && teamplay > 0)
+	{
+		st = infokey(self, "bottomcolor");
+		tc = stof(st);
+		if (self.playerclass == 8 && self.undercover_team != 0)
+		{
+			if (TeamFortress_TeamGetColor(self.undercover_team) - TF_FLARE_OFF != tc)
+			{
+				stuffcmd(self, "color ");
+				tc = TeamFortress_TeamGetColor(self.undercover_team) - TF_FLARE_OFF;
+				st = ftos(tc);
+				stuffcmd(self, st);
+				stuffcmd(self, "\n");
+				bprint2(TF_FLARE_OFF, self.netname, " has been kicked for changing color.\n");
+				sprint(self, 2, "You have been kicked for changing your pants color. Don't do it.\n");
+				stuffcmd(self, "disconnect\n");
+				stuffcmd(self, "quit\n");
+				return;
+			}
+		}
+		else
+		{
+			if (tc != TeamFortress_TeamGetColor(self.team_no) - TF_FLARE_OFF)
+			{
+				stuffcmd(self, "color ");
+				tc = TeamFortress_TeamGetColor(self.team_no) - TF_FLARE_OFF;
+				st = ftos(tc);
+				stuffcmd(self, st);
+				stuffcmd(self, "\n");
+				bprint2(TF_FLARE_OFF, self.netname, " has been kicked for changing color.\n");
+				sprint(self, 2, "You have been kicked for changing your pants color. Don't do it.\n");
+				stuffcmd(self, "disconnect\n");
+				stuffcmd(self, "quit\n");
+				return;
+			}
+		}
+		if (self.playerclass != 0)
+		{
+			st = infokey(self, "skin");
+			tc = 0;
+			if (self.playerclass == 8 && self.undercover_skin != 0)
+			{
+				tc = 8;
+				self.playerclass = self.undercover_skin;
+			}
+			if (self.playerclass == TF_FLARE_OFF)
+			{
+				sk = "airscout";
+			}
+			else
+			{
+				if (self.playerclass == 2)
+				{
+					sk = "tf_snipe";
+				}
+				else
+				{
+					if (self.playerclass == 3)
+					{
+						sk = "tf_sold";
+					}
+					else
+					{
+						if (self.playerclass == 4)
+						{
+							sk = "tf_demo";
+						}
+						else
+						{
+							if (self.playerclass == 5)
+							{
+								sk = "tf_medic";
+							}
+							else
+							{
+								if (self.playerclass == 6)
+								{
+									sk = "tf_hwguy";
+								}
+								else
+								{
+									if (self.playerclass == 7)
+									{
+										sk = "tf_pyro";
+									}
+									else
+									{
+										if (self.playerclass == 8)
+										{
+											sk = "tf_spy";
+										}
+										else
+										{
+											if (self.playerclass == 9)
+											{
+												sk = "tf_eng";
+											}
+											else
+											{
+												if (tc == 8)
+												{
+													self.playerclass = 8;
+												}
+												return;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if (st != sk)
+			{
+				TeamFortress_SetSkin(self);
+				bprint2(TF_FLARE_OFF, self.netname, " has been kicked for changing skin.\n");
+				sprint(self, 2, "You have been kicked for changing your skin. Don't do it.\n");
+				stuffcmd(self, "disconnect\n");
+				stuffcmd(self, "quit\n");
+				return;
+			}
+			if (tc == 8)
+			{
+				self.playerclass = 8;
+			}
+		}
+		st = GetTeamName(self.team_no);
+		if (st != infokey(self, "team"))
+		{
+			SetTeamName(self);
+			bprint2(TF_FLARE_OFF, self.netname, " has been kicked for changing team.\n");
+			sprint(self, 2, "You have been kicked for changing your team. Don't do it.\n");
+			stuffcmd(self, "disconnect\n");
+			stuffcmd(self, "quit\n");
+			return;
+		}
+	}
+};
+
+void(float tno, float scoretoadd) TeamFortress_TeamIncreaseScore = 
+{
+	local entity e;
+	if (tno == 0 || scoretoadd == 0)
+	{
+		return;
+	}
+	if (scoretoadd > 100)
+	{
+		scoretoadd = scoretoadd - 100;
+		scoretoadd = scoretoadd * -1;
+	}
+	if (tno == TF_FLARE_OFF)
+	{
+		team1score = team1score + scoretoadd;
+	}
+	if (tno == 2)
+	{
+		team2score = team2score + scoretoadd;
+	}
+	if (tno == 3)
+	{
+		team3score = team3score + scoretoadd;
+	}
+	if (tno == 4)
+	{
+		team4score = team4score + scoretoadd;
+	}
+	if (toggleflags & 128)
+	{
+		e = find(world, classname, "player");
+		while (e)
+		{
+			if (e.team_no == tno)
+			{
+				e.frags = TeamFortress_TeamGetScore(tno);
+			}
+			e = find(e, classname, "player");
+		}
+	}
+};
+
+float(float tno) TeamFortress_TeamGetScore = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		return team1score;
+	}
+	if (tno == 2)
+	{
+		return team2score;
+	}
+	if (tno == 3)
+	{
+		return team3score;
+	}
+	if (tno == 4)
+	{
+		return team4score;
+	}
+	return 0;
+};
+
+float(float tno) TeamFortress_TeamGetLives = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		return team1lives;
+	}
+	if (tno == 2)
+	{
+		return team2lives;
+	}
+	if (tno == 3)
+	{
+		return team3lives;
+	}
+	if (tno == 4)
+	{
+		return team4lives;
+	}
+	return 0;
+};
+
+float(float tno) TeamFortress_TeamGetNoPlayers = 
+{
+	local float size_team;
+	local entity search;
+	search = find(world, classname, "player");
+	while (search != world)
+	{
+		if (search.team_no == tno)
+		{
+			size_team = size_team + TF_FLARE_OFF;
+		}
+		search = find(search, classname, "player");
+	}
+	return size_team;
+};
+
+float(float tno) TeamFortress_TeamGetMaxPlayers = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		return team1maxplayers;
+	}
+	if (tno == 2)
+	{
+		return team2maxplayers;
+	}
+	if (tno == 3)
+	{
+		return team3maxplayers;
+	}
+	if (tno == 4)
+	{
+		return team4maxplayers;
+	}
+	return 0;
+};
+
+float() TeamFortress_TeamGetWinner = 
+{
+	local float i;
+	local float j;
+	local float highest;
+	local float highestteam;
+	i = TF_FLARE_OFF;
+	highest = -100;
+	highestteam = 0;
+	while (i < number_of_teams + TF_FLARE_OFF)
+	{
+		j = TeamFortress_TeamGetScore(i);
+		if (j > highest)
+		{
+			highest = j;
+			highestteam = i;
+		}
+		i = i + TF_FLARE_OFF;
+	}
+	return highestteam;
+};
+
+float() TeamFortress_TeamGetSecond = 
+{
+	local float i;
+	local float j;
+	local float highest;
+	local float highestteam;
+	local float secondteam;
+	local float second;
+	i = TF_FLARE_OFF;
+	highestteam = TeamFortress_TeamGetWinner();
+	highest = TeamFortress_TeamGetScore(highestteam);
+	secondteam = 0;
+	second = -100;
+	while (i < number_of_teams + TF_FLARE_OFF)
+	{
+		if (i != highestteam)
+		{
+			j = TeamFortress_TeamGetScore(i);
+			if (j <= highest && j > second)
+			{
+				second = j;
+				secondteam = i;
+			}
+		}
+		i = i + TF_FLARE_OFF;
+	}
+	return secondteam;
+};
+
+void (float all) TeamFortress_TeamShowScores =
+{
+	local string st;
+	local float i;
+	local float j;
+	local float _l_7158;
+	local float _l_7159;
+
+	i = 1;
+	_l_7158 = 0;
+	_l_7159 = 0;
+	if ((all == 2))
+	{
+		while ((i <= number_of_teams))
+		{
+			if ((TeamFortress_TeamGetColor (i) > 0))
+			{
+				j = TeamFortress_TeamGetScore (i);
+				st = TeamFortress_TeamGetColorString (i);
+				bprint (2, st);
+				bprint (2, ": ");
+				st = ftos (j);
+				bprint (2, st);
+				bprint (2, " ");
+				if ((j >= TeamFortress_TeamGetScore (_l_7158)))
+				{
+					_l_7159 = _l_7158;
+					_l_7158 = i;
+				}
+				else
+				{
+					if ((j >= TeamFortress_TeamGetScore (_l_7159)))
+					{
+						_l_7159 = i;
+					}
+				}
+			}
+			i = i + 1;
+		}
+		bprint (2, "\n");
+		sound (world, 4, "misc/update.wav", 1, 0);
+		if ((quadscore > 0))
+		{
+			if ((team1score > team2score))
+			{
+				bprint (2, "ê");
+				bprint (2, TeamFortress_TeamGetColorString (1));
+				bprint (2, "ë Ë·Û†˜ÔÓ†ÙËÂ†Ì·Ù„Ë°\n");
+				execute_changelevel ();
+				return;
+			}
+		}
+// Here begins that damn code which I couldn't figure out
+		if ((TeamFortress_TeamGetScore (_l_7158) != TeamFortress_TeamGetScore (_l_7159)))
+		{
+			local float fix1;
+			local float fix2;
+			local float totalf;
+			local string totals;
+			fix1 = ((TeamFortress_TeamGetScore (_l_7158)));
+			fix2 = ((TeamFortress_TeamGetScore (_l_7159)));
+			totalf = (fix1 - fix2);
+			totals = ftos (totalf);
+			if (totalf != 0) {
+			bprint (2, "ê");
+			bprint (2, TeamFortress_TeamGetColorString (_l_7158));
+			bprint (2, "ë ÈÛ†ÏÂ·‰ÈÓÁ†‚˘ ê");
+			bprint (2, totals);
+//			bprint (2, ftos ((TeamFortress_TeamGetScore (_l_7158) - TeamFortress_TeamGetScore (_l_7159))));
+			bprint (2, "ë\n"); }
+			else
+			{
+				bprint (2, "‘ËÂ†Á·ÌÂ†ÈÛ êtiedë\n");
+			}	
+		}
+		else
+		{
+			bprint (2, "‘ËÂ†Á·ÌÂ†ÈÛ êtiedë\n");
+		}
+		return;
+	}
+	while ((i <= number_of_teams))
+	{
+		if ((TeamFortress_TeamGetColor (i) > 0))
+		{
+			if (all)
+			{
+				bprint (2, "Team ");
+			}
+			else
+			{
+				sprint (self, 2, "Team ");
+			}
+			st = ftos (i);
+			if (all)
+			{
+				bprint (2, st);
+			}
+			else
+			{
+				sprint (self, 2, st);
+			}
+			if (all)
+			{
+				bprint (2, " (");
+			}
+			else
+			{
+				sprint (self, 2, " (");
+			}
+			st = TeamFortress_TeamGetColorString (i);
+			if (all)
+			{
+				bprint (2, st);
+			}
+			else
+			{
+				sprint (self, 2, st);
+			}
+			if (all)
+			{
+				bprint (2, ") : ");
+			}
+			else
+			{
+				sprint (self, 2, ") : ");
+			}
+			j = TeamFortress_TeamGetScore (i);
+			st = ftos (j);
+			if (all)
+			{
+				bprint (2, st);
+			}
+			else
+			{
+				sprint (self, 2, st);
+			}
+			if (all)
+			{
+				bprint (2, "\n");
+			}
+			else
+			{
+				sprint (self, 2, "\n");
+			}
+		}
+		i = i + 1;
+	}
+};
+
+string(float tno) TeamFortress_TeamGetColorString = 
+{
+	local float col;
+	col = TeamFortress_TeamGetColor(tno);
+	if (col == TF_FLARE_OFF)
+	{
+		return "White";
+	}
+	if (col == 2)
+	{
+		return "Brown";
+	}
+	if (col == 3)
+	{
+		return "Blue";
+	}
+	if (col == 4)
+	{
+		return "Green";
+	}
+	if (col == 5)
+	{
+		return "Red";
+	}
+	if (col == 6)
+	{
+		return "Tan";
+	}
+	if (col == 7)
+	{
+		return "Pink";
+	}
+	if (col == 8)
+	{
+		return "Orange";
+	}
+	if (col == 9)
+	{
+		return "Purple";
+	}
+	if (col == 10)
+	{
+		return "DarkPurple";
+	}
+	if (col == 11)
+	{
+		return "Grey";
+	}
+	if (col == 12)
+	{
+		return "DarkGreen";
+	}
+	if (col == 13)
+	{
+		return "Yellow";
+	}
+	return "DarkBlue";
+};
+
+void(entity Player) TeamFortress_TeamShowMemberClasses = 
+{
+	local entity e;
+	local float found;
+	found = 0;
+	e = find(world, classname, "player");
+	while (e)
+	{
+		if (e.team_no == Player.team_no || e.team_no == 0 && e != Player)
+		{
+			if (e.model != string_null)
+			{
+				if (!found)
+				{
+					found = TF_FLARE_OFF;
+					sprint(self, 2, "The other members of your team are:\n");
+				}
+				sprint(Player, 2, e.netname);
+				sprint(Player, 2, " : ");
+				TeamFortress_PrintClassName(Player, e.playerclass, e.tfstate & 8, 0);
+			}
+		}
+		e = find(e, classname, "player");
+	}
+	if (!found)
+	{
+		sprint(Player, 2, "There are no other players on your team.\n");
+	}
+};
+
+void() CalculateTeamEqualiser = 
+{
+	local float t1;
+	local float t2;
+	local float t3;
+	local float t4;
+	local float t_ave;
+	local float calc;
+	team1advantage = TF_FLARE_OFF;
+	team2advantage = TF_FLARE_OFF;
+	team3advantage = TF_FLARE_OFF;
+	team4advantage = TF_FLARE_OFF;
+	if (number_of_teams < 2)
+	{
+		self.nextthink = time + 60;
+		return;
+	}
+	if (teamplay & 32)
+	{
+		t1 = TeamFortress_TeamGetNoPlayers(TF_FLARE_OFF);
+		t2 = TeamFortress_TeamGetNoPlayers(2);
+		t3 = TeamFortress_TeamGetNoPlayers(3);
+		t4 = TeamFortress_TeamGetNoPlayers(4);
+		if (t1 + t2 + t3 + t4 < TF_FLARE_OFF)
+		{
+			self.nextthink = time + 30;
+			return;
+		}
+		t_ave = (t1 + t2 + t3 + t4) / number_of_teams;
+		if (t1 > 0)
+		{
+			calc = t_ave / t1 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team1advantage = calc;
+		}
+		if (t2 > 0 && number_of_teams >= 2)
+		{
+			calc = t_ave / t2 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team2advantage = calc;
+		}
+		if (t3 > 0 && number_of_teams >= 3)
+		{
+			calc = t_ave / t3 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team3advantage = calc;
+		}
+		if (t4 > 0 && number_of_teams >= 4)
+		{
+			calc = t_ave / t4 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team4advantage = calc;
+		}
+	}
+	if (teamplay & 64)
+	{
+		t1 = team1score + 60;
+		if (number_of_teams >= 2)
+		{
+			t2 = team2score + 60;
+		}
+		else
+		{
+			t2 = 0;
+		}
+		if (number_of_teams >= 3)
+		{
+			t3 = team3score + 60;
+		}
+		else
+		{
+			t3 = 0;
+		}
+		if (number_of_teams >= 4)
+		{
+			t4 = team4score + 60;
+		}
+		else
+		{
+			t4 = 0;
+		}
+		t_ave = (t2 + t3 + t4) / (number_of_teams - TF_FLARE_OFF);
+		calc = t_ave / t1 - TF_FLARE_OFF;
+		if (calc != 0)
+		{
+			calc = calc / 3 + TF_FLARE_OFF;
+		}
+		else
+		{
+			calc = calc + TF_FLARE_OFF;
+		}
+		team1advantage = calc * team1advantage;
+		if (number_of_teams >= 2)
+		{
+			t_ave = (t1 + t3 + t4) / (number_of_teams - TF_FLARE_OFF);
+			calc = t_ave / t2 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team2advantage = calc * team2advantage;
+		}
+		if (number_of_teams >= 3)
+		{
+			t_ave = (t2 + t1 + t4) / (number_of_teams - TF_FLARE_OFF);
+			calc = t_ave / t3 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team3advantage = calc * team3advantage;
+		}
+		if (number_of_teams >= 4)
+		{
+			t_ave = (t2 + t3 + t1) / (number_of_teams - TF_FLARE_OFF);
+			calc = t_ave / t4 - TF_FLARE_OFF;
+			if (calc != 0)
+			{
+				calc = calc / 3 + TF_FLARE_OFF;
+			}
+			else
+			{
+				calc = calc + TF_FLARE_OFF;
+			}
+			team4advantage = calc * team4advantage;
+		}
+	}
+	self.nextthink = time + 10;
+};
+
+void() SetupTeamEqualiser = 
+{
+	local entity TE;
+	team1advantage = TF_FLARE_OFF;
+	team2advantage = TF_FLARE_OFF;
+	team3advantage = TF_FLARE_OFF;
+	team4advantage = TF_FLARE_OFF;
+	if (!(teamplay & (32 | 64)))
+	{
+		return;
+	}
+	TE = spawn();
+	TE.classname = "Team Equaliser";
+	TE.think = CalculateTeamEqualiser;
+	TE.nextthink = time + 30;
+};
+
+float(entity targ, entity attacker, float damage) TeamEqualiseDamage = 
+{
+	local float adv;
+	local float newdam;
+	if (targ.classname != "player" || attacker.classname != "player")
+	{
+		return damage;
+	}
+	if (targ.team_no == 0 || attacker.team_no == 0 || attacker.team_no == targ.team_no)
+	{
+		return damage;
+	}
+	if (attacker.team_no == TF_FLARE_OFF)
+	{
+		adv = team1advantage;
+	}
+	else
+	{
+		if (attacker.team_no == 2)
+		{
+			adv = team2advantage;
+		}
+		else
+		{
+			if (attacker.team_no == 3)
+			{
+				adv = team3advantage;
+			}
+			else
+			{
+				if (attacker.team_no == 4)
+				{
+					adv = team4advantage;
+				}
+			}
+		}
+	}
+	if (adv == 0)
+	{
+		dprint("There is a team with an advantage of 0\n");
+		adv = 0.1;
+	}
+	newdam = damage * adv;
+	if (targ.team_no == TF_FLARE_OFF)
+	{
+		adv = team1advantage;
+	}
+	else
+	{
+		if (targ.team_no == 2)
+		{
+			adv = team2advantage;
+		}
+		else
+		{
+			if (targ.team_no == 3)
+			{
+				adv = team3advantage;
+			}
+			else
+			{
+				if (targ.team_no == 4)
+				{
+					adv = team4advantage;
+				}
+			}
+		}
+	}
+	if (adv == 0)
+	{
+		dprint("There is a team with an advantage of 0\n");
+		adv = 0.1;
+	}
+	newdam = newdam * (TF_FLARE_OFF / adv);
+	return newdam;
+};
+
+void() TeamFortress_StatusQuery = 
+{
+	local float ft;
+	local string st;
+	sprint(self, 2, "players per team: ");
+	ft = TeamFortress_TeamGetNoPlayers(TF_FLARE_OFF);
+	st = ftos(ft);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	ft = TeamFortress_TeamGetNoPlayers(2);
+	st = ftos(ft);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	ft = TeamFortress_TeamGetNoPlayers(3);
+	st = ftos(ft);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	ft = TeamFortress_TeamGetNoPlayers(4);
+	st = ftos(ft);
+	sprint(self, 2, st);
+	sprint(self, 2, "\n");
+	sprint(self, 2, "    equalisation: ");
+	st = ftos(team1advantage);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	st = ftos(team2advantage);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	st = ftos(team3advantage);
+	sprint(self, 2, st);
+	sprint(self, 2, "  ");
+	st = ftos(team4advantage);
+	sprint(self, 2, st);
+	sprint(self, 2, "\n");
+	st = ftos(teamplay);
+	sprint(self, 2, "Teamplay is ");
+	sprint(self, 2, st);
+	sprint(self, 2, "\n");
+};
+
+float(float tno) TeamFortress_TeamGetIllegalClasses = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		return illegalclasses1;
+	}
+	if (tno == 2)
+	{
+		return illegalclasses2;
+	}
+	if (tno == 3)
+	{
+		return illegalclasses3;
+	}
+	if (tno == 4)
+	{
+		return illegalclasses4;
+	}
+	return 0;
+};
+
+float(float tno) TeamFortress_TeamIsCivilian = 
+{
+	if (tno == TF_FLARE_OFF)
+	{
+		if (civilianteams & TF_FLARE_OFF)
+		{
+			return TF_FLARE_OFF;
+		}
+	}
+	else
+	{
+		if (tno == 2)
+		{
+			if (civilianteams & 2)
+			{
+				return TF_FLARE_OFF;
+			}
+		}
+		else
+		{
+			if (tno == 3)
+			{
+				if (civilianteams & 4)
+				{
+					return TF_FLARE_OFF;
+				}
+			}
+			else
+			{
+				if (civilianteams & 8)
+				{
+					return TF_FLARE_OFF;
+				}
+			}
+		}
+	}
+	return 0;
+};
+
+void(float tno, entity ignore, string st) teamsprint = 
+{
+	local entity te;
+	if (tno == 0)
+	{
+		return;
+	}
+	te = find(world, classname, "player");
+	while (te)
+	{
+		if (te.team_no == tno && te != ignore)
+		{
+			sprint(te, 2, st);
+		}
+		te = find(te, classname, "player");
+	}
+};
+

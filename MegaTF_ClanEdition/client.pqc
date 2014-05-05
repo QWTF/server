@@ -1,0 +1,4019 @@
+void() KickHead;
+float already_cycled;
+float footsteps, old_gl, exec_class;
+float coloredlights;
+.float	dmgtime, gravity;
+.float is_ingame;
+
+entity lastspawn_team1, lastspawn_team2, lastspawn_team3, lastspawn_team4;
+
+// pablo. prematch
+void () SetUpPrematch;
+//
+
+// 11.11.04 stuff
+void (entity _p_11534) TeamFortress_PrintPMTimeLeft;
+float footsteps;
+float old_gl;
+float exec_class;
+float coloredlights;
+float sr_gren1;
+float sr_gren2;
+
+// pablo. class restrictions.
+float(float pc) IsRestrictedClass;
+float cr_scout, cr_sniper, cr_soldier, cr_demoman, cr_medic, cr_hwguy, cr_pyro, cr_spy, cr_engineer;
+//
+
+// more auth code
+float clr_enabled;
+// fin more auth
+
+void() set_suicide_frame;
+void() player_touch;
+void() TeamFortress_SetEquipment;
+void() TeamFortress_SetHealth;
+void(string halias, float himpulse1, float himpulse2) TeamFortress_Alias;
+void() PlayerDie;
+//'fer void(s)
+void(entity attacker) fertimer;
+void(entity te) ferdisplay;
+
+// prototypes
+void () W_WeaponFrame;
+void() W_SetCurrentAmmo;
+void() player_pain;
+void() player_stand1;
+void (vector org) spawn_tfog;
+void (vector org, entity death_owner) spawn_tdeath;
+float modelindex_eyes, modelindex_player, modelindex_null;
+float(float v) anglemod;
+
+// TeamFortress prototypes
+void() TeamFortress_MOTD;
+void() TeamFortress_CheckTeamCheats;
+float(float tno) TeamFortress_TeamGetColor;
+//void(entity Viewer, float pc, float rpc) TeamFortress_PrintClassName;
+void(entity Viewer, float pc, float rpc, float xavior_Var) TeamFortress_PrintClassName;
+void() TeamFortress_RemoveTimers;
+void(float Suicided) TeamFortress_SetupRespawn;
+void() TeamFortress_ShowTF;
+float(float pc) IsLegalClass;
+void() SetupTeamEqualiser;
+void(entity p) SetTeamName;
+
+// Hook prototypes
+void () Service_Grapple;
+
+// TeamFortressMap prototypes
+void(entity AD) ParseTFDetect;
+entity(float ino) Finditem;
+void(entity Item, entity AP, entity Goal) tfgoalitem_GiveToPlayer;
+void(entity Goal, entity AP, entity ActivatingGoal) AttemptToActivate;
+void() CTF_FlagCheck;
+
+/*
+=============================================================================
+
+				LEVEL CHANGING / INTERMISSION
+
+=============================================================================
+*/
+
+string nextmap;
+
+float	intermission_running;
+float	intermission_exittime;
+
+
+void() info_intermission = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() SetChangeParms = 
+{
+	if (self.health <= 0)
+	{
+		SetNewParms();
+		return;
+	}
+	self.items = self.items - (self.items & (131072 | 262144 | 524288 | 1048576 | 2097152 | 4194304));
+	if (self.health > 100)
+	{
+		self.health = 100;
+	}
+	if (self.health < 50)
+	{
+		self.health = 50;
+	}
+	parm1 = self.items;
+	parm2 = self.health;
+	parm3 = self.armorvalue;
+	if (self.ammo_shells < 25)
+	{
+		parm4 = 25;
+	}
+	else
+	{
+		parm4 = self.ammo_shells;
+	}
+	parm5 = self.ammo_nails;
+	parm6 = self.ammo_rockets;
+	parm7 = self.ammo_cells;
+	parm8 = self.current_weapon;
+	parm9 = self.armortype * 100;
+	parm10 = toggleflags;
+	parm11 = 0;
+	parm12 = 0;
+	parm13 = self.StatusBarRes;
+	parm14 = self.StatusBarSize;
+};
+
+void() SetNewParms = 
+{
+	parm1 = 0;
+	parm2 = 100;
+	parm3 = 0;
+	parm4 = 25;
+	parm5 = 0;
+	parm6 = 0;
+	parm6 = 0;
+	parm8 = TF_FLARE_OFF;
+	parm9 = 0;
+	parm10 = 0;
+	parm11 = 0;
+	parm12 = 0;
+	parm13 = 0;
+	parm14 = 0;
+};
+
+void() autoteam_think = 
+{
+	toggleflags = toggleflags | 64;
+	dremove(self);
+};
+
+void () DecodeLevelParms =
+{
+	local string _l_5713;
+	local entity _l_5714;
+	local float _l_5715;
+
+	if (serverflags)
+	{
+		if ((world.model == "maps/start.bsp"))
+		{
+			SetNewParms ();
+		}
+	}
+	self.items = parm1;
+	self.health = parm2;
+	self.armorvalue = parm3;
+	self.ammo_shells = parm4;
+	self.ammo_nails = parm5;
+	self.ammo_rockets = parm6;
+	self.ammo_cells = parm7;
+	self.current_weapon = parm8;
+	self.armortype = (parm9 * 0.010000);
+#ifdef tf29ents
+    if (!(toggleflags & TFLAG_FIRSTENTRY)) {
+
+	toggleflags = parm10;
+	flagem_checked = 0;
+	allow_hook = 0;
+	invis_only = 0;
+
+	if (coop || !deathmatch)
+	    toggleflags = toggleflags | TFLAG_CLASS_PERSIST;
+
+	nextmap = mapname;
+	allow_hook = 1;
+
+	_l_5714 = find (world, classname, "info_tfdetect");
+	if (_l_5714 != world) {
+
+	    if (teamplay == 0)
+		cvar_set ("teamplay", "21?TeamFortress");
+
+	    ParseTFDetect (_l_5714);
+
+	    if ((number_of_teams <= 0) || (number_of_teams >= 5))
+		number_of_teams = 4;
+
+	} else {
+
+	    _l_5714 = find (world, classname, "info_player_team1");
+	    if ((_l_5714 != world) || (CTF_Map == 1)) {
+
+		CTF_Map = 1;
+		if (teamplay == 0)
+		    cvar_set ("teamplay", "21?TeamFortress");
+
+		_l_5714 = spawn ();
+		_l_5714.nextthink = time + 30;
+		_l_5714.think = CTF_FlagCheck;
+
+		number_of_teams = 2;
+
+	    } else
+		number_of_teams = 4;
+
+	    team1lives = -1;
+	    team2lives = -1;
+	    team3lives = -1;
+	    team4lives = -1;
+
+	    illegalclasses1 = 0;
+	    illegalclasses2 = 0;
+	    illegalclasses3 = 0;
+	    illegalclasses4 = 0;
+
+	    team1maxplayers = 100;
+	    team2maxplayers = 100;
+	    team3maxplayers = 100;
+	    team4maxplayers = 100;
+	    civilianteams = 0;
+	}
+
+#else
+	if ((toggleflags == 0.000000))
+	{
+		toggleflags = parm10;
+		allow_hook = 0.000000;
+		invis_only = 0.000000;
+		if ((coop || !deathmatch))
+		{
+			toggleflags = toggleflags | 1.000000;
+		}
+		nextmap = mapname;
+		allow_hook = 1.000000;
+		_l_5714 = find (world, classname, "info_tfdetect");
+		if ((_l_5714 != world))
+		{
+			if ((teamplay == 0.000000))
+			{
+				cvar_set ("teamplay", "21?TeamFortress");
+			}
+			ParseTFDetect (_l_5714);
+			if (((number_of_teams <= 0.000000) || (number_of_teams >= 5.000000)))
+			{
+				number_of_teams = 4.000000;
+			}
+		}
+		else
+		{
+			_l_5714 = find (world, classname, "info_player_team1");
+			if (((_l_5714 != world) || (CTF_Map == 1.000000)))
+			{
+				CTF_Map = 1.000000;
+				if ((teamplay == 0.000000))
+				{
+					cvar_set ("teamplay", "21?TeamFortress");
+				}
+				_l_5714 = spawn ();
+				_l_5714.nextthink = (time + 30.000000);
+				_l_5714.think = CTF_FlagCheck;
+				number_of_teams = 2.000000;
+			}
+			else
+			{
+				number_of_teams = 4.000000;
+			}
+			cvar_set ("sv_aim", "1");
+			team1lives = -1.000000;
+			team2lives = -1.000000;
+			team3lives = -1.000000;
+			team4lives = -1.000000;
+			illegalclasses1 = 0.000000;
+			illegalclasses2 = 0.000000;
+			illegalclasses3 = 0.000000;
+			illegalclasses4 = 0.000000;
+			team1maxplayers = 100.000000;
+			team2maxplayers = 100.000000;
+			team3maxplayers = 100.000000;
+			team4maxplayers = 100.000000;
+			civilianteams = 0.000000;
+		}
+#endif
+		bprint (2.000000, "Mapname: ");
+		bprint (2.000000, mapname);
+		bprint (2.000000, "\n");
+		SetupTeamEqualiser ();
+//		if (1.000000)	// if (toggleflags == 1) ??
+//		{
+			toggleflags = toggleflags - (toggleflags & 128.000000);
+//		}
+		toggleflags = toggleflags | 2.000000;
+		_l_5713 = infokey (world, "temp1");
+		toggleflags = (toggleflags | 256.000000) | stof (_l_5713);
+		_l_5715 = 30.000000;
+		_l_5713 = infokey (world, "a");
+		if ((_l_5713 == string_null))
+		{
+			_l_5713 = infokey (world, "autoteam");
+		}
+		if ((_l_5713 == "on"))
+		{
+			toggleflags = toggleflags | 64.000000;
+		}
+		else
+		{
+			if ((_l_5713 == "off"))
+			{
+				toggleflags = toggleflags - (toggleflags & 64.000000);
+			}
+			else
+			{
+				if ((stof (_l_5713) != 0.000000))
+				{
+					toggleflags = toggleflags | 64.000000;
+					_l_5715 = stof (_l_5713);
+				}
+			}
+		}
+		_l_5713 = infokey (world, "t");
+		if ((_l_5713 == string_null))
+		{
+			_l_5713 = infokey (world, "teamfrags");
+		}
+		if ((_l_5713 == "on"))
+		{
+			toggleflags = toggleflags | 128.000000;
+		}
+		else
+		{
+			if ((_l_5713 == "off"))
+			{
+				toggleflags = toggleflags - (toggleflags & 128.000000);
+			}
+		}
+		_l_5713 = infokey (world, "g");
+		if ((_l_5713 == string_null))
+		{
+			_l_5713 = infokey (world, "grapple");
+		}
+		if ((_l_5713 == "off"))
+		{
+			allow_hook = 0.000000;
+		}
+		if ((!(toggleflags & 1024.000000) && (_l_5713 != "on")))
+		{
+			allow_hook = 0.000000;
+		}
+		_l_5713 = infokey (world, "spy");
+		if ((_l_5713 == "off"))
+		{
+			spy_off = 1.000000;
+		}
+		_l_5713 = infokey (world, "s");
+		if ((_l_5713 == string_null))
+		{
+			_l_5713 = infokey (world, "spyinvis");
+		}
+		if (((_l_5713 == "on") || (toggleflags & 512.000000)))
+		{
+			invis_only = 1.000000;
+		}
+		else
+		{
+			if ((_l_5713 == "off"))
+			{
+				invis_only = 0.000000;
+			}
+		}
+		_l_5713 = infokey (world, "oldconc");
+		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		{
+			oldconc = 1;
+		}
+		else
+		{
+			oldconc = 0;
+		}
+		_l_5713 = infokey (world, "spyjumpoption");
+		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		{
+			spyjumpoption = 1.000000;
+		}
+		else
+		{
+			spyjumpoption = 0.000000;
+		}
+		_l_5713 = infokey (world, "spycam");
+		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		{
+			spycam = 1.000000;
+		}
+		else
+		{
+			spycam = 0.000000;
+		}
+		spycam = 0.000000;
+		_l_5713 = infokey (world, "medicarmorheal");
+		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		{
+			medicarmorheal = 1.000000;
+		}
+		else
+		{
+			medicarmorheal = 0.000000;
+		}
+		_l_5713 = infokey (world, "quadscore");
+		if ((_l_5713 != ""))
+		{
+			if ((_l_5713 == "on"))
+			{
+				quadscore = -666.000000;
+				bprint (2.000000, "çQuad Round 1 in progress!\n");
+			}
+			else
+			{
+				if ((_l_5713 == "0"))
+				{
+					quadscore = 0.000000;
+				}
+				else
+				{
+					bprint (2.000000, quadscore);
+					bprint (2.000000, "\n");
+					quadscore = stof (_l_5713);
+					team2score = quadscore;
+					localcmd ("serverinfo quadscore 0\n");
+					bprint (2.000000, "çQuad Round 2 in progress!\n");
+					TeamFortress_TeamShowScores (2.000000);
+				}
+			}
+		}
+		_l_5713 = infokey (world, "dropgrens");
+		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		{
+			sr_dropgrens = 1.000000;
+		}
+		else
+		{
+			sr_dropgrens = 0.000000;
+		}
+		_l_5713 = infokey (world, "sr_gren1");
+		sr_gren1 = stof (_l_5713);
+		_l_5713 = infokey (world, "sr_gren2");
+		sr_gren2 = stof (_l_5713);
+		if ((sr_gren1 <= 0.000000))
+		{
+			sr_gren1 = 10.000000;
+		}
+		if ((sr_gren2 <= 0.000000))
+		{
+			sr_gren2 = 10.000000;
+		}
+#ifdef clan_progs
+		_l_5713 = infokey (world, "clan_prematch");
+		if (_l_5713 == "on" || stof(_l_5713) > 0)
+		{
+			if (stof(_l_5713) > 1)
+			{
+				clan_prematch = stof(_l_5713);
+			}
+			else
+			{
+				clan_prematch = 1;
+			}
+			prematch = 666 * 666;		// teh evil prematch :D
+			SetUpPrematch ();
+		}
+		else
+		{
+#endif
+		_l_5713 = infokey (world, "prematch");
+		prematch = stof (_l_5713);
+		if ((prematch > 0.000000))
+		{
+			SetUpPrematch ();
+		}
+#ifdef clan_progs
+		}
+#endif
+		_l_5713 = infokey (world, "cr_scout");
+		cr_scout = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_sniper");
+		cr_sniper = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_soldier");
+		cr_soldier = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_demoman");
+		cr_demoman = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_medic");
+		cr_medic = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_hwguy");
+		cr_hwguy = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_pyro");
+		cr_pyro = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_spy");
+		cr_spy = stof (_l_5713);
+		_l_5713 = infokey (world, "cr_engineer");
+		cr_engineer = stof (_l_5713);
+		if ((((((((((cr_scout != 0.000000) && (cr_sniper != 0.000000)) && (cr_soldier != 0.000000)) && (cr_demoman != 0.000000)) && (cr_medic != 0.000000)) && (cr_hwguy != 0.000000)) && (cr_pyro != 0.000000)) && (cr_spy != 0.000000)) && (cr_engineer != 0.000000)))
+		{
+			cr_engineer = 0.000000;
+		}
+		_l_5713 = infokey (world, "clr_enabled");
+		if ((_l_5713 == "on"))
+		{
+			clr_enabled = 1.000000;
+		}
+		else
+		{
+			if ((_l_5713 == "1"))
+			{
+				clr_enabled = 1.000000;
+			}
+			else
+			{
+				clr_enabled = 0.000000;
+			}
+		}
+		_l_5713 = infokey (world, "airscout");
+		if ((_l_5713 == "off"))
+		{
+			airscout = 0.000000;
+		}
+		else
+		{
+			airscout = 1.000000;
+		}
+		_l_5713 = infokey (world, "headkick");
+		if ((_l_5713 == "off"))
+		{
+			headkick = 0.000000;
+		}
+		else
+		{
+			headkick = 1.000000;
+		}
+		_l_5713 = infokey (world, "coloredlights");
+		if ((_l_5713 == "on"))
+		{
+			coloredlights = 1.000000;
+		}
+		else
+		{
+			coloredlights = 0.000000;
+		}
+		_l_5713 = infokey (world, "drop3");
+		if ((_l_5713 == "off"))
+		{
+			drop3 = 0.000000;
+		}
+		else
+		{
+			drop3 = 1.000000;
+		}
+		_l_5713 = infokey (world, "drop2");
+		if ((_l_5713 == "off"))
+		{
+			drop2 = 0.000000;
+		}
+		else
+		{
+			drop2 = 1.000000;
+		}
+		_l_5713 = infokey (world, "drop1");
+		if ((_l_5713 == "off"))
+		{
+			drop1 = 0.000000;
+		}
+		else
+		{
+			drop1 = 1.000000;
+		}
+		_l_5713 = infokey (world, "footsteps");
+		if ((_l_5713 == "off"))
+		{
+			footsteps = 0.000000;
+		}
+		else
+		{
+			footsteps = 1.000000;
+		}
+		_l_5713 = infokey (world, "old_gl");
+		if ((_l_5713 == "off"))
+		{
+			old_gl = 0.000000;
+		}
+		else
+		{
+			old_gl = 1.000000;
+		}
+		_l_5713 = infokey (world, "exec_class");
+		if ((_l_5713 != "off"))
+		{
+			exec_class = 1.000000;
+		}
+		else
+		{
+			exec_class = 0.000000;
+		}
+		_l_5713 = infokey (world, "rd");
+		if ((_l_5713 == string_null))
+		{
+			_l_5713 = infokey (world, "respawn_delay");
+		}
+		respawn_delay_time = stof (_l_5713);
+		if (respawn_delay_time)
+		{
+			toggleflags = toggleflags | 4.000000;
+		}
+		if (((toggleflags & 4.000000) && (respawn_delay_time == 0.000000)))
+		{
+			respawn_delay_time = 5.000000;
+		}
+		if ((toggleflags & 64.000000))
+		{
+			toggleflags = toggleflags - (toggleflags & 64.000000);
+			_l_5714 = spawn ();
+			_l_5714.nextthink = (time + _l_5715);
+			_l_5714.think = autoteam_think;
+		}
+	}
+	if (parm11)
+	{
+		self.tfstate = parm11;
+	}
+	if ((self.playerclass == 0.000000))
+	{
+		self.playerclass = parm12;
+	}
+	if (parm13)
+	{
+		self.StatusBarRes = parm13;
+	}
+	if (parm14)
+	{
+		self.StatusBarSize = parm14;
+	}
+};
+
+// authcode 3
+float /*WARNING: could not determine return type*/ (entity _p_5763) IsLegalClient =
+{
+	local string _l_5764;
+	local string _l_5765;
+	local string _l_5766;
+	local string _l_5767;
+
+	_l_5766 = infokey (_p_5763, "*client");
+	if ((_l_5766 == ""))
+	{
+		_l_5766 = infokey (_p_5763, "*z_ver");
+		if ((_l_5766 == ""))
+		{
+			_l_5766 = infokey (_p_5763, "*FuhQuake");
+			if ((_l_5766 != ""))
+			{
+				_l_5764 = "*FuhQuake";
+			}
+		}
+		else
+		{
+			_l_5764 = "*z_ver";
+		}
+	}
+	else
+	{
+		_l_5764 = "*client";
+	}
+	if ((_l_5764 == ""))
+	{
+		return (0.000000);
+	}
+	_l_5765 = infokey (_p_5763, _l_5764);
+	_l_5766 = infokey (world, "clr_client1n");
+	_l_5767 = infokey (world, "clr_client1v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client2n");
+	_l_5767 = infokey (world, "clr_client2v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client3n");
+	_l_5767 = infokey (world, "clr_client3v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client4n");
+	_l_5767 = infokey (world, "clr_client4v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client5n");
+	_l_5767 = infokey (world, "clr_client5v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client6n");
+	_l_5767 = infokey (world, "clr_client6v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client7n");
+	_l_5767 = infokey (world, "clr_client7v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client8n");
+	_l_5767 = infokey (world, "clr_client8v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client9n");
+	_l_5767 = infokey (world, "clr_client9v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	_l_5766 = infokey (world, "clr_client10n");
+	_l_5767 = infokey (world, "clr_client10v");
+	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
+	{
+		return (1.000000);
+	}
+	return (0.000000);
+};
+
+//end authcode3
+
+
+entity() FindIntermission = 
+{
+	local entity spot;
+	local float cyc;
+	spot = find(world, classname, "info_intermission");
+	if (spot)
+	{
+		cyc = random() * TF_FLARE_OFF;
+		return spot;
+	}
+	spot = find(world, classname, "info_player_start");
+	if (spot)
+	{
+		return spot;
+	}
+	spot = find(world, classname, "info_player_deathmatch");
+	if (spot)
+	{
+		cyc = random() * 6;
+		while (cyc > TF_FLARE_OFF)
+		{
+			spot = find(spot, classname, "info_player_deathmatch");
+			if (!spot)
+			{
+				spot = find(spot, classname, "info_player_deathmatch");
+			}
+			cyc = cyc - TF_FLARE_OFF;
+		}
+		return spot;
+	}
+	objerror("FindIntermission: no spot");
+	return self;	//dirty compiler warning fix, i know >.<
+};
+
+entity(entity start_point) FindNextIntermission = 
+{
+	local entity spot;
+	if (deathmatch)
+	{
+		if (start_point.classname == "info_intermission" || start_point == world)
+		{
+			spot = find(start_point, classname, "info_intermission");
+			if (spot)
+			{
+				return spot;
+			}
+			else
+			{
+				start_point = world;
+			}
+		}
+		if (start_point.classname == "info_player_deathmatch" || start_point == world)
+		{
+			spot = find(start_point, classname, "info_player_deathmatch");
+			if (spot)
+			{
+				return spot;
+			}
+		}
+		spot = find(world, classname, "info_intermission");
+		if (spot)
+		{
+			return spot;
+		}
+		spot = find(world, classname, "info_player_deathmatch");
+		if (spot)
+		{
+			return spot;
+		}
+	}
+	else
+	{
+		spot = find(world, classname, "info_player_start");
+		if (spot)
+		{
+			return spot;
+		}
+	}
+	return FindIntermission();
+};
+
+void() TF_MovePlayer = 
+{
+	local entity place;
+	place = FindNextIntermission(self.observer_list);
+	self.observer_list = place;
+	setorigin(self, place.origin + '0 0 1');
+	self.angles = place.angles;
+	self.fixangle = TF_FLARE_OFF;
+};
+
+void() GotoNextMap = 
+{
+	local float nextlevel;
+	local string sl;
+
+	// ---> pablo. Reset autoscreenshot.
+/*	te = find(world, classname, "player");
+	while (te)
+	{
+		if (te.screenshot == 1)
+		{
+			sprint(te, 2, "screenshot!\n");
+			te.screenshot = 1;
+		}
+		te = find(te, classname, "player");
+	}*/
+#ifdef fte_rankings
+	if (FTE_Server == 1)
+		Rank_UpdateStatsGlobal();
+#endif
+	// <---
+
+	if (nextmap != mapname)
+	{
+		changelevel(nextmap);
+		already_chosen_map = TF_FLARE_OFF;
+	}
+	if (!already_chosen_map)
+	{
+		sl = infokey(world, "n");
+		nextlevel = stof(sl);
+		nextlevel = nextlevel + TF_FLARE_OFF;
+		sl = ftos(nextlevel);
+		localcmd("serverinfo n ");
+		localcmd(sl);
+		localcmd("\n");
+		localcmd("exec qwmcycle/map");
+		localcmd(sl);
+		localcmd(".cfg\n");
+		already_chosen_map = TF_FLARE_OFF;
+	}
+	if (infokey(world, "n") == "0")
+	{
+		already_chosen_map = 0;
+	}
+
+	// Pablo. Server-side map cfg
+	/*localcmd("exec ");
+	localcmd(nextmap);
+	localcmd(".cfg\n");*/
+};
+
+void() ExitIntermission = 
+{
+	dprint("Exiting intermission...\n");
+	if (deathmatch)
+	{
+		dprint("Exit Intermission in Deathmatch.\n");
+		GotoNextMap();
+		return;
+	}
+	intermission_exittime = time + TF_FLARE_OFF;
+	intermission_running = intermission_running + TF_FLARE_OFF;
+	if (intermission_running == 2)
+	{
+/*		if (world.model == "maps/2fort4.bsp")
+		{
+			if (!cvar("registered"))
+			{
+				WriteByte(2, 31);
+				WriteString(2, "Thankyou for playing 2Fort4 on the   \nClan KAVORKIAN server.                \nThis server modified by Ambush, MD.\nPlease visit our WebSite at     \nwww.antronOnline.com/quake  for info  \nabout this server and our clan.       \nClan KAVORKIAN...                    \n  we'll assist your suicide! \n");
+			}
+			else
+			{
+				WriteByte(2, 31);
+				WriteString(2, "Thankyou for playing 2Fort4 on the   \nClan KAVORKIAN server.                \nThis server modified by Ambush, MD.\nPlease visit our WebSite at     \nwww.antronOnline.com/quake  for info  \nabout this server and our clan.       \nClan KAVORKIAN...                    \n  we'll assist your suicide! \n");
+			}
+			return;
+		}
+		else
+		{*/
+			if (world.model == "maps/e2m6.bsp")
+			{
+				WriteByte(2, 31);
+				WriteString(2, "The Rune of Black Magic throbs evilly in\nyour hand and whispers dark thoughts\ninto your brain. You learn the inmost\nlore of the Hell-Mother; Shub-Niggurath!\nYou now know that she is behind all the\nterrible plotting which has led to so\nmuch death and horror. But she is not\ninviolate! Armed with this Rune, you\nrealize that once all four Runes are\ncombined, the gate to Shub-Niggurath's\nPit will open, and you can face the\nWitch-Goddess herself in her frightful\notherworld cathedral.");
+				return;
+			}
+			else
+			{
+				if (world.model == "maps/e3m6.bsp")
+				{
+					WriteByte(2, 31);
+					WriteString(2, "The charred viscera of diabolic horrors\nbubble viscously as you seize the Rune\nof Hell Magic. Its heat scorches your\nhand, and its terrible secrets blight\nyour mind. Gathering the shreds of your\ncourage, you shake the devil's shackles\nfrom your soul, and become ever more\nhard and determined to destroy the\nhideous creatures whose mere existence\nthreatens the souls and psyches of all\nthe population of Earth.");
+					return;
+				}
+				else
+				{
+					if (world.model == "maps/e4m7.bsp")
+					{
+						WriteByte(2, 31);
+						WriteString(2, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
+						return;
+					}
+				}
+			}
+		//}
+		GotoNextMap();
+	}
+	if (intermission_running == 3)
+	{
+		if (!cvar("registered"))
+		{
+			WriteByte(2, 33);
+			return;
+		}
+		if ((serverflags & 15) == 15)
+		{
+			WriteByte(2, 31);
+			WriteString(2, "Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born.");
+			return;
+		}
+	}
+	dprint("Exit Intermission.\n");
+	GotoNextMap();
+};
+
+void() IntermissionThink = 
+{
+	if (time < intermission_exittime)
+	{
+		return;
+	}
+	if (!(self.button0) && !(self.button1) && !(self.button2))
+	{
+		return;
+	}
+	dprint("Intermission think.\n");
+	GotoNextMap();
+};
+
+void() execute_changelevel = 
+{
+	local entity pos;
+	dprint("execute_changelevel()\n");
+	intermission_running = TF_FLARE_OFF;
+	intermission_exittime = time + 5;
+	pos = FindIntermission();
+	WriteByte(2, 30);
+	WriteCoord(2, pos.origin_x);
+	WriteCoord(2, pos.origin_y);
+	WriteCoord(2, pos.origin_z);
+	WriteAngle(2, pos.mangle_x);
+	WriteAngle(2, pos.mangle_y);
+	WriteAngle(2, pos.mangle_z);
+	if ((quadscore == -666.000000))
+	{
+		localcmd ("serverinfo quadscore ");
+		localcmd (ftos (team1score));
+		localcmd ("\n");
+	}
+	other = find(world, classname, "player");
+	while (other != world)
+	{
+		if (other.stats_on)
+		{
+			stuffcmd (other, "set stats_execed -1; exec progs/stats.cfg\n");
+		}
+		other.takedamage = 0;
+		other.solid = 0;
+		other.movetype = 0;
+		other.modelindex = 0;
+		other = find(other, classname, "player");
+	}
+};
+
+void() changelevel_touch = 
+{
+	if (other.classname != "player")
+	{
+		return;
+	}
+	if (cvar("samelevel") == 2 || (cvar("samelevel") == 3 && mapname != "start"))
+	{
+		return;
+	}
+	bprint(2, other.netname);
+	bprint(2, " exited the level\n");
+	nextmap = self.map;
+	SUB_UseTargets();
+	if (self.spawnflags & TF_FLARE_OFF && deathmatch == 0)
+	{
+		GotoNextMap();
+		return;
+	}
+	self.touch = SUB_Null;
+	self.think = execute_changelevel;
+	self.nextthink = time + 0.1;
+};
+
+void() trigger_changelevel = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.map))
+	{
+		objerror("changelevel trigger doesn't have map");
+	}
+	InitTrigger();
+	self.touch = changelevel_touch;
+};
+
+void() respawn = 
+{
+	if (coop)
+	{
+		CopyToBodyQue(self);
+		setspawnparms(self);
+		PutClientInServer();
+	}
+	else
+	{
+		if (deathmatch)
+		{
+			CopyToBodyQue(self);
+			SetNewParms();
+			PutClientInServer();
+		}
+		else
+		{
+			localcmd("restart\n");
+		}
+	}
+};
+
+void() ClientKill = 
+{
+	local entity te;
+	if (self.playerclass == 0)
+	{
+		return;
+	}
+//	Taken out by XavioR -- this was added because people would use it to lower team score. Took it out for PUG servers
+//	if (self.suicide_time > time)
+//	{
+//		sprint(self, 2, "30 sec delay to stop cheating!\n");
+//		return;
+//	}
+	if (self.deadflag)
+	{
+		return;
+	}
+	/* Gold - Plast took cameras outta MegaTF in '04
+	if ((self.bugger > 0)
+	{
+		sprint (self, 2, "Can't suicide while in camera!\n");
+		return;
+	}*/
+	if (self.tfstate & 16)
+	{
+		sprint(self, 2, "you wish life was that easy!\n");
+		return;
+	}
+	if (self.hook_out)
+	{
+		sprint(self, 2, "You must retract hook first!\n");
+		return;
+	}
+	self.suicide_time = time + 25 + random() * 5;
+	bprint(TF_FLARE_OFF, self.netname);
+	bprint(TF_FLARE_OFF, " suicides  :)\n");
+	set_suicide_frame();
+	self.modelindex = modelindex_player;
+	if (self.tfstate & 16)
+	{
+		te = find(world, classname, "timer");
+		while (te)
+		{
+			if (te.owner == self && te.think == BioInfection_Decay)
+			{
+				logfrag(te, self);
+				te.enemy.real_frags = te.enemy.real_frags + TF_FLARE_OFF;
+				if (!(toggleflags & 128))
+				{
+					te.enemy.frags = te.enemy.real_frags;
+				}
+			}
+			te = find(te, classname, "timer");
+		}
+	}
+	else
+	{
+		logfrag(self, self);
+	}
+	self.real_frags = self.real_frags - TF_FLARE_OFF;
+	if (!(toggleflags & 128))
+	{
+		self.frags = self.real_frags;
+	}
+	TeamFortress_RemoveTimers();
+	TeamFortress_SetupRespawn(TF_FLARE_OFF);
+	self.health = self.health - (self.health + TF_FLARE_OFF);
+	self.th_die();
+	self.deadflag = 3;
+	self.tfstate = self.tfstate | 8192;
+};
+
+entity(float team_num) FindTeamSpawnPoint = 
+{
+	local entity spot;
+	local entity at_spot;
+	local float spot_found;
+	local float attempts;
+	if (team_num == TF_FLARE_OFF)
+	{
+		spot = lastspawn_team1;
+		attempts = 0;
+		while (TF_FLARE_OFF)
+		{
+			attempts = attempts + TF_FLARE_OFF;
+			spot = find(spot, team_str_home, "ts1");
+			if (spot == world)
+			{
+				spot = find(world, team_str_home, "ts1");
+			}
+			if (spot == world)
+			{
+				return world;
+			}
+			at_spot = findradius(spot.origin, 40);
+			spot_found = TF_FLARE_OFF;
+			while (at_spot != world)
+			{
+				if (at_spot.classname == "player" && at_spot.deadflag == 0)
+				{
+					spot_found = 0;
+				}
+				at_spot = at_spot.chain;
+			}
+			if (!Activated(spot, self))
+			{
+				spot_found = 0;
+			}
+			if (spot_found || attempts >= 30)
+			{
+				lastspawn_team1 = spot;
+				return spot;
+			}
+		}
+	}
+	else
+	{
+		if (team_num == 2)
+		{
+			spot = lastspawn_team2;
+			attempts = 0;
+			while (TF_FLARE_OFF)
+			{
+				attempts = attempts + TF_FLARE_OFF;
+				spot = find(spot, team_str_home, "ts2");
+				if (spot == world)
+				{
+					spot = find(world, team_str_home, "ts2");
+				}
+				if (spot == world)
+				{
+					return world;
+				}
+				at_spot = findradius(spot.origin, 40);
+				spot_found = TF_FLARE_OFF;
+				while (at_spot != world)
+				{
+					if (at_spot.classname == "player" && at_spot.deadflag == 0)
+					{
+						spot_found = 0;
+					}
+					at_spot = at_spot.chain;
+				}
+				if (!Activated(spot, self))
+				{
+					spot_found = 0;
+				}
+				if (spot_found || attempts >= 30)
+				{
+					lastspawn_team2 = spot;
+					return spot;
+				}
+			}
+		}
+		else
+		{
+			if (team_num == 3)
+			{
+				spot = lastspawn_team3;
+				attempts = 0;
+				while (TF_FLARE_OFF)
+				{
+					attempts = attempts + TF_FLARE_OFF;
+					spot = find(spot, team_str_home, "ts3");
+					if (spot == world)
+					{
+						spot = find(world, team_str_home, "ts3");
+					}
+					if (spot == world)
+					{
+						return world;
+					}
+					at_spot = findradius(spot.origin, 40);
+					spot_found = TF_FLARE_OFF;
+					while (at_spot != world)
+					{
+						if (at_spot.classname == "player" && at_spot.deadflag == 0)
+						{
+							spot_found = 0;
+						}
+						at_spot = at_spot.chain;
+					}
+					if (!Activated(spot, self))
+					{
+						spot_found = 0;
+					}
+					if (spot_found || attempts >= 30)
+					{
+						lastspawn_team3 = spot;
+						return spot;
+					}
+				}
+			}
+			else
+			{
+				if (team_num == 4)
+				{
+					spot = lastspawn_team4;
+					attempts = 0;
+					while (TF_FLARE_OFF)
+					{
+						attempts = attempts + TF_FLARE_OFF;
+						spot = find(spot, team_str_home, "ts4");
+						if (spot == world)
+						{
+							spot = find(world, team_str_home, "ts4");
+						}
+						if (spot == world)
+						{
+							return world;
+						}
+						at_spot = findradius(spot.origin, 40);
+						spot_found = TF_FLARE_OFF;
+						while (at_spot != world)
+						{
+							if (at_spot.classname == "player" && at_spot.deadflag == 0)
+							{
+								spot_found = 0;
+							}
+							at_spot = at_spot.chain;
+						}
+						if (!Activated(spot, self))
+						{
+							spot_found = 0;
+						}
+						if (spot_found || attempts >= 30)
+						{
+							lastspawn_team4 = spot;
+							return spot;
+						}
+					}
+				}
+			}
+		}
+	}
+	return world;
+};
+
+void(entity e) ValidateUser = 
+{
+};
+
+entity() SelectSpawnPoint = 
+{
+	local entity spot;
+	local entity at_spot;
+	local float spot_found;
+	local float attempts;
+	if (self.team_no != 0)
+	{
+		spot = FindTeamSpawnPoint(self.team_no);
+		if (spot != world)
+		{
+			return spot;
+		}
+	}
+	if (coop)
+	{
+		lastspawn = find(lastspawn, classname, "info_player_coop");
+		if (lastspawn == world)
+		{
+			lastspawn = find(world, classname, "info_player_coop");
+		}
+		if (lastspawn != world)
+		{
+			return lastspawn;
+		}
+	}
+	else
+	{
+		if (deathmatch)
+		{
+			spot = find(lastspawn, classname, "info_player_deathmatch");
+			if (spot == world)
+			{
+				spot = find(world, classname, "info_player_deathmatch");
+			}
+			attempts = 0;
+			while (spot != world && attempts < 100)
+			{
+				attempts = attempts + TF_FLARE_OFF;
+				at_spot = findradius(spot.origin, 40);
+				spot_found = TF_FLARE_OFF;
+				while (at_spot)
+				{
+					if (at_spot.classname == "player" && at_spot.deadflag == 0)
+					{
+						spot_found = 0;
+					}
+					at_spot = at_spot.chain;
+				}
+				if (spot_found || attempts >= 10)
+				{
+					lastspawn = spot;
+					return spot;
+				}
+				spot = find(spot, classname, "info_player_deathmatch");
+				if (spot == world)
+				{
+					spot = find(world, classname, "info_player_deathmatch");
+				}
+			}
+		}
+	}
+	if (serverflags)
+	{
+		spot = find(world, classname, "info_player_start2");
+		if (spot)
+		{
+			return spot;
+		}
+	}
+	spot = find(world, classname, "info_player_start");
+	if (!spot)
+	{
+		error("PutClientInServer: no info_player_start on level\n");
+	}
+	return spot;
+};
+
+void() PutClientInServer = 
+{
+	local float tc;
+	local string st;
+	local float iszoom;
+	local float oldclass;
+	local entity spot;
+	local entity te;
+	self.touch = player_touch;
+	self.classname = "player";
+	self.health = 100;
+	self.takedamage = 2;
+#ifdef new_solid
+	if (self.playerclass < 1 && self.health == 1)
+		self.solid = 1;
+	else
+		self.solid = 3;
+#else
+	self.solid = 3;
+#endif
+	self.movetype = 3;
+	self.show_hostile = 0;
+	self.FlashTime = 0;
+	self.max_health = 100;
+	self.flags = 8;
+	self.air_finished = time + 12;
+	self.dmg = 2;
+	self.super_damage_finished = 0;
+	self.radsuit_finished = 0;
+	self.invisible_finished = 0;
+	self.invincible_finished = 0;
+	self.effects = 0;
+	self.invincible_time = 0;
+	self.reload_shotgun = 0;
+	self.reload_super_shotgun = 0;
+	self.reload_grenade_launcher = 0;
+	self.reload_rocket_launcher = 0;
+	self.immune_to_check = time + 5;
+	self.on_hook = 0;
+	self.active_grenades_1 = 0;
+	self.active_grenades_2 = 0;
+	self.hook_out = 0;
+	self.fire_held_down = 0;
+	stuffcmd(self, "play misc/null.wav\n");
+	DecodeLevelParms();
+// begin client auth
+	stuffcmd (self, "alias aa_enabled impulse 240\nalias cl_accel impulse 240\nalias cl_speed impulse 240\nalias aa_lag impulse 240\nalias autofire impulse 240\nalias +autofire impulse 240\nalias autodet impulse 240\nalias +showradar impulse 240\nalias voteyes impulse 245\n");
+	self.client = "unknown";
+	st = infokey (self, "*client");
+	if ((st == "mqwcl 0.96"))
+	{
+		self.client = "moreqw";
+		self.clientv = "0.96";
+	}
+	else
+	{
+		if ((st == "mqwcl 0.95"))
+		{
+			self.client = "moreqw";
+			self.clientv = "0.95";
+		}
+		else
+		{
+			if ((st == "mqwcl 0.93"))
+			{
+				self.client = "moreqw";
+				self.clientv = "0.93";
+			}
+		}
+	}
+// AA ban
+	st = infokey (self, "*ip");
+	if ((st != ""))
+	{
+		st = infokey (self, "*ver");
+		bprint (st);
+		bprint ("\n");
+		if ((st == "2.40-0858"))
+		{
+			stuffcmd (self, "aa_enabled");
+			stuffcmd (self, "\n");
+		}
+	}
+	st = infokey (self, "*z_ver");
+	if ((st != ""))
+	{
+		self.client = "zquake";
+		self.clientv = st;
+	}
+	st = infokey (self, "*FuhQuake");
+	if ((st != ""))
+	{
+		self.client = "fuhquake";
+		self.clientv = st;
+	}
+	if (self.client == "unknown")
+	{
+		st = infokey (self, "*ver");
+		if ((st != ""))
+		{
+			self.client = st;
+		}
+		st = infokey (self, "*client");
+		if ((st != ""))
+		{
+			self.client = st;
+		}
+	}
+	st = infokey (self, "tf_stats");
+	if (((st == "on") || (st == "1")))
+	{
+		if (((self.client != "fuhquake") && (self.client != "zquake")))
+		{
+			sprint (self, 2.000000, "Weapon statistics require fuhquake/zquake (www.fuhquake.net)\n");
+			self.stats_on = 0.000000;
+			stuffcmd (self, "setinfo tf_stats off\n");
+		}
+		else
+		{
+			self.stats_on = 1.000000;
+		}
+	}
+	else
+	{
+		self.stats_on = 0.000000;
+	}
+	if (clr_enabled)
+	{
+		if (!IsLegalClient (self))
+		{
+			stuffcmd (self, "disconnect\necho\necho çillegal client, restrictions in effect\necho\n");
+			bprint (1.000000, self.netname);
+			bprint (1.000000, " tried to join using an illegal client.\n");
+			return;
+		}
+	}
+// end client auth code
+	if (self.playerclass == 0)
+	{
+		if (TeamFortress_TeamIsCivilian(self.team_no))
+		{
+			self.impulse = TF_FLARE_OFF;
+			TeamFortress_SetSpeed(self);
+			TeamFortress_ChangeClass();
+		}
+	}
+	if (deathmatch == 3 && self.nextpc != 0)
+	{
+		tc = IsRestrictedClass(self.nextpc);
+		if ( tc == 0)
+		{
+			self.playerclass = self.nextpc;
+			if (self.nextpc == 10)
+			{
+				self.tfstate = self.tfstate | 8;
+			}
+			else
+			{
+				self.tfstate = self.tfstate - (self.tfstate & 8);
+			}
+		}
+		else
+		{
+			if (tc > 0)
+			{
+				sprint(self, 2, "That class is restricted to ");
+				st = ftos(tc);
+				sprint(self, 2, st);
+				sprint(self, 2, " per team.\n");
+			}
+			else
+			{
+				sprint(self, 2, "That class is disabled.\n");
+			}
+			self.nextpc = 0;
+		}
+	}
+	iszoom = 0;
+	if (self.tfstate & 4096)
+	{
+		iszoom = TF_FLARE_OFF;
+	}
+	if (self.tfstate & 8)
+	{
+		oldclass = TF_FLARE_OFF + floor(random() * (10 - TF_FLARE_OFF));
+		while (!IsLegalClass(oldclass) || (IsRestrictedClass(oldclass) != 0) ) // pablo. removed this cause of problems if all but 1 class restricted. || (self.playerclass == oldclass) )
+		{
+			oldclass = TF_FLARE_OFF + floor(random() * (10 - TF_FLARE_OFF));
+		}
+		self.playerclass = oldclass;
+		self.tfstate = 8;
+	}
+	else
+	{
+		self.tfstate = 0;
+	}
+	if (iszoom == TF_FLARE_OFF)
+	{
+		self.tfstate = self.tfstate | 4096;
+	}
+	if (self.playerclass != 9)
+	{
+		te = find(world, classname, "building_dispenser");
+		while (te)
+		{
+			if (te.real_owner == self)
+			{
+				TF_T_Damage(te, world, world, 500, 0, 0);
+			}
+			te = find(te, classname, "building_dispenser");
+		}
+		te = find(world, classname, "building_sentrygun");
+		while (te)
+		{
+			if (te.real_owner == self)
+			{
+				TF_T_Damage(te, world, world, 500, 0, 0);
+			}
+			te = find(te, classname, "building_sentrygun");
+		}
+	}
+	TeamFortress_PrintClassName(self, self.playerclass, self.tfstate & 8, 0);
+	TeamFortress_SetEquipment();
+	TeamFortress_SetHealth();
+	TeamFortress_SetSpeed(self);
+	TeamFortress_SetSkin(self);
+	stuffcmd(self, "v_idlescale 0\n");
+	stuffcmd(self, "v_cshift 0 0 0 0\n");
+	SetTeamName(self);
+	W_SetCurrentAmmo();
+	self.attack_finished = time + 0.3;
+	self.th_pain = player_pain;
+	self.th_die = PlayerDie;
+	if (self.height != 0)
+	{
+		self.height = 0;
+		TF_zoom(90);
+	}
+	self.deadflag = 0;
+	self.pausetime = 0;
+	spot = SelectSpawnPoint();
+	if (self.playerclass != 0)
+	{
+		spawn_tdeath(spot.origin, self);
+	}
+	self.observer_list = spot;
+	self.origin = spot.origin + '0 0 1';
+	self.angles = spot.angles;
+	self.fixangle = TF_FLARE_OFF;
+	if (spot.classname == "info_player_teamspawn")
+	{
+		if (spot.items != 0)
+		{
+			te = Finditem(spot.items);
+			if (te)
+			{
+				tfgoalitem_GiveToPlayer(te, self, self);
+			}
+			if (!(spot.goal_activation & TF_FLARE_OFF))
+			{
+				spot.items = 0;
+			}
+		}
+		if (prematch)
+		{
+			TeamFortress_PrintPMTimeLeft (self);
+		}
+		else
+		{
+			if (spot.message)
+			{
+				CenterPrint (self, spot.message);
+				if (!(spot.goal_activation & 2))
+				{
+					spot.message = string_null;
+				}
+			}
+		}
+		if (spot.activate_goal_no != 0)
+		{
+			te = Findgoal(spot.activate_goal_no);
+			if (te)
+			{
+				AttemptToActivate(te, self, spot);
+			}
+		}
+		if (spot.goal_effects == TF_FLARE_OFF)
+		{
+			spot.classname = "deadpoint";
+			spot.team_str_home = string_null;
+			spot.nextthink = time + TF_FLARE_OFF;
+			spot.think = SUB_Remove;
+		}
+	}
+	setmodel(self, string_null);
+	modelindex_null = self.modelindex;
+	setmodel(self, "progs/eyes.mdl");
+	modelindex_eyes = self.modelindex;
+	setmodel(self, "progs/player.mdl");
+	modelindex_player = self.modelindex;
+	if (self.playerclass == 0)
+	{
+		self.modelindex = modelindex_null;
+		self.current_menu = TF_FLARE_OFF;
+		TeamFortress_Alias("id", 185, 0);
+			bprint (1.000000, self.netname);
+		bprint (1.000000, " is using ");
+		if ((self.client != "unknown"))
+		{
+			bprint (1.000000, self.client);
+			bprint (1.000000, " ");
+			bprint (1.000000, self.clientv);
+		}
+		else
+		{
+			bprint (1.000000, "an unknown client");
+		}
+		bprint (1.000000, "\n");
+		if (self.stats_on)
+		{
+			stuffcmd (self, "set stats_execed 0\nexec progs/stats.cfg\n");
+		}
+	}
+	setsize(self, '-16 -16 -24', '16 16 32');
+	self.view_ofs = '0 0 22';
+	player_stand1();
+	if (deathmatch || coop)
+	{
+		makevectors(self.angles);
+		if (self.playerclass != 0)
+		{
+			spawn_tfog(self.origin + v_forward * 20);
+		}
+	}
+	if (stof(infokey(world, "rj")) != 0)
+	{
+		rj = stof(infokey(world, "rj"));
+	}
+	else
+	{
+		rj = 2;
+	}
+	if (self.noise == "player/mdeath5.wav")
+	{
+		sound(self, 2, "player/malive5.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+};
+
+void() info_player_start = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() info_player_start2 = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() testplayerstart = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() info_player_deathmatch = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() info_player_coop = 
+{
+	if (CheckExistence() == 0)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void(entity c) PrintClientScore = 
+{
+	if (c.frags > -10 && c.frags < 0)
+	{
+		bprint(TF_FLARE_OFF, " ");
+	}
+	else
+	{
+		if (c.frags >= 0)
+		{
+			if (c.frags < 100)
+			{
+				bprint(TF_FLARE_OFF, " ");
+			}
+			if (c.frags < 10)
+			{
+				bprint(TF_FLARE_OFF, " ");
+			}
+		}
+	}
+	// pablo. 
+	//bprint(?/00000004\?, ftos(c.frags));
+	bprint(TF_FLARE_OFF, ftos(c.frags));
+	bprint(TF_FLARE_OFF, " ");
+	bprint(TF_FLARE_OFF, c.netname);
+	bprint(TF_FLARE_OFF, "\n");
+};
+
+void() DumpScore = 
+{
+	local entity e;
+	local entity sort;
+	local entity walk;
+	if (world.chain)
+	{
+		error("DumpScore: world.chain is set");
+	}
+	e = find(world, classname, "player");
+	sort = world;
+	while (e)
+	{
+		if (!sort)
+		{
+			sort = e;
+			e.chain = world;
+		}
+		else
+		{
+			if (e.frags > sort.frags)
+			{
+				e.chain = sort;
+				sort = e;
+			}
+			else
+			{
+				walk = sort;
+				do
+				{
+					if (!(walk.chain))
+					{
+						e.chain = world;
+						walk.chain = e;
+					}
+					else
+					{
+						if (walk.chain.frags < e.frags)
+						{
+							e.chain = walk.chain;
+							walk.chain = e;
+						}
+						else
+						{
+							walk = walk.chain;
+						}
+					}
+				} while (walk.chain != e);
+			}
+		}
+		e = find(e, classname, "player");
+	}
+	bprint(TF_FLARE_OFF, "\n");
+	while (sort)
+	{
+		PrintClientScore(sort);
+		sort = sort.chain;
+	}
+	bprint(TF_FLARE_OFF, "\n");
+};
+
+void() NextLevel = 
+{
+	local entity o;
+	if (already_cycled)
+	{
+		return;
+	}
+	already_cycled = TF_FLARE_OFF;
+	o = spawn();
+	o.map = nextmap;
+	o.think = execute_changelevel;
+	o.nextthink = time + 0.1;
+};
+
+void() CheckRules = 
+{
+	if (timelimit && time >= timelimit)
+	{
+		NextLevel();
+	}
+	else
+	{
+		if (fraglimit && self.frags >= fraglimit)
+		{
+			NextLevel();
+		}
+	}
+};
+
+void() PlayerDeathThink = 
+{
+	local float forward;
+	if (self.flags & 512)
+	{
+		forward = vlen(self.velocity);
+		forward = forward - 20;
+		if (forward <= 0)
+		{
+			self.velocity = '0 0 0';
+		}
+		else
+		{
+			self.velocity = forward * normalize(self.velocity);
+		}
+	}
+	if (self.deadflag == 2)
+	{
+		if (self.button2 || self.button1 || self.button0)
+		{
+			return;
+		}
+		self.deadflag = 3;
+		self.tfstate = self.tfstate - (self.tfstate & 8192);
+		return;
+	}
+	if (!(self.button2) && !(self.button1) && !(self.button0))
+	{
+		if (self.tfstate & 8192)
+		{
+			if (self.respawn_time <= time)
+			{
+				self.button0 = 0;
+				self.button1 = 0;
+				self.button2 = 0;
+				respawn();
+			}
+		}
+		return;
+	}
+	else
+	{
+		self.tfstate = self.tfstate | 8192;
+		if (self.respawn_time <= time)
+		{
+			self.button0 = 0;
+			self.button1 = 0;
+			self.button2 = 0;
+			respawn();
+		}
+		return;
+	}
+};
+
+.float nojumptime;
+
+void () PlayerJump =
+{
+
+	if ((self.nojumptime > time))
+	{
+		if ((self.velocity_x > 70.000000))
+		{
+			self.velocity_x = 70.000000;
+		}
+		else
+		{
+			if ((self.velocity_x < -70.000000))
+			{
+				self.velocity_x = -70.000000;
+			}
+		}
+		if ((self.velocity_y > 70.000000))
+		{
+			self.velocity_y = 70.000000;
+		}
+		else
+		{
+			if ((self.velocity_y < -70.000000))
+			{
+				self.velocity_y = -70.000000;
+			}
+		}
+	}
+	if ((self.flags & 2048.000000))
+	{
+		return;
+	}
+	if ((self.waterlevel >= 2.000000))
+	{
+		if ((self.watertype == -3.000000))
+		{
+			self.velocity_z = 100.000000;
+		}
+		else
+		{
+			if ((self.watertype == -4.000000))
+			{
+				self.velocity_z = 80.000000;
+			}
+			else
+			{
+				self.velocity_z = 50.000000;
+			}
+		}
+		if ((self.swim_flag < time))
+		{
+			self.swim_flag = (time + 1.000000);
+			if ((random () < 0.500000))
+			{
+				sound (self, 4.000000, "misc/water1.wav", 1.000000, 1.000000);
+			}
+			else
+			{
+				sound (self, 4.000000, "misc/water2.wav", 1.000000, 1.000000);
+			}
+		}
+		return;
+	}
+	if (!(self.flags & 512.000000))
+	{
+		return;
+	}
+	if (!(self.flags & 4096.000000))
+	{
+		return;
+	}
+	self.flags = (self.flags - (self.flags & 4096.000000));
+	self.button2 = 0.000000;
+	if ((self.playerclass == 8.000000))
+	{
+		if ((self.spy_regjump == 0.000000))
+		{
+			sound (self, 4.000000, "hknight/slash1.wav", 0.700000, 1.000000);
+			self.velocity_z = (self.velocity_z + 400.000000);
+		}
+		else
+		{
+			sound (self, 4.000000, "player/plyrjmp8.wav", 1.000000, 1.000000);
+			self.velocity_z = (self.velocity_z + 270.000000);
+		}
+		//if( self.velocity_z < 0 ) self.velocity_z = 0; //prozac fix -- still needed for your equake, hughie?
+	}
+	else
+	{
+		sound (self, 4.000000, "player/plyrjmp8.wav", 1.000000, 1.000000);
+		self.velocity_z = (self.velocity_z + 270.000000);
+		//if( self.velocity_z < 0 ) self.velocity_z = 0;
+	}
+};
+
+void() WaterMove = 
+{
+	if (self.movetype == 8)
+	{
+		return;
+	}
+	if (self.health < 0)
+	{
+		return;
+	}
+	if (self.waterlevel != 3)
+	{
+		if (self.air_finished < time)
+		{
+			sound(self, 2, "player/gasp2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		else
+		{
+			if (self.air_finished < time + 9)
+			{
+				sound(self, 2, "player/gasp1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			}
+		}
+		self.air_finished = time + 12;
+		self.dmg = 2;
+	}
+	else
+	{
+		if (self.air_finished < time)
+		{
+			if (self.pain_finished < time)
+			{
+				self.dmg = self.dmg + 2;
+				if (self.dmg > 15)
+				{
+					self.dmg = 10;
+				}
+				TF_T_Damage(self, world, world, self.dmg, TF_FLARE_OFF, 0);
+				self.pain_finished = time + TF_FLARE_OFF;
+			}
+		}
+	}
+	if (!(self.waterlevel))
+	{
+		if (self.flags & 16)
+		{
+			sound(self, 4, "misc/outwater.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			self.flags = self.flags - 16;
+		}
+		return;
+	}
+	if (self.watertype == -5)
+	{
+		if (self.dmgtime < time)
+		{
+			if (self.radsuit_finished > time)
+			{
+				self.dmgtime = time + TF_FLARE_OFF;
+			}
+			else
+			{
+				self.dmgtime = time + 0.2;
+			}
+			TF_T_Damage(self, world, world, 10 * self.waterlevel, 0, 16);
+		}
+	}
+	else
+	{
+		if (self.watertype == -4)
+		{
+			if (self.dmgtime < time && self.radsuit_finished < time)
+			{
+				self.dmgtime = time + TF_FLARE_OFF;
+				T_Damage(self, world, world, 4 * self.waterlevel);
+			}
+		}
+	}
+	if (!(self.flags & 16))
+	{
+		if (self.watertype == -5)
+		{
+			sound(self, 4, "player/inlava.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		if (self.watertype == -3)
+		{
+			sound(self, 4, "player/inh2o.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		if (self.watertype == -4)
+		{
+			sound(self, 4, "player/slimbrn2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		self.flags = self.flags + 16;
+		self.dmgtime = 0;
+	}
+};
+
+void() CheckWaterJump = 
+{
+	local vector start;
+	local vector end;
+	makevectors(self.angles);
+	start = self.origin;
+	start_z = start_z + 8;
+	v_forward_z = 0;
+	normalize(v_forward);
+	end = start + v_forward * 24;
+	traceline(start, end, TF_FLARE_OFF, self);
+	if (trace_fraction < TF_FLARE_OFF)
+	{
+		start_z = start_z + self.maxs_z - 8;
+		end = start + v_forward * 24;
+		self.movedir = trace_plane_normal * -50;
+		traceline(start, end, TF_FLARE_OFF, self);
+		if (trace_fraction == TF_FLARE_OFF)
+		{
+			self.flags = self.flags | 2048;
+			self.velocity_z = 225;
+			self.flags = self.flags - (self.flags & 4096);
+			self.teleport_time = time + 2;
+			return;
+		}
+	}
+};
+
+void () PlayerPreThink =
+{
+	local vector src;
+
+	if (self.autoid)
+	{
+		makevectors (self.v_angle);
+		src = self.origin + (v_forward * 10.000000);
+		src_z = self.absmin_z + (self.size_z * 0.700000);
+		traceline (src, (src + (v_forward * 2048.000000)), 0.000000, self);
+		if (((trace_ent != world) && (trace_ent.origin != world.origin)))
+		{
+			if ((self.current_menu != 17.000000))
+			{
+				TeamFortress_ID ();
+				self.StatusRefreshTime = (time + 0.200000);
+			}
+		}
+	}
+	if ((self.is_feigning && (self.waterlevel == 1.000000)))
+	{
+		self.watertype = -3.000000;
+		self.waterlevel = 3.000000;
+	}
+	if (intermission_running)
+	{
+		if ((intermission_running && (self.last_used != 999.000000)))
+		{
+			if ((random () < 0.500000))
+			{
+				stuffcmd (self, "play music/megamnu1.wav\n");
+			}
+			else
+			{
+				stuffcmd (self, "play music/megamnu2.wav\n");
+			}
+			self.last_used = 999.000000;
+		}
+		IntermissionThink ();
+		return;
+	}
+	makevectors (self.v_angle);
+	if ((self.playerclass == 0.000000))
+	{
+		self.maxspeed = 0.000000;
+		self.gravity = 0.000000;
+		if (((self.button2 && (self.current_menu == 2.000000)) && (self.team_no == 0.000000)))
+		{
+			if (TeamFortress_TeamPutPlayerInTeam ())
+			{
+				self.current_menu = 3.000000;
+				self.menu_count = 25.000000;
+			}
+		}
+	}
+	if ((self.view_ofs == '0.000000 0.000000 0.000000'))
+	{
+		return;
+	}
+	CheckRules ();
+	if ((self.playerclass != 0.000000))
+	{
+		WaterMove ();
+	}
+	if ((self.deadflag >= 2.000000))
+	{
+		PlayerDeathThink ();
+		return;
+	}
+	if (((self.undercover_team || self.undercover_skin) || self.is_undercover))
+	{
+		if ((self.effects & 12.000000))
+		{
+			sprint (self, 1.000000, "The glowing removes your disguise.\n");
+			Spy_RemoveDisguise (self);
+		}
+	}
+	if ((self.deadflag == 1.000000))
+	{
+		return;
+	}
+	if (!self.is_feigning)
+	{
+		if (self.button2)
+		{
+			PlayerJump ();
+		}
+		else
+		{
+			self.flags = (self.flags | 4096.000000);
+		}
+	}
+	else
+	{
+		if (self.waterlevel)
+		{
+			self.velocity_z = -100.000000;
+		}
+	}
+	if ((time < self.pausetime))
+	{
+		self.velocity = '0.000000 0.000000 0.000000';
+	}
+	if ((((time > self.attack_finished) && (self.currentammo == 0.000000)) && (self.weapon > 16.000000)))
+	{
+		self.weapon = W_BestWeapon ();
+		W_SetCurrentAmmo ();
+	}
+	if (self.on_hook)
+	{
+		Service_Grapple ();
+	}
+};
+
+
+void() CheckPowerups = 
+{
+	local float lighton;
+	local entity te;
+	if (self.health <= 0)
+	{
+		return;
+	}
+	if (self.playerclass == 0)
+	{
+		self.modelindex = modelindex_null;
+	}
+	else
+	{
+		if (self.is_undercover == TF_FLARE_OFF && invis_only == TF_FLARE_OFF)
+		{
+			self.frame = 0;
+			self.modelindex = modelindex_eyes;
+		}
+		else
+		{
+			if (self.invisible_finished)
+			{
+				if (self.tfstate & 64)
+				{
+					if (self.invisible_finished < time + 10)
+					{
+						self.invisible_finished = time + 666;
+					}
+				}
+				if (self.invisible_sound < time)
+				{
+					sound(self, 0, "items/inv3.wav", 0.5, 2);
+					self.invisible_sound = time + (random() * 3 + TF_FLARE_OFF);
+				}
+				if (self.invisible_finished < time + 3)
+				{
+					if (self.invisible_time == TF_FLARE_OFF)
+					{
+						sprint(self, 2, "Invisability is fading\n");
+						stuffcmd(self, "bf\n");
+						sound(self, 0, "items/inv2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+						self.invisible_time = time + TF_FLARE_OFF;
+					}
+					if (self.invisible_time < time)
+					{
+						self.invisible_time = time + TF_FLARE_OFF;
+						stuffcmd(self, "bf\n");
+					}
+				}
+				if (self.invisible_finished < time)
+				{
+					self.items = self.items - 524288;
+					self.invisible_finished = 0;
+					self.invisible_time = 0;
+				}
+				self.frame = 0;
+				self.modelindex = modelindex_eyes;
+			}
+			else
+			{
+				self.modelindex = modelindex_player;
+			}
+		}
+	}
+	if (self.invincible_finished)
+	{
+		if (self.tfstate & 32)
+		{
+			if (self.invincible_finished < time + 10)
+			{
+				self.invincible_finished = time + 666;
+			}
+		}
+		if (self.invincible_finished < time + 3)
+		{
+			if (self.invincible_time == TF_FLARE_OFF)
+			{
+				sprint(self, 2, "Protection is almost gone\n");
+				stuffcmd(self, "bf\n");
+				sound(self, 0, "items/protect2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				self.invincible_time = time + TF_FLARE_OFF;
+			}
+			if (self.invincible_time < time)
+			{
+				self.invincible_time = time + TF_FLARE_OFF;
+				stuffcmd(self, "bf\n");
+			}
+		}
+		if (self.invincible_finished < time)
+		{
+			self.items = self.items - 1048576;
+			self.invincible_time = 0;
+			self.invincible_finished = 0;
+		}
+		if (self.invincible_finished > time)
+		{
+			self.effects = self.effects | 8;
+		}
+		else
+		{
+			lighton = 0;
+			te = find(world, classname, "item_tfgoal");
+			while (te)
+			{
+				if (te.owner == self)
+				{
+					if (te.goal_activation & TF_FLARE_OFF)
+					{
+						lighton = TF_FLARE_OFF;
+					}
+				}
+				te = find(te, classname, "item_tfgoal");
+			}
+			if (!lighton)
+			{
+				self.effects = self.effects - (self.effects & 8);
+			}
+		}
+	}
+	if (self.super_damage_finished)
+	{
+		if (self.tfstate & 128)
+		{
+			if (self.super_damage_finished == time + 10)
+			{
+				self.super_damage_finished = time + 666;
+			}
+		}
+		if (self.super_damage_finished < time + 3)
+		{
+			if (self.super_time == TF_FLARE_OFF)
+			{
+				sprint(self, 2, "Quad Damage is wearing off\n");
+				stuffcmd(self, "bf\n");
+				sound(self, 0, "items/damage2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				self.super_time = time + TF_FLARE_OFF;
+			}
+			if (self.super_time < time)
+			{
+				self.super_time = time + TF_FLARE_OFF;
+				stuffcmd(self, "bf\n");
+			}
+		}
+		if (self.super_damage_finished < time)
+		{
+			self.items = self.items - 4194304;
+			self.super_damage_finished = 0;
+			self.super_time = 0;
+		}
+		if (self.super_damage_finished > time)
+		{
+			self.effects = self.effects | 8;
+		}
+		else
+		{
+			lighton = 0;
+			te = find(world, classname, "item_tfgoal");
+			while (te)
+			{
+				if (te.owner == self)
+				{
+					if (te.goal_activation & TF_FLARE_OFF)
+					{
+						lighton = TF_FLARE_OFF;
+					}
+				}
+				te = find(te, classname, "item_tfgoal");
+			}
+			if (!lighton)
+			{
+				self.effects = self.effects - (self.effects & 8);
+			}
+		}
+	}
+	if (self.radsuit_finished)
+	{
+		self.air_finished = time + 12;
+		if (self.tfstate & 256)
+		{
+			if (self.radsuit_finished == time + 10)
+			{
+				self.radsuit_finished = time + 666;
+			}
+		}
+		if (self.radsuit_finished < time + 3)
+		{
+			if (self.rad_time == TF_FLARE_OFF)
+			{
+				sprint(self, 2, "Air supply has run out\n");
+				stuffcmd(self, "bf\n");
+				sound(self, 0, "items/suit2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				self.rad_time = time + TF_FLARE_OFF;
+			}
+			if (self.rad_time < time)
+			{
+				self.rad_time = time + TF_FLARE_OFF;
+				stuffcmd(self, "bf\n");
+			}
+		}
+		if (self.radsuit_finished < time)
+		{
+			self.items = self.items - 2097152;
+			self.rad_time = 0;
+			self.radsuit_finished = 0;
+		}
+	}
+};
+
+void() PlayerPostThink = 
+{
+//	if (!strcat)	//moved up
+//	{
+//		setup_strcat ();
+//	}
+
+//	local vector vtemp;
+#ifdef clan_progs
+	if (clan_prematch > 0)
+	{
+		if (self.playerclass > 0 && self.team_no > 0)
+			self.current_menu = #MENU_CLAN_PREMATCH;
+	}
+#endif
+	if (self.view_ofs == '0 0 0')
+	{
+		return;
+	}
+	if (self.deadflag)
+	{
+		DeadImpulses();
+		self.impulse = 0;
+		return;
+	}
+	if (self.jump_flag < -300 && (self.flags & 512) && self.health > 0)
+	{
+		if (self.watertype == -3)
+		{
+			sound(self, 4, "player/h2ojump.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		else
+		{
+			if (self.jump_flag < -650)
+			{
+				T_Damage(self, world, world, 5);
+				sound(self, 2, "player/land2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				self.deathtype = "falling";
+			}
+			else
+			{
+				if (self.playerclass == 8)
+				{
+					sound(self, 2, "hknight/hit.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+					if (infokey(world, "prozacserver") == "1") { if( self.velocity_z < 0 ) self.velocity_z = 0; } // Prozac
+					if (!self.is_feigning) { // Spy Bunnhyhop
+					//if( self.velocity_z < 0 ) self.velocity_z = 0; 
+					} // fix
+				}
+				else
+				{
+					sound(self, 2, "player/land.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				}
+			}
+		}
+	}
+	self.jump_flag = self.velocity_z;
+	CheckPowerups();
+	W_WeaponFrame();
+	if (self.motd < 22)
+	{
+		TeamFortress_MOTD();
+	}
+	else
+	{
+		if (self.cheat_check == 0)
+		{
+			self.cheat_check = time + 5;
+		}
+		else
+		{
+			if (time > self.StatusRefreshTime && self.StatusBarSize != 0)
+			{
+				RefreshStatusBar(self);
+			}
+		}
+	}
+	if (self.cheat_check <= time)
+	{
+		TeamFortress_CheckTeamCheats();
+		self.cheat_check = time + 2;
+	}
+	// no jump!
+	//	self.button2 = 0;
+//	if (self.nojumptime != 0)
+//	{
+//		//self.gravity = 200;
+		//self.movetype = 0;
+		//self.flags = self.flags | 512;
+		//self.health = -1;
+//		vtemp = self.origin;
+//		vtemp_z = vtemp_z + 10;
+//		setorigin(self, vtemp);
+//		self.nojumptime = 0;
+//	}
+};
+
+void() ClientConnect = 
+{
+	if (!strcat)
+	{
+		setup_strcat ();
+	}
+	num_players = num_players + 1;
+	globaluserid = globaluserid + 1;
+//	self.userid = globaluserid;
+	self.userid = stof(infokey (self, "*userid"));
+	if ((infokey (world, "prozacserver") == "1"))
+	{
+		self.userid = getuid(self);
+	}
+	self.vote_wait = (time + 30);
+	local string st;
+#ifdef fte_rankings
+	self.rank_name = self.netname;
+	if (FTE_Server != 1)
+	{
+		if (infokey(world, "fteserver") == "1" || infokey(world, "fteserver") == "on")
+		{
+			FTE_Server = 1;
+		}
+	}
+	if (FTE_Server == 1)
+	{
+		self.rank_name = self.netname;
+		Rank_FindStats (self);
+		bprint(2, self.netname);
+		bprint(2, strcat(" joined! (rank: ",ftos(self.global_rank),")\n"));
+	}
+	else
+	{
+		bprint(2, self.netname);
+		bprint(2, " joined!\n");
+	}
+#else
+	bprint(2, self.netname);
+	bprint(2, " joined!\n");
+#endif
+	self.is_ingame = 1;
+//	if (0 == 0)
+//	{
+		self.tfstate = self.tfstate | 4096;
+//	}
+	self.motd = 0;
+	self.got_aliases = 0;
+// BTF anti-cheat
+	local string msg;
+	if (infokey(world, "modelcheck") == "1" || infokey(world, "modelcheck") == "on")
+	{
+	st = infokey (self, "pmodel");
+	if ((((((((((st != "13845") && (st != "20572")) && (st != "33168")) && (st != "39460")) && (st != "52964")) && (st != "63186")) && (st != "32907")) && (st != "58759")) && (st != "47373")))
+		{
+			sprint (self, 0, "You were kicked for using invalid TF pmodel\n");
+			sprint (self, 0, "Have a nice day! :)\n");
+			stuffcmd (self, "disconnect\n");
+			stuffcmd (self, "help\n");
+			bprint (0, self.netname);
+			bprint (0, " has been kicked for hacked pmodel\n");
+			return;
+		}
+	}
+	st = infokey (self, "in_speed_hack");
+	if ((st != ""))
+	{
+		sprint (self, 0, "You were banned for using hacked qwcl.exe\n");
+		sprint (self, 0, "Have a nice day! :)\n");
+		stuffcmd (self, "disconnect\n");
+		stuffcmd (self, "help\n");
+		bprint (0, self.netname);
+		bprint (0, " has been banned for speed cheat\n");
+		msg = infokey (self, "ip");
+		localcmd ("addip ");
+		localcmd (msg);
+		localcmd ("\n");
+		localcmd ("writeip ");
+		localcmd (msg);
+		localcmd ("\n");
+		return;
+	}
+	st = infokey (self, "ser");
+	if ((st != ""))
+	{
+		sprint (self, 0, "You were banned for using hacked qwcl.exe\n");
+		sprint (self, 0, "Have a nice day! :)\n");
+		stuffcmd (self, "disconnect\n");
+		stuffcmd (self, "help\n");
+		bprint (0, self.netname);
+		bprint (0, " has been banned for speed cheat\n");
+		msg = infokey (self, "ip");
+		localcmd ("addip ");
+		localcmd (msg);
+		localcmd ("\n");
+		localcmd ("writeip ");
+		localcmd (msg);
+		localcmd ("\n");
+		return;
+	}
+	st = infokey(self, "sbar_res");
+	if (st == "768")
+	{
+		self.StatusBarRes = 8;
+	}
+	else
+	{
+		if (st == "600")
+		{
+			self.StatusBarRes = 7;
+		}
+		else
+		{
+			if (st == "480")
+			{
+				self.StatusBarRes = 6;
+			}
+			else
+			{
+				if (st == "400")
+				{
+					self.StatusBarRes = 5;
+				}
+				else
+				{
+					if (st == "384")
+					{
+						self.StatusBarRes = 4;
+					}
+					else
+					{
+						if (st == "350")
+						{
+							self.StatusBarRes = 3;
+						}
+						else
+						{
+							if (st == "300")
+							{
+								self.StatusBarRes = 2;
+							}
+							else
+							{
+								if (st == "240")
+								{
+									self.StatusBarRes = TF_FLARE_OFF;
+								}
+								else
+								{
+									self.StatusBarRes = 0;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	st = infokey(self, "sbar_size");
+	self.StatusBarSize = stof(st);
+	if (self.StatusBarSize > 2 || self.StatusBarSize < 0)
+	{
+		self.StatusBarSize = 0;
+	}
+	self.has_disconnected = 0;
+	if (intermission_running)
+	{
+		GotoNextMap();
+	}
+};
+
+void () ClientDisconnect =
+{
+	num_players = num_players - 1;
+	if ((self.has_voted == 1))
+	{
+		num_votes = num_votes - 1;
+	}
+#ifdef clan_progs
+	if (self.is_ready == 1)
+	{
+		num_players_ready = num_players_ready - 1;
+	}
+#endif
+#ifdef fte_rankings
+	if (FTE_Server == 1)
+		Rank_UpdateStats(self);
+#endif
+	self.userid = 0;
+	local entity _l_6062;
+
+	sound (self, 4.000000, "misc/eject.wav", 1.000000, 0.000000);
+	self.has_disconnected = 1.000000;
+	TeamFortress_RemoveTimers ();
+	_l_6062 = find (world, classname, "player_prop");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			dremove (_l_6062);
+		}
+		_l_6062 = find (_l_6062, classname, "player_prop");
+	}
+	_l_6062 = find (world, classname, "camera");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			dremove (_l_6062);
+		}
+		_l_6062 = find (_l_6062, classname, "camera");
+	}
+	_l_6062 = find (world, classname, "camera_base");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			dremove (_l_6062);
+		}
+		_l_6062 = find (_l_6062, classname, "camera_base");
+	}
+	_l_6062 = find (world, classname, "building_dispenser");
+	while (_l_6062)
+	{
+		if ((_l_6062.real_owner == self))
+		{
+			TF_T_Damage (_l_6062, world, world, 500.000000, 0.000000, 0.000000);
+		}
+		_l_6062 = find (_l_6062, classname, "building_dispenser");
+	}
+	_l_6062 = find (world, classname, "building_sentrygun");
+	while (_l_6062)
+	{
+		if ((_l_6062.real_owner == self))
+		{
+			TF_T_Damage (_l_6062, world, world, 500.000000, 0.000000, 0.000000);
+		}
+		_l_6062 = find (_l_6062, classname, "building_sentrygun");
+	}
+	_l_6062 = find (world, classname, "detpack");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			if ((_l_6062.weaponmode == 1.000000))
+			{
+				TeamFortress_SetSpeed (_l_6062.enemy);
+				dremove (_l_6062.oldenemy);
+				dremove (_l_6062.observer_list);
+			}
+			dremove (_l_6062);
+			_l_6062 = world;
+		}
+		_l_6062 = find (_l_6062, classname, "detpack");
+	}
+	_l_6062 = find (world, classname, "drop1");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			dremove (_l_6062);
+			_l_6062 = world;
+		}
+		_l_6062 = find (_l_6062, classname, "drop1");
+	}
+	_l_6062 = find (world, classname, "bot");
+	while (_l_6062)
+	{
+		if ((_l_6062.owner == self))
+		{
+			dremove (_l_6062);
+			_l_6062 = world;
+		}
+		_l_6062 = find (_l_6062, classname, "bot");
+	}
+	set_suicide_frame ();
+	self.netname = string_null;
+	self.team_no = 0.000000;
+	self.solid = 0.000000;
+	setsize (self, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
+};
+
+void(entity targ, entity attacker) ClientObituary = 
+{
+	local float rnum;
+	local string deathstring;
+	local string deathstring2;
+
+	if (prematch)
+	{
+		return;
+	}
+#ifdef fte_rankings
+	if (FTE_Server == 1)
+		Rank_AddDeaths(targ, 1);
+#endif
+// 'fer code caller!
+	if (deathmsg > 0 && deathmsg < 199)
+	{
+		if (attacker)
+		{
+			attacker.num_kills = attacker.num_kills + 1;
+                  if ((targ.off_hook > time))
+                  {
+                  attacker.num_kills = attacker.num_kills - 1;
+                  targ.off_hook = 0;
+                  }
+			if (attacker.fertracker != 1)
+			{
+				attacker.fertracker = 1;
+				fertimer (attacker);
+			}
+			if (attacker == targ)
+			{
+				attacker.num_kills = attacker.num_kills - 1;
+			}
+#ifdef fte_rankings
+			if (FTE_Server == 1 && attacker != targ)
+				Rank_AddFrags(attacker, 1);
+#endif
+			if (targ.off_hook != 1)
+			{
+//So disps, Drones, and heads dont count as fers
+				if (targ.classname == "building_dispenser") {
+				attacker.num_kills = attacker.num_kills - 1; }
+				if (targ.think == DroneJet) {
+				attacker.num_kills = attacker.num_kills - 1; }
+				if (targ.touch == KickHead) {
+				attacker.num_kills = attacker.num_kills - 1; }
+			}
+		}
+	}
+// end 'fer caller
+	rnum = random();
+	if (targ.classname == "player")
+	{
+		if (attacker.classname == "teledeath")
+		{
+			bprint(TF_FLARE_OFF, targ.netname);
+			bprint(TF_FLARE_OFF, " got in the way of ");
+			bprint(TF_FLARE_OFF, attacker.owner.netname);
+			bprint(TF_FLARE_OFF, "\n");
+			if (attacker.owner.team_no != targ.team_no || attacker.owner.team_no < TF_FLARE_OFF)
+			{
+				attacker.owner.real_frags = attacker.owner.real_frags + TF_FLARE_OFF;
+			}
+			if (!(toggleflags & 128))
+			{
+				attacker.owner.frags = attacker.owner.real_frags;
+			}
+			return;
+		}
+		if (attacker.classname == "teledeath2")
+		{
+			bprint(TF_FLARE_OFF, "Satan's power deflects ");
+			bprint(TF_FLARE_OFF, targ.netname);
+			bprint(TF_FLARE_OFF, "'s telefrag\n");
+			targ.real_frags = targ.real_frags - TF_FLARE_OFF;
+			if (!(toggleflags & 128))
+			{
+				targ.frags = targ.real_frags;
+			}
+			logfrag(targ, targ);
+			return;
+		}
+		if (attacker.classname == "info_tfgoal")
+		{
+			if (attacker.deathtype != "")
+			{
+				bprint(TF_FLARE_OFF, targ.netname);
+				bprint(TF_FLARE_OFF, attacker.deathtype);
+			}
+			logfrag(targ, targ);
+			return;
+		}
+		if (attacker.classname == "player" || attacker.classname == "bot")
+		{
+			if (targ == attacker)
+			{
+				attacker.real_frags = attacker.real_frags - TF_FLARE_OFF;
+				if (!(toggleflags & 128))
+				{
+					attacker.frags = attacker.real_frags;
+				}
+				bprint(TF_FLARE_OFF, targ.netname);
+				if (deathmsg == 8)
+				{
+					if (targ.gender < 1)
+					{
+						deathstring = " grenades himself\n";
+					}
+					else
+					{
+						deathstring = " grenades herself\n";
+					}
+				}
+				else
+				{
+					if (deathmsg == 43)
+					{
+						if (targ.gender < 1)
+						{
+							deathstring = " has himself bombed\n";
+						}
+						else
+						{
+							deathstring = " has herself bombed\n";
+						}
+					}
+					else
+					{
+						if (deathmsg == 45)
+						{
+							if (targ.gender < 1)
+							{
+								deathstring = " hugs his proximity grenade\n";
+							}
+							else
+							{
+								deathstring = " hugs her proximity grenade\n";
+							}
+						}
+						else
+						{
+							if (deathmsg == 9)
+							{
+								if (targ.gender < 1)
+								{
+									deathstring = " nails himself\n";
+								}
+								else
+								{
+									deathstring = " nails herself\n";
+								}
+							}
+							else
+							{
+								if (deathmsg == 10)
+								{
+									deathstring = " is blown to bits\n";
+								}
+								else
+								{
+									if (deathmsg == 11)
+									{
+										if (targ.gender < 1)
+										{
+											deathstring = " pipebombs himself...\nWhat a dumb-ass!\n";
+										}
+										else
+										{
+											deathstring = " pipebombs herself...\nWhat a dumb-ass!\n";
+										}
+									}
+									else
+									{
+										if (deathmsg == 24)
+										{
+											if (targ.gender < 1)
+											{
+												deathstring = " gags on his own gas... pew!\n";
+											}
+											else
+											{
+												deathstring = " gags on her own gas... pew!\n";
+											}
+										}
+										else
+										{
+											if (deathmsg == 30)
+											{
+												if (targ.gender < 1)
+												{
+													deathstring = " nukes his own ammo\n";
+												}
+												else
+												{
+													deathstring = " nukes her own ammo\n";
+												}
+											}
+											else
+											{
+												if (deathmsg == 35)
+												{
+													if (targ.gender < 1)
+													{
+														deathstring = " flash grenade himself to death\n";
+													}
+													else
+													{
+														deathstring = " flash grenade herself to death\n";
+													}
+												}
+												else
+												{
+													if (deathmsg == 31)
+													{
+														if (targ.gender < 1)
+														{
+															deathstring = " detonates an ammo box too close to him\n";
+														}
+														else
+														{
+															deathstring = " detonates an ammo box too close to her\n";
+														}
+													}
+													else
+													{
+														if (deathmsg == 12)
+														{
+															if (targ.gender < 1)
+															{
+																deathstring = " detpacks himself\n That was smart!\n";
+															}
+															else
+															{
+																deathstring = " detpacks herself\n That was smart!\n";
+															}
+														}
+														else
+														{
+															if (deathmsg == 13)
+															{
+																deathstring = " died impossibly!\n";
+															}
+															else
+															{
+																if (deathmsg == 6)
+																{
+																	if (rnum <= 0.5)
+																	{
+																		if (targ.gender < 1)
+																		{
+																			deathstring = " checks if his weapon is loaded\n";
+																		}
+																		else
+																		{
+																			deathstring = " checks if her weapon is loaded\n";
+																		}
+																	}
+																	else
+																	{
+																		if (targ.gender < 1)
+																		{
+																			deathstring = " hates himself\n";
+																		}
+																		else
+																		{
+																			deathstring = " hates herself\n";
+																		}
+																	}
+																}
+																else
+																{
+																	if (deathmsg == 41)
+																	{
+																		deathstring = "'s Laser Drone malfunctioned\n";
+																	}
+																	else
+																	{
+																		if (deathmsg == 33)
+																		{
+																			if (targ.gender < 1)
+																			{
+																				deathstring = " chars himself with an incendiary rocket\n";
+																			}
+																			else
+																			{
+																				deathstring = " chars herself with an incendiary rocket\n";
+																			}
+																		}
+																		else
+																		{
+																			if (deathmsg == 5)
+																			{
+																				deathstring = " tries to put the pin back in\n";
+																			}
+																			else
+																			{
+																				if (deathmsg == 15)
+																				{
+																					if (attacker.playerclass == TF_FLARE_OFF)
+																					{
+																						deathstring = "'s JetPack malfunctions\n";
+																					}
+																					else
+																					{
+																						if (targ.gender < 1)
+																						{
+																							deathstring = " bakes himself\n";
+																						}
+																						else
+																						{
+																							deathstring = " bakes herself\n";
+																						}
+																					}
+																				}
+																				else
+																				{
+																					if (deathmsg == 7 && targ.waterlevel > TF_FLARE_LIT)
+																					{
+																						if (targ.gender < 1)
+																						{
+																							bprint(TF_FLARE_OFF, " shocks himself to death.\n");
+																						}
+																						else
+																						{
+																							bprint(TF_FLARE_OFF, " shocks herself to death.\n");
+																						}
+																						return;
+																					}
+																					else
+																					{
+																						if (deathmsg == 40)																					
+																						{
+																							if (targ.gender < 1)
+																							{
+																								deathstring = " couldn't outrun his airspam\n";
+																							}
+																							else
+																							{
+																								deathstring = " couldn't outrun her airspam\n";
+																							}
+																						}
+																						else
+																						{
+																							if (deathmsg == 201)
+																							{
+																								if (targ.gender < 1)
+																								{
+																									deathstring = " used his dispenser for all the wrong reasons\n";																								
+																								}
+																								else
+																								{
+																									deathstring = " used her dispenser for all the wrong reasons\n";
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				bprint(TF_FLARE_OFF, deathstring);
+				return;
+			}
+			else
+			{
+				if (teamplay && attacker.team_no == targ.team_no && attacker.team_no > 0)
+				{
+					if (attacker.team_no > 0 && attacker.team_no == targ.team_no)
+					{
+						attacker.real_frags = attacker.real_frags - TF_FLARE_OFF;
+					}
+					else
+					{
+						attacker.real_frags = attacker.real_frags + TF_FLARE_OFF;
+					}
+					if (!(toggleflags & 128))
+					{
+						attacker.frags = attacker.real_frags;
+					}
+					if (rnum < 0.25)
+					{
+						deathstring = " mows down a teammate\n";
+					}
+					else
+					{
+						if (rnum < 0.5)
+						{
+							if (targ.gender < 1)
+							{
+								deathstring = " checks his glasses\n";
+							}
+							else
+							{
+								deathstring = " checks her glasses\n";
+							}
+						}
+						else
+						{
+							if (rnum < 0.75)
+							{
+								deathstring = " gets a frag for the other team\n";
+							}
+							else
+							{
+								deathstring = " loses another friend\n";
+							}
+						}
+					}
+					if (deathmsg == 23)
+					{
+						bprint(TF_FLARE_OFF, targ.netname);
+						bprint(TF_FLARE_OFF, " didn't survive the operation.\n");
+						return;
+					}
+					bprint(TF_FLARE_OFF, attacker.netname);
+					bprint(TF_FLARE_OFF, deathstring);
+					return;
+				}
+				else
+				{
+					attacker.real_frags = attacker.real_frags + TF_FLARE_OFF;
+					logfrag(attacker, targ);
+					if (!(toggleflags & 128))
+					{
+						attacker.frags = attacker.real_frags;
+					}
+					if (deathmsg == 43)
+					{
+						deathstring = " was bombed by ";
+						deathstring2 = "'s AirStrike call\n";
+					}
+					if (deathmsg == 45)
+					{
+						deathstring = " gets too friendly with ";
+						deathstring2 = "'s Proxi grenade\n";
+					}
+					if (deathmsg == 46)
+					{
+						deathstring = " gets shredded by ";
+						deathstring2 = "'s 20mm cannon\n";
+					}
+					if (deathmsg == 8)
+					{
+						deathstring = " tries to hatch ";
+						deathstring2 = "'s grenade\n";
+					}
+					else
+					{
+						if (deathmsg == 9)
+						{
+							deathstring = " gets perforated by ";
+							deathstring2 = "'s nail grenade\n";
+						}
+						else
+						{
+							if (deathmsg == 10)
+							{
+								deathstring = " gets juiced by ";
+								deathstring2 = "'s Mirv grenade\n";
+							}
+							else
+							{
+								if (deathmsg == 40)
+								{
+									deathstring = " is shreaded by ";
+									deathstring2 = "'s AirMirv\n";
+								}
+								else
+								{
+									if (deathmsg == 11)
+									{
+										deathstring = " is shreaded by ";
+										deathstring2 = "'s pipebomb trap\n";
+									}
+									else
+									{
+										if (deathmsg == 24)
+										{
+											deathstring = " sniffs to much of ";
+											deathstring2 = "'s glue\n";
+										}
+										else
+										{
+											if (deathmsg == 30)
+											{
+												deathstring = "'s gets vaporized by ";
+												deathstring2 = "'s EMP grenade.\n";
+											}
+											else
+											{
+												if (deathmsg == 35)
+												{
+													deathstring = "'s brain is fried by ";
+													deathstring2 = "'s flash grenade\n";
+												}
+												else
+												{
+													if (deathmsg == 31)
+													{
+														deathstring = " stands near some ammo as ";
+														deathstring2 = "'s EMP nukes it\n";
+													}
+													else
+													{
+														if (deathmsg == 12)
+														{
+															deathstring = " is nuked by ";
+															deathstring2 = "'s detpack\n";
+														}
+														else
+														{
+															if (deathmsg == 16)
+															{
+																deathstring = " cut the red wire of ";
+																deathstring2 = "'s detpack\n";
+															}
+															else
+															{
+																if (deathmsg == 13)
+																{
+																	deathstring = " dies from ";
+																	deathstring2 = "'s social disease\n";
+																	sound(targ, 0, "player/mpain6.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+																}
+																else
+																{
+																	if (deathmsg == 14)
+																	{
+																		deathstring = " escapes infection from ";
+																		deathstring2 = " by dying first\n";
+																	}
+																	else
+																	{
+																		if (deathmsg == 5)
+																		{
+																			deathstring = " swallows ";
+																			deathstring2 = "'s grenade\n";
+																			if (targ.health < -40)
+																			{
+																				deathstring = " was split in half by ";
+																				deathstring2 = "'s grenade\n";
+																			}
+																		}
+																		else
+																		{
+																			if (deathmsg == 6)
+																			{
+																				deathstring = " is reamed by ";
+																				deathstring2 = "'s rocket\n";
+																				if (targ.health < -40)
+																				{
+																					deathstring = "'s bunghole was ripped by ";
+																					deathstring2 = "'s rocket\n";
+																				}
+																			}
+																			else
+																			{
+																				if (deathmsg == 41)
+																				{
+																					deathstring = " was killed by ";
+																					deathstring2 = "'s Laser Drone\n";
+																					if (targ.health < -40)
+																					{
+																						deathstring = " was vaporized by ";
+																						deathstring2 = "'s Laser Drone\n";
+																					}
+																				}
+																				else
+																				{
+																					if (deathmsg == 42)
+																					{
+																						deathstring = " was torn up by an enemy Rottweiler";
+																						deathstring2 = "\n";
+																					}
+																					else
+																					{
+																						if (deathmsg == 44)
+																						{
+																							deathstring = " was stopped by an enemy autoturret";
+																							deathstring2 = "\n";
+																						}
+																						else
+																						{
+																							if (deathmsg == 15)
+																							{
+																								if (rnum < 0.2)
+																								{
+																									deathstring = " burns to death by ";
+																									deathstring2 = "'s flame\n";
+																								}
+																								else
+																								{
+																									if (rnum < 0.4)
+																									{
+																										deathstring = " is fried by ";
+																										deathstring2 = "'s fire\n";
+																									}
+																									else
+																									{
+																										if (rnum < 0.6)
+																										{
+																											deathstring = " is boiled alive by ";
+																											deathstring2 = "'s heat\n";
+																										}
+																										else
+																										{
+																											if (rnum < 0.8)
+																											{
+																												deathstring = " is cremated by ";
+																												deathstring2 = "'s incinerator\n";
+																											}
+																											else
+																											{
+																												deathstring = " is grilled by ";
+																												deathstring2 = "'s BBQ\n";
+																											}
+																										}
+																									}
+																								}
+																							}
+																							else
+																							{
+																								if (deathmsg == 17)
+																								{
+																									if (attacker.playerclass == 8)
+																									{
+																										deathstring = " was stabbed by ";
+																									}
+																									else
+																									{
+																										deathstring = " was slit open by ";
+																									}
+																									deathstring2 = "\n";
+																								}
+																								else
+																								{
+																									if (deathmsg == 32)
+																									{
+																										deathstring = " was spanner-whacked by ";
+																										deathstring2 = "\n";
+																									}
+																									else
+																									{
+																										if (deathmsg == TF_FLARE_OFF)
+																										{
+																											deathstring = " was swiss-cheesed by ";
+																											deathstring2 = "'s bird gun\n";
+//																											//shotgun_exp_gain ();
+																										}
+																										else
+																										{
+																											if (deathmsg == 2)
+																											{
+																												deathstring = "'s head is popped by ";
+																												deathstring2 = "'s shotgun\n";
+																											}
+																											else
+																											{
+																												if (deathmsg == 3)
+																												{
+																													deathstring = " was capped by ";
+																													deathstring2 = "\n";
+																												}
+																												else
+																												{
+																													if (deathmsg == 4)
+																													{
+																														deathstring = " was perforated by ";
+																														deathstring2 = "'s nailgun\n";
+																													}
+																													else
+																													{
+																														if (deathmsg == 7)
+																														{
+																															deathstring = " swims with ";
+																															deathstring2 = "'s toaster\n";
+																														}
+																														else
+																														{
+																															if (deathmsg == 21)
+																															{
+																																deathstring = " grappled with ";
+																																deathstring2 = "\n";
+																															}
+																															else
+																															{
+																																if (deathmsg == 18)
+																																{
+																																	if (rnum <= 0.3)
+																																	{
+																																		deathstring = " gets a sucking chest wound from ";
+																																		deathstring2 = "\n";
+																																	}
+																																	else
+																																	{
+																																		if (rnum <= 0.6)
+																																		{
+																																			deathstring = "'s liver is blown out by ";
+																																			deathstring2 = "\n";
+																																		}
+																																		else
+																																		{
+																																			deathstring = "'s chest explodes from ";
+																																			deathstring2 = "'s sniper round\n";
+																																		}
+																																	}
+																																}
+																																else
+																																{
+																																	if (deathmsg == 29)
+																																	{
+																																		if (rnum <= 0.5)
+																																		{
+																																			deathstring = " is beheaded by ";
+																																			deathstring2 = "'s round\n";
+																																		}
+																																		else
+																																		{
+																																			deathstring = "'s labotomized by ";
+																																			deathstring2 = "'s sniper round\n";
+																																		}
+																																	}
+																																	else
+																																	{
+																																		if (deathmsg == 28)
+																																		{
+																																			deathstring = "'s legs explode open from ";
+																																			deathstring2 = "'s shot\n";
+																																		}
+																																		else
+																																		{
+																																			if (deathmsg == 19)
+																																			{
+																																				deathstring = " enjoys ";
+																																				deathstring2 = "'s machinegun.\n";
+																																			}
+																																			else
+																																			{
+																																				if (deathmsg == 20)
+																																				{
+																																					deathstring = " torso is removed by ";
+																																					deathstring2 = "\n";
+																																				}
+																																				else
+																																				{
+																																					if (deathmsg == 22)
+																																					{
+																																						deathstring = " is ass-knifed by ";
+																																						deathstring2 = "\n";
+																																						sound(targ, 0, "player/mpain6.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+																																					}
+																																					else
+																																					{
+																																						if (deathmsg == 25)
+																																						{
+																																							deathstring = " is over-dosed by ";
+																																							deathstring2 = "'s ludes\n";
+																																						}
+																																						else
+																																						{
+																																							if (deathmsg == 26)
+																																							{
+																																								deathstring = " spews juice thru holes from ";
+																																								deathstring2 = "'s railgun\n";
+																																							}
+																																							else
+																																							{
+																																								if (deathmsg == 33)
+																																								{
+																																									deathstring = " gets cooked by ";
+																																									deathstring2 = "'s incendiary rocket\n";
+																																								} 
+																																								// pablo. spike trap death msg.
+																																								else
+																																								{
+																																									if (deathmsg == 200)
+																																									{
+																																										deathstring = "'s leg was amputated by ";
+																																										deathstring2 = "'s spike\n";
+																																									}
+																																									// pablo. dispenser death msg.
+																																									else
+																																									{
+																																										if (deathmsg == 201)
+																																										{
+																																											deathstring = " thought ";
+																																											deathstring2 = "'s dispenser was a mechanical bull\n";
+																																										}
+																																									}
+																																								}
+																																							}																																						
+																																						}
+																																					}
+																																				}
+																																			}
+																																		}
+																																	}
+																																}
+																															}
+																														}
+																													}
+																												}
+																											}
+																										}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					bprint(TF_FLARE_OFF, targ.netname);
+					bprint(TF_FLARE_OFF, deathstring);
+					bprint(TF_FLARE_OFF, attacker.netname);
+					bprint(TF_FLARE_OFF, deathstring2);
+				}
+			}
+			return;
+		}
+		else
+		{
+			if (attacker.classname == "building_sentrygun")
+			{
+				if (targ == attacker.real_owner)
+				{
+					if (deathmsg == 34)
+					{
+						if (targ.gender < 1)
+						{
+							deathstring = " gets wasted by his sentry gun\nDumb-ass!\n";
+						}
+						else
+						{
+							deathstring = " gets wasted by her sentry gun\nDumb-ass!\n";
+						}
+					}
+					else
+					{
+						if (deathmsg == 27)
+						{
+							if (targ.gender < 1)
+							{
+								deathstring = " crossed his sentry gun's line of fire\n";
+							}
+							else
+							{
+								deathstring = " crossed her sentry gun's line of fire\n";
+							}
+						}
+					}
+					bprint(TF_FLARE_OFF, targ.netname);
+					bprint(TF_FLARE_OFF, deathstring);
+				}
+				else
+				{
+					attacker.real_owner.real_frags = attacker.real_owner.real_frags + TF_FLARE_OFF;
+					logfrag(attacker.real_owner, targ);
+					if (!(toggleflags & 128))
+					{
+						attacker.real_owner.frags = attacker.real_owner.real_frags;
+					}
+					if (deathmsg == 34)
+					{
+						deathstring = " is creamed by ";
+						deathstring2 = "'s sentry gun\n";
+					}
+					else
+					{
+						if (deathmsg == 27)
+						{
+							deathstring = "'s spine is extracted by ";
+							deathstring2 = "'s sentry gun\n";
+						}
+					}
+					bprint(TF_FLARE_OFF, targ.netname);
+					bprint(TF_FLARE_OFF, deathstring);
+					bprint(TF_FLARE_OFF, attacker.real_owner.netname);
+					bprint(TF_FLARE_OFF, deathstring2);
+				}
+			}
+			else
+			{
+				logfrag(targ, targ);
+				targ.real_frags = targ.real_frags - TF_FLARE_OFF;
+				if (!(toggleflags & 128))
+				{
+					targ.frags = targ.real_frags;
+				}
+				rnum = targ.watertype;
+				bprint(2, targ.netname);
+				if (rnum == -3)
+				{
+					if (random() < 0.5)
+					{
+						deathstring = " can't swim worth a crap!\n";
+					}
+					else
+					{
+						deathstring = " can't breathe water\n";
+					}
+				}
+				else
+				{
+					if (rnum == -4)
+					{
+						if (random() < 0.5)
+						{
+							deathstring = " gulped a load of slime\n";
+						}
+						else
+						{
+							deathstring = " can't exist on slime alone\n";
+						}
+					}
+					else
+					{
+						if (rnum == -5)
+						{
+							if (targ.health < -15)
+							{
+								deathstring = " burst into flames\n";
+							}
+							else
+							{
+								if (random() < 0.5)
+								{
+									deathstring = " turned into hot slag\n";
+								}
+								else
+								{
+									deathstring = " visits the Hell fires\n";
+								}
+							}
+						}
+						else
+						{
+							if (attacker.classname == "monster_dog")
+							{
+								deathstring = " was mauled by a Rottweiler\n";
+							}
+							else
+							{
+								if (attacker.classname == "explo_box")
+								{
+									deathstring = " blew up\n";
+								}
+								else
+								{
+									if (attacker.solid == 4 && attacker != world)
+									{
+										deathstring = " was crushed\n";
+									}
+									else
+									{
+										if (targ.deathtype == "falling")
+										{
+											targ.deathtype = "";
+											if (targ.gender < 1)
+											{
+												deathstring = " fell to his death\n";
+											}
+											else
+											{
+												deathstring = " fell to her death\n";
+											}
+
+										}
+										else
+										{
+											if (attacker.classname == "trap_shooter" || attacker.classname == "trap_spikeshooter")
+											{
+												deathstring = " was shot\n";
+											}
+											else
+											{
+												if (attacker.classname == "fireball")
+												{
+													deathstring = " ate a lavaball\n";
+												}
+												else
+												{
+													if (attacker.classname == "trigger_changelevel")
+													{
+														deathstring = " tried to leave\n";
+													}
+													else
+													{
+														deathstring = " died\n";
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				bprint(TF_FLARE_OFF, deathstring);
+			}
+		}
+	}
+	else
+	{
+		if (targ.classname == "building_sentrygun")
+		{
+			if (attacker.classname == "teledeath")
+			{
+				bprint(TF_FLARE_OFF, targ.real_owner.netname);
+				bprint(TF_FLARE_OFF, "'s sentrygun was telefragged by ");
+				bprint(TF_FLARE_OFF, attacker.owner.netname);
+				bprint(TF_FLARE_OFF, "\n");
+				return;
+			}
+			if (attacker.classname == "player")
+			{
+				if (attacker == targ.real_owner)
+				{
+					bprint(TF_FLARE_OFF, targ.real_owner.netname);
+					bprint(TF_FLARE_OFF, " selfdistructs his sentrygun\n");
+					return;
+				}
+				bprint(TF_FLARE_OFF, targ.real_owner.netname);
+				bprint(TF_FLARE_OFF, "'s sentrygun was no match for ");
+				bprint(TF_FLARE_OFF, attacker.netname);
+				bprint(TF_FLARE_OFF, "\n");
+				logfrag(attacker, targ.real_owner);
+				attacker.real_frags = attacker.real_frags + TF_FLARE_OFF;
+				// pablo. no frags when teamscores is on.
+				if (!(toggleflags & 128))
+				{
+					attacker.frags = attacker.real_frags;
+				}
+				//
+				if (attacker.team_no > 0 && attacker.team_no != targ.real_owner.team_no)
+				{
+					attacker.real_frags = attacker.real_frags + TF_FLARE_OFF;
+					logfrag(attacker, targ.real_owner);
+					if (!(toggleflags & 128))
+					{
+						attacker.frags = attacker.real_frags;
+					}
+				}
+				return;
+			}
+		}
+	}
+};
+
+void(entity attacker) fertimer = 
+{
+	attacker.fertracker = 1;
+//	self.num_kills = 1;
+	newmis = spawn();
+	newmis.enemy = attacker;
+	newmis.classname = "timer";
+	newmis.nextthink = time + 3;
+	newmis.think = ferdisplay;
+};
+
+void(entity te) ferdisplay =
+{
+	local entity playernamefer;
+	playernamefer = self.enemy;
+	playernamefer.fertracker = 0;
+
+	if (playernamefer.classname != "player")
+	{
+		dremove (self);
+		return;
+	}
+	if (playernamefer.num_kills > 1)
+	{
+		local entity head;
+		head = nextent(world);
+		while (head != world)
+		{
+		if (head.classname == "player") { stuffcmd(head, "play misc/secret.wav \n"); }
+		head = nextent(head); 
+		}
+		local string fercount;
+		fercount = ftos(playernamefer.num_kills);
+		bprint (1.000000, playernamefer.netname);
+		bprint (1.000000, " got a ");
+		bprint (1.000000, fercount);
+		bprint (1.000000, "-fer!");
+		bprint (1.000000, "\n");
+		playernamefer.num_kills = 0;
+#ifdef fte_rankings
+		if (FTE_Server == 1)
+			Rank_AddFers(playernamefer, 1);
+#endif
+	}
+	playernamefer.num_kills = 0;
+	dremove (self);
+};

@@ -1,0 +1,165 @@
+
+
+float(float v) anglemod;
+
+//void() knight_atk1;
+//void() knight_runatk1;
+//void() ogre_smash1;
+//void() ogre_swing1;
+
+//void() sham_smash1;
+//void() sham_swingr1;
+//void() sham_swingl1;
+
+//float()	DemonCheckAttack;
+//void(float side)	Demon_Melee;
+
+void(vector dest) ChooseTurn;
+
+void() ai_face;
+
+float() CheckAttack = 
+{
+	local vector spot1;
+	local vector spot2;
+	local entity targ;
+	local float chance;
+	targ = self.enemy;
+	spot1 = self.origin + self.view_ofs;
+	spot2 = targ.origin + targ.view_ofs;
+	traceline(spot1, spot2, TF_FLARE_LIT, self);
+	if (trace_ent != targ)
+	{
+		return TF_FLARE_LIT;
+	}
+	if (trace_inopen && trace_inwater)
+	{
+		return TF_FLARE_LIT;
+	}
+	if (enemy_range == TF_FLARE_LIT)
+	{
+		if (self.th_melee)
+		{
+			self.th_melee();
+			return TF_FLARE_OFF;
+		}
+	}
+	if (!(self.th_missile))
+	{
+		return TF_FLARE_LIT;
+	}
+	if (time < self.attack_finished)
+	{
+		return TF_FLARE_LIT;
+	}
+	if (enemy_range == 3)
+	{
+		return TF_FLARE_LIT;
+	}
+	if (enemy_range == TF_FLARE_LIT)
+	{
+		chance = 0.9;
+		self.attack_finished = TF_FLARE_LIT;
+	}
+	else
+	{
+		if (enemy_range == TF_FLARE_OFF)
+		{
+			if (self.th_melee)
+			{
+				chance = 0.2;
+			}
+			else
+			{
+				chance = 0.4;
+			}
+		}
+		else
+		{
+			if (enemy_range == 2)
+			{
+				if (self.th_melee)
+				{
+					chance = 0.05;
+				}
+				else
+				{
+					chance = 0.1;
+				}
+			}
+			else
+			{
+				chance = TF_FLARE_LIT;
+			}
+		}
+	}
+	if (random() < chance)
+	{
+		self.th_missile();
+		SUB_AttackFinished(2 * random());
+		return TF_FLARE_OFF;
+	}
+	return TF_FLARE_LIT;
+};
+
+void(float d) ai_charge = 
+{
+	ai_face();
+	movetogoal(d);
+};
+
+void() ai_charge_side = 
+{
+	local vector dtemp;
+	local float heading;
+	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
+	ChangeYaw();
+	makevectors(self.angles);
+	dtemp = self.enemy.origin - 30 * v_right;
+	heading = vectoyaw(dtemp - self.origin);
+	walkmove(heading, 20);
+};
+
+void() ai_melee = 
+{
+	local vector delta;
+	local float ldmg;
+	if (!(self.enemy))
+	{
+		return;
+	}
+	delta = self.enemy.origin - self.origin;
+	if (vlen(delta) > 60)
+	{
+		return;
+	}
+	// pablo. 
+	//random();
+	ldmg = (random() + random() + random()) * 3;
+	T_Damage(self.enemy, self, self, ldmg);
+};
+
+void() ai_melee_side = 
+{
+	local vector delta;
+	local float ldmg;
+	if (!(self.enemy))
+	{
+		return;
+	}
+	ai_charge_side();
+	delta = self.enemy.origin - self.origin;
+	if (vlen(delta) > 60)
+	{
+		return;
+	}
+	if (!CanDamage(self.enemy, self))
+	{
+		return;
+	}
+	// pablo. 
+	//random();
+	ldmg = (random() + random() + random()) * 3;
+	T_Damage(self.enemy, self, self, ldmg);
+};
+

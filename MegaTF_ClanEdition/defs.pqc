@@ -1,0 +1,623 @@
+
+/*
+==============================================================================
+
+			SOURCE FOR GLOBALVARS_T C STRUCTURE
+
+==============================================================================
+*/
+
+//
+// system globals
+//
+entity		self;
+entity		other;
+entity		world;
+float		time;
+float		frametime;
+
+
+entity		newmis;				// if this is set, the entity that just
+								// run created a new missile that should
+								// be simulated immediately
+
+
+float		force_retouch;		// force all entities to touch triggers
+								// next frame.  this is needed because
+								// non-moving things don't normally scan
+								// for triggers, and when a trigger is
+								// created (like a teleport trigger), it
+								// needs to catch everything.
+								// decremented each frame, so set to 2
+								// to guarantee everything is touched
+string		mapname;
+
+
+
+
+
+
+
+float		serverflags;		// propagated from level to level, used to
+								// keep track of completed episodes
+
+float		total_secrets;
+float		total_monsters;
+
+float		found_secrets;		// number of secrets found
+float		killed_monsters;	// number of monsters killed
+
+
+// spawnparms are used to encode information about clients across server
+// level changes
+float		parm1, parm2, parm3, parm4, parm5, parm6, parm7, parm8, parm9, parm10, parm11, parm12, parm13, parm14, parm15, parm16;
+
+//
+// global variables set by built in functions
+//	
+vector		v_forward, v_up, v_right;	// set by makevectors()
+	
+// set by traceline / tracebox
+float		trace_allsolid;
+float		trace_startsolid;
+float		trace_fraction;
+vector		trace_endpos;
+vector		trace_plane_normal;
+float		trace_plane_dist;
+entity		trace_ent;
+float		trace_inopen;
+float		trace_inwater;
+
+entity		msg_entity;				// destination of single entity writes
+
+//
+// required prog functions
+//
+void() 		main;						// only for testing
+
+void()		StartFrame;
+
+void() 		PlayerPreThink;
+void() 		PlayerPostThink;
+
+void()		ClientKill;
+void()		ClientConnect;
+void() 		PutClientInServer;		// call after setting the parm1... parms
+void()		ClientDisconnect;
+
+void()		SetNewParms;			// called when a client first connects to
+									// a server. sets parms so they can be
+									// saved off for restarts
+
+void()		SetChangeParms;			// call to set parms for self so they can
+									// be saved for a level transition
+
+
+//================================================
+void		end_sys_globals;		// flag for structure dumping
+//================================================
+
+/*
+==============================================================================
+
+			SOURCE FOR ENTVARS_T C STRUCTURE
+
+==============================================================================
+*/
+
+//
+// system fields (*** = do not set in prog code, maintained by C code)
+//
+.float		modelindex;		// *** model index in the precached list
+.vector		absmin, absmax;	// *** origin + mins / maxs
+
+.float		ltime;			// local time for entity
+
+.float		lastruntime;	// *** to allow entities to run out of sequence
+
+
+.float		movetype;
+.float		solid;
+
+.vector		origin;			// ***
+.vector		oldorigin;		// ***
+.vector		velocity;
+.vector		angles;
+.vector		avelocity;
+
+
+
+
+
+.string		classname;		// spawn function
+.string		model;
+.float		frame;
+.float		skin;
+.float		effects;
+
+.vector		mins, maxs;		// bounding box extents reletive to origin
+.vector		size;			// maxs - mins
+
+.void()		touch;
+.void()		use;
+.void()		think;
+.void()		blocked;		// for doors or plats, called when can't push other
+
+.float		nextthink;
+.entity		groundentity;
+
+// stats
+.float		health;
+.float		frags;
+.float		weapon;			// one of the IT_SHOTGUN, etc flags
+.string		weaponmodel;
+.float		weaponframe;
+.float		currentammo;
+.float		ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
+
+.float		items;			// bit flags
+
+.float		takedamage;
+.entity		chain;
+.float		deadflag;
+
+.vector		view_ofs;			// add to origin to get eye point
+
+
+.float		button0;		// fire
+.float		button1;		// use
+.float		button2;		// jump
+
+.float		impulse;		// weapon changes
+
+.float		fixangle;
+.vector		v_angle;		// view / targeting angle for players
+
+
+
+
+
+.string		netname;
+
+.entity 	enemy;
+
+.float		flags;
+
+.float		colormap;
+.float		team;
+
+.float		max_health;		// players maximum health is stored here
+
+.float		teleport_time;	// don't back up
+
+.float		armortype;		// save this fraction of incoming damage
+.float		armorvalue;
+
+.float		waterlevel;		// 0 = not in, 1 = feet, 2 = wast, 3 = eyes
+.float		watertype;		// a contents value
+
+.float		ideal_yaw;
+.float		yaw_speed;
+
+.entity		aiment;
+
+.entity 	goalentity;		// a movetarget or an enemy
+
+.float		spawnflags;
+
+.string		target;
+.string		targetname;
+
+// damage is accumulated through a frame. and sent as one single
+// message, so the super shotgun doesn't generate huge messages
+.float		dmg_take;
+.float		dmg_save;
+.entity		dmg_inflictor;
+
+.entity		owner;		// who launched a missile
+.vector		movedir;	// mostly for doors, but also used for waterjump
+
+.string		message;		// trigger messages
+
+.float		sounds;		// either a cd track number or sound number
+
+.string		noise, noise1, noise2, noise3;	// contains names of wavs to play
+
+//================================================
+void		end_sys_fields;			// flag for structure dumping
+//================================================
+
+/*
+==============================================================================
+
+				VARS NOT REFERENCED BY C CODE
+
+==============================================================================
+*/
+
+float movedist /* = 0.000000 */;
+string string_null /* = "" */;
+//float empty_float /* = 0.000000 */;
+entity activator;
+entity damage_attacker;
+float framecount /* = 0.000000 */;
+float skill /* = 0.000000 */;
+float teamplay /* = 0.000000 */;
+float timelimit /* = 0.000000 */;
+float fraglimit /* = 0.000000 */;
+float deathmatch /* = 0.000000 */;
+//.string wad;
+.string map;
+.float worldtype;
+.string killtarget;
+.float light_lev;
+.float style;
+.void() th_stand;
+.void() th_walk;
+.void() th_run;
+.void() th_missile;
+.void() th_melee;
+.void(entity attacker, float damage) th_pain;
+.void() th_die;
+.entity oldenemy;
+.float speed;
+.float lefty;
+.float search_time;
+.float attack_state;
+.float walkframe;
+.float attack_finished;
+.float pain_finished;
+.float invincible_finished;
+.float invisible_finished;
+.float super_damage_finished;
+.float radsuit_finished;
+.float invincible_time;
+.float invincible_sound;
+.float invisible_time;
+.float invisible_sound;
+.float super_time;
+.float super_sound;
+.float rad_time;
+.float fly_sound;
+.float axhitme;
+.float show_hostile;
+.float jump_flag;
+.float swim_flag;
+.float air_finished;
+.float bubble_count;
+.string deathtype;
+.string mdl;
+.vector mangle;
+.float t_length;
+.float t_width;
+.vector dest;
+.vector dest1;
+.vector dest2;
+.float wait;
+.float delay;
+.entity trigger_field;
+.string noise4;
+.float pausetime;
+.entity movetarget;
+.float aflag;
+.float dmg;
+.float cnt;
+.void() think1;
+.vector finaldest;
+.vector finalangle;
+.float count;
+.float lip;
+.float state;
+.vector pos1;
+.vector pos2;
+.float height;
+.float waitmin;
+.float waitmax;
+.float distance;
+.float volume;
+void (vector ang) makevectors = #1; 
+void (entity e, vector o) setorigin = #2; 
+void (entity e, string m) setmodel = #3; 
+void (entity e, vector min, vector max) setsize = #4; 
+void () break = #6; 
+float () random = #7; 
+void (entity e, float chan, string samp, float vol, float atten) sound = #8; 
+vector (vector v) normalize = #9; 
+void (string e) error = #10; 
+void (string e) objerror = #11; 
+float (vector v) vlen = #12; 
+float (vector v) vectoyaw = #13; 
+entity () spawn = #14; 
+void (entity e) remove = #15; 
+void (vector v1, vector v2, float nomonsters, entity forent) traceline = #16; 
+entity () checkclient = #17; 
+entity (entity start, .string fld, string match) find = #18; 
+string (string s) precache_sound = #19; 
+string (string s) precache_model = #20; 
+void (entity client, string s) stuffcmd = #21; 
+entity (vector org, float rad) findradius = #22; 
+// pablo.
+// --->
+
+void(...) bprint				= #23;
+void(...) sprint 				= #24;
+
+void(...) bprint2				= #23;
+void(...) sprint2 				= #24;
+
+void(...) bprint3				= #23;
+void(...) sprint3 				= #24;
+
+void(...) bprint4				= #23;
+void(...) sprint4 				= #24;
+
+void(...) bprint5				= #23;
+void(...) sprint5 				= #24;
+
+void(...) bprint6				= #23;
+void(...) sprint6 				= #24;
+
+void(...) bprint7				= #23;
+void(...) sprint7 				= #24;
+
+void(...) bprint8				= #23;
+
+/* 
+void (string s) bprint = #23; 
+void (entity client, string s) sprint = #24; 
+void (string s) bprint2 = #23; 
+void (entity client, string s) sprint2 = #24; 
+void (string s) bprint3 = #23; 
+void (entity client, string s) sprint3 = #24; 
+void (string s) bprint4 = #23; 
+void (entity client, string s) sprint4 = #24; 
+void (string s) bprint5 = #23; 
+void (entity client, string s) sprint5 = #24; 
+void (string s) bprint6 = #23; 
+void (entity client, string s) sprint6 = #24; 
+void (string s) bprint7 = #23; 
+void (entity client, string s) sprint7 = #24; 
+void (string s) bprint8 = #23; 
+*/
+// <---
+
+void (string s) dprint = #25; 
+string (float f) ftos = #26; 
+string (vector v) vtos = #27; 
+void () coredump = #28; 
+void () traceon = #29; 
+void () traceoff = #30; 
+void (entity e) eprint = #31; 
+float (float yaw, float dist) walkmove = #32; 
+// ---> pablo. this is wierd. :/
+//float (float yaw, float dist) droptofloor = #34; 
+float () droptofloor = #34; 
+// <---
+void (float style, string value) lightstyle = #35; 
+float (float v) rint = #36; 
+float (float v) floor = #37; 
+float (float v) ceil = #38; 
+float (entity e) checkbottom = #40; 
+float (vector v) pointcontents = #41; 
+float (float f) fabs = #43; 
+vector (entity e, float speed) aim = #44; 
+float (string s) cvar = #45; 
+void (string s) localcmd = #46; 
+entity (entity e) nextent = #47; 
+void (vector o, vector d, float color, float count) particle = #48; 
+void () ChangeYaw = #49; 
+vector (vector v) vectoangles = #51; 
+void (float to, float f) WriteByte = #52; 
+void (float to, float f) WriteChar = #53; 
+void (float to, float f) WriteShort = #54; 
+void (float to, float f) WriteLong = #55; 
+void (float to, float f) WriteCoord = #56; 
+void (float to, float f) WriteAngle = #57; 
+void (float to, string s) WriteString = #58; 
+void (float to, entity s) WriteEntity = #59; 
+void (float step) movetogoal = #67; 
+string (string s) precache_file = #68; 
+void (entity e) makestatic = #69; 
+void (string s) changelevel = #70; 
+void (string var, string val) cvar_set = #72; 
+// pablo. simple.
+//void (entity client, string s, ...) CenterPrint = #73; 
+void(...) centerprint = #73;
+//
+void (vector pos, string samp, float vol, float atten) ambientsound = #74; 
+string (string s) precache_model2 = #75; 
+string (string s) precache_sound2 = #76; 
+string (string s) precache_file2 = #77; 
+void (entity e) setspawnparms = #78; 
+void(entity killer, entity killee) logfrag = #79; 
+string(entity e, string key) infokey = #80; 
+float(string s) stof = #81; 
+void (vector pos, float to) multicast = #82;
+
+.float autoid;
+.float autodiscard;
+.float discard_max;
+
+
+/* old ideas - ignore pls :)
+// exp vars (float is global, .float is self?)
+.float shotgun_exp;
+.float shotgun_level
+void () shotgun_exp_gain;
+
+// VOTE SYSTEM HOPEFUL
+void () megatf_votemap;*/
+
+void () TeamFortress_Discard;
+float medicarmorheal;
+
+void () lay;
+void () unlay;
+
+void () lay =
+{
+	setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 8.000000');
+};
+
+void () unlay =
+{
+	setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 32.000000');
+};
+
+//votemap code
+float num_players;
+float num_votes;
+float votestarted;
+.float has_voted;
+.float vote_wait;
+void (string put) votemap_start;
+void () voteyes;
+string themap;
+.float startedvote;
+// Parems for prozac servers ONLY
+float(string st) validatefile = #91;
+float prozacmethod;
+string prozacmap;
+float(string mapstr) validatemap;
+//string(string st1, string st2) strcat = #84; //original prozac strcat. It's now dynamically defined.
+string pmap_backup;
+
+void(entity e, string s) clientcommand = #440;
+float(string s) tokenize = #441;
+string(float n) argv = #442;
+
+//fer stuff!
+.float num_kills;
+.float fertracker;
+.float off_hook;
+
+float spycam;
+.string oldweaponmodel;
+void () Cam;
+void () DetpackDisarm;
+float drop1;
+float drop2;
+
+void (entity _p_1912) camera_die;
+void () camera_expire;
+void () activatecam;
+void () LookThroughCam;
+
+//Server Message Display
+// serverinfo/localinfo svmsg1 - time amount between displaying message 1
+// serverinfo/localinfo svmsg2 - time amount between displaying message 2
+// serverinfo/localinfo message1 - what msg1 displays (IE serverinfo message1 "hi everybody!")
+// serverinfo/localinfo message2 - what msg2 displays
+
+void () messagetimer;
+void () pre_messagetimer2;
+void () messagetimer2;
+void () display_message;
+void () display_message2;
+float msg1time;
+float msg2time;
+float msg1first;
+float msg2first;
+#ifndef tf29ents
+float haltloop1;
+float haltloop2;
+#endif
+// the delay between displaying messages 1 and 2 - constrolled by serverinfo/localinfo svmsg_delay -
+// just a little trick so you dont have to set msg1tiemr and msg2time to different intervals.
+// This is optional however, and if the server doesn't find "svmsg_delay" it will continue messages as normal.
+float msgdelay;
+
+// PM code!
+.float userid;
+float globaluserid;
+.float cooldown;
+
+// scout disarm fix
+float olddisarm;
+void () DetpackDisarm;
+
+//Centerprint4.. wtf..
+void (entity client, string s, ...) CenterPrint4 = #73; 
+
+//stats_dl
+.float stats_on;
+void (float _p_2445) Stats_Hit;
+void (float _p_2420) Stats_Fired;
+
+// 11.11.04 defs
+float spyjumpoption;
+float quadscore;
+float sr_dropgrens;
+.float spy_regjump;
+float engbat;
+
+//so players cant "discard" the server to death on certain maps
+.float discard_next;
+
+//vector for original origin of objects
+.vector orig_origin;
+
+//For FTE/EZQuake/Fuhquake servers
+void () pm_list;
+float true    = 1;
+float false    = 0;
+float canusenew;
+float(string pattern, float caseinsensitive, float quiet) search_begin = #444;
+void(float handle) search_end = #445;
+string(float handle, float num) search_getfilename = #447;
+// Server Fix Function
+var string(string s1, string s2, ...) strcat = __NULL__;
+string(string s1, string s2, ...) qsg_strcat = #82;
+string(string s1, string s2, ...) cpqwsv_strcat = #84;
+string(string s1, string s2, ...) mvdsv_strcat = #89;
+string(string s1, string s2, ...) frik_strcat = #115;
+float(string s) checkextension = #99;
+void () setup_strcat;
+
+void () testfunct;
+
+// prozac Get UserID Function
+float(entity client) getuid = #83;
+
+#ifdef clan_progs
+// RANK FEATURES (FTE only)
+float Ranks_Updated;		// tells us if the global ranks have been updated already (once per map)
+.string rank_name;			// file name where stats are stored in -- thisw is assigned to the player's netname on join
+.float global_rank;
+.float global_frags;
+.float global_fers;
+.float global_dths;
+.float global_caps;
+void () Rank_UpdateStatsGlobal;
+
+float FTE_Server;			//defines if server is an FTE server
+// Rank stuff
+void (entity rank_ent) Rank_FindStats;
+void (entity rank_ent) Rank_UpdateStats;
+void (entity rank_ent, float addscore) Rank_AddRank;
+void (entity rank_ent, float addscore) Rank_AddFrags;
+void (entity rank_ent, float addscore) Rank_AddFers;
+void (entity rank_ent, float addscore) Rank_AddDeaths;
+
+float num_players_ready;
+float clan_prematch;
+.float is_ready;
+#endif
+//moved from rankings.pqc:
+string(string s) strzone = #118;
+void(string s) strunzone = #119; 
+
+float MSG_BROADCAST = 	0;
+
+float oldconc;			// toggle for using old (tf 2.9) style conc (localinfo/serverinfo oldconc 1 or on)
+
+#ifdef tf29ents
+// TF 2.9 stuff
+#define TFLAG_FIRSTENTRY	256	// Used to determine the first time toggleflags is set
+#define TFLAG_CLASS_PERSIST	1  	// Persistent Classes Bit
+float flagem_checked;
+#endif
+
+.float jet_time;			// defines jetjump immune-to-pushback time (pushback from sentryguns)
+
+#define mtf_Ver		"08.22.06"		// insert MegaTF version here

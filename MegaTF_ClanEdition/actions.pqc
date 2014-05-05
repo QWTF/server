@@ -1,0 +1,1655 @@
+.string oldweaponmodel;
+
+/*void() TeamFortress_Discard =
+{
+	newmis = spawn();
+	if (self.playerclass == TF_FLARE_OFF)
+	{
+		newmis.ammo_rockets = self.ammo_rockets;
+	}
+	else
+	{
+		if (self.playerclass == 2)
+		{
+			newmis.ammo_rockets = self.ammo_rockets;
+			newmis.ammo_cells = self.ammo_cells;
+		}
+		else
+		{
+			if (self.playerclass == 3)
+			{
+				newmis.ammo_cells = self.ammo_cells;
+				newmis.ammo_nails = self.ammo_nails;
+			}
+			else
+			{
+				if (self.playerclass == 4)
+				{
+					newmis.ammo_cells = self.ammo_cells;
+					newmis.ammo_nails = self.ammo_nails;
+				}
+				else
+				{
+					if (self.playerclass == 5)
+					{
+						newmis.ammo_rockets = self.ammo_rockets;
+						newmis.ammo_cells = self.ammo_cells;
+					}
+					else
+					{
+						if (self.playerclass == 6)
+						{
+							newmis.ammo_rockets = self.ammo_rockets;
+						}
+						else
+						{
+							if (self.playerclass == 7)
+							{
+								newmis.ammo_nails = self.ammo_nails;
+							}
+							else
+							{
+								if (self.playerclass == 8)
+								{
+									newmis.ammo_rockets = self.ammo_rockets;
+								}
+								else
+								{
+									if (self.playerclass == 9)
+									{
+										newmis.ammo_rockets = self.ammo_rockets;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if (!(newmis.ammo_shells + newmis.ammo_nails + newmis.ammo_rockets + newmis.ammo_cells))
+	{
+		dremove(newmis);
+		return;
+	}
+	if (newmis.ammo_shells)
+	{
+		self.ammo_shells = TF_FLARE_LIT;
+	}
+	if (newmis.ammo_nails)
+	{
+		self.ammo_nails = TF_FLARE_LIT;
+	}
+	if (newmis.ammo_rockets)
+	{
+		self.ammo_rockets = TF_FLARE_LIT;
+	}
+	if (newmis.ammo_cells)
+	{
+		self.ammo_cells = TF_FLARE_LIT;
+	}
+	W_SetCurrentAmmo();
+	sound(self, 3, "weapons/lock4.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	if (self.team_no != TF_FLARE_LIT)
+	{
+		increment_team_ammoboxes(self.team_no);
+		if (num_team_ammoboxes(self.team_no) > 20 / number_of_teams)
+		{
+			RemoveOldAmmobox(self.team_no);
+		}
+	}
+	else
+	{
+		num_world_ammoboxes = num_world_ammoboxes + TF_FLARE_OFF;
+		if (num_world_ammoboxes > 20)
+		{
+			RemoveOldAmmobox(TF_FLARE_LIT);
+		}
+	}
+	newmis.enemy = self;
+	newmis.health = time;
+	newmis.weapon = TF_FLARE_LIT;
+	newmis.movetype = 6;
+	newmis.solid = TF_FLARE_OFF;
+	newmis.classname = "ammobox";
+	newmis.team_no = self.team_no;
+	makevectors(self.v_angle);
+	if (self.v_angle_x)
+	{
+		newmis.velocity = v_forward * 400 + v_up * 200;
+	}
+	else
+	{
+		newmis.velocity = aim(self, 10000);
+		newmis.velocity = newmis.velocity * 400;
+		newmis.velocity_z = 200;
+	}
+	newmis.avelocity = '0 300 0';
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, self.origin);
+	newmis.nextthink = time + 30;
+	newmis.think = SUB_Remove;
+	newmis.touch = TeamFortress_AmmoboxTouch;
+	setmodel(newmis, "progs/backpack.mdl");
+};
+
+void() TeamFortress_SaveMe =
+{
+	local entity te;
+	local entity tl;
+	if (self.last_saveme_sound < time)
+	{
+		sound(self, TF_FLARE_OFF, "speech/saveme1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		self.last_saveme_sound = time + 4;
+	}
+	te = find(world, classname, "player");
+	while (te)
+	{
+		if (self == te || te.playerclass == 5 || te.playerclass == 9 || te.playerclass == 8)
+		{
+			if (te.team_no == self.team_no && self.team_no != TF_FLARE_LIT || te.playerclass == 8)
+			{
+				if (visible(te))
+				{
+					msg_entity = te;
+					tl = spawn();
+					tl.origin = self.origin;
+					tl.origin_z = tl.origin_z + 32;
+					WriteByte(TF_FLARE_OFF, 23);
+					WriteByte(TF_FLARE_OFF, 9);
+					WriteEntity(TF_FLARE_OFF, tl);
+					WriteCoord(TF_FLARE_OFF, tl.origin_x);
+					WriteCoord(TF_FLARE_OFF, tl.origin_y);
+					WriteCoord(TF_FLARE_OFF, tl.origin_z + 24);
+					WriteCoord(TF_FLARE_OFF, self.origin_x);
+					WriteCoord(TF_FLARE_OFF, self.origin_y);
+					WriteCoord(TF_FLARE_OFF, self.origin_z);
+					dremove(tl);
+				}
+			}
+		}
+		te = find(te, classname, "player");
+	}
+};
+
+void () TeamFortress_ID =
+{
+	local vector src;
+	local string st;
+	local string _l_3386;
+	local string cls;
+
+	src = self.origin + (v_forward * 10.000000);
+	src_z = self.absmin_z + (self.size_z * 0.700000);
+	traceline (src, (src + (v_forward * 2048.000000)), 0.000000, self);
+	if (((trace_ent != world) && (trace_ent.origin != world.origin)))
+	{
+		if (((trace_ent.classname == "player") && (trace_ent.health > 0.000000)))
+		{
+			if ((trace_ent.bugger > 0.000000))
+			{
+				return;
+			}
+			self.StatusRefreshTime = (time + 1.500000);
+			if (((self.team_no != 0.000000) && (self.team_no == trace_ent.team_no)))
+			{
+				cls = TeamFortress_GetClassName (trace_ent.playerclass);
+				if ((self.playerclass == 5.000000))
+				{
+					if (medicarmorheal == 1)
+					{
+						st = NumberToString1000 (trace_ent.health);
+						_l_3386 = NumberToString1000 (trace_ent.armorvalue);
+						st = ftos (rint ((((trace_ent.health / trace_ent.max_health) + (trace_ent.armorvalue / trace_ent.maxarmor)) * 50.000000)));
+						centerprint (self, "\n\n\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, "% strength\n");
+						return;
+					}
+					else
+					{
+						st = NumberToString1000 (trace_ent.health);
+						centerprint (self, "\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " health\n");
+						return;
+					}
+				}
+				else
+				{
+					if ((self.playerclass == 9.000000))
+					{
+						st = NumberToString1000 (trace_ent.armorvalue);
+						centerprint (self, "\n\n\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " armor\n");
+						return;
+					}
+				}
+				centerprint (self, "\n\n\n\n\n\n", trace_ent.netname, "\nFriendly ", cls);
+				return;
+			}
+			if ((trace_ent.playerclass == 8.000000))
+			{
+				cls = TeamFortress_GetClassName (trace_ent.undercover_skin);
+				if (((self.team_no != 0.000000) && (self.team_no == trace_ent.undercover_team)))
+				{
+					if ((self.playerclass == 5.000000))
+					{
+						if (medicarmorheal)
+						{
+							st = NumberToString1000 (trace_ent.health);
+							_l_3386 = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (rint ((((trace_ent.health / trace_ent.max_health) + (trace_ent.armorvalue / trace_ent.maxarmor)) * 50.000000)));
+							if ((trace_ent.undercover_skin != 0.000000))
+							{
+								centerprint (self, "\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, "% strength\n");
+							}
+							else
+							{
+								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly Spy\n", st, "% strength\n");
+							}
+							return;
+						}
+						else
+						{
+							st = NumberToString1000 (trace_ent.health);
+							if ((trace_ent.undercover_skin != 0.000000))
+							{
+								centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " health\n");
+							}
+							else
+							{
+								centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly Spy\n", st, " health\n");
+							}
+							return;
+						}
+					}
+					else
+					{
+						if ((self.playerclass == 9.000000))
+						{
+							st = NumberToString1000 (trace_ent.armorvalue);
+							if ((trace_ent.undercover_skin != 0.000000))
+							{
+								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " armor\n");
+							}
+							else
+							{
+								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly Spy\n", st, " armor\n");
+							}
+							return;
+						}
+						else
+						{
+							st = NumberToString1000 (trace_ent.armorvalue);
+							if ((trace_ent.undercover_skin != 0.000000))
+							{
+								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls);
+							}
+							else
+							{
+								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly Spy\n");
+							}
+							return;
+						}
+					}
+				}
+				if ((trace_ent.undercover_name != string_null))
+				{
+					if ((trace_ent.undercover_skin != 0.000000))
+					{
+						centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nEnemy ", cls);
+					}
+					else
+					{
+						centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nEnemy Spy");
+					}
+				}
+				else
+				{
+					if ((trace_ent.undercover_skin != 0.000000))
+					{
+						centerprint (self, "\n\n\n\n\n\n\n", trace_ent.netname, "\nEnemy ", cls);
+					}
+					else
+					{
+						centerprint (self, "\n\n\n\n\n\n\n", trace_ent.netname, "\nEnemy Spy");
+					}
+				}
+			}
+			else
+			{
+				cls = TeamFortress_GetClassName (trace_ent.playerclass);
+				centerprint (self, "\n\n\n\n\n\n\n", trace_ent.netname, "\nEnemy ", cls);
+			}
+		}
+		else
+		{
+			if ((trace_ent.classname == "building_dispenser"))
+			{
+				self.StatusRefreshTime = (time + 1.500000);
+				if ((self == trace_ent.real_owner))
+				{
+					centerprint (self, "\n\n\n\n\n\n\nYour Dispenser");
+				}
+				else
+				{
+					centerprint (self, "\n\n\n\n\n\n\nDispenser made by ", trace_ent.real_owner.netname);
+				}
+			}
+			else
+			{
+				if (((trace_ent.classname == "building_sentrygun") || (trace_ent.classname == "building_sentrygun_base")))
+				{
+					self.StatusRefreshTime = (time + 1.500000);
+					if ((self == trace_ent.real_owner))
+					{
+						centerprint (self, "\n\n\n\n\n\n\nYour SentryGun");
+					}
+					else
+					{
+						if (!teamplay)
+						{
+							centerprint (self, "\n\n\n\n\n\n\nSentrygun made by\n", trace_ent.real_owner.netname);
+						}
+						else
+						{
+							if (((self.team_no != 0.000000) && (self.team_no == trace_ent.team_no)))
+							{
+								centerprint (self, "\n\n\n\n\n\n\nFriendly Sentrygun made by\n", trace_ent.real_owner.netname);
+							}
+							else
+							{
+								centerprint (self, "\n\n\n\n\n\n\nEnemy Sentrygun made by\n", trace_ent.real_owner.netname);
+							}
+						}
+					}
+				}
+				else
+				{
+					if ((trace_ent.classname == "building_tesla"))
+					{
+						self.StatusRefreshTime = (time + 1.500000);
+						if ((self == trace_ent.real_owner))
+						{
+							centerprint (self, "\n\n\n\n\n\n\nYour Tesla Coil");
+						}
+						else
+						{
+							if (!teamplay)
+							{
+								centerprint (self, "\n\n\n\n\n\n\nTesla Coil made by\n", trace_ent.real_owner.netname);
+							}
+							else
+							{
+								if (((self.team_no != 0.000000) && (self.team_no == trace_ent.team_no)))
+								{
+									centerprint (self, "\n\n\n\n\n\n\nFriendly Tesla made by\n", trace_ent.real_owner.netname);
+								}
+								else
+								{
+									centerprint (self, "\n\n\n\n\n\n\nEnemy Tesla made by\n", trace_ent.real_owner.netname);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+void() TeamFortress_ReloadCurrentWeapon =
+{
+	local float rt;
+	local entity tWeapon;
+	if (self.current_weapon == 128)
+	{
+		if (self.reload_shotgun == TF_FLARE_LIT)
+		{
+			sprint(self, 2, "clip full.\n");
+			return;
+		}
+		if (self.reload_shotgun < self.ammo_shells)
+		{
+			Attack_Finished(0.4);
+			rt = (8 - self.reload_shotgun) / 8;
+			rt = 2 - 2 * rt;
+			self.reload_shotgun = TF_FLARE_LIT;
+			if (self.ammo_shells < 8)
+			{
+				self.reload_shotgun = 8 - self.ammo_shells;
+			}
+			sprint(self, 2, "reloading...\n");
+			self.tfstate = self.tfstate | 2;
+			tWeapon = spawn();
+			tWeapon.owner = self;
+			tWeapon.classname = "timer";
+			tWeapon.nextthink = time + rt;
+			tWeapon.think = W_Reload_shotgun;
+			self.weaponmodel = "";
+			self.weaponframe = TF_FLARE_LIT;
+		}
+		else
+		{
+			sprint(self, 2, "not enough ammo to reload\n");
+		}
+	}
+	else
+	{
+		if (self.current_weapon == 256)
+		{
+			if (self.reload_super_shotgun == TF_FLARE_LIT)
+			{
+				sprint(self, 2, "clip full.\n");
+				return;
+			}
+			if (self.reload_super_shotgun < self.ammo_shells)
+			{
+				Attack_Finished(0.7);
+				rt = (16 - self.reload_super_shotgun) / 16;
+				rt = 3 - 3 * rt;
+				self.reload_super_shotgun = TF_FLARE_LIT;
+				if (self.ammo_shells < 16)
+				{
+					self.reload_super_shotgun = 16 - self.ammo_shells;
+				}
+				sprint(self, 2, "reloading...\n");
+				self.tfstate = self.tfstate | 2;
+				tWeapon = spawn();
+				tWeapon.owner = self;
+				tWeapon.classname = "timer";
+				tWeapon.nextthink = time + rt;
+				tWeapon.think = W_Reload_super_shotgun;
+				self.weaponmodel = "";
+				self.weaponframe = TF_FLARE_LIT;
+			}
+			else
+			{
+				sprint(self, 2, "not enough ammo to reload\n");
+			}
+		}
+		else
+		{
+			if (self.current_weapon == 2048)
+			{
+				if (self.reload_grenade_launcher == TF_FLARE_LIT)
+				{
+					sprint(self, 2, "clip full.\n");
+					return;
+				}
+				if (self.reload_grenade_launcher < self.ammo_rockets)
+				{
+					Attack_Finished(0.6);
+					rt = (6 - self.reload_grenade_launcher) / 6;
+					rt = 4 - 4 * rt;
+					self.reload_grenade_launcher = TF_FLARE_LIT;
+					if (self.ammo_rockets < 6)
+					{
+						self.reload_grenade_launcher = 6 - self.ammo_rockets;
+					}
+					sprint(self, 2, "reloading...\n");
+					self.tfstate = self.tfstate | 2;
+					tWeapon = spawn();
+					tWeapon.owner = self;
+					tWeapon.classname = "timer";
+					tWeapon.nextthink = time + rt;
+					tWeapon.think = W_Reload_grenade_launcher;
+					self.weaponmodel = "";
+					self.weaponframe = TF_FLARE_LIT;
+				}
+				else
+				{
+					sprint(self, 2, "not enough ammo to reload\n");
+				}
+			}
+			else
+			{
+				if (self.current_weapon == 8192)
+				{
+					if (self.reload_rocket_launcher == TF_FLARE_LIT)
+					{
+						sprint(self, 2, "clip full.\n");
+						return;
+					}
+					if (self.reload_rocket_launcher < self.ammo_rockets)
+					{
+						Attack_Finished(0.8);
+						rt = (4 - self.reload_rocket_launcher) / 4;
+						rt = 5 - 5 * rt;
+						self.reload_rocket_launcher = TF_FLARE_LIT;
+						if (self.ammo_rockets < 4)
+						{
+							self.reload_rocket_launcher = 4 - self.ammo_rockets;
+						}
+						sprint(self, 2, "reloading...\n");
+						self.tfstate = self.tfstate | 2;
+						tWeapon = spawn();
+						tWeapon.owner = self;
+						tWeapon.classname = "timer";
+						tWeapon.nextthink = time + rt;
+						tWeapon.think = W_Reload_rocket_launcher;
+						self.weaponmodel = "";
+						self.weaponframe = TF_FLARE_LIT;
+					}
+				}
+			}
+		}
+	}
+};*/
+
+void() TeamFortress_NightVision =
+{
+	local entity te;
+	local entity tl;
+	sound(self, TF_FLARE_LIT, "items/nightvis.wav", 0.5, TF_FLARE_OFF);
+	te = find(world, classname, "player");
+	while (te)
+	{
+		if (self != te)
+		{
+			if (te.team_no != TF_FLARE_LIT)
+			{
+				if (te.health > TF_FLARE_OFF)
+				{
+					if (visible(te))
+					{
+						msg_entity = self;
+						tl = spawn();
+						tl.owner = self;
+						tl.origin = te.origin;
+						tl.origin_z = tl.origin_z + 32;
+						WriteByte(TF_FLARE_OFF, 23);
+						WriteByte(TF_FLARE_OFF, 9);
+						WriteEntity(TF_FLARE_OFF, tl);
+						WriteCoord(TF_FLARE_OFF, tl.origin_x);
+						WriteCoord(TF_FLARE_OFF, tl.origin_y);
+						WriteCoord(TF_FLARE_OFF, tl.origin_z);
+						WriteCoord(TF_FLARE_OFF, te.origin_x);
+						WriteCoord(TF_FLARE_OFF, te.origin_y);
+						WriteCoord(TF_FLARE_OFF, te.origin_z + 5);
+						dremove(tl);
+					}
+				}
+			}
+		}
+		te = find(te, classname, "player");
+	}
+	te = find(world, classname, "building_sentrygun");
+	while (te)
+	{
+		if (self != te)
+		{
+			if (te.team_no != TF_FLARE_LIT)
+			{
+				if (te.health > TF_FLARE_OFF)
+				{
+					if (visible(te))
+					{
+						msg_entity = self;
+						tl = spawn();
+						tl.owner = self;
+						tl.origin = te.origin;
+						tl.origin_z = tl.origin_z + 32;
+						WriteByte(TF_FLARE_OFF, 23);
+						WriteByte(TF_FLARE_OFF, 9);
+						WriteEntity(TF_FLARE_OFF, tl);
+						WriteCoord(TF_FLARE_OFF, tl.origin_x);
+						WriteCoord(TF_FLARE_OFF, tl.origin_y);
+						WriteCoord(TF_FLARE_OFF, tl.origin_z);
+						WriteCoord(TF_FLARE_OFF, te.origin_x);
+						WriteCoord(TF_FLARE_OFF, te.origin_y);
+						WriteCoord(TF_FLARE_OFF, te.origin_z + 5);
+						dremove(tl);
+					}
+				}
+			}
+		}
+		te = find(te, classname, "building_sentrygun");
+	}
+	te = find(world, classname, "bot");
+	while (te)
+	{
+		if (self != te)
+		{
+			if (te.team_no != TF_FLARE_LIT)
+			{
+				if (te.health > TF_FLARE_OFF)
+				{
+					if (visible(te))
+					{
+						msg_entity = self;
+						tl = spawn();
+						tl.owner = self;
+						tl.origin = te.origin;
+						tl.origin_z = tl.origin_z + 32;
+						WriteByte(TF_FLARE_OFF, 23);
+						WriteByte(TF_FLARE_OFF, 9);
+						WriteEntity(TF_FLARE_OFF, tl);
+						WriteCoord(TF_FLARE_OFF, tl.origin_x);
+						WriteCoord(TF_FLARE_OFF, tl.origin_y);
+						WriteCoord(TF_FLARE_OFF, tl.origin_z);
+						WriteCoord(TF_FLARE_OFF, te.origin_x);
+						WriteCoord(TF_FLARE_OFF, te.origin_y);
+						WriteCoord(TF_FLARE_OFF, te.origin_z + 5);
+						dremove(tl);
+					}
+				}
+			}
+		}
+		te = find(te, classname, "bot");
+	}
+};
+
+void() Drone =
+{
+	if (self.option3 < TF_FLARE_OFF)
+	{
+		sprint(self, 2, "You get 1 LaserDrone kit per life\n");
+		return;
+	}
+	if (self.last_used > time)
+	{
+		sprint(self, 2, "Not finished building new drone yet... takes 3 minutes\n");
+		return;
+	}
+	sprint(self, 2, "Laser Drone away!\n");
+	self.option3 = self.option3 - TF_FLARE_OFF;
+	self.last_used = time + 180;
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.weapon = 41;
+	newmis.movetype = 9;
+	newmis.solid = 2;
+	newmis.classname = "bot";
+	newmis.team_no = self.team_no;
+	makevectors(self.v_angle);
+	if (self.v_angle_x)
+	{
+		newmis.velocity = v_forward * 200;
+	}
+	else
+	{
+		newmis.velocity = aim(self, 10000);
+		newmis.velocity = newmis.velocity * 200;
+	}
+	newmis.option = TF_FLARE_OFF;
+	newmis.health = 30;
+	newmis.takedamage = 2;
+	newmis.th_die = DroneDie;
+	setsize(newmis, '-8 -8 -8', '12 12 12');
+	setorigin(newmis, self.origin + v_forward * 8 + '0 0 20');
+	newmis.angles_x = self.angles_x;
+	newmis.angles_y = self.angles_y;
+	newmis.angles_z = self.angles_z;
+	sound(newmis, TF_FLARE_LIT, "weapons/chngnu1a.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	newmis.nextthink = time + 0.8;
+	newmis.playerclass = TF_FLARE_LIT;
+	newmis.think = DroneJet;
+	newmis.touch = BalloonMIRVtouch;
+	newmis.skin = TF_FLARE_LIT;
+	setmodel(newmis, "progs/lsrdrone.mdl");
+};
+
+void() Drone_Laser_Touch =
+{
+	local vector org;
+	if (other == self.owner)
+	{
+		return;
+	}
+	if (pointcontents(self.origin) == -6)
+	{
+		dremove(self);
+		return;
+	}
+	sound(self, TF_FLARE_OFF, "enforcer/enfstop.wav", TF_FLARE_OFF, 3);
+	org = self.origin - 8 * normalize(self.velocity);
+	if (other.health)
+	{
+		SpawnBlood(org, 15);
+		deathmsg = 41;
+		self.weapon = 41;
+		if (other.classname == "building_sentrygun")
+		{
+			T_RadiusDamage(self, self.owner.owner, 90, world);
+		}
+		else
+		{
+			T_Damage(other, self, self.owner.owner, 25);
+		}
+	}
+	dremove(self);
+};
+
+void(vector org, vector vec) DroneLaunchLaser =
+{
+	sound(self, TF_FLARE_OFF, "enforcer/enfire.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	vec = normalize(vec);
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.movetype = 5;
+	newmis.solid = 2;
+	newmis.effects = 8;
+	newmis.weapon = 41;
+	newmis.classname = "drone_laser";
+	newmis.skin = self.owner.team_no - TF_FLARE_OFF;
+	setmodel(newmis, "progs/beam.mdl");
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, org);
+	newmis.velocity = vec * 2000;
+	newmis.angles = vectoangles(newmis.velocity);
+	newmis.nextthink = time + 4;
+	newmis.think = SUB_Remove;
+	newmis.touch = Drone_Laser_Touch;
+};
+
+void() DroneDoneTouch =
+{
+	if (self.velocity_z)
+	{
+		sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+};
+
+void() DroneDie =
+{
+	ThrowGib("progs/tgib2.mdl", -70);
+	ThrowGib("progs/dgib2.mdl", -70);
+	ThrowGib("progs/dgib3.mdl", -70);
+	WriteByte(4, 23);
+	WriteByte(4, 3);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+	BecomeExplosion();
+};
+
+void() DroneFall =
+{
+	sound(self, TF_FLARE_LIT, "weapons/chngnd1a.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.movetype = 10;
+	self.avelocity = '200 0 300';
+	setsize(self, '-8 -8 -8', '8 8 8');
+	self.takedamage = 2;
+	self.skin = TF_FLARE_OFF;
+	//self.team_no = 5; // <- pablo. guns shoot friendly drones cause of this.
+	self.th_die = DroneDie;
+	self.touch = DroneDoneTouch;
+	self.think = DroneDie;
+	// pablo. die abit faster since you'll be twice as annoying when we cant kill you.
+	//self.nextthink = time + 20;
+	self.nextthink = time + 15;
+	// <---
+};
+
+void() DroneJet =
+{
+	local entity te;
+	//local entity tl;
+	self.playerclass = self.playerclass + TF_FLARE_OFF;
+	self.nextthink = time + 0.9;
+	sound(self, TF_FLARE_LIT, "weapons/drone.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	te = find(world, classname, "player");
+	while (te)
+	{
+		if (self != te)
+		{
+			if (te.team_no != TF_FLARE_LIT && te.team_no != self.team_no)
+			{
+				if (te.health)
+				{
+					if (visible(te))
+					{
+						if (te.is_undercover != TF_FLARE_OFF)
+						{
+							DroneLaunchLaser(self.origin, te.origin - self.origin);
+						}
+					}
+				}
+			}
+		}
+		te = find(te, classname, "player");
+	}
+	te = find(world, classname, "building_sentrygun");
+	while (te)
+	{
+		if (te.team_no != TF_FLARE_LIT && te.team_no != self.team_no)
+		{
+			if (te.health)
+			{
+				if (visible(te))
+				{
+					DroneLaunchLaser(self.origin, te.origin + '0 0 24' - self.origin);
+				}
+			}
+		}
+		te = find(te, classname, "building_sentrygun");
+	}
+	te = find(world, classname, "bot");
+	while (te)
+	{
+		if (self != te)
+		{
+			if (te.team_no != TF_FLARE_LIT && te.team_no != self.team_no)
+			{
+				if (te.health)
+				{
+					if (visible(te))
+					{
+						DroneLaunchLaser(self.origin, te.origin - self.origin);
+					}
+				}
+			}
+		}
+		te = find(te, classname, "bot");
+	}
+	if (self.playerclass > 10)
+	{
+		self.think = DroneFall;
+	}
+};
+
+vector(vector ang) SUB_NormalizeAngles =
+{
+	while (ang_x > 360)
+	{
+		ang_x = ang_x - 360;
+	}
+	while (ang_x < TF_FLARE_LIT)
+	{
+		ang_x = ang_x + 360;
+	}
+	while (ang_y > 360)
+	{
+		ang_y = ang_y - 360;
+	}
+	while (ang_y < TF_FLARE_LIT)
+	{
+		ang_y = ang_y + 360;
+	}
+	while (ang_z > 360)
+	{
+		ang_z = ang_z - 360;
+	}
+	while (ang_z < TF_FLARE_LIT)
+	{
+		ang_z = ang_z + 360;
+	}
+	return ang;
+};
+
+void() Prox_Disarm =
+{
+	if (other.classname != "player")
+	{
+		return;
+	}
+	if (other.playerclass == TF_FLARE_OFF && other.team_no != self.team_no)
+	{
+		other.real_frags = other.real_frags + TF_FLARE_OFF;
+		dremove(self);
+	}
+	return;
+};
+
+void() ProxiDie =
+{
+	self.effects = 4;
+	make_explosion();
+	self.takedamage = TF_FLARE_LIT;
+	deathmsg = 45;
+	T_RadiusDamage(self, self.owner, 200, world);
+	dremove(self);
+};
+
+void () FoundBastard =
+{
+	local float _l_11382;
+
+	self.touch = Prox_Disarm;
+	sound (self, 3.000000, "effects/beep.wav", 1.000000, 1.000000);
+	self.skin = (self.owner.team_no + 3.000000);
+	_l_11382 = vlen ((self.enemy.origin - self.origin));
+	if ((_l_11382 <= self.height))
+	{
+		self.height = _l_11382;
+		self.nextthink = (time + ((_l_11382 / 1000.000000) * 1.500000));
+		self.think = FoundBastard;
+	}
+	else
+	{
+		self.effects = 4.000000;
+		make_explosion ();
+		MushroomFlame ();
+		WriteByte (4.000000, 23.000000);
+		WriteByte (4.000000, 3.000000);
+		WriteCoord (4.000000, self.origin_x);
+		WriteCoord (4.000000, self.origin_y);
+		WriteCoord (4.000000, self.origin_z);
+		multicast (self.origin, 1.000000);
+		deathmsg = 45.000000;
+		self.takedamage = 0.000000;
+		T_RadiusDamage (self, self.owner, 200.000000, world);
+		dremove (self);
+	}
+};
+
+void () ProxArmed =
+{
+	local entity _l_11392;
+	//local entity _l_11393;
+	local vector _l_11394;
+
+	self.velocity = '0.000000 0.000000 0.000000';
+	self.nextthink = (time + 1.000000);
+	self.think = ProxArmed;
+	sound (self, 3.000000, "effects/beep.wav", 0.300000, 1.000000);
+	self.playerclass = (self.playerclass + 1.000000);
+	if ((self.skin == self.owner.team_no))
+	{
+		self.skin = 0.000000;
+	}
+	else
+	{
+		self.skin = self.owner.team_no;
+	}
+	_l_11392 = find (world, classname, "player");
+	while (_l_11392)
+	{
+		if ((self.owner != _l_11392))
+		{
+			if ((((_l_11392.team_no != 0.000000) && (_l_11392.team_no != self.team_no)) && (_l_11392.bugger == 0.000000)))
+			{
+				if ((_l_11392.health > 1.000000))
+				{
+					if (visible (_l_11392))
+					{
+						if ((_l_11392.undercover_team != self.team_no))
+						{
+							_l_11394 = _l_11392.origin - self.origin;
+							if ((vlen (_l_11394) < 200.000000))
+							{
+								self.height = vlen (_l_11394);
+								self.enemy = _l_11392;
+								self.nextthink = 0.200000;
+								self.think = FoundBastard;
+							}
+						}
+					}
+				}
+			}
+		}
+		_l_11392 = find (_l_11392, classname, "player");
+	}
+	if (((self.playerclass > 300.000000) || (self.owner.playerclass != 3.000000)))
+	{
+		dremove (self);
+	}
+};
+
+void() ProxAttach =
+{
+	//self.touch = SUB_Null;
+	self.think = ProxArmed;
+	self.nextthink = time + 0.5;
+	sound(newmis, TF_FLARE_LIT, "buttons/switch02.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+};
+
+void (vector _p_11412, float _p_11415) BigAssBullet =
+{
+	local vector _l_11416;
+	local vector _l_11419;
+
+	makevectors (self.v_angle);
+	_l_11419 = self.origin + (v_forward * 10);
+	_l_11419_z = self.absmin_z + (self.size_z * 0.700000);
+	ClearMultiDamage ();
+	traceline (_l_11419, (_l_11419 + (_p_11412 * 1500)), 0, self);
+	if ((trace_fraction != 1))
+	{
+		TraceAttack (_p_11415, _p_11412);
+	}
+	if (trace_ent.takedamage)
+	{
+		_l_11416 = trace_endpos - (v_forward * 4);
+		SpawnBlood (_l_11416, 9);
+	}
+	else
+	{
+		_l_11416 = trace_endpos - (v_forward * 4);
+		WriteByte (4, 23);
+		WriteByte (4, 0);
+		WriteCoord (4, _l_11416_x);
+		WriteCoord (4, _l_11416_y);
+		WriteCoord (4, _l_11416_z);
+		multicast (self.origin, 1);
+	}
+	ApplyMultiDamage ();
+};
+
+void () W_FireBigAss =
+{
+	local vector _l_11430;
+	//local float _l_11436;
+
+	if ((self.ammo_shells < 10))
+	{
+		make_explosion ();
+//		sprint (self, 2, "Ammo chamber jammed!\n"); // I just don't like excess messages
+		sound (self, 1, "weapons/asscan4.wav", 1, 1);
+		stuffcmd (self, "bf\n");
+		self.option4 = 0;
+		return;
+	}
+	self.nojumptime = (time + 0.750000);
+
+	//  My megatf uses the old megaTF assault cannon fire wav, but you can enable
+	// 11.11.04's by setting "localinfo newsounds 1" (or localinfo newsounds on) in the
+	// server console
+	if (infokey(world, "newsounds") == "1" || infokey(world, "newsounds") == "on")
+	{
+		sound (self, 1, "weapons/20mm.wav", 1, 1);
+	}
+	else
+	{
+		sound(self, TF_FLARE_OFF, "weapons/sgun1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+
+	KickPlayer (-5, self);
+	muzzleflash ();
+	stuffcmd (self, "bf\n");
+//	self.ammo_shells = (self.ammo_shells - 10);
+//	self.currentammo = (self.ammo_shells - 10);
+	self.currentammo = self.ammo_shells = self.ammo_shells - 10;
+	makevectors (self.v_angle);
+	_l_11430 = v_forward;
+	deathmsg = 46;
+	BigAssBullet (_l_11430, 50);
+	EjectShell ();
+	self.velocity = (self.velocity - (v_forward * 200));
+	if ((self.ammo_shells == 0))
+	{
+		self.ammo_shells = 1;
+	}
+};
+
+void () BigAssCarry =
+{
+	makevectors (self.owner.v_angle);
+	setorigin (self, (((self.owner.origin + (v_forward * 12)) + '0 0 20') + (v_right * 5)));
+	self.angles = self.owner.angles;
+	self.think = BigAssCarry;
+	self.nextthink = (time + 0.02);
+};
+
+/*void() MakeBall =
+{
+	local string st;
+	local float tc;
+	local float ctr;
+	local entity te;
+	ctr = TF_FLARE_LIT;
+	te = find(world, classname, "ball");
+	while (te)
+	{
+		te.movetype = 10;
+		ctr = ctr + TF_FLARE_OFF;
+		te = find(te, classname, "ball");
+	}
+	if (ctr < TF_FLARE_OFF)
+	{
+		newmis = spawn();
+		setmodel(newmis, "progs/s_light.spr");
+		newmis.movetype = 10;
+		setsize(newmis, '-16 -16 -14', '16 16 16');
+		newmis.solid = TF_FLARE_OFF;
+		newmis.classname = "ball";
+		newmis.touch = BallTouch;
+		newmis.think = BallCheck;
+		newmis.nextthink = time + 2;
+		makevectors(self.v_angle);
+		if (self.v_angle_x)
+		{
+			newmis.velocity = v_forward * 400 + v_up * 200;
+		}
+		else
+		{
+			newmis.velocity = aim(self, 10000);
+			newmis.velocity = newmis.velocity * 400;
+			newmis.velocity_z = 200;
+		}
+		setorigin(newmis, self.origin);
+	}
+};*/
+
+void () Prox =
+{
+	local vector _l_11458;
+	local vector _l_11461;
+	local entity _l_11464;
+
+	_l_11464 = find (world, classname, "bot");
+	while (_l_11464)
+	{
+		if ((_l_11464.owner == self))
+		{
+			local float proxyDistance = vlen(_l_11464.origin - self.origin);
+			if (proxyDistance < 40)
+			{
+				dremove(_l_11464);
+				if (self.no_grenades_2 < 3.000000)
+				{
+					self.no_grenades_2 = (self.no_grenades_2 + 2.000000);
+				}
+				return;
+			}
+			else
+			{
+				sprint (self, 2.000000, "1 proximity grenade at a time!\n");
+				if ((self.weaponmodel == "progs/proxgren.mdl"))
+				{
+					self.current_weapon = W_BestWeapon ();
+					self.weaponmodel = "progs/v_rock2.mdl";
+					self.currentammo = self.ammo_rockets;
+					Attack_Finished (0.700000);
+					self.impulse = 0.000000;
+					self.StatusRefreshTime = (time + 0.100000);
+				}
+				return;
+			}
+		}
+		_l_11464 = find (_l_11464, classname, "bot");
+	}
+	if ((self.no_grenades_2 < 2.000000))
+	{
+		sprint (self, 2.000000, "Not enough type 2 grenades... get more\n");
+		if ((self.weaponmodel == "progs/proxgren.mdl"))
+		{
+			self.weaponmodel = "progs/v_rock2.mdl";
+			self.currentammo = self.ammo_rockets;
+			Attack_Finished (0.700000);
+			self.impulse = 0.000000;
+			self.StatusRefreshTime = (time + 0.100000);
+			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+		}
+		return;
+	}
+	if ((self.weaponmodel != "progs/proxgren.mdl"))
+	{
+		self.tfstate = (self.tfstate | 2.000000);
+		self.oldweaponmodel = self.weaponmodel;
+		self.oldcurrentammo = self.currentammo;
+		self.currentammo = 1.000000;
+		self.weaponmodel = "progs/proxgren.mdl";
+		self.weaponframe = 0.000000;
+		return;
+	}
+	makevectors (self.v_angle);
+	_l_11458 = self.origin + (v_forward * 10.000000);
+	_l_11458_z = self.absmin_z + (self.size_z * 0.700000);
+	traceline (_l_11458, (_l_11458 + (v_forward * 70.000000)), 0.000000, self);
+	_l_11461 = trace_endpos - (v_forward * 8.000000);
+	if ((trace_fraction != 1.000000))
+	{
+		sound (self, 3.000000, "buttons/switch02.wav", 1.000000, 1.000000);
+		sprint (self, 2.000000, "Proximity mine set!\n");
+		self.no_grenades_2 = (self.no_grenades_2 - 2.000000);
+		newmis = spawn ();
+		newmis.owner = self;
+		newmis.weapon = 41.000000;
+		newmis.movetype = 0.000000;
+		newmis.solid = 2.000000;
+		newmis.classname = "bot";
+		newmis.netname = "proxi";
+		newmis.team_no = self.team_no;
+		newmis.health = 3.000000;
+		newmis.takedamage = 2.000000;
+		newmis.th_die = ProxiDie;
+		setsize (newmis, '-3.000000 -3.000000 -3.000000', '3.000000 3.000000 3.000000');
+		newmis.angles = '0.000000 0.000000 0.000000';
+		newmis.nextthink = (time + 1.000000);
+		newmis.playerclass = 0.000000;
+		newmis.think = ProxAttach;
+		newmis.skin = 0.000000;
+		newmis.frame = 1.000000;
+		setmodel (newmis, "progs/proxgren.mdl");
+		setorigin (newmis, _l_11461);
+		if ((self.oldweaponmodel != ""))
+		{
+			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+		}
+		self.weaponmodel = self.oldweaponmodel;
+		self.currentammo = self.oldcurrentammo;
+		Attack_Finished (0.700000);
+		self.impulse = 0.000000;
+		self.StatusRefreshTime = (time + 0.100000);
+	}
+};
+
+.float DropFlagDelay;
+
+void () DropFlag =
+{
+	local entity Item;
+	local entity te;
+	local float f;
+	local string st;
+
+	te = find (world, classname, "item_tfgoal");
+	while (te)
+	{
+		if (te.owner == self)
+		{
+			Item = te;
+		}
+		te = find (te, classname, "item_tfgoal");
+	}
+
+	if (Item == world)
+	{
+		sprint (self, 2, "You don't have the flag.\n");
+		return;
+	}
+
+	// Delay
+	if (self.DropFlagDelay > time)
+	{
+		sprint (self, 2, "Can't drop again for another ");
+		f = ceil(self.DropFlagDelay - time);
+		st = ftos(f);
+		sprint (self, 2, st);
+		sprint (self, 2, " seconds.\n");
+		return;
+	}
+	self.DropFlagDelay = time + 10;
+	//
+
+	// Flash of particles
+	WriteByte(4, 23);
+	WriteByte(4, 11);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+	//
+
+	tfgoalitem_RemoveFromPlayer(Item, self, 2);
+
+	setorigin (Item, self.origin - '0 0 24');	// - vf*(16));// - '0 0 15');	//Item.origin = self.origin + v_forward*56 + '0 0 8';
+	Item.velocity = '0 0 1';		//((vf * 150) + '0 0 150';
+							//gold.  i didn't even have to change the origin, just the velocity. used to be '0 0 150'
+	Item.goal_state = 2;
+	Item.movetype = 6;
+	Item.solid = TF_FLARE_OFF;
+	setsize(Item, '-16 -16 0', '16 16 56');
+	if (Item.mdl != string_null)
+	{
+		setmodel(Item, Item.mdl);
+	}
+	Item.option5 = time + 2;
+	Item.tent = self;
+	
+	Item.nextthink = time + 5;
+	Item.think = tfgoalitem_dropthink;
+	Item.touch = item_tfgoal_touch;
+}
+void () Det_Disp =
+{
+	local entity te;
+	if (self.playerclass != 9)
+	{
+	return;
+	}
+	if (self.has_dispenser)
+	{
+		te = find(world, classname, "building_dispenser");
+		while (te)
+		{
+			if (te.real_owner == self)
+			{
+				deathmsg = 201;
+				T_RadiusDamage(te, te.real_owner, 140, world);
+				TF_T_Damage(te, world, world, 500, TF_FLARE_LIT, TF_FLARE_LIT);
+				sprint(self, 2, "Your dispenser was detonated.\n");
+			}
+			te = find(te, classname, "building_dispenser");
+		}
+	}
+	else
+	{
+		sprint(self, 2, "You don't have a dispenser to detonate.\n");
+	}
+}
+void () Det_Sent =
+{
+	local entity te;
+	if (self.playerclass != 9)
+	{
+	return;
+	}
+	if (self.has_sentry)
+	{
+		te = find(world, classname, "building_sentrygun");
+		while (te)
+		{
+			if (te.real_owner == self)
+			{
+				TF_T_Damage(te, world, world, 500, TF_FLARE_LIT, TF_FLARE_LIT);
+			}
+			te = find(te, classname, "building_sentrygun");
+		}
+	}
+	else
+	{
+		sprint(self, 2, "You don't have a sentry to detonate.\n");
+	}
+}
+
+void () review_timeleft = {
+
+   local string st;
+   local float minutes;
+   local float seconds;
+   local float remaining;
+
+   self.no_grenades_1 = self.no_grenades_1 + 1;
+   self.nextthink = (time + 1);
+
+   st = infokey (world,"timelimit");
+   minutes = stof(st);
+   seconds = minutes * 60;
+
+   if (minutes != self.health)
+   {
+	   self.netname = ftos(self.health);
+	   bprint(2,"Timelimit ");
+	   if (minutes > self.health)
+		   bprint(2,"increased from ");
+	   else
+		   bprint(2,"decreased from ");
+	   bprint(2,self.netname);
+	   bprint(2," to ");
+	   bprint(2,st);
+	   bprint(2," minutes\n");
+	   
+   }
+
+   self.health = stof(st);
+   if (st == "0") 
+	   return;
+
+   //Let everyone know how much time is left in the game
+   //allows gamespy, ASE, etc to all see.
+   /*
+   remaining = seconds - self.no_grenades_1;
+   intplaceholder = remaining;
+   remaining = remaining / 60;
+   seconds = 0;
+   while (seconds < remaining)
+   {
+      seconds = seconds + 1;
+   }
+   seconds = seconds - 1;
+   intseconds = seconds * 60;
+   intseconds = intplaceholder - intseconds;
+	//eval mins
+	localcmd("serverinfo timeleft ");
+	if (seconds < 10)
+		localcmd ("0");
+	st = ftos(seconds);
+	localcmd (st);
+	localcmd (":");
+	//eval seconds
+	if (intseconds < 10)
+		localcmd ("0");
+	st = ftos(intseconds);
+	if (st != "60")
+		localcmd (st);
+	else
+		localcmd ("0");
+	localcmd ("\n");
+
+   //reset values for more calcs
+   */
+
+   seconds = minutes * 60;
+   remaining = seconds - self.no_grenades_1;
+   if ((remaining == 5) & (seconds >= 5))
+   {
+	       //print "5 seconds left"
+		   bprint(2,"5 SECONDS remaining!\n");
+		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+   }
+
+   else if ((remaining == 30) & (seconds >= 30))
+   {
+	       //print "30 seconds left"
+		   bprint(2,"30 SECONDS remaining.\n");
+		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+   }
+   else if ((remaining == 60) & (seconds >= 60))
+   {
+		   //print "1 minute left"
+		   bprint(2,"1 MINUTE remaining.\n");
+		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+   }
+
+   else if ((remaining == 300) & (seconds >= 300))
+   {
+		   //print "5 minutes left"
+		   bprint(2,"5 minutes remaining.\n");
+		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+   }
+   else if ((remaining == 900) & (seconds >= 900))
+   {
+		//print "15 minutes left"
+		bprint(2,"15 minutes remaining.\n");
+		//sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+   }
+	else if((remaining == 1800) & (seconds >= 1800))
+	{
+		//print "30 minutes left"
+		bprint(2,"30 minutes remaining.\n");
+		//sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
+	}
+   /* else if (remaining <= 0) 
+   {
+	   //print "Time is up."
+	   localcmd("serverinfo timeleft 00:00\n");
+	   self.nextthink = (time + 9999);
+   }
+   */
+   self.think = review_timeleft;
+
+
+};
+
+void (entity _p_11523, float _p_11524) sprint_duration =
+{
+	local float _l_11525;
+	local float _l_11526;
+	local float _l_11527;
+	local string _l_11528;
+
+	if ((_p_11524 <= 0.000000))
+	{
+		sprint (_p_11523, 2.000000, "none.\n");
+		return;
+	}
+	_l_11525 = _p_11524;
+	_p_11524 = _p_11524 / 60.000000;
+	_l_11526 = 0.000000;
+	while ((_l_11526 < _p_11524))
+	{
+		_l_11526 = _l_11526 + 1.000000;
+	}
+	_l_11526 = _l_11526 - 1.000000;
+	_l_11527 = _l_11526 * 60.000000;
+	_l_11527 = _l_11525 - _l_11527;
+	if ((_l_11526 > 0.000000))
+	{
+		_l_11528 = ftos (_l_11526);
+		sprint (_p_11523, 2.000000, _l_11528);
+		if ((_l_11528 == "1"))
+		{
+			sprint (_p_11523, 2.000000, " minute");
+		}
+		else
+		{
+			sprint (_p_11523, 2.000000, " minutes");
+		}
+		_l_11528 = ftos (_l_11527);
+		if ((_l_11528 != "60"))
+		{
+			sprint (_p_11523, 2.000000, ", ");
+			sprint (_p_11523, 2.000000, _l_11528);
+			if ((_l_11528 == "1"))
+			{
+				sprint (_p_11523, 2.000000, " second");
+			}
+			else
+			{
+				sprint (_p_11523, 2.000000, " seconds");
+			}
+		}
+		return;
+	}
+	else
+	{
+		_l_11528 = ftos (_l_11525);
+		sprint (_p_11523, 2.000000, _l_11528);
+		sprint (_p_11523, 2.000000, " seconds");
+	}
+};
+
+void (entity _p_11534) TeamFortress_PrintPMTimeLeft =
+{
+	local float _l_11535;
+	local float _l_11536;
+	local float _l_11537;
+	local float _l_11538;
+	local string _l_11539;
+	local string _l_11540;
+	local string _l_11541;
+
+	if (!prematch)
+	{
+		return;
+	}
+	if ((pointer_prematchtimer == world))
+	{
+		dprint ("warning: prematch timer not found during prematch.\n");
+		return;
+	}
+	else
+	{
+		_l_11538 = (timelimit - pointer_timeleft.no_grenades_1) - (timelimit - floor ((prematch * 60.000000)));
+		_l_11538 = _l_11538 + 4.000000;
+		_l_11535 = _l_11538;
+		_l_11538 = _l_11538 / 60.000000;
+		_l_11536 = 0.000000;
+#ifdef clan_progs
+		if (clan_prematch == 0)
+		{
+			while ((_l_11536 < _l_11538))
+			{
+				_l_11536 = _l_11536 + 1.000000;
+			}
+		}
+#else
+		while ((_l_11536 < _l_11538))
+		{
+			_l_11536 = _l_11536 + 1.000000;
+		}
+#endif
+		_l_11536 = _l_11536 - 1.000000;
+		_l_11537 = _l_11536 * 60.000000;
+		_l_11537 = _l_11535 - _l_11537;
+		if ((_l_11536 > 0.000000))
+		{
+			_l_11539 = "Prematch ends in less than ";
+			_l_11540 = ftos ((_l_11536 + 1.000000));
+			if ((_l_11540 == "1"))
+			{
+				_l_11541 = " minute";
+			}
+			else
+			{
+				_l_11541 = " minutes";
+			}
+		}
+		else
+		{
+			if ((_l_11535 <= 10.000000))
+			{
+				centerprint (self, "Prematch is about to end!\n");
+				return;
+			}
+			_l_11539 = "Prematch ends in ";
+			_l_11540 = ftos (_l_11535);
+			_l_11541 = " seconds!";
+		}
+	}
+	centerprint (_p_11534, _l_11539, _l_11540, _l_11541, "\n");
+};
+
+void () TeamFortress_Timeleft =
+{
+	local float _l_11549;
+	local string _l_11551;
+
+	_l_11551 = infokey (world, "time");
+	if (((_l_11551 == "off") && (pointer_timeleft == world)))
+	{
+		sprint (self, 2.000000, "Timeleft has been disabled.\n");
+		return;
+	}
+	else
+	{
+		if (((_l_11551 != "off") && (pointer_timeleft == world)))
+		{
+			sprint (self, 2.000000, "Unknown.\n");
+			return;
+		}
+	}
+	if (((timelimit != 0.000000) && ((timelimit - pointer_timeleft.no_grenades_1) <= 0.000000)))
+	{
+		sprint (self, 2.000000, "Time is up.\n");
+		return;
+	}
+	if (prematch)
+	{
+		sprint (self, 2.000000, "Prematch: ");
+		if ((pointer_prematchtimer == world))
+		{
+			sprint (self, 2.000000, "<could not find timer>\n");
+		}
+		else
+		{
+#ifdef clan_progs
+			if (clan_prematch > 0)
+			{
+				sprint(self,2, "infinite (all must select ready for prematch to end)\n");
+			}
+			else if (clan_prematch == -1)
+			{
+				sprint(self,2, "4 seconds\n");
+			}
+			else {
+#endif
+			_l_11549 = (timelimit - pointer_timeleft.no_grenades_1) - (timelimit - floor ((prematch * 60.000000)));
+			_l_11549 = _l_11549 + 4.000000;
+			sprint_duration (self, _l_11549);
+			sprint (self, 2.000000, "\n");
+#ifdef clan_progs
+			}
+#endif
+
+		}
+		sprint (self, 2.000000, "Game    : ");
+	}
+	else
+	{
+		sprint (self, 2.000000, " ");
+	}
+	_l_11549 = timelimit - pointer_timeleft.no_grenades_1;
+	sprint_duration (self, _l_11549);
+	sprint (self, 2.000000, "\n");
+};

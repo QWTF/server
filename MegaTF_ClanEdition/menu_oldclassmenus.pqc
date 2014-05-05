@@ -1,0 +1,2084 @@
+.float oldcurrentammo;
+void () ConcussionGrenadeTimer;
+void () HallucinationTimer;
+void () TranquiliserTimer;
+float (entity obj,entity builder) CheckArea;
+float (float v) anglemod;
+void (entity targ,entity inflictor,entity attacker,float damage,float T_flags,float T_AttackType) TF_T_Damage;
+void () W_SetCurrentAmmo;
+void (entity p) bound_other_ammo;
+float (float tno) TeamFortress_TeamSet;
+void (entity p) TeamFortress_SetSkin;
+float (float tno) TeamFortress_TeamGetColor;
+void () TeamFortress_ChangeClass;
+void (float type) TeamFortress_DropAmmo;
+void (entity p) TeamFortress_SetSpeed;
+void (entity inflictor,entity attacker,float damage,entity ignore) T_RadiusDamage;
+void (float inp) Menu_DropStuff_Input;
+void (float inp) Menu_Taunt_Input;
+float () TeamFortress_TeamPutPlayerInTeam;
+float (float tno) TeamFortress_TeamIsCivilian;
+void (float class) TeamFortress_SpyChangeSkin;
+void (float teamno) TeamFortress_SpyChangeColor;
+void (float objtobuild) TeamFortress_Build;
+void (float _p_9330) TeamFortress_SpyFeignDeath;
+void (entity spy) Spy_RemoveDisguise;
+void () lvl1_sentry_stand;
+void () lvl2_sentry_stand;
+void () lvl3_sentry_stand;
+float (float tno) TeamFortress_TeamGetNoPlayers;
+void (float menu_no) DisplayMenu;
+void () Menu_Team;
+void () Menu_Class;
+void () Menu_Drop;
+void () Menu_Intro;
+void () PlayerObserverMode;
+void () Menu_ClassHelp;
+void () Menu_ClassHelp2;
+void () Menu_StuffClassHelp;
+void (float inp) Menu_ClassHelp_Input;
+void () Menu_DoBindings;
+void () Menu_ShowBindings1;
+void () Menu_ShowBindings2;
+void () Menu_RepeatHelp;
+void () Menu_Spy;
+void () Menu_Spy_Skin;
+void () Menu_Spy_Color;
+void (float inp) Menu_Spy_Input;
+void (float inp) Menu_Spy_Skin_Input;
+void (float inp) Menu_Spy_Color_Input;
+void () Menu_Engineer;
+void () Menu_EngineerFix_Dispenser;
+void () Menu_EngineerFix_SentryGun;
+void (float inp) Menu_Engineer_Input;
+void (float inp) Menu_EngineerFix_Dispenser_Input;
+void (float inp) Menu_EngineerFix_SentryGun_Input;
+//void () Menu_EngineerFix_Tesla;
+//void (float inp) Menu_EngineerFix_Tesla_Input;
+void () Menu_Dispenser;
+void (float inp) Menu_Dispenser_Input;
+void (entity pl,string s1) CenterPrint;
+void (entity pl,string s1,string s2) CenterPrint2;
+void () Menu_DropStuff;
+void () Menu_Taunt;
+void () Menu_Yell;
+void (float inp) Menu_Yell_Input;
+
+void() ResetMenu = 
+{
+	if (self.StatusBarSize == TF_FLARE_LIT)
+	{
+		CenterPrint(self, "\n");
+	}
+	else
+	{
+		self.StatusRefreshTime = time + 0.1;
+	}
+	self.menu_count = 25;
+	self.current_menu = TF_FLARE_OFF;
+};
+
+void () Player_Menu =
+{
+
+	if ((self.menu_count > 25.000000))
+	{
+		self.menu_count = 0.000000;
+	}
+	else
+	{
+		self.menu_count = (self.menu_count + 1.000000);
+		return;
+	}
+	if ((self.current_menu == 5.000000))
+	{
+		Menu_Intro ();
+		self.current_menu = 1.000000;
+	}
+	else
+	{
+		if ((self.current_menu == 6.000000))
+		{
+			Menu_ClassHelp ();
+			if ((self.menu_displaytime > 8.000000))
+			{
+				self.current_menu = 1.000000;
+			}
+			else
+			{
+				self.menu_displaytime = (self.menu_displaytime + 1.000000);
+			}
+		}
+		else
+		{
+			if ((self.current_menu == 7.000000))
+			{
+				Menu_ClassHelp2 ();
+				if ((self.menu_displaytime > 5.000000))
+				{
+					self.current_menu = 1.000000;
+				}
+				else
+				{
+					self.menu_displaytime = (self.menu_displaytime + 1.000000);
+				}
+			}
+			else
+			{
+				if (self.current_menu == 10)
+				{
+					Menu_ShowBindings1();
+					if (self.menu_displaytime > 8)
+					{
+						self.current_menu = TF_FLARE_OFF;
+					}
+					else
+					{
+						self.menu_displaytime = self.menu_displaytime + TF_FLARE_OFF;
+					}
+				}
+				else
+				{
+					if (self.current_menu == 11)
+					{
+						Menu_ShowBindings2();
+						if (self.menu_displaytime > 8)
+						{
+							self.current_menu = TF_FLARE_OFF;
+						}
+						else
+						{
+							self.menu_displaytime = self.menu_displaytime + TF_FLARE_OFF;
+						}
+					}
+					else
+					{
+						if (self.current_menu == 4)
+						{
+							Menu_Drop();
+						}
+						else
+						{
+							if (self.current_menu == 20)
+							{
+								Menu_DropStuff();
+							}
+							else
+							{
+								if (self.current_menu == 21)
+								{
+									Menu_Taunt();
+								}
+								else
+								{
+									if (self.current_menu == 22)
+									{
+										Menu_Yell();
+									}
+									else
+									{
+										if (self.current_menu == 12)
+										{
+											Menu_Spy();
+										}
+										else
+										{
+											if (self.current_menu == 13)
+											{
+												Menu_Spy_Skin();
+											}
+											else
+											{
+												if (self.current_menu == 14)
+												{
+													Menu_Spy_Color();
+												}
+												else
+												{
+													if (self.current_menu == 15)
+													{
+														Menu_Engineer();
+													}
+													else
+													{
+														if (self.current_menu == 16)
+														{
+															Menu_EngineerFix_Dispenser();
+														}
+														else
+														{
+															if (self.current_menu == 17)
+															{
+																Menu_EngineerFix_SentryGun();
+															}
+															else
+															{
+																if (self.current_menu == 19)
+																{
+																	Menu_Dispenser();
+																}
+																else
+																{
+																	if (self.current_menu == 8)
+																	{
+																		Menu_RepeatHelp();
+																		self.current_menu = TF_FLARE_OFF;
+																	}
+																	else
+																	{
+																		if (self.current_menu == 9)
+																		{
+																			Menu_DoBindings();
+																		}
+																		else
+																		{
+																		    if (self.team_no == TF_FLARE_LIT && teamplay && self.lives != TF_FLARE_LIT)
+																	        {
+																				self.current_menu = 2;
+																				Menu_Team();
+															                }
+																		    else
+															    	        {
+																				if ( (self.playerclass == TF_FLARE_LIT && self.lives != TF_FLARE_LIT) || (self.current_menu == 3) )
+																				{
+																				     self.current_menu = 3;
+																				     Menu_Class();
+																				}
+																				else
+																				{
+																				     self.current_menu = TF_FLARE_LIT;
+																			    }
+				                                                            }
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+void(float menu_no) DisplayMenu = 
+{
+	self.current_menu = menu_no;
+	if (menu_no == 2)
+	{
+		Menu_Team();
+	}
+	else
+	{
+		if (menu_no == 3)
+		{
+			Menu_Class();
+		}
+	}
+};
+
+void () Menu_Team =
+{
+	local string one;
+	local string two;
+	local string getversion;
+
+	one = "ÕÂÁ·‘∆†ê";
+	two = "ë\n\n";
+	getversion = infokey(world, "MegaTF");
+	if (((toggleflags & 64) && teamplay))
+	{
+		if (TeamFortress_TeamPutPlayerInTeam ())
+		{
+			return;
+		}
+	}
+	if ((team_menu_string != string_null))
+	{
+		CenterPrint4 (self, one, getversion, two, team_menu_string);
+		return;
+	}
+	if ((CTF_Map == 1))
+	{
+		CenterPrint4 (self, one, getversion, two, "=== Choose your team ===\n\nì.. Blue Team           \nî.. Red Team            \n\n\n\nô.. Bind my keys for me!\n\nFor full details on this patch:\nhttp://www.telefragged.com/teamfortress/\n");
+	}
+	else
+	{
+		if ((number_of_teams == 1))
+		{
+			CenterPrint4 (self, one, getversion, two, "=== Choose your team ===\n\nì.. Team One  \n");
+		}
+		else
+		{
+			if ((number_of_teams == 2))
+			{
+				CenterPrint4 (self, one, getversion, two, "=== Choose your team ===\n\nì.. Team One  \nî.. Team Two  \n              \n              \nó.. Auto team \n");
+			}
+			else
+			{
+				if ((number_of_teams == 3))
+				{
+					CenterPrint4 (self, one, getversion, two, "=== Choose your team ===\n\nì.. Team One  \nî.. Team Two  \nï.. Team Three\n              \nó.. Auto team \n");
+				}
+				else
+				{
+					CenterPrint4 (self, one, getversion, two, "=== Choose your team ===\n\nì.. Team One  \nî.. Team Two  \nï.. Team Three\nñ.. Team Four \nó.. Auto team \n");
+				}
+			}
+		}
+	}
+};
+
+void(float inp) Menu_Team_Input = 
+{
+	if (inp == 5)
+	{
+		TeamFortress_TeamPutPlayerInTeam();
+	}
+	else
+	{
+		if (inp <= number_of_teams && inp > TF_FLARE_LIT)
+		{
+			TeamFortress_TeamSet(inp);
+		}
+		else
+		{
+			if (number_of_teams == TF_FLARE_LIT && inp <= 4)
+			{
+				TeamFortress_TeamSet(inp);
+			}
+			else
+			{
+				if (inp == 7)
+				{
+					self.current_menu = 9;
+				}
+				else
+				{
+					if (inp == 8)
+					{
+						TeamFortress_TeamPutPlayerInTeam();
+					}
+				}
+			}
+		}
+	}
+	ResetMenu();
+	self.impulse = TF_FLARE_LIT;
+
+	// autoexec [map].cfg
+	stuffcmd(self, "exec ");
+	stuffcmd(self, mapname);
+	stuffcmd(self, ".cfg\n");
+};
+
+void() Menu_Class = 
+{
+	local entity AD;
+	AD = find(world, classname, "info_tfdetect");
+	if (AD)
+	{
+		if (self.team_no == TF_FLARE_OFF)
+		{
+			if (AD.noise1 != string_null)
+			{
+				CenterPrint(self, AD.noise1);
+				return;
+			}
+		}
+		else
+		{
+			if (self.team_no == 2)
+			{
+				if (AD.noise2 != string_null)
+				{
+					CenterPrint(self, AD.noise2);
+					return;
+				}
+			}
+			else
+			{
+				if (self.team_no == 3)
+				{
+					if (AD.noise3 != string_null)
+					{
+						CenterPrint(self, AD.noise3);
+						return;
+					}
+				}
+				else
+				{
+					if (self.team_no == 4)
+					{
+						if (AD.noise4 != string_null)
+						{
+							CenterPrint(self, AD.noise4);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	if (TeamFortress_TeamIsCivilian(self.team_no))
+	{
+		CenterPrint(self, "Your team can only be Civilians.\n");
+	}
+	else
+	{
+		if (spy_off == TF_FLARE_OFF)
+		{
+			CenterPrint(self, "=== Choose your class ===\n\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hwguy   \nô.. Pyro    \nõ.. Engineer\ní.. Randompc\n");
+		}
+		else
+		{
+			CenterPrint(self, "=== Choose your class ===\n\nêìë.. Scout   \nêîë.. Sniper  \nêïë.. Soldier \nêñë.. Demoman \nêóë.. Medic   \nêòë.. Hwguy   \nêôë.. Pyro    \nêöë.. Spy     \nêõë.. Engineer\nêíë.. Randompc\n");
+		}
+	}
+};
+
+void(float inp) Menu_Class_Input = 
+{
+	if (inp > 10 || inp < TF_FLARE_OFF)
+	{
+		return;
+	}
+	self.impulse = inp + 100;
+	TeamFortress_ChangeClass();
+	ResetMenu();
+	//if (TF_FLARE_OFF)
+	if (self.oldcurrentammo != 1)
+	{
+		self.current_menu = 6;
+	}
+	//else
+	//{
+	//	self.current_menu = TF_FLARE_OFF;
+	//}
+	self.menu_displaytime = TF_FLARE_LIT;
+	self.impulse = TF_FLARE_LIT;
+};
+
+void() Menu_Drop = 
+{
+	if ((self.playerclass == 9.000000))
+	{
+		if (sr_dropgrens)
+		{
+			CenterPrint (self, "Drop or Make:                   \nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \nó.. Type 1 Grenade              \nò.. Type 2 Grenade              \nô.. Nothing                     \n\n");
+		}
+		else
+		{
+			CenterPrint (self, "Drop or Make:                   \nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \nó.. Nothing                     \n\n");
+		}
+	}
+	else
+	{
+		if (sr_dropgrens)
+		{
+			CenterPrint (self, "Drop:                           \nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \nó.. Type 1 Grenade              \nò.. Type 2 Grenade              \nô.. Nothing                     \n\n");
+		}
+		else
+		{
+			CenterPrint (self, "Drop:                           \nì.. Shells                      \nî.. Nails                       \nï.. Rockets                     \nñ.. Cells                       \nó.. Nothing                     \n\n");
+		}
+	}
+};
+
+void() Menu_RepeatHelp = 
+{
+	local string he;
+	he = infokey(self, "tf_help");
+	if (he != "off")
+	{
+		CenterPrint2(self, "Press ö to see this help again\n", "New Command: 'mega' for Mega-TF Menu\n");
+	}
+};
+
+void (float _p_815) Menu_Drop_Input =
+{
+
+	if (sr_dropgrens)
+	{
+		if (((_p_815 > 0.000000) && (_p_815 < 7.000000)))
+		{
+			TeamFortress_DropAmmo (_p_815);
+		}
+		if (((_p_815 > 0.000000) && (_p_815 < 8.000000)))
+		{
+			ResetMenu ();
+		}
+	}
+	else
+	{
+		if (((_p_815 > 0.000000) && (_p_815 < 5.000000)))
+		{
+			TeamFortress_DropAmmo (_p_815);
+		}
+		if (((_p_815 > 0.000000) && (_p_815 < 6.000000)))
+		{
+			ResetMenu ();
+		}
+	}
+	self.impulse = 0.000000;
+};
+
+void(float inp) Menu_DoBindings_Input = 
+{
+	local string st;
+	if (inp < 4)
+	{
+		self.impulse = TF_FLARE_LIT;
+		if (inp == TF_FLARE_OFF)
+		{
+			stuffcmd(self, "bind q \"impulse 23\"\n");
+			stuffcmd(self, "bind e \"impulse 22\"\n");
+			stuffcmd(self, "bind r \"+gren1\"\n");
+			stuffcmd(self, "bind f \"+gren2\"\n");
+			stuffcmd(self, "bind v \"detpipe\"\n");
+			stuffcmd(self, "bind c \"dropammo\"\n");
+			stuffcmd(self, "bind x \"scan50\"\n");
+			stuffcmd(self, "bind g \"showclasses\"\n");
+			stuffcmd(self, "bind z \"inv\"\n");
+			self.menu_count = 25;
+			self.current_menu = 10;
+			self.menu_displaytime = TF_FLARE_LIT;
+			return;
+		}
+		else
+		{
+			if (inp == 2)
+			{
+				stuffcmd(self, "bind s \"impulse 23\"\n");
+				stuffcmd(self, "bind x \"impulse 22\"\n");
+				stuffcmd(self, "bind d \"+gren1\"\n");
+				stuffcmd(self, "bind c \"+gren2\"\n");
+				stuffcmd(self, "bind f \"detpipe\"\n");
+				stuffcmd(self, "bind v \"dropammo\"\n");
+				stuffcmd(self, "bind b \"scan50\"\n");
+				stuffcmd(self, "bind g \"showclasses\"\n");
+				stuffcmd(self, "bind n \"inv\"\n");
+				self.menu_count = 25;
+				self.current_menu = 11;
+				self.menu_displaytime = TF_FLARE_LIT;
+				return;
+			}
+		}
+		ResetMenu();
+	}
+};
+
+void(float inp) Menu_Input = 
+{
+	if (self.current_menu == 2)
+	{
+		Menu_Team_Input(inp);
+	}
+	else
+	{
+		if (self.current_menu == 3)
+		{
+			Menu_Class_Input(inp);
+		}
+		else
+		{
+			if (self.current_menu == 4)
+			{
+				Menu_Drop_Input(inp);
+			}
+			else
+			{
+				if (self.current_menu == 12)
+				{
+					Menu_Spy_Input(inp);
+				}
+				else
+				{
+					if (self.current_menu == 13)
+					{
+						Menu_Spy_Skin_Input(inp);
+					}
+					else
+					{
+						if (self.current_menu == 14)
+						{
+							Menu_Spy_Color_Input(inp);
+						}
+						else
+						{
+							if (self.current_menu == 15)
+							{
+								Menu_Engineer_Input(inp);
+							}
+							else
+							{
+								if (self.current_menu == 16)
+								{
+									Menu_EngineerFix_Dispenser_Input(inp);
+								}
+								else
+								{
+									if (self.current_menu == 17)
+									{
+										Menu_EngineerFix_SentryGun_Input(inp);
+									}
+									else
+									{
+										if (self.current_menu == 19)
+										{
+											Menu_Dispenser_Input(inp);
+										}
+										else
+										{
+											if (self.current_menu == 6)
+											{
+												Menu_ClassHelp_Input(inp);
+											}
+											else
+											{
+												if (self.current_menu == 20)
+												{
+													Menu_DropStuff_Input(inp);
+												}
+												else
+												{
+													if (self.current_menu == 21)
+													{
+														Menu_Taunt_Input(inp);
+													}
+													else
+													{
+														if (self.current_menu == 22)
+														{
+													        Menu_Yell_Input(inp);																					
+                                                        }
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+void() Menu_DropStuff = 
+{
+	CenterPrint(self, "ÄÅÅÅ Mega-TF Menu ÅÅÅÇ\n\nÄìÇ Drop #1    \nÄîÇ Toaster    \nÄïÇ Drop #3    \nÄñÇ Holograph  \nÄóÇ NightVision\nÄòÇ Lay Mode   \nÄôÇ Taunt Menu \nÄöÇ Yell Menu  \nÄ9Ç Nothing    \n");
+};
+
+void(float inp) Menu_DropStuff_Input = 
+{
+	if (inp == TF_FLARE_OFF)
+	{
+		stuffcmd(self, "drop1\n");
+	}
+	else
+	{
+		if (inp == 2)
+		{
+			stuffcmd(self, "drop2\n");
+		}
+		else
+		{
+			if (inp == 3)
+			{
+				stuffcmd(self, "drop3\n");
+			}
+			else
+			{
+				if (inp == 4)
+				{
+					stuffcmd(self, "holo\n");
+				}
+				else
+				{
+					if (inp == 5)
+					{
+						stuffcmd(self, "ir\n");
+					}
+					else
+					{
+						if (inp == 6)
+						{
+							stuffcmd(self, "lay\n");
+						}
+						else
+						{
+							if (inp == 7)
+							{
+								ResetMenu();
+								self.impulse = TF_FLARE_LIT;
+								stuffcmd(self, "taunt\n");
+							}
+							else
+							{
+								if (inp == 8)
+								{
+									ResetMenu();
+									self.impulse = TF_FLARE_LIT;
+									stuffcmd(self, "yell\n");
+								}
+								else
+								{
+									if (inp > 8)
+									{
+										ResetMenu();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	ResetMenu();
+	self.impulse = TF_FLARE_LIT;
+};
+
+void() Menu_Taunt = 
+{
+	CenterPrint(self, "ÄÅÅÅ Taunt Menu ÅÅÅÇ\n\nÄìÇ R U Threat'n Me?     \nÄîÇ Come out w/ pants dwn\nÄïÇ Hey!  hehheh...      \n  ÄñÇ Do U want 2 C my bHole?\nÄóÇ Call 911!            \nÄòÇ Kick'm in the Nads!  \nÄôÇ I do the a$$ kik'n...\nÄöÇ Pathetic Looser!     \nÄõÇ Nothing              \n");
+};
+
+void() Menu_Yell = 
+{
+	CenterPrint(self, "ÄÅÅÅ Yell Menu  ÅÅÅÇ\n\nÄìÇ Cover Me!            \nÄîÇ Over Here!           \nÄïÇ This Way!            \n  ÄñÇ Follow Me!             \nÄóÇ Incoming!            \nÄòÇ Holdup!              \nÄôÇ Go Go Go!            \nÄöÇ Lookout!             \nÄõÇ Fire in the hole!    \n");
+};
+
+void(float inp) Menu_Taunt_Input = 
+{
+	if (inp == TF_FLARE_OFF)
+	{
+		stuffcmd(self, "bic\n");
+	}
+	else
+	{
+		if (inp == 2)
+		{
+			stuffcmd(self, "impulse 250\n");
+		}
+		else
+		{
+			if (inp == 3)
+			{
+				stuffcmd(self, "hey\n");
+			}
+			else
+			{
+				if (inp == 4)
+				{
+					stuffcmd(self, "bhole\n");
+				}
+				else
+				{
+					if (inp == 5)
+					{
+						sound(self, TF_FLARE_OFF, "speech/call911.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+					}
+					else
+					{
+						if (inp == 6)
+						{
+							sound(self, TF_FLARE_OFF, "speech/kicknads.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+						}
+						else
+						{
+							if (inp == 7)
+							{
+								sound(self, TF_FLARE_OFF, "speech/idoasskk.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+							}
+							else
+							{
+								if (inp == 8)
+								{
+									sound(self, TF_FLARE_OFF, "speech/pathetic.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+								}
+								else
+								{
+									if (inp > 8)
+									{
+										ResetMenu();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	ResetMenu();
+	self.impulse = TF_FLARE_LIT;
+};
+
+void(float inp) Menu_Yell_Input = 
+{
+	WriteByte(4, 23);
+	WriteByte(4, 11);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+
+	if (inp == TF_FLARE_OFF)
+	{
+		sound(self, TF_FLARE_OFF, "speech/yell/coverme.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	else
+	{
+		if (inp == 2)
+		{
+			sound(self, TF_FLARE_OFF, "speech/yell/overhere.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		else
+		{
+			if (inp == 3)
+			{
+				sound(self, TF_FLARE_OFF, "speech/yell/thisway.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			}
+			else
+			{
+				if (inp == 4)
+				{
+					sound(self, TF_FLARE_OFF, "speech/yell/followme.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				}
+				else
+				{
+					if (inp == 5)
+					{
+						sound(self, TF_FLARE_OFF, "speech/yell/incomng.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+					}
+					else
+					{
+						if (inp == 6)
+						{
+							sound(self, TF_FLARE_OFF, "speech/yell/holdup.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+						}
+						else
+						{
+							if (inp == 7)
+							{
+								sound(self, TF_FLARE_OFF, "speech/yell/gogogo.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+							}
+							else
+							{
+								if (inp == 8)
+								{
+									sound(self, TF_FLARE_OFF, "speech/yell/lookout.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+								}
+								else
+								{
+									if (inp == 9)
+									{
+										sound(self, TF_FLARE_OFF, "speech/yell/firehole.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+									}
+									else
+									{
+										if (inp > 9)
+										{
+											ResetMenu();
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	ResetMenu();
+	self.impulse = TF_FLARE_LIT;
+};
+
+void() Menu_Intro = 
+{
+	CenterPrint(self, ".");
+};
+
+void() Menu_ClassHelp = 
+{
+	local string he;
+	he = infokey(self, "tf_help");
+if (he != "off")
+{
+	if (self.menu_displaytime < 5)
+	{
+		if (self.playerclass == TF_FLARE_OFF)
+		{
+			CenterPrint(self, "”√œ’‘ Details:               \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n4.. MAC-10                   \ndrop1 :  drop a Flash mine\n\n\nPress ö for alias help\n");
+		}
+		else
+		{
+			if (self.playerclass == 2)
+			{
+				CenterPrint(self, "”Œ…–≈“ Details:              \n\n◊≈¡–œŒ”:                     \n2.. Sniper Rifle/Auto Rifle  \n4.. MAC-10            \ndrop1 : Set an Alarm       \nairstrike : call AirStrike \n+spot : SpotLight on/off  \n\nPress ö for alias help\n");
+			}
+			else
+			{
+				if (self.playerclass == 3)
+				{
+					CenterPrint(self, "”œÃƒ…≈“ Details:             \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n3.. Super Shotgun            \n7.. Rocket Launcher          \ndrop1 : Drop a Spike Trap!   \ndrop3 : Set a ProxiMine!     \n\nPress ö for alias help\n");
+				}
+				else
+				{
+					if (self.playerclass == 4)
+					{
+						CenterPrint(self, "ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:     \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n5.. Long-range grenade       \n6.. Grenade Launcher         \n7.. Pipebomb Launcher        \n\ndrop1 : Air-MIRV           \n\nPress ö for alias help\n");
+					}
+					else
+					{
+						if (self.playerclass == 5)
+						{
+							CenterPrint(self, "Õ≈ƒ…√ Details:               \n\n◊≈¡–œŒ”:                     \n1.. Medikit/BioWeapon        \n2.. Shotgun                  \n3.. Super Shotgun            \n5.. Super Nailgun            \n\ndrop1 :  drop an infected syringe\n");
+						}
+						else
+						{
+							if (self.playerclass == 6)
+							{
+								CenterPrint(self, "»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:   \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n3.. Super Shotgun            \n7.. Assault Cannon           \ndrop1 : Drop a Spike Trap!   \n\nPress ö for alias help\n");
+							}
+							else
+							{
+								if (self.playerclass == 7)
+								{
+									CenterPrint(self, "–Ÿ“œ Details:                \n\n◊≈¡–œŒ”:                     \n2.. Shotgun                  \n6.. Flamethrower             \n7.. Incendiary Cannon        \ndrop1 : Drop Lava!           \n\nPress ö for alias help\n");
+								}
+								else
+								{
+									if (self.playerclass == 8)
+									{
+										CenterPrint(self, "”–Ÿ Details:                 \n\n◊≈¡–œŒ”:                     \n2.. Tranquiliser Gun         \n3.. Super Shotgun            \n4.. MAC-10                   \n8.. Grapple Hook              \ndrop1 : Drop an Ammo Trap!   \n\nPress ö for alias help\n");
+									}
+									else
+									{
+										if (self.playerclass == 9)
+										{
+											CenterPrint(self, "≈Œ«…Œ≈≈“ Details:            \n\n◊≈¡–œŒ”:                     \n1.. Spanner                  \n2.. RailGun                  \n3.. Super Shotgun            \ndrop1 : Set a Mag Trap!      \n\nPress ö for alias help\n");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		if (self.playerclass == TF_FLARE_OFF)
+		{
+			CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nFlash Grenade       \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nScanner: scan10,scan50,scan250\nJetJump: jetjump\ndrop1 :  drop a Flash mine\n\n\nPress ö for alias help\n");
+		}
+		else
+		{
+			if (self.playerclass == 2)
+			{
+				CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nFlare               \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nautozoom : Toggle Rifle Autozooming\nSet an Alarm   : drop1  \n  Call AirStrike : airstrike\n  SpotLight    : +spot  \n\nPress ö for alias help\n");
+			}
+			else
+			{
+				if (self.playerclass == 3)
+				{
+					CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNail Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nDrop a Spike Trap   : Drop1\ndrop3 : Set a ProxiMine!     \n\n\nPress ö for alias help\n");
+				}
+				else
+				{
+					if (self.playerclass == 4)
+					{
+						CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nThe Detpack : det5,det20,det50\nDetonate Pipebombs : detpipe  \nAir-MIRV      : drop1      \n\nPress ö for alias help\n");
+					}
+					else
+					{
+						if (self.playerclass == 5)
+						{
+							CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nConcussion Grenade  \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nHeal Yourself : drop3 or heal\n\n\nPress ö for alias help\n");
+						}
+						else
+						{
+							if (self.playerclass == 6)
+							{
+								CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nMirv Grenade        \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nSet an Spike Trap : drop1  \n\n\nPress ö for alias help\n");
+							}
+							else
+							{
+								if (self.playerclass == 7)
+								{
+									CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nNapalm Grenade      \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nDrop a lava pool  : drop1  \n\n\nPress ö for alias help\n");
+								}
+								else
+								{
+									if (self.playerclass == 8)
+									{
+										CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nHallucinogen Grenade\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nGo Undercover : disguise\nSet an Ammo Trap : drop1  \n\nPress ö for alias help\n");
+									}
+									else
+									{
+										if (self.playerclass == 9)
+										{
+											CenterPrint(self, "«“≈Œ¡ƒ≈”:            \nHand Grenade        \nEMP Grenade         \n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:   \nStart Building : build  \n    Set a Mag Trap : drop1  \n\n\nPress ö for alias help\n");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+};
+
+void() Menu_StuffClassHelp = 
+{
+	local string he;
+	he = infokey (self, "tf_help");
+if (he != "off")
+{
+	if (self.playerclass == TF_FLARE_OFF)
+	{
+		sprint(self, 2, "”√œ’‘ Details:\n◊≈¡–œŒ”:\n   2.. Shotgun\n   4.. MAC-10 \n");
+		sprint(self, 2, "«“≈Œ¡ƒ≈”:\n   Concussion Grenade\n   Flare\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+		sprint(self, 2, "Scanner: scan10,scan30,scan100\nJetJump: jetjump\ndrop1 :  drop a Flash mine\n\n\n");
+	}
+	else
+	{
+		if (self.playerclass == 2)
+		{
+			sprint(self, 2, "”Œ…–≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Sniper Rifle/Auto Rifle\n");
+			sprint(self, 2, "4.. MAC-10 \n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n\n\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n");
+			sprint(self, 2, "  autozoom : Toggle Scope Autozooming\n  drop1 : drop an alarm mine\nairstrike : call an AirStrike\n +spot : Toggle SpotLight \n\n");
+		}
+		else
+		{
+			if (self.playerclass == 3)
+			{
+				sprint(self, 2, "”œÃƒ…≈“ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+				sprint(self, 2, "   7.. Rocket Launcher\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Nail Grenade\n");
+				sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n  drop1 : Drop a Spike Trap  \n  drop3 : Set a ProxiMine!   \n\n\n");
+			}
+			else
+			{
+				if (self.playerclass == 4)
+				{
+					sprint(self, 2, "ƒ≈ÕœÃ…‘…œŒ” Õ¡Œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   5.. Long-range Grenades     \n6.. Grenade Launcher      \n7..Pipebomb Launcher\n");
+					sprint(self, 2, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Mirv Grenade\n");
+					sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   The Detpack : det5,det20,det50\n   Detonate Pipebombs : detpipe\n  drop1 : release an AirMIRV      \n\n");
+				}
+				else
+				{
+					if (self.playerclass == 5)
+					{
+						sprint(self, 2, "Õ≈ƒ…√ Details:\n\n◊≈¡–œŒ”:\n   1.. Medikit/BioWeapon\n   2.. Shotgun\n   3.. Super Shotgun\n");
+						sprint(self, 2, "   5.. Super Nailgun\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Concussion Grenade\n");
+						sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Drop1 : drop an infected syringe\n\n\n");
+					}
+					else
+					{
+						if (self.playerclass == 6)
+						{
+							sprint(self, 2, "»≈¡÷Ÿ ◊≈¡–œŒ” «’Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+							sprint(self, 2, "   7.. Assault Cannon\n«“≈Œ¡ƒ≈”:\n   Hand Grenade\n");
+							sprint(self, 2, "   Mirv Grenade\n”–≈√…¡Ã √œÕÕ¡Œƒ”:\n  drop1 : set a spike trap\n\n\n");
+						}
+						else
+						{
+							if (self.playerclass == 7)
+							{
+								sprint(self, 2, "–Ÿ“œ Details:\n\n◊≈¡–œŒ”:\n   2.. Shotgun\n   6.. Flamethrower\n   7.. Incendiary Cannon\n");
+								sprint(self, 2, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Napalm Grenade\n");
+								sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   None\n\n\n");
+							}
+							else
+							{
+								if (self.playerclass == 8)
+								{
+									sprint(self, 2, "”–Ÿ Details:\n\n◊≈¡–œŒ”:\n   2.. Tranquiliser Gun\n   3.. Super Shotgun\n   4.. MAC-10 \n   8.. Grapple Hook \n");
+									sprint(self, 2, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
+									sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Go Undercover : disguise\n  drop1 : drop an Ammo Trap\n\n");
+								}
+								else
+								{
+									if (self.playerclass == 9)
+									{
+										sprint(self, 2, "≈Œ«…Œ≈≈“ Details:\n\n◊≈¡–œŒ”:\n   1.. Spanner\n   2.. RailGun\n   3.. Super Shotgun\n");
+										sprint(self, 2, "«“≈Œ¡ƒ≈”:\n   Hand Grenade\n   EMP Grenade\n");
+										sprint(self, 2, "”–≈√…¡Ã √œÕÕ¡Œƒ”:\n   Start Building : build\n      Set a Mag Trap : drop1   \n\n\n");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+};
+
+void() Menu_ClassHelp2 = 
+{
+	CenterPrint(self, "Commands:\ninv       : Show inventory \n+gren1    : Throw grenade 1\n+gren2    : Throw Grenade 2\nreload    : Force a reload \ndropammo  : drop some ammo \nlay       : start lay mode \nbic       : flick your bic!\ndrop1     : drop a mine!   \nmega      : Mega-TF Menu!  \n");
+};
+
+void(float inp) Menu_ClassHelp_Input = 
+{
+	if (inp == 8)
+	{
+		Menu_ClassHelp2();
+		self.menu_count = 25;
+		self.current_menu = 7;
+		self.menu_displaytime = TF_FLARE_LIT;
+		self.impulse = TF_FLARE_LIT;
+	}
+};
+
+void() Menu_DoBindings = 
+{
+	CenterPrint(self, "ì.. Use keys: E R F V C Q X G Z\nî.. Use keys: S X D C F V B G N\nï.. Don't make bindings        \n");
+};
+
+void() Menu_ShowBindings1 = 
+{
+	CenterPrint(self, "—.. Flaginfo      \n≈.. Hook          \n“.. Throw Gren 1  \n∆.. Throw Gren 2  \n÷.. Det. Pipebombs\n√.. Drop ammo     \nÿ.. Use Scanner   \n«.. Showclasses   \n⁄.. inventory     \n");
+};
+
+void() Menu_ShowBindings2 = 
+{
+	CenterPrint(self, "”.. Flaginfo      \nÿ.. Hook          \nƒ.. Throw Gren 1  \n√.. Throw Gren 2  \n∆.. Det. Pipebombs\n÷.. Drop ammo     \n¬.. Use Scanner   \n«.. Showclasses   \nŒ.. inventory     \n");
+};
+
+void() Menu_Spy = 
+{
+	if (spyjumpoption)
+	{
+		if (self.is_feigning)
+		{
+			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			{
+				CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Skin and Color        \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+			}
+			else
+			{
+				if ((self.undercover_team != 0.000000))
+				{
+					CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Color                 \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+				}
+				else
+				{
+					if ((self.undercover_skin != 0.000000))
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Skin                  \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+					}
+					else
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+					}
+				}
+			}
+		}
+		else
+		{
+			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			{
+				CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Skin and Color        \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+			}
+			else
+			{
+				if ((self.undercover_team != 0.000000))
+				{
+					CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Color                 \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+				}
+				else
+				{
+					if ((self.undercover_skin != 0.000000))
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Skin                  \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+					}
+					else
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nó.. Change Jump Style           \nò.. Nothing                     \n\n");
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		if (self.is_feigning)
+		{
+			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			{
+				CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Skin and Color        \nó.. Nothing                     \n\n");
+			}
+			else
+			{
+				if ((self.undercover_team != 0.000000))
+				{
+					CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Color                 \nó.. Nothing                     \n\n");
+				}
+				else
+				{
+					if ((self.undercover_skin != 0.000000))
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Reset Skin                  \nó.. Nothing                     \n\n");
+					}
+					else
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Stop Feigning               \nñ.. Nothing                     \n\n");
+					}
+				}
+			}
+		}
+		else
+		{
+			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			{
+				CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Skin and Color        \nó.. Nothing                     \n\n");
+			}
+			else
+			{
+				if ((self.undercover_team != 0.000000))
+				{
+					CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Color                 \nó.. Nothing                     \n\n");
+				}
+				else
+				{
+					if ((self.undercover_skin != 0.000000))
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Reset Skin                  \nó.. Nothing                     \n\n");
+					}
+					else
+					{
+						CenterPrint (self, "Action:                           \nì.. Change Skin                 \nî.. Change Color                \nï.. Start Feigning              \nñ.. Nothing                     \n\n");
+					}
+				}
+			}
+		}
+	}
+};
+
+void (float _p_955) Menu_Spy_Input =
+{
+	local float _l_956;
+	local string _l_957;
+
+	if (((_p_955 == 1.000000) || (_p_955 == 2.000000)))
+	{
+		if ((self.effects & 12.000000))
+		{
+			sprint (self, 2.000000, "You can't go undercover while glowing.\n");
+			ResetMenu ();
+			self.impulse = 0.000000;
+			return;
+		}
+		if ((self.is_unabletospy == 1.000000))
+		{
+			sprint (self, 2.000000, "You can't go undercover right now.\n");
+			ResetMenu ();
+			self.impulse = 0.000000;
+			return;
+		}
+	}
+	if ((_p_955 == 1.000000))
+	{
+		Menu_Spy_Skin ();
+		self.menu_count = 25.000000;
+		self.current_menu = 13.000000;
+		self.menu_displaytime = 0.000000;
+		self.impulse = 0.000000;
+	}
+	else
+	{
+		if ((_p_955 == 2.000000))
+		{
+			Menu_Spy_Color ();
+			self.menu_count = 25.000000;
+			self.current_menu = 14.000000;
+			self.menu_displaytime = 0.000000;
+			self.impulse = 0.000000;
+		}
+		else
+		{
+			if ((_p_955 == 3.000000))
+			{
+				TeamFortress_SpyFeignDeath (0.000000);
+				ResetMenu ();
+				self.impulse = 0.000000;
+			}
+			else
+			{
+				if ((_p_955 == 4.000000))
+				{
+					Spy_RemoveDisguise (self);
+					ResetMenu ();
+					self.impulse = 0.000000;
+				}
+				else
+				{
+					if ((_p_955 == 5.000000))
+					{
+						if (spyjumpoption)
+						{
+							if ((self.spy_regjump == 1.000000))
+							{
+								self.spy_regjump = 0.000000;
+								sprint (self, 2.000000, "Jump style now high\n");
+							}
+							else
+							{
+								self.spy_regjump = 1.000000;
+								sprint (self, 2.000000, "Jump style now disguised\n");
+							}
+							ResetMenu ();
+							self.impulse = 0.000000;
+						}
+					}
+					else
+					{
+						if ((((_p_955 == 5.000000) && !spyjumpoption) && ((self.undercover_team != 0.000000) || (self.undercover_skin != 0.000000))))
+						{
+							ResetMenu ();
+							self.impulse = 0.000000;
+						}
+						else
+						{
+							if (((_p_955 == 6.000000) && ((self.undercover_team != 0.000000) || (self.undercover_skin != 0.000000))))
+							{
+								ResetMenu ();
+								self.impulse = 0.000000;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+void() Menu_Spy_Skin = 
+{
+	CenterPrint(self, "Change Skin to:\nì.. Scout   \nî.. Sniper  \nï.. Soldier \nñ.. Demoman \nó.. Medic   \nò.. Hwguy   \nô.. Pyro    \nö.. Spy     \nõ.. Engineer\n\n");
+};
+
+void(float inp) Menu_Spy_Skin_Input = 
+{
+	if (inp < 10 && inp > TF_FLARE_LIT)
+	{
+		TeamFortress_SpyChangeSkin(inp);
+		ResetMenu();
+		self.impulse = TF_FLARE_LIT;
+	}
+};
+
+void() Menu_Spy_Color = 
+{
+	if (number_of_teams == TF_FLARE_LIT)
+	{
+		sprint(self, 2, "No Color changing allowed in deathmatch.\n");
+		ResetMenu();
+		self.impulse = TF_FLARE_LIT;
+		return;
+	}
+	if (number_of_teams == TF_FLARE_OFF)
+	{
+		CenterPrint(self, "=== Change Color to the Same Color as  ===\n\nì.. Team One  \n\n");
+	}
+	else
+	{
+		if (number_of_teams == 2)
+		{
+			CenterPrint(self, "=== Change Color to the Same Color as  ===\n\nì.. Team One  \nî.. Team Two  \n\n");
+		}
+		else
+		{
+			if (number_of_teams == 3)
+			{
+				CenterPrint(self, "=== Change Color to the Same Color as  ===\n\nì.. Team One  \nî.. Team Two  \nï.. Team Three\n\n");
+			}
+			else
+			{
+				CenterPrint(self, "=== Change Color to the Same Color as  ===\n\nì.. Team One  \nî.. Team Two  \nï.. Team Three\nñ.. Team Four \n\n");
+			}
+		}
+	}
+};
+
+void(float inp) Menu_Spy_Color_Input = 
+{
+	if (inp >= TF_FLARE_OFF && inp <= number_of_teams)
+	{
+		TeamFortress_SpyChangeColor(inp);
+		ResetMenu();
+		self.impulse = TF_FLARE_LIT;
+	}
+};
+
+void() Menu_Engineer = 
+{
+	if (self.has_dispenser == TF_FLARE_OFF && self.has_sentry == TF_FLARE_OFF)
+	{
+		CenterPrint(self, "Action:                           \nì.. Remotely Detonate Dispenser \nî.. Remotely Detonate Sentry Gun\nñ.. Nothing                     \n\n");
+	}
+	else
+	{
+		if (self.has_dispenser && self.ammo_cells >= 130)
+		{
+			CenterPrint(self, "Action:                           \nì.. Remotely Detonate Dispenser \nî.. Build Sentry Gun            \nñ.. Nothing                     \n\n");
+		}
+		else
+		{
+			if (self.has_dispenser)
+			{
+				CenterPrint(self, "Action:                           \nì.. Remotely Detonate Dispenser \nñ.. Nothing                     \n\n");
+			}
+			else
+			{
+				if (self.has_sentry && self.ammo_cells >= 100)
+				{
+					CenterPrint(self, "Action:                           \nì.. Build Ammo&Armor Dispenser  \nî.. Remotely Detonate Sentry Gun\nñ.. Nothing                     \n\n");
+				}
+				else
+				{
+					if (self.has_sentry)
+					{
+						CenterPrint(self, "Action:                           \nî.. Remotely Detonate Sentry Gun\nñ.. Nothing                     \n\n");
+					}
+					else
+					{
+						if (self.ammo_cells >= 130)
+						{
+							CenterPrint(self, "Action:                           \nì.. Build Ammo&Armor Dispenser  \nî.. Build Sentry Gun            \nñ.. Nothing                     \n\n");
+						}
+						else
+						{
+							if (self.ammo_cells >= 100)
+							{
+								CenterPrint(self, "Action:                           \nì.. Build Ammo&Armor Dispenser  \nñ.. Nothing                     \n\n");
+							}
+							else
+							{
+								ResetMenu();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+void(float inp) Menu_Engineer_Input = 
+{
+	local entity te;
+	if (inp == TF_FLARE_OFF && (self.ammo_cells >= 100 || self.has_dispenser == TF_FLARE_OFF))
+	{
+		if (self.has_dispenser)
+		{
+			te = find(world, classname, "building_dispenser");
+			while (te)
+			{
+				if (te.real_owner == self)
+				{
+					deathmsg = 201;
+					T_RadiusDamage(te, te.real_owner, 140, world);
+					TF_T_Damage(te, world, world, 500, TF_FLARE_LIT, TF_FLARE_LIT);
+				}
+				te = find(te, classname, "building_dispenser");
+			}
+		}
+		else
+		{
+			sound(self, 3, "items/repair.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			TeamFortress_Build(TF_FLARE_OFF);
+		}
+		ResetMenu();
+		self.impulse = TF_FLARE_LIT;
+	}
+	else
+	{
+		if (inp == 2 && (self.ammo_cells >= 130 || self.has_sentry == TF_FLARE_OFF))
+		{
+			if (self.has_sentry)
+			{
+				te = find(world, classname, "building_sentrygun");
+				while (te)
+				{
+					if (te.real_owner == self)
+					{
+						TF_T_Damage(te, world, world, 500, TF_FLARE_LIT, TF_FLARE_LIT);
+					}
+					te = find(te, classname, "building_sentrygun");
+				}
+			}
+			else
+			{
+				sound(self, 3, "items/repair.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				TeamFortress_Build(2);
+			}
+			ResetMenu();
+			self.impulse = TF_FLARE_LIT;
+		}
+		else
+		{
+			if (inp == 4)
+			{
+				ResetMenu();
+				self.impulse = TF_FLARE_LIT;
+			}
+		}
+	}
+};
+
+void() Menu_EngineerFix_Dispenser = 
+{
+	CenterPrint(self, "Action:                            \nêìë.. Put Ammo into Dispenser     \nêîë.. Put Armor into Dispenser    \nêïë.. Repair Dispenser            \nêñë.. Dismantle Dispenser         \nêóë.. Nothing                     \n\n");
+};
+
+void(float inp) Menu_EngineerFix_Dispenser_Input = 
+{
+	local float metalcost;
+	local float am;
+	local string f1;
+	if (self.classname != "player" || self.building == world)
+	{
+		return;
+	}
+	if (inp == TF_FLARE_OFF)
+	{
+		am = 20 * 2;
+		if (am > self.ammo_shells)
+		{
+			am = self.ammo_shells;
+		}
+		if (am > 400 - self.building.ammo_shells)
+		{
+			am = 400 - self.building.ammo_shells;
+		}
+		self.ammo_shells = self.ammo_shells - am;
+		self.building.ammo_shells = self.building.ammo_shells + am;
+		am = 20 * 2;
+		if (am > self.ammo_nails)
+		{
+			am = self.ammo_nails;
+		}
+		if (am > 600 - self.building.ammo_nails)
+		{
+			am = 600 - self.building.ammo_nails;
+		}
+		self.ammo_nails = self.ammo_nails - am;
+		self.building.ammo_nails = self.building.ammo_nails + am;
+		am = 10 * 2;
+		if (am > self.ammo_rockets)
+		{
+			am = self.ammo_rockets;
+		}
+		if (am > 300 - self.building.ammo_rockets)
+		{
+			am = 300 - self.building.ammo_rockets;
+		}
+		self.ammo_rockets = self.ammo_rockets - am;
+		self.building.ammo_rockets = self.building.ammo_rockets + am;
+		am = 10 * 2;
+		if (am > self.ammo_cells)
+		{
+			am = self.ammo_cells;
+		}
+		if (am > 400 - self.building.ammo_cells)
+		{
+			am = 400 - self.building.ammo_cells;
+		}
+		self.ammo_cells = self.ammo_cells - am;
+		self.building.ammo_cells = self.building.ammo_cells + am;
+	}
+	else
+	{
+		if (inp == 2)
+		{
+			am = 40 * 2;
+			if (am > self.armorvalue)
+			{
+				am = self.armorvalue;
+			}
+			if (am > 500 - self.building.armorvalue)
+			{
+				am = 500 - self.building.armorvalue;
+			}
+			self.armorvalue = self.armorvalue - am;
+			self.building.armorvalue = self.building.armorvalue + am;
+		}
+		else
+		{
+			if (inp == 3)
+			{
+				sound(self, 3, "items/repair.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+				metalcost = (self.building.max_health - self.building.health) / 5;
+				if (metalcost > self.ammo_cells)
+				{
+					metalcost = self.ammo_cells;
+				}
+				self.ammo_cells = self.ammo_cells - metalcost;
+				self.building.health = self.building.health + metalcost * 5;
+			}
+			else
+			{
+				if (inp == 4)
+				{
+					sprint(self, 2, "You dismantle the Dispenser.\n");
+					self.ammo_cells = self.ammo_cells + 100 / 2;
+					dremove(self.building);
+					self.building.real_owner.has_dispenser = TF_FLARE_LIT;
+				}
+			}
+		}
+	}
+	if (inp >= TF_FLARE_OFF && inp <= 5)
+	{
+		ResetMenu();
+		self.impulse = TF_FLARE_LIT;
+		self.building = world;
+		bound_other_ammo(self);
+		if (self.armorvalue == TF_FLARE_LIT)
+		{
+			self.armortype = TF_FLARE_LIT;
+			self.armorclass = TF_FLARE_LIT;
+			self.items = self.items - (self.items & (8192 | 16384 | 32768));
+		}
+		W_SetCurrentAmmo();
+	}
+};
+
+void () Menu_EngineerFix_SentryGun =
+{
+
+	if (((self.building.weapon < 3.000000) && (self.ammo_cells >= 130.000000)))
+	{
+		CenterPrint (self, "Action:                            \nêìë.. Put Ammo into Sentry Gun    \nêîë.. Upgrade Sentry Gun          \nêïë.. Repair Sentry Gun           \nêñë.. Dismantle Sentry Gun        \nêóë.. Nothing                     \n                                  \nê6ë.. Rotate Clockwise            \n\n");
+	}
+	else
+	{
+		if ((self.building.weapon == 3.000000))
+		{
+			CenterPrint (self, "Action:                            \nêìë.. Put Ammo into Sentry Gun    \n\nêïë.. Repair Sentry Gun           \nêñë.. Dismantle Sentry Gun        \nêóë.. Nothing                     \n                                  \nê6ë.. Rotate Clockwise            \nê7ë.. Unload Rockets              \n\n");
+		}
+		else
+		{
+			CenterPrint (self, "Action:                            \nêìë.. Put Ammo into Sentry Gun    \n\nêïë.. Repair Sentry Gun           \nêñë.. Dismantle Sentry Gun        \nêóë.. Nothing                     \n                                  \nê6ë.. Rotate Clockwise            \n\n");
+		}
+	}
+};
+
+void (float inp) Menu_EngineerFix_SentryGun_Input =
+{
+	local float am;
+	local float metalcost;
+	local string st;
+
+	if (((self.classname != "player") || (self.building == world)))
+	{
+		return;
+	}
+	if ((inp == 1.000000))
+	{
+		am = 40.000000;
+		if ((am > self.ammo_shells))
+		{
+			am = self.ammo_shells;
+		}
+		if ((am > (self.building.maxammo_shells - self.building.ammo_shells)))
+		{
+			am = self.building.maxammo_shells - self.building.ammo_shells;
+		}
+		self.ammo_shells = (self.ammo_shells - am);
+		self.building.ammo_shells = (self.building.ammo_shells + am);
+		if ((self.building.weapon == 3.000000))
+		{
+			am = 20.000000;
+			if ((am > self.ammo_rockets))
+			{
+				am = self.ammo_rockets;
+			}
+			if ((am > (self.building.maxammo_rockets - self.building.ammo_rockets)))
+			{
+				am = self.building.maxammo_rockets - self.building.ammo_rockets;
+			}
+			self.ammo_rockets = (self.ammo_rockets - am);
+			self.building.ammo_rockets = (self.building.ammo_rockets + am);
+		}
+	}
+	else
+	{
+		if ((((self.building.weapon < 3.000000) && (inp == 2.000000)) && (self.ammo_cells >= 130.000000)))
+		{
+			self.ammo_cells = (self.ammo_cells - 130.000000);
+			self.building.weapon = (self.building.weapon + 1.000000);
+			self.building.max_health = (self.building.max_health * 1.200000);
+			self.building.health = self.building.max_health;
+			self.building.maxammo_shells = (self.building.maxammo_shells * 1.200000);
+			if ((self.building.weapon == 2.000000))
+			{
+				sound (self.building, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+				self.building.think = lvl2_sentry_stand;
+				self.building.skin = 1.000000;
+			}
+			else
+			{
+				sound (self.building, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+				self.building.think = lvl3_sentry_stand;
+				self.building.skin = 2.000000;
+			}
+			sprint (self, 2.000000, "You upgrade the Sentry Gun to level ");
+			st = ftos (self.building.weapon);
+			sprint (self, 2.000000, st);
+			sprint (self, 2.000000, "\n");
+			if (((self.client == "fuhquake") || (self.client == "zquake")))
+			{
+				stuffcmd (self, "set $sentryhealth ");
+				stuffcmd (self, ftos (rint (self.building.health)));
+				stuffcmd (self, "\n");
+			}
+		}
+		else
+		{
+			if ((inp == 3.000000))
+			{
+				metalcost = (self.building.max_health - self.building.health) / 5.000000;
+				if ((metalcost > self.ammo_cells))
+				{
+					metalcost = self.ammo_cells;
+				}
+				sound (self, 3.000000, "items/repair.wav", 1.000000, 1.000000);
+				self.ammo_cells = (self.ammo_cells - metalcost);
+				self.building.health = (self.building.health + (metalcost * 5.000000));
+				if (((self.client == "fuhquake") || (self.client == "zquake")))
+				{
+					stuffcmd (self, "set $sentryhealth ");
+					stuffcmd (self, ftos (rint (self.building.health)));
+					stuffcmd (self, "\n");
+				}
+			}
+			else
+			{
+				if ((inp == 4.000000))
+				{
+//anti dismantle
+					if ((self.building.real_owner.team_no == self.team_no && self.building.real_owner != self))
+					{
+						sprint(self, 1, "You cannot dismantle a teammate's sentry gun.\n");
+						ResetMenu ();
+						self.impulse = 0.000000;							return;
+					}
+					sprint (self, 2.000000, "You dismantle the Sentry Gun.\n");
+					if ((self.building.real_owner != self))
+					{
+						sprint (self.building.real_owner, 2.000000, self.netname);
+						sprint (self.building.real_owner, 2.000000, " has dismantled your sentry gun.\n");
+						bprint (1.000000, self.netname);
+						if ((self.building.real_owner.team_no == self.team_no))
+						{
+							bprint (1.000000, " dismantled teammate ");
+						}
+						else
+						{
+							bprint (1.000000, " humiliated ");
+						}
+						bprint (1.000000, self.building.real_owner.netname);
+						bprint (1.000000, "'s sentry gun.\n");
+					}
+					self.ammo_cells = (self.ammo_cells + 65.000000);
+					dremove (self.building.trigger_field);
+					dremove (self.building);
+					self.building.real_owner.has_sentry = 0.000000;
+					if (((self.client == "fuhquake") || (self.client == "zquake")))
+					{
+						stuffcmd (self, "set $sentryhealth 0\n");
+					}
+				}
+				else
+				{
+					if ((inp == 6.000000))
+					{
+						sprint (self, 2.000000, "Rotating 45 degrees clockwise...\n");
+						self.building.waitmin = anglemod ((self.building.waitmin - 45.000000));
+						self.building.waitmax = anglemod ((self.building.waitmax - 45.000000));
+					}
+					if ((inp == 7.000000))
+					{
+						self.ammo_rockets = (self.ammo_rockets + self.building.ammo_rockets);
+						if ((self.ammo_rockets > self.maxammo_rockets))
+						{
+							self.ammo_rockets = self.maxammo_rockets;
+						}
+						self.building.ammo_rockets = 0.000000;
+						sprint (self, 2.000000, "You have unloaded your sentry's rocket cache.\n");
+					}
+				}
+			}
+		}
+	}
+	if (((inp >= 1.000000) && (inp <= 7.000000)))
+	{
+		ResetMenu ();
+		self.impulse = 0.000000;
+		bound_other_ammo (self);
+		if ((self.armorvalue == 0.000000))
+		{
+			self.armortype = 0.000000;
+			self.armorclass = 0.000000;
+			self.items = (self.items - (self.items & 57344.000000));
+		}
+		W_SetCurrentAmmo ();
+	}
+};
+
+void() Menu_Dispenser = 
+{
+	CenterPrint(self, "Use Dispenser:                     \nêìë.. Withdraw some ammo     \nêîë.. Withdraw some Armor    \nêïë.. Health & Vaccine       \nêñë.. BioSuit (AntiToaster)  \nêóë.. Nothing                \n\n");
+};
+
+void (float _p_1052) Menu_Dispenser_Input =
+{
+	local float _l_1053;
+	local float _l_1054;
+	local entity _l_1055;
+
+	_l_1054 = 0.000000;
+	if ((_p_1052 == 1.000000))
+	{
+		if (((((self.building.ammo_shells == 0.000000) && (self.building.ammo_nails == 0.000000)) && (self.building.ammo_rockets == 0.000000)) && (self.building.ammo_cells == 0.000000)))
+		{
+			_l_1054 = 1.000000;
+		}
+		else
+		{
+			_l_1053 = self.maxammo_shells - self.ammo_shells;
+			if ((_l_1053 > self.building.ammo_shells))
+			{
+				_l_1053 = self.building.ammo_shells;
+			}
+			self.building.ammo_shells = (self.building.ammo_shells - _l_1053);
+			self.ammo_shells = (self.ammo_shells + _l_1053);
+			_l_1053 = self.maxammo_nails - self.ammo_nails;
+			if ((_l_1053 > self.building.ammo_nails))
+			{
+				_l_1053 = self.building.ammo_nails;
+			}
+			self.building.ammo_nails = (self.building.ammo_nails - _l_1053);
+			self.ammo_nails = (self.ammo_nails + _l_1053);
+			_l_1053 = self.maxammo_rockets - self.ammo_rockets;
+			if ((_l_1053 > self.building.ammo_rockets))
+			{
+				_l_1053 = self.building.ammo_rockets;
+			}
+			self.building.ammo_rockets = (self.building.ammo_rockets - _l_1053);
+			self.ammo_rockets = (self.ammo_rockets + _l_1053);
+			_l_1053 = self.maxammo_cells - self.ammo_cells;
+			if ((_l_1053 > self.building.ammo_cells))
+			{
+				_l_1053 = self.building.ammo_cells;
+			}
+			self.building.ammo_cells = (self.building.ammo_cells - _l_1053);
+			self.ammo_cells = (self.ammo_cells + _l_1053);
+			sound (self, 3.000000, "weapons/rocklr1a.wav", 1.000000, 1.000000);
+			if (self.autodiscard)
+			{
+				TeamFortress_Discard ();
+			}
+		}
+	}
+	else
+	{
+		if ((_p_1052 == 2.000000))
+		{
+			if ((self.building.armorvalue == 0.000000))
+			{
+				_l_1054 = 1.000000;
+			}
+			else
+			{
+				_l_1053 = self.maxarmor - self.armorvalue;
+				if ((_l_1053 > self.building.armorvalue))
+				{
+					_l_1053 = self.building.armorvalue;
+				}
+				if ((self.armortype == 0.000000))
+				{
+					self.armortype = 0.300000;
+					self.items = (self.items | 8192.000000);
+				}
+				self.building.armorvalue = (self.building.armorvalue - _l_1053);
+				self.armorvalue = (self.armorvalue + _l_1053);
+				sound (self, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+			}
+		}
+		else
+		{
+			if ((_p_1052 == 3.000000))
+			{
+				if ((self.building.armorvalue == 0.000000))
+				{
+					_l_1054 = 1.000000;
+				}
+				else
+				{
+					if ((self.building.skin == 1.000000))
+					{
+						if ((self.leg_damage > 1.000000))
+						{
+							sprint (self, 2.000000, "Your leg wound has been healed!\n");
+						}
+						TeamFortress_SetSpeed (self);
+						_l_1055 = find (world, classname, "timer");
+						while ((((_l_1055.owner != self) || (_l_1055.think != ConcussionGrenadeTimer)) && (_l_1055 != world)))
+						{
+							_l_1055 = find (_l_1055, classname, "timer");
+						}
+						if ((_l_1055 != world))
+						{
+							stuffcmd (self, "v_idlescale 0\n");
+							sprint (self, 2.000000, "you have been healed of your concussion\n");
+							dremove (_l_1055);
+						}
+						if ((self.tfstate & 16384.000000))
+						{
+							_l_1055 = find (world, classname, "timer");
+							while ((((_l_1055.owner != self) || (_l_1055.think != HallucinationTimer)) && (_l_1055 != world)))
+							{
+								_l_1055 = find (_l_1055, classname, "timer");
+							}
+							if ((_l_1055 != world))
+							{
+								stuffcmd (self, "v_idlescale 0\n");
+								self.tfstate = (self.tfstate - (self.tfstate & 16384.000000));
+								sprint (self, 2.000000, "you have been healed of your hallucinations\n");
+								dremove (_l_1055);
+							}
+							else
+							{
+								dprint ("Warning: Error in Hallucination Timer logic.\n");
+							}
+						}
+						if ((self.tfstate & 32768.000000))
+						{
+							_l_1055 = find (world, classname, "timer");
+							while ((((_l_1055.owner != self) || (_l_1055.think != TranquiliserTimer)) && (_l_1055 != world)))
+							{
+								_l_1055 = find (_l_1055, classname, "timer");
+							}
+							if ((_l_1055 != world))
+							{
+								self.tfstate = (self.tfstate - (self.tfstate & 32768.000000));
+								TeamFortress_SetSpeed (self);
+								stuffcmd (self, "v_cshift 0 0 0 0\n");
+								sprint (self, 2.000000, "you have been healed of your tranquilisation\n");
+								dremove (_l_1055);
+							}
+							else
+							{
+								dprint ("Warning: Error in Tranquilisation Timer logic.\n");
+							}
+						}
+						if ((self.FlashTime > 0.000000))
+						{
+							_l_1055 = find (world, netname, "flashtimer");
+							while ((((_l_1055.owner != self) || (_l_1055.classname != "timer")) && (_l_1055 != world)))
+							{
+								_l_1055 = find (_l_1055, netname, "flashtimer");
+							}
+							if ((_l_1055 != world))
+							{
+								self.FlashTime = 0.000000;
+								stuffcmd (self, "v_cshift 0 0 0 0\n");
+								dremove (_l_1055);
+							}
+							else
+							{
+								dprint ("Warning: Error in Flash Timer logic.\n");
+								self.FlashTime = 0.000000;
+							}
+						}
+						if ((self.tfstate & 16.000000))
+						{
+							self.tfstate = (self.tfstate - (self.tfstate & 16.000000));
+							deathmsg = 23.000000;
+							sprint (self, 2.000000, "Your infection is cured!\n");
+							return;
+						}
+						if ((self.numflames > 0.000000))
+						{
+							sound (self, 1.000000, "items/r_item1.wav", 1.000000, 1.000000);
+							self.numflames = 0.000000;
+							sprint (self, 2.000000, "The flames have been doused!\n");
+							return;
+						}
+						self.health = (self.health + 25.000000);
+						self.tfstate = (self.tfstate - (self.tfstate & 16.000000));
+					}
+					else
+					{
+						sprint (self, 2.000000, "No vaccine has been loaded by Medic\n");
+					}
+					if ((self.health >= self.max_health))
+					{
+						self.health = self.max_health;
+					}
+					sound (self, 3.000000, "items/health1.wav", 1.000000, 1.000000);
+				}
+			}
+			else
+			{
+				if ((_p_1052 == 4.000000))
+				{
+					if ((self.building.skin == 1.000000))
+					{
+						self.items = (self.items | 2097152.000000);
+						self.rad_time = 1.000000;
+						self.radsuit_finished = (time + 30.000000);
+						sprint (self, 2.000000, "You have a BioSuit\n");
+					}
+					else
+					{
+						sprint (self, 2.000000, "No BioSuit has been loaded by Medic\n");
+					}
+				}
+			}
+		}
+	}
+	if (((_p_1052 >= 1.000000) && (_p_1052 <= 5.000000)))
+	{
+		if (_l_1054)
+		{
+			sprint (self, 2.000000, "The dispenser is empty.\n");
+		}
+		ResetMenu ();
+		self.impulse = 0.000000;
+		self.building = world;
+		self.building_wait = (time + 0.500000);
+		bound_other_ammo (self);
+		if ((self.armorvalue == 0.000000))
+		{
+			self.armortype = 0.000000;
+			self.armorclass = 0.000000;
+			self.items = (self.items - (self.items & 57344.000000));
+		}
+		W_SetCurrentAmmo ();
+	}
+};
+

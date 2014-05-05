@@ -1,0 +1,1936 @@
+void() fire_fly;
+void() fire_touch;
+void() make_bubbles;
+void() bubble_remove;
+void() bubble_bob;
+void() make_burns;
+void() fire_burst;
+void() FlakeFloat;
+void() Effect_Attack;
+void() effect2_spawn;
+void() make_burst;
+void() effect3_spawn;
+void() drop_rock;
+void() rock_splash;
+void() make_flashes1;
+void() make_flashes2;
+void() skeet_sound;
+void() skeet_fly;
+
+.float color, option2;
+.entity lastplayer;
+
+void() info_null = 
+{
+	dremove(self);
+};
+
+void() info_notnull = 
+{
+};
+
+void() light_use = 
+{
+	if (self.spawnflags & TF_FLARE_OFF)
+	{
+		lightstyle(self.style, "m");
+		self.spawnflags = self.spawnflags - TF_FLARE_OFF;
+	}
+	else
+	{
+		lightstyle(self.style, "a");
+		self.spawnflags = self.spawnflags + TF_FLARE_OFF;
+	}
+};
+
+void() light = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.targetname))
+	{
+		dremove(self);
+		return;
+	}
+	if (self.style >= 32)
+	{
+		self.use = light_use;
+		if (self.spawnflags & TF_FLARE_OFF)
+		{
+			lightstyle(self.style, "a");
+		}
+		else
+		{
+			lightstyle(self.style, "m");
+		}
+	}
+};
+
+void() light_fluoro = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (self.style >= 32)
+	{
+		self.use = light_use;
+		if (self.spawnflags & TF_FLARE_OFF)
+		{
+			lightstyle(self.style, "a");
+		}
+		else
+		{
+			lightstyle(self.style, "m");
+		}
+	}
+	precache_sound("ambience/fl_hum1.wav");
+	ambientsound(self.origin, "ambience/fl_hum1.wav", 0.8, 3);
+};
+
+void() light_fluorospark = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.style))
+	{
+		self.style = 10;
+	}
+	precache_sound("ambience/buzz1.wav");
+	ambientsound(self.origin, "ambience/buzz1.wav", 0.8, 3);
+};
+
+void() light_globe = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/s_light.spr");
+	setmodel(self, "progs/s_light.spr");
+	makestatic(self);
+};
+
+void() FireAmbient = 
+{
+	precache_sound("ambience/fire1.wav");
+	ambientsound(self.origin, "ambience/fire1.wav", 0.3, 3);
+	if (self.light_lev > 0)
+	{
+		ambientsound(self.origin, "ambience/fire1.wav", 0.3, 4);
+	}
+};
+
+void() light_torch_small_walltorch = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/flame.mdl");
+	setmodel(self, "progs/flame.mdl");
+	FireAmbient();
+	makestatic(self);
+};
+
+void() light_flame_large_yellow = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/flame2.mdl");
+	setmodel(self, "progs/flame2.mdl");
+	self.frame = TF_FLARE_OFF;
+	FireAmbient();
+	makestatic(self);
+};
+
+void() light_flame_small_yellow = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/flame2.mdl");
+	setmodel(self, "progs/flame2.mdl");
+	FireAmbient();
+	makestatic(self);
+};
+
+void() light_flame_small_white = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/flame2.mdl");
+	setmodel(self, "progs/flame2.mdl");
+	FireAmbient();
+	makestatic(self);
+};
+
+void() misc_fireball = 
+{
+	precache_model("progs/lavaball.mdl");
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.classname = "fireball";
+	self.nextthink = time + random() * 5;
+	self.think = fire_fly;
+	if (!(self.speed))
+	{
+		// pablo. gg? :/
+//		self.speed == 1000;
+		self.speed = 1000;
+	}
+};
+
+void() fire_fly = 
+{
+	newmis = spawn();
+	newmis.solid = TF_FLARE_OFF;
+	newmis.movetype = 6;
+	newmis.velocity = '0 0 1000';
+	newmis.velocity_x = random() * 100 - 50;
+	newmis.velocity_y = random() * 100 - 50;
+	newmis.velocity_z = self.speed + random() * 200;
+	newmis.classname = "fireball";
+	setmodel(newmis, "progs/lavaball.mdl");
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, self.origin);
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+	newmis.touch = fire_touch;
+	self.nextthink = time + random() * 5 + 3;
+	self.think = fire_fly;
+};
+
+void() fire_touch = 
+{
+	if (other.takedamage)
+	{
+		TF_T_Damage(other, self, self, 20, TF_FLARE_LIT, 16);
+	}
+	dremove(self);
+};
+
+void() barrel_explode = 
+{
+	self.takedamage = TF_FLARE_LIT;
+	self.classname = "explo_box";
+	T_RadiusDamage(self, self, 160, world);
+	WriteByte(4, 23);
+	WriteByte(4, 3);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z + 32);
+	multicast(self.origin, TF_FLARE_OFF);
+	remove(self);
+};
+
+void() misc_explobox = 
+{
+	local float oldz;
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.solid = 2;
+	self.movetype = TF_FLARE_LIT;
+	precache_model("maps/b_explob.bsp");
+	setmodel(self, "maps/b_explob.bsp");
+	setsize(self, '0 0 0', '32 32 64');
+	precache_sound("weapons/r_exp3.wav");
+	self.health = 20;
+	self.th_die = barrel_explode;
+	self.takedamage = 2;
+	self.origin_z = self.origin_z + 2;
+	oldz = self.origin_z;
+	droptofloor();
+	if (oldz - self.origin_z > 250)
+	{
+		dprint("item fell out of level at ");
+		dprint(vtos(self.origin));
+		dprint("\n");
+		dremove(self);
+	}
+};
+
+void() misc_explobox2 = 
+{
+	local float oldz;
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.solid = 2;
+	self.movetype = TF_FLARE_LIT;
+	precache_model2("maps/b_exbox2.bsp");
+	setmodel(self, "maps/b_exbox2.bsp");
+	setsize(self, '0 0 0', '32 32 32');
+	precache_sound("weapons/r_exp3.wav");
+	self.health = 20;
+	self.th_die = barrel_explode;
+	self.takedamage = 2;
+	self.origin_z = self.origin_z + 2;
+	oldz = self.origin_z;
+	droptofloor();
+	if (oldz - self.origin_z > 250)
+	{
+		dprint("item fell out of level at ");
+		dprint(vtos(self.origin));
+		dprint("\n");
+		dremove(self);
+	}
+};
+
+float(float min, float max) RandomRange = 
+{
+	local float width;
+	local float offset;
+	local float result;
+	width = max - min;
+	offset = random() * width;
+	result = offset + min;
+	return result;
+};
+
+void() Laser_Touch = 
+{
+	local vector org;
+	if (other == self.owner)
+	{
+		return;
+	}
+	if (pointcontents(self.origin) == -6)
+	{
+		dremove(self);
+		return;
+	}
+	sound(self, TF_FLARE_OFF, "enforcer/enfstop.wav", TF_FLARE_OFF, 3);
+	org = self.origin - 8 * normalize(self.velocity);
+	if (other.health)
+	{
+		SpawnBlood(org, 15);
+		TF_T_Damage(other, self, self.owner, 15, TF_FLARE_LIT, 8);
+	}
+	else
+	{
+		WriteByte(4, 23);
+		WriteByte(4, 2);
+		WriteByte(4, 5);
+		WriteCoord(4, org_x);
+		WriteCoord(4, org_y);
+		WriteCoord(4, org_z);
+		multicast(org, 2);
+	}
+	dremove(self);
+};
+
+void(vector org, vector vec) LaunchLaser = 
+{
+	if (self.classname == "monster_enforcer")
+	{
+		sound(self, TF_FLARE_OFF, "enforcer/enfire.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	vec = normalize(vec);
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.movetype = 5;
+	newmis.solid = 2;
+	newmis.effects = 8;
+	if (self.spawnflags & 4)
+	{
+		setmodel(newmis, "progs/missile.mdl");
+		newmis.touch = T_MissileTouch;
+	}
+	else
+	{
+		setmodel(newmis, "progs/laser.mdl");
+		newmis.touch = Laser_Touch;
+	}
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, org);
+	newmis.velocity = vec * 600;
+	newmis.angles = vectoangles(newmis.velocity);
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+};
+
+void() spikeshooter_use = 
+{
+	if (self.spawnflags & 2)
+	{
+		sound(self, 2, "enforcer/enfire.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		LaunchLaser(self.origin, self.movedir);
+	}
+	else
+	{
+		if (self.spawnflags & 4)
+		{
+			make_explosion();
+			sound(self, 2, "weapons/sgun1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			LaunchLaser(self.origin, self.movedir);
+		}
+		else
+		{
+			sound(self, 2, "weapons/spike2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+			launch_spike(self.origin, self.movedir);
+			newmis.velocity = self.movedir * 500;
+			if (self.spawnflags & TF_FLARE_OFF)
+			{
+				newmis.touch = superspike_touch;
+			}
+		}
+	}
+};
+
+void() shooter_think = 
+{
+	spikeshooter_use();
+	self.nextthink = time + self.wait;
+	newmis.velocity = self.movedir * 500;
+};
+
+void() trap_spikeshooter = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	SetMovedir();
+	self.use = spikeshooter_use;
+	if (self.spawnflags & 2)
+	{
+		precache_model2("progs/laser.mdl");
+		precache_sound2("enforcer/enfire.wav");
+		precache_sound2("enforcer/enfstop.wav");
+	}
+	else
+	{
+		if (self.spawnflags & 4)
+		{
+			precache_sound2("weapons/sgun1.wav");
+		}
+		else
+		{
+			precache_sound("weapons/spike2.wav");
+		}
+	}
+};
+
+void() trap_shooter = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	trap_spikeshooter();
+	if (self.wait == TF_FLARE_LIT)
+	{
+		self.wait = TF_FLARE_OFF;
+	}
+	self.nextthink = self.nextthink + self.wait + self.ltime;
+	self.think = shooter_think;
+};
+
+void() air_bubbles = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/bubbles.wav");
+	ambientsound(self.origin, "ambience/bubbles.wav", TF_FLARE_OFF, 2);
+	precache_model("progs/s_bubble.spr");
+	self.nextthink = time + TF_FLARE_OFF;
+	self.think = make_bubbles;
+};
+
+void() make_bubbles = 
+{
+	newmis = spawn();
+	setmodel(newmis, "progs/s_bubble.spr");
+	setorigin(newmis, self.origin);
+	newmis.movetype = 8;
+	newmis.solid = TF_FLARE_LIT;
+	newmis.velocity = '0 0 15';
+	newmis.nextthink = time + 0.5;
+	newmis.think = bubble_bob;
+	newmis.touch = bubble_remove;
+	newmis.classname = "bubble";
+	newmis.frame = TF_FLARE_LIT;
+	newmis.cnt = TF_FLARE_LIT;
+	setsize(newmis, '-8 -8 -8', '8 8 8');
+	self.nextthink = time + random() + 0.5;
+	self.think = make_bubbles;
+};
+
+void() bubble_split = 
+{
+	newmis = spawn();
+	setmodel(newmis, "progs/s_bubble.spr");
+	setorigin(newmis, self.origin);
+	newmis.movetype = 8;
+	newmis.solid = TF_FLARE_LIT;
+	newmis.velocity = self.velocity;
+	newmis.nextthink = time + 0.5;
+	newmis.think = bubble_bob;
+	newmis.touch = bubble_remove;
+	newmis.classname = "bubble";
+	newmis.frame = TF_FLARE_OFF;
+	newmis.cnt = 10;
+	setsize(newmis, '-8 -8 -8', '8 8 8');
+	self.frame = TF_FLARE_OFF;
+	self.cnt = 10;
+	if (self.waterlevel != 3)
+	{
+		remove(self);
+	}
+};
+
+void() bubble_remove = 
+{
+	if (other.classname == self.classname)
+	{
+		return;
+	}
+	dremove(self);
+};
+
+void() bubble_bob = 
+{
+	local float rnd1;
+	local float rnd2;
+	local float rnd3;
+	self.cnt = self.cnt + TF_FLARE_OFF;
+	if (self.cnt == 4)
+	{
+		bubble_split();
+	}
+	if (self.cnt == 20)
+	{
+		dremove(self);
+	}
+	rnd1 = self.velocity_x + (-10 + random() * 20);
+	rnd2 = self.velocity_y + (-10 + random() * 20);
+	rnd3 = self.velocity_z + 10 + random() * 10;
+	if (rnd1 > 10)
+	{
+		rnd1 = 5;
+	}
+	if (rnd1 < -10)
+	{
+		rnd1 = -5;
+	}
+	if (rnd2 > 10)
+	{
+		rnd2 = 5;
+	}
+	if (rnd2 < -10)
+	{
+		rnd2 = -5;
+	}
+	if (rnd3 < 10)
+	{
+		rnd3 = 15;
+	}
+	if (rnd3 > 30)
+	{
+		rnd3 = 25;
+	}
+	self.velocity_x = rnd1;
+	self.velocity_y = rnd2;
+	self.velocity_z = rnd3;
+	self.nextthink = time + 0.5;
+	self.think = bubble_bob;
+};
+
+void() func_wall_use = 
+{
+	self.frame = TF_FLARE_OFF - self.frame;
+};
+
+void() func_wall = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.angles = '0 0 0';
+	self.movetype = 7;
+	self.solid = 4;
+	self.use = func_wall_use;
+	setmodel(self, self.model);
+};
+
+void() func_illusionary = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.angles = '0 0 0';
+	self.movetype = TF_FLARE_LIT;
+	self.solid = TF_FLARE_LIT;
+	setmodel(self, self.model);
+	makestatic(self);
+};
+
+void() func_episodegate = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(serverflags & self.spawnflags))
+	{
+		return;
+	}
+	self.angles = '0 0 0';
+	self.movetype = 7;
+	self.solid = 4;
+	self.use = func_wall_use;
+	setmodel(self, self.model);
+};
+
+void() func_bossgate = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if ((serverflags & 15) == 15)
+	{
+		return;
+	}
+	self.angles = '0 0 0';
+	self.movetype = 7;
+	self.solid = 4;
+	self.use = func_wall_use;
+	setmodel(self, self.model);
+};
+
+void() ambient_brook = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/brook.wav");
+	ambientsound(self.origin, "ambience/brook.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_jungle = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/jungle.wav");
+	ambientsound(self.origin, "ambience/jungle.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_nightpond = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/nitepond.wav");
+	ambientsound(self.origin, "ambience/nitepond.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_alert = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/redalert.wav");
+	ambientsound(self.origin, "ambience/redalert.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_onboard = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = 0.6;
+	}
+	precache_sound("ambience/onboard.wav");
+	if (!(self.height))
+	{
+		ambientsound(self.origin, "ambience/onboard.wav", self.volume, TF_FLARE_LIT);
+	}
+	else
+	{
+		ambientsound(self.origin, "ambience/onboard.wav", self.volume, TF_FLARE_OFF);
+	}
+};
+
+void() ambient_unholy = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = 0.8;
+	}
+	precache_sound("ambience/unholy.wav");
+	ambientsound(self.origin, "ambience/unholy.wav", self.volume, TF_FLARE_LIT);
+};
+
+void() ambient_rocket_engine = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/onboard.wav");
+	ambientsound(self.origin, "ambience/onboard.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_high_wind = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/2windy.wav");
+	ambientsound(self.origin, "ambience/2windy.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_peakwind = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/peakwind.wav");
+	ambientsound(self.origin, "ambience/peakwind.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_chant = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/chant.wav");
+	ambientsound(self.origin, "ambience/chant.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_meadow = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/meadow.wav");
+	ambientsound(self.origin, "ambience/meadow.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_ocean = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/ocean.wav");
+	ambientsound(self.origin, "ambience/ocean.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_ice_moving = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/icemove.wav");
+	ambientsound(self.origin, "ambience/icemove.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_eerie = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/eerie.wav");
+	ambientsound(self.origin, "ambience/eerie.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_flagflap = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/flagflap.wav");
+	ambientsound(self.origin, "ambience/flagflap.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_diesel = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/diesel.wav");
+	ambientsound(self.origin, "ambience/diesel.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_chopper = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/chopper.wav");
+	ambientsound(self.origin, "ambience/chopper.wav", self.volume, TF_FLARE_OFF);
+};
+
+void() ambient_suck_wind = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/suck1.wav");
+	ambientsound(self.origin, "ambience/suck1.wav", TF_FLARE_OFF, 3);
+};
+
+void() ambient_drone = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/drone6.wav");
+	ambientsound(self.origin, "ambience/drone6.wav", self.volume, 2);
+};
+
+void() ambient_flouro_buzz = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/buzz1.wav");
+	ambientsound(self.origin, "ambience/buzz1.wav", TF_FLARE_OFF, 3);
+};
+
+void() ambient_drip = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound("ambience/drip1.wav");
+	ambientsound(self.origin, "ambience/drip1.wav", self.volume, 3);
+};
+
+void() ambient_comp_hum = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/comp1.wav");
+	ambientsound(self.origin, "ambience/comp1.wav", TF_FLARE_OFF, 3);
+};
+
+void() ambient_thunder = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/thunder1.wav");
+	ambientsound(self.origin, "ambience/thunder1.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+};
+
+void() ambient_light_buzz = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/fl_hum1.wav");
+	ambientsound(self.origin, "ambience/fl_hum1.wav", 0.8, 3);
+};
+
+void() ambient_swamp1 = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/swamp1.wav");
+	ambientsound(self.origin, "ambience/swamp1.wav", 0.8, 3);
+};
+
+void() ambient_swamp2 = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("ambience/swamp2.wav");
+	ambientsound(self.origin, "ambience/swamp2.wav", 0.6, 3);
+};
+
+void() ambient_weaponfire = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("effects/explode1.wav");
+	precache_sound("effects/explode2.wav");
+	precache_sound("effects/m60.wav");
+	precache_sound("effects/minigun.wav");
+	precache_sound("effects/rocket.wav");
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	self.classname = "timer";
+	self.nextthink = time + random() * 5;
+	self.think = fire_burst;
+};
+
+void() fire_burst = 
+{
+	local float rs;
+	rs = rint(random() * 4 + TF_FLARE_OFF);
+	if (rs == TF_FLARE_OFF)
+	{
+		self.noise = "effects/explode1.wav";
+	}
+	if (rs == 2)
+	{
+		self.noise = "effects/explode2.wav";
+	}
+	if (rs == 3)
+	{
+		self.noise = "effects/m60.wav";
+	}
+	if (rs == 4)
+	{
+		self.noise = "effects/minigun.wav";
+	}
+	if (rs == 5)
+	{
+		self.noise = "effects/rocket.wav";
+	}
+	sound(self, 3, self.noise, self.volume, TF_FLARE_OFF);
+	self.nextthink = time + random() * 5 + TF_FLARE_OFF;
+	self.think = fire_burst;
+};
+
+void() effect_burner = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	FireAmbient();
+	self.nextthink = time + 3;
+	self.think = make_burns;
+};
+
+void() make_burns = 
+{
+	newmis = spawn();
+	setmodel(newmis, "progs/s_expl.spr");
+	setorigin(newmis, self.origin);
+	newmis.movetype = 8;
+	newmis.solid = TF_FLARE_LIT;
+	newmis.effects = 8;
+	sound(newmis, TF_FLARE_LIT, "weapons/flmfire2.wav", 0.7, TF_FLARE_OFF);
+	newmis.velocity_z = random() * 50;
+	newmis.nextthink = time + 0.2;
+	newmis.think = s2_explode1;
+	newmis.classname = "fireball";
+	self.nextthink = time + random() + 0.2;
+	self.think = make_burns;
+};
+
+void() effect_airburst = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("effects/explode1.wav");
+	precache_sound("effects/explode2.wav");
+	self.classname = "timer";
+	self.nextthink = time + random() * 20;
+	self.think = make_burst;
+};
+
+void() make_burst = 
+{
+	local float abx;
+	local float aby;
+	abx = rint(random() * 19 + TF_FLARE_OFF);
+	abx = abx - 10;
+	abx = abx * 30;
+	aby = rint(random() * 19 + TF_FLARE_OFF);
+	aby = aby - 10;
+	aby = aby * 30;
+	newmis = spawn();
+	setmodel(newmis, "progs/s_expl.spr");
+	setorigin(newmis, self.origin);
+	newmis.origin_x = newmis.origin_x + abx;
+	newmis.origin_y = newmis.origin_y + aby;
+	newmis.movetype = 8;
+	newmis.solid = TF_FLARE_LIT;
+	if (random() < 0.5)
+	{
+		sound(newmis, 3, "effects/explode1.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	}
+	else
+	{
+		sound(newmis, 3, "effects/explode2.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	}
+	newmis.effects = 4;
+	newmis.velocity = '0 0 30';
+	newmis.think = s2_explode1;
+	newmis.nextthink = time + 0.4;
+	newmis.classname = "fireball";
+	self.nextthink = time + random() * 20;
+	self.think = make_burst;
+};
+
+void() ambient_sound = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.noise))
+	{
+		objerror("ambient_sound without noise");
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound(self.noise);
+	if (self.spawnflags == 4)
+	{
+		ambientsound(self.origin, self.noise, self.volume, TF_FLARE_LIT);
+	}
+	else
+	{
+		ambientsound(self.origin, self.noise, self.volume, TF_FLARE_OFF);
+	}
+};
+
+void(vector DropOrg) MakeDrop = 
+{
+	local entity Drop;
+	Drop = spawn();
+	setmodel(Drop, "progs/s_bubble.spr");
+	setorigin(Drop, DropOrg);
+	Drop.movetype = 8;
+	Drop.solid = TF_FLARE_LIT;
+	Drop.velocity = '0 0 -350';
+	Drop.classname = "RainDrop";
+	Drop.frame = TF_FLARE_OFF;
+	Drop.think = SUB_Remove;
+	Drop.nextthink = time + RandomRange(0.6, 1.2);
+	setsize(Drop, '-8 -8 -8', '8 8 8');
+};
+
+void(vector FlakeOrg) MakeFlake = 
+{
+	local entity Flake;
+	Flake = spawn();
+	setmodel(Flake, "progs/s_bubble.spr");
+	setorigin(Flake, FlakeOrg);
+	Flake.movetype = 8;
+	Flake.solid = TF_FLARE_LIT;
+	Flake.classname = "SnowFlake";
+	Flake.frame = TF_FLARE_OFF;
+	Flake.velocity_z = -64;
+	Flake.think = FlakeFloat;
+	Flake.touch = SUB_Remove;
+	Flake.nextthink = time + 0.5;
+	Flake.cnt = TF_FLARE_LIT;
+	setsize(Flake, '-8 -8 -8', '8 8 8');
+};
+
+void() effect_lightning = 
+{
+	precache_sound("ambience/thunder1.wav");
+	precache_model("progs/s_null.spr");
+	self.classname = "effect_lightning";
+	self.nextthink = time + RandomRange(5, 20);
+	self.think = Effect_Attack;
+};
+
+void() Effect_Attack = 
+{
+	local vector org;
+	local vector targ;
+	local entity Flash;
+	local entity Flash2;
+	sound(self, 2, "ambience/thunder1.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	org = self.origin;
+	org_x = org_x + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+	org_y = org_y + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+	targ = self.origin - '0 0 350';
+	targ_x = targ_x + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+	targ_y = targ_y + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+	self.nextthink = time + RandomRange(TF_FLARE_OFF, 20);
+	self.think = Effect_Attack;
+	LightningDamage(org, targ, self, 100);
+	Flash2 = spawn();
+	setmodel(Flash2, "progs/s_null.spr");
+	setorigin(Flash2, org);
+	Flash2.movetype = 8;
+	Flash2.solid = TF_FLARE_LIT;
+	Flash2.effects = 4;
+	Flash2.velocity = '0 0 -1500';
+	Flash2.think = SUB_Remove;
+	Flash2.nextthink = time + 0.6;
+	setsize(Flash2, '-8 -8 -8', '8 8 8');
+	Flash = spawn();
+	setmodel(Flash, "progs/s_null.spr");
+	setorigin(Flash, targ);
+	Flash.movetype = 8;
+	Flash.solid = TF_FLARE_LIT;
+	Flash.effects = 4;
+	Flash.velocity = '0 0 1000';
+	Flash.think = SUB_Remove;
+	Flash.nextthink = time + TF_FLARE_OFF;
+	setsize(Flash, '-8 -8 -8', '8 8 8');
+	WriteByte(4, 23);
+	if (random() <= 0.4)
+	{
+		WriteByte(4, 5);
+	}
+	else
+	{
+		WriteByte(4, 9);
+	}
+	WriteEntity(4, world);
+	WriteCoord(4, org_x);
+	WriteCoord(4, org_y);
+	WriteCoord(4, org_z);
+	WriteCoord(4, targ_x);
+	WriteCoord(4, targ_y);
+	WriteCoord(4, targ_z);
+	multicast(targ, 2);
+};
+
+void() effect_rain = 
+{
+	self.classname = "effect_rain";
+	self.nextthink = 0.1;
+	self.think = effect2_spawn;
+};
+
+void() effect2_spawn = 
+{
+	local float n;
+	local vector rainorg;
+	n = TF_FLARE_LIT;
+	while (n < 20)
+	{
+		rainorg = self.origin;
+		rainorg_x = rainorg_x + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+		rainorg_y = rainorg_y + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+		rainorg_z = rainorg_z + RandomRange(TF_FLARE_LIT, 64);
+		MakeDrop(rainorg);
+		n = n + TF_FLARE_OFF;
+	}
+	self.nextthink = time + RandomRange(0.3, 0.4);
+	self.think = effect2_spawn;
+};
+
+void() effect_snow = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.classname = "effect_snow";
+	self.nextthink = 0.1;
+	self.think = effect3_spawn;
+};
+
+void() effect3_spawn = 
+{
+	local float n;
+	local vector snoworg;
+	n = TF_FLARE_LIT;
+	while (n < 7)
+	{
+		snoworg = self.origin;
+		snoworg_x = snoworg_x + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+		snoworg_y = snoworg_y + RandomRange(self.spawnflags - 2 * self.spawnflags, self.spawnflags);
+		snoworg_z = snoworg_z + RandomRange(TF_FLARE_LIT, 64);
+		MakeFlake(snoworg);
+		n = n + TF_FLARE_OFF;
+	}
+	self.nextthink = time + RandomRange(1.5, 2);
+	self.think = effect3_spawn;
+};
+
+void() FlakeFloat = 
+{
+	local float rnd1;
+	local float rnd2;
+	self.cnt = self.cnt + TF_FLARE_OFF;
+	if (self.cnt == 30)
+	{
+		remove(self);
+	}
+	rnd1 = self.velocity_x + (-10 + random() * 20);
+	rnd2 = self.velocity_y + (-10 + random() * 20);
+	if (rnd1 > 10)
+	{
+		rnd1 = 5;
+	}
+	if (rnd1 < -10)
+	{
+		rnd1 = -5;
+	}
+	if (rnd2 > 10)
+	{
+		rnd2 = 5;
+	}
+	if (rnd2 < -10)
+	{
+		rnd2 = -5;
+	}
+	self.velocity_x = rnd1;
+	self.velocity_y = rnd2;
+	self.nextthink = time + 0.7;
+	self.think = FlakeFloat;
+};
+
+void() make_explosion = 
+{
+	newmis = spawn();
+	setmodel(newmis, "progs/s_expl.spr");
+	setorigin(newmis, self.origin);
+	newmis.movetype = 8;
+	newmis.solid = TF_FLARE_LIT;
+	sound(newmis, TF_FLARE_LIT, "weapons/flmfire2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	newmis.effects = 8;
+	newmis.velocity_z = random() * 250;
+	newmis.nextthink = time + 0.05;
+	newmis.think = s2_explode1;
+	newmis.nextthink = time + 0.05;
+};
+
+void() effect_rockfall = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_sound("effects/rockfall.wav");
+	if (self.height)
+	{
+		precache_sound("effects/rcksplsh.wav");
+	}
+	self.solid = TF_FLARE_OFF;
+	self.movetype = TF_FLARE_LIT;
+	setsize(self, '-64 -64 0', '64 64 64');
+	self.touch = drop_rock;
+};
+
+void() drop_rock = 
+{
+	if (self.last_used > time)
+	{
+		return;
+	}
+	if (other.classname != "player")
+	{
+		return;
+	}
+	sound(self, 3, "effects/rockfall.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.last_used = time + 20;
+	if (self.height)
+	{
+		self.nextthink = time + self.height / 125;
+		self.think = rock_splash;
+		self.origin_z = self.origin_z - self.height;
+	}
+	else
+	{
+		return;
+	}
+	return;
+};
+
+void() rock_splash = 
+{
+	sound(self, 3, "effects/rcksplsh.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.origin_z = self.origin_z + self.height;
+	return;
+};
+
+void() blocker_use = 
+{
+	if (!(self.state))
+	{
+		self.state = TF_FLARE_OFF;
+		setorigin(self, self.origin - '8000 8000 8000');
+		sound(self, 2, self.noise1, TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	else
+	{
+		self.state = TF_FLARE_LIT;
+		setorigin(self, self.origin + '8000 8000 8000');
+		sound(self, 2, self.noise, TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+};
+
+void(entity attacker, float damage) glass_pain = 
+{
+	if (self.spawnflags & 8)
+	{
+		self.health = self.max_health;
+	}
+};
+
+void() glass_die = 
+{
+	local entity new;
+	local vector tmpvec;
+	while (self.color > TF_FLARE_LIT)
+	{
+		new = spawn();
+		new.origin = self.origin;
+		if (random() < 0.5)
+		{
+			setmodel(new, "progs/glass2.mdl");
+		}
+		else
+		{
+			setmodel(new, "progs/glass1.mdl");
+		}
+		setsize(new, '0 0 0', '0 0 0');
+		if (self.height != 100)
+		{
+			new.velocity_x = 70 * crandom();
+			new.velocity_y = 70 * crandom();
+			new.velocity_z = 140 + 70 * random();
+		}
+		else
+		{
+			new.velocity_x = 400 * crandom();
+			new.velocity_y = 400 * crandom();
+			new.velocity_z = 140 + 70 * random();
+		}
+		new.movetype = 10;
+		new.solid = 2;
+		new.avelocity_x = random() * 600;
+		new.avelocity_y = random() * 600;
+		new.avelocity_z = random() * 600;
+		new.nextthink = time + 2 + random() * 3;
+		new.think = SUB_Remove;
+		self.absmin = self.origin + self.mins;
+		self.absmax = self.origin + self.maxs;
+		tmpvec_x = self.absmin_x + random() * (self.absmax_x - self.absmin_x);
+		tmpvec_y = self.absmin_y + random() * (self.absmax_y - self.absmin_y);
+		tmpvec_z = self.absmin_z + random() * (self.absmax_z - self.absmin_z);
+		setorigin(new, tmpvec);
+		self.color = self.color - TF_FLARE_OFF;
+	}
+	if (self.noise2)
+	{
+		if (pointcontents(self.origin) == -3)
+		{
+			sound(self, 2, "effects/rcksplsh.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+		else
+		{
+			sound(self, 2, self.noise2, TF_FLARE_OFF, TF_FLARE_OFF);
+		}
+	}
+	remove(self);
+};
+
+void() func_glass = 
+{
+	local vector tmpvec;
+	self.movetype = 7;
+	self.solid = 4;
+	self.mdl = self.model;
+	setmodel(self, self.model);
+	setsize(self, self.mins, self.maxs);
+	setorigin(self, self.origin);
+	self.model = string_null;
+	precache_sound("misc/null.wav");
+	if (self.health > TF_FLARE_LIT)
+	{
+		if (!(self.color))
+		{
+			tmpvec = self.maxs - self.mins;
+			tmpvec = tmpvec * 0.031;
+			if (tmpvec_x < TF_FLARE_OFF)
+			{
+				tmpvec_x = TF_FLARE_OFF;
+			}
+			if (tmpvec_y < TF_FLARE_OFF)
+			{
+				tmpvec_y = TF_FLARE_OFF;
+			}
+			if (tmpvec_z < TF_FLARE_OFF)
+			{
+				tmpvec_z = TF_FLARE_OFF;
+			}
+			self.color = tmpvec_x * tmpvec_y * tmpvec_z;
+		}
+		else
+		{
+			if (self.color == -1)
+			{
+				self.color = TF_FLARE_LIT;
+			}
+		}
+		if (self.color > 16)
+		{
+			self.color = 16;
+		}
+		self.takedamage = TF_FLARE_OFF;
+		self.max_health = self.health;
+		self.th_die = glass_die;
+		self.th_pain = glass_pain;
+		precache_model("progs/glass1.mdl");
+		precache_model("progs/glass2.mdl");
+	}
+	if (self.target)
+	{
+		if (!(self.speed))
+		{
+			self.speed = 100;
+		}
+		if (!(self.dmg))
+		{
+			self.dmg = 2;
+		}
+		if (self.sounds == TF_FLARE_OFF)
+		{
+			if (!(self.noise))
+			{
+				self.noise = "plats/train2.wav";
+			}
+			if (!(self.noise1))
+			{
+				self.noise1 = "plats/train1.wav";
+			}
+			precache_sound(self.noise);
+			precache_sound(self.noise1);
+		}
+		self.cnt = TF_FLARE_OFF;
+		self.blocked = train_blocked;
+		self.use = train_use;
+		self.classname = "train";
+		self.think = func_train_find;
+		self.nextthink = self.ltime + 0.6;
+	}
+	else
+	{
+		self.use = blocker_use;
+		if (self.spawnflags & 4)
+		{
+			self.state = TF_FLARE_LIT;
+			setorigin(self, self.origin + '8000 8000 8000');
+		}
+		else
+		{
+			self.state = TF_FLARE_OFF;
+			if (self.noise1)
+			{
+				sound(self, 2, self.noise1, TF_FLARE_OFF, TF_FLARE_OFF);
+			}
+		}
+	}
+	if (!(self.noise))
+	{
+		self.noise = "misc/null.wav";
+	}
+	if (!(self.noise1))
+	{
+		self.noise1 = "misc/null.wav";
+	}
+	if (!(self.noise2))
+	{
+		self.noise2 = "effects/shatter.wav";
+	}
+	precache_sound(self.noise);
+	precache_sound(self.noise1);
+	precache_sound(self.noise2);
+};
+
+void() bobbingwater_think = 
+{
+	local vector ang;
+	self.count = self.count + self.speed * (time - self.ltime);
+	if (self.count > 360)
+	{
+		self.count = self.count - 360;
+	}
+	ang_x = self.count;
+	ang_y = TF_FLARE_LIT;
+	ang_z = TF_FLARE_LIT;
+	makevectors(ang);
+	self.origin_z = v_forward_z * self.cnt;
+	setorigin(self, self.origin);
+	self.ltime = time;
+	self.nextthink = time + 0.020000;
+};
+
+void() func_bobbingwater = 
+{
+	self.angles = '0 0 0';
+	self.movetype = 4;
+	self.solid = TF_FLARE_LIT;
+	setmodel(self, self.model);
+	self.think = bobbingwater_think;
+	self.count = TF_FLARE_LIT;
+	self.cnt = self.size_z / 2;
+	if (!(self.speed))
+	{
+		self.speed = 4;
+	}
+	self.speed = 360 / self.speed;
+	self.nextthink = time + 0.020000;
+	self.ltime = time;
+};
+
+void() effect_strobe = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	self.movetype = 6;
+	self.solid = 2;
+	setsize(self, '-2 -2 -2', '4 4 4');
+	setmodel(self, "progs/dot1.spr");
+	self.effects = TF_FLARE_LIT;
+	self.nextthink = time + 2;
+	self.think = make_flashes1;
+};
+
+void() make_flashes1 = 
+{
+	self.effects = TF_FLARE_LIT;
+	self.nextthink = time + 0.9 + self.height;
+	self.think = make_flashes2;
+};
+
+void() make_flashes = 
+{
+	setmodel(self, "progs/dot1.spr");
+	self.effects = TF_FLARE_LIT;
+	self.nextthink = time + 0.9;
+	self.think = make_flashes2;
+};
+
+void() make_flashes2 = 
+{
+	setmodel(self, "progs/dot3.spr");
+	self.effects = 8;
+	self.nextthink = time + 0.1;
+	self.think = make_flashes;
+};
+
+void() BallTouch = 
+{
+	if (other.classname == "player" && self.last_used <= time)
+	{
+		sound(self, 3, "zombie/z_fall.wav", 0.8, TF_FLARE_OFF);
+		self.last_used = time + 0.3;
+	}
+	if (other.classname != "player")
+	{
+		sound(self, TF_FLARE_OFF, "zombie/z_hit.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	if (other.classname == "player")
+	{
+		makevectors(other.v_angle);
+		self.velocity = other.velocity + v_forward * 100 + v_up * 200;
+		self.lastplayer = other;
+	}
+};
+
+void() BallCheck = 
+{
+	self.movetype = 10;
+	self.nextthink = time + 15;
+	self.effects = TF_FLARE_LIT;
+};
+
+void() ballstart = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+};
+
+void() BallStart = 
+{
+	local entity te;
+	sound(self, 3, "sandball/whistle.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	te = find(world, classname, "ballstart");
+	while (te)
+	{
+		setorigin(self, te.origin);
+		te = find(te, classname, "ballstart");
+	}
+	self.nextthink = time + 5;
+	self.think = BallCheck;
+	self.movetype = 10;
+	self.velocity_z = 40;
+};
+
+void() ball = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/s_light.spr");
+	setmodel(self, "progs/s_light.spr");
+	self.movetype = TF_FLARE_LIT;
+	setsize(self, '-16 -16 -14', '16 16 10');
+	self.solid = TF_FLARE_OFF;
+	self.touch = BallTouch;
+	self.classname = "ball";
+	self.think = BallCheck;
+	self.nextthink = time + 15;
+	self.oldorigin = self.origin;
+};
+
+void() GoalTouch = 
+{
+	local entity te;
+	if (other.classname != "ball")
+	{
+		return;
+	}
+	if (self.last_used > time)
+	{
+		return;
+	}
+	sound(self, 3, "sandball/goal.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	self.last_used = time + 10;
+	te = find(world, classname, "player");
+	while (te)
+	{
+		if (self.team_no == 2)
+		{
+			CenterPrint2(te, "Score for Reds by\n", other.lastplayer.netname);
+		}
+		else
+		{
+			CenterPrint2(te, "Score for Blues by\n", other.lastplayer.netname);
+		}
+		if (te.team_no == self.team_no && self.team_no != TF_FLARE_LIT)
+		{
+			te.real_frags = te.real_frags + self.frags;
+			te.frags = te.frags + self.frags;
+			te.health = te.max_health;
+		}
+		te = find(te, classname, "player");
+	}
+	other.nextthink = time + 10;
+	other.think = BallStart;
+	other.movetype = 9;
+	other.velocity_z = 40;
+	other.effects = self.team_no * 64;
+};
+
+void() sandball_goal = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/null.mdl");
+	precache_sound("sandball/goal.wav");
+	precache_sound("sandball/whistle.wav");
+	precache_sound("zombie/z_fall.wav");
+	setmodel(self, "progs/null.mdl");
+	self.movetype = TF_FLARE_LIT;
+	self.skin = self.team_no;
+	self.solid = TF_FLARE_OFF;
+	setsize(self, '-35 -35 -14', '35 35 50');
+	self.effects = TF_FLARE_LIT;
+	self.touch = GoalTouch;
+};
+
+void() skeet_die = 
+{
+	if (other == self.owner)
+	{
+		return;
+	}
+	if (pointcontents(self.origin) == -6)
+	{
+		self.velocity_z = -50;
+		self.origin_z = self.origin_z - 30;
+		return;
+	}
+	self.color = 5;
+	glass_die();
+	dremove(self);
+};
+
+void() givepoint = 
+{
+	make_explosion();
+	self.enemy.real_frags = self.enemy.real_frags + 3;
+	self.enemy.frags = self.enemy.frags + 3;
+	self.color = 8;
+	self.height = 100;
+	glass_die();
+	dremove(self);
+};
+
+void() skeet_shooter = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	precache_model("progs/player.mdl");
+	precache_model("progs/glass1.mdl");
+	precache_model("progs/glass2.mdl");
+	precache_sound("plats/plat2.wav");
+	precache_sound("effects/shatter.wav");
+	precache_sound("effects/rcksplsh.wav");
+	self.nextthink = time + random() * 5;
+	self.think = skeet_sound;
+	if (!(self.speed))
+	{
+//		self.speed == 1000;
+		self.speed = 1000;
+	}
+	precache_model2("maps/b_exbox2.bsp");
+	setmodel(self, "maps/b_exbox2.bsp");
+	self.movetype = TF_FLARE_LIT;
+	self.solid = TF_FLARE_LIT;
+	setsize(self, '0 0 0', '0 0 0');
+	self.origin_z = self.origin_z + 2;
+	droptofloor();
+};
+
+void() skeet_sound = 
+{
+	sound(self, 3, "plats/plat2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.think = skeet_fly;
+	self.nextthink = time + 1.5;
+};
+
+void() skeet_fly = 
+{
+	sound(self, 3, "plats/plat2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	newmis = spawn();
+	newmis.solid = 2;
+	newmis.movetype = 6;
+	newmis.velocity = '0 0 1000';
+	newmis.velocity_x = random() * 600 - 300;
+	newmis.velocity_y = random() * 600 - 300;
+	newmis.velocity_z = self.speed + random() * 200;
+	newmis.classname = "bot";
+	newmis.owner = self;
+	setmodel(newmis, "progs/player.mdl");
+	newmis.skin = TF_FLARE_OFF;
+	newmis.frame = 2;
+	newmis.avelocity = '0 200 0';
+	setsize(newmis, '-8 -8 -4', '8 8 4');
+	setorigin(newmis, self.origin + '0 0 10');
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+	newmis.touch = skeet_die;
+	newmis.health = TF_FLARE_OFF;
+	newmis.takedamage = 2;
+	newmis.th_die = givepoint;
+	newmis.noise2 = "effects/shatter.wav";
+	self.nextthink = time + random() * 5 + 3;
+	self.think = skeet_fly;
+};
+
+void() Random_Play = 
+{
+	if (self.spawnflags == 4)
+	{
+		sound(self, TF_FLARE_LIT, self.noise, TF_FLARE_OFF, TF_FLARE_LIT);
+	}
+	else
+	{
+		sound(self, TF_FLARE_LIT, self.noise, TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	self.nextthink = time + RandomRange(self.option, self.option2);
+};
+
+void() effect_random_sound = 
+{
+	if (CheckExistence() == TF_FLARE_LIT)
+	{
+		dremove(self);
+		return;
+	}
+	if (!(self.noise))
+	{
+		objerror("random_sound without noise");
+	}
+	if (!(self.volume))
+	{
+		self.volume = TF_FLARE_OFF;
+	}
+	precache_sound(self.noise);
+	self.nextthink = time + RandomRange(self.option, self.option2);
+	self.think = Random_Play;
+};
+

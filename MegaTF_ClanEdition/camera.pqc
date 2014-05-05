@@ -1,0 +1,984 @@
+/*======================================================
+	CAMERA.QC			TeamFortress v2.5	
+
+	(c) TeamFortress Software Pty Ltd 	29/2/97
+========================================================
+Functions for the CAMERA behaviour
+========================================================*/
+// Functions outside this file
+
+// Functions inside this file
+void() CamLock;
+void() CamDistLock;
+void() CamVecLock; 
+void() CamAngleLock;
+void() CamRevAngleLock;
+void() CamProjectileLock;
+void() CamProjectileZoom;
+void() CamProjectileLockOn;
+void() CamProjectileLockOff;
+void() CamOffset;
+void() CamDrop;
+void() fadetoblack;
+void() fadefromblack;
+void() fadetowhite;
+void() fadefromwhite;
+
+//======================================================
+void() CamLock = 
+{
+	local entity te;
+
+	// CameraMan special locks onto an entity
+	if (self.enemy == world)
+	{
+		// Find the entity which matches our netname
+		te = find(world, netname, self.netname);
+		while (te)
+		{
+			if (te != self)
+			{
+				sprint3(self, 2, "Locked onto ", te.netname, "\n");
+				self.enemy = te;
+				self.heat = vlen(self.enemy.origin - self.origin);
+			}
+
+			te = find(te, netname, self.netname);
+		}
+
+		if (self.enemy == world)
+			sprint2(self, 2, te.netname, " not found.\n");
+	}
+	else
+	{
+		sprint(self, 2, "Removed Lock\n");
+		self.enemy = world;
+	}
+};
+
+//======================================================
+void() CamDistLock = 
+{
+	if (self.tfstate & 4096)
+	{
+		sprint(self, 2, "Distance Lock OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 4096);
+	}
+	else
+	{
+		sprint(self, 2, "Distance Lock ON.\n");
+		self.tfstate = self.tfstate | 4096;
+		if (self.enemy)
+			self.camdist = vlen(self.enemy.origin - self.origin);
+	}
+};
+
+//======================================================
+void() CamVecLock =
+{
+	if (self.tfstate & 2048)
+	{
+		sprint(self, 2, "Vector Lock OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 2048);
+	}
+	else
+	{
+		// Make sure Vector Lock isn't on
+		if (self.tfstate & 32768)
+		{
+			sprint(self, 2, "Angle Lock OFF.\n");
+			self.tfstate = self.tfstate - (self.tfstate & 32768);
+		}
+		// Make sure Distance Lock is on
+		if (!(self.tfstate & 4096))
+		{
+			sprint(self, 2, "Vector And Distance Lock ON.\n");
+			self.tfstate = self.tfstate | 4096;
+			if (self.enemy)
+				self.camdist = vlen(self.enemy.origin - self.origin);
+		}
+		else
+		{
+			sprint(self, 2, "Vector Lock ON.\n");
+		}
+		self.tfstate = self.tfstate | 2048;
+		if (self.enemy)
+		{
+			self.camangle = self.origin - self.enemy.origin;
+			self.camangle_z = 0 - self.camangle_z;
+			self.camangle = vectoangles(self.camangle);
+		}
+	}
+};
+
+//======================================================
+void() CamAngleLock = 
+{
+	local vector enemyang;
+
+	if (self.tfstate & 32768)
+	{
+		sprint(self, 2, "Angle Lock OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 32768);
+	}
+	else
+	{
+		// Make sure Vector Lock isn't on
+		if (self.tfstate & 2048)
+		{
+			sprint(self, 2, "Vector Lock OFF.\n");
+			self.tfstate = self.tfstate - (self.tfstate & 2048);
+		}
+		// Make sure Distance Lock is on
+		if (!(self.tfstate & 4096))
+		{
+			sprint(self, 2, "Angle And Distance Lock ON.\n");
+			self.tfstate = self.tfstate | 4096;
+			if (self.enemy)
+				self.camdist = vlen(self.enemy.origin - self.origin);
+		}
+		else
+		{
+			sprint(self, 2, "Angle Lock ON.\n");
+		}
+		self.tfstate = self.tfstate | 32768;
+		if (self.enemy)
+		{
+			enemyang = self.enemy.angles;
+			enemyang_z = 0 - enemyang_z;
+			self.camangle = self.origin - self.enemy.origin;
+			self.camangle_z = 0 - self.camangle_z;
+			self.camangle = vectoangles(self.camangle);
+			self.camangle = self.camangle - enemyang;
+		}
+	}
+};
+
+//======================================================
+void() CamRevAngleLock = 
+{
+	local vector enemyang;
+
+	if (self.tfstate & 32)
+	{
+		sprint(self, 2, "Reverse Angle Lock OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 32);
+	}
+	else
+	{
+		// Make sure Vector Lock isn't on
+		if (self.tfstate & 2048)
+		{
+			sprint(self, 2, "Vector Lock OFF.\n");
+			self.tfstate = self.tfstate - (self.tfstate & 2048);
+		}
+		// Make sure Angle Lock isn't on
+		if (self.tfstate & 32768)
+		{
+			sprint(self, 2, "Angle Lock OFF.\n");
+			self.tfstate = self.tfstate - (self.tfstate & 32768);
+		}
+		// Make sure Distance Lock is on
+		if (!(self.tfstate & 4096))
+		{
+			sprint(self, 2, "Reverse Angle And Distance Lock ON.\n");
+			self.tfstate = self.tfstate | 4096;
+			if (self.enemy)
+				self.camdist = vlen(self.enemy.origin - self.origin);
+		}
+		else
+		{
+			sprint(self, 2, "Reverse Angle Lock ON.\n");
+		}
+		self.tfstate = self.tfstate | 32;
+		if (self.enemy)
+		{
+			enemyang = self.enemy.angles;
+			enemyang_z = 0 - enemyang_z;
+			self.camangle = self.origin - self.enemy.origin;
+			self.camangle_z = 0 - self.camangle_z;
+			self.camangle = vectoangles(self.camangle);
+			self.camangle = self.camangle - enemyang;
+		}
+	}
+};
+
+//======================================================
+void() CamProjectileLock = 
+{
+	local entity te;
+
+	if (self.tfstate & 512)
+	{
+		sprint(self, 2, "Projectile Lock OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 512);
+
+		live_camera = 0;
+		te = find(world, classname, "player");
+		while ((te != world) && (live_camera == 0))
+		{
+			if (te.playerclass == 0 && te.tfstate & 512)
+				live_camera = 1;
+
+			te = find(te, classname, "player");
+		}
+	}
+	else
+	{
+		sprint(self, 2, "Projectile Lock ON.\n");
+		self.tfstate = self.tfstate | 512;
+		live_camera = 1;
+	}
+};
+
+//======================================================
+void() CamProjectileZoom =
+{
+	if (self.tfstate & 256)
+	{
+		sprint(self, 2, "Projectile Zoom OFF.\n");
+		self.tfstate = self.tfstate - (self.tfstate & 256);
+	}
+	else
+	{
+		sprint(self, 2, "Projectile Zoom ON.\n");
+		self.tfstate = self.tfstate | 256;
+	}
+};
+
+//======================================================
+void() CamProjectileLockOn =
+{
+	local entity te;
+	local float lockon;
+	local vector enemyang;
+	
+	lockon = 0;
+	te = find(world, classname, "player");
+	while (te)
+	{
+		// Is it a camera wih projectile lock on?
+		if (te.playerclass == 0 && te.tfstate & 512)
+		{
+			if (te.enemy != world)
+			{
+				if (te.enemy == self)
+					lockon = 1;
+			}
+			else
+			{
+				// See if the camera is within sight
+				traceline(te.origin, self.origin, 0, te);
+				if (trace_ent == self)
+					lockon = 1;
+			}
+
+			if (lockon)
+			{
+				// Turn off the camera's projectile lock
+				te.tfstate = te.tfstate - (te.tfstate & 512);
+				sprint(te, 2, "Projectile Locked!\n");
+				te.enemy = newmis;
+				newmis.enemy = te;
+
+				// If Projectile Zoom is on, get into position
+				if (te.tfstate & 256)
+				{
+					// Move the camera 
+					enemyang = normalize(te.enemy.velocity) * 20;
+					enemyang_z = 0 - enemyang_z;
+					setorigin(te, te.enemy.origin - enemyang);
+
+					// Turn on Distance Lock
+					te.tfstate = te.tfstate | 4096;
+					te.camdist = 20;
+
+					// Angle
+					te.camangle = vectoangles(te.enemy.velocity);
+					te.camangle_z = 0 - te.camangle_z;
+				}
+			}
+		}
+
+		te = find(te, classname, "player");
+	}
+};
+
+//======================================================
+void() CamProjectileLockOff =
+{
+	sprint(self.enemy, 2, "Removed Lock\n");
+	self.enemy.enemy = world;
+};
+
+//======================================================
+void() CamOffset =
+{
+	if (self.view_ofs == '0 0 22')
+		self.view_ofs = '0 0 18';
+	else if (self.view_ofs == '0 0 18')
+		self.view_ofs = '0 0 13';
+	else if (self.view_ofs == '0 0 13')
+		self.view_ofs = '0 0 7';
+	else if (self.view_ofs == '0 0 7')
+		self.view_ofs = '0 0 1';
+	else if (self.view_ofs == '0 0 1')
+		self.view_ofs = '0 0 -10';
+	else if (self.view_ofs == '0 0 -10')
+		self.view_ofs = '0 0 -18';
+	else
+		self.view_ofs = '0 0 22';
+};
+
+//======================================================
+void() CamDrop =
+{
+	local entity te, prevte, cam;
+	local float tf;
+	local string st;
+
+	cam = spawn();
+	cam.classname = "camera";
+	cam.origin = self.origin + self.view_ofs;
+	cam.angles = self.angles;
+	setmodel(cam,"progs/spike.mdl");
+
+	tf = 1;
+	prevte = self;
+	te = self.camera_list;
+	while (te != world)
+	{
+		tf = tf + 1;
+		prevte = te;
+		te = te.camera_list;
+	}
+	prevte.camera_list = cam;
+
+	st = ftos(tf);
+	sprint3(self, 2, "Camera ", st, " dropped.\n");
+};
+
+//======================================================
+// Fade functions from the brilliant 
+// Operation Bayshield movie, by the Undead Clan.
+// Cameraman must be the server to use them.
+void() fadetoblack =
+{
+	local float fade;
+	local string x;
+
+	fade = 10;
+	while( fade <= 250 )
+	{
+		x = ftos( fade );
+		stuffcmd( self, "v_cshift 0 0 0 " );
+		stuffcmd( self, x );
+		stuffcmd( self, ";wait\n" );
+		fade = fade + 10;
+	}
+	stuffcmd( self, "v_cshift 0 0 0 255\n" );
+};
+
+void() fadefromblack =
+{
+	local float fade;
+	local string x;
+
+	fade = 250;
+	while( fade >= 0 )
+	{
+		x = ftos( fade );
+		stuffcmd( self, "v_cshift 0 0 0 " );
+		stuffcmd( self, x );
+		stuffcmd( self, ";wait\n" );
+		fade = fade - 10;
+	}
+	stuffcmd( self, "v_cshift 0 0 0 0\n" );
+};
+
+
+void() fadetowhite =
+{
+	local float fade;
+	local string x;
+
+	fade = 10;
+	while( fade <= 250 )
+	{
+		x = ftos( fade );
+		stuffcmd( self, "v_cshift 255 255 255 " );
+		stuffcmd( self, x );
+		stuffcmd( self, ";wait\n" );
+		fade = fade + 10;
+	}
+	stuffcmd( self, "v_cshift 255 255 255 255\n" );
+};
+
+void() fadefromwhite =
+{
+	local float fade;
+	local string x;
+
+	fade = 250;
+	while( fade >= 0 )
+	{
+		x = ftos( fade );
+		stuffcmd( self, "v_cshift 255 255 255 " );
+		stuffcmd( self, x );
+		stuffcmd( self, ";wait\n" );
+		fade = fade - 10;
+	}
+	stuffcmd( self, "v_cshift 0 0 0 0\n" );
+};
+
+// MTF .04 stuff
+
+
+
+void () prop_die =
+{
+
+	self.owner.health = 0.000000;
+	Killed (self.owner, self.enemy);
+	self = self.owner;
+	LookThroughCam ();
+};
+
+void () prop_think =
+{
+
+	if ((self.origin != self.cam_origin))
+	{
+		setorigin (self, self.cam_origin);
+	}
+	player_run ();
+};
+
+void (entity _p_1745, vector _p_1746, float _p_1749, float _p_1750, float _p_1751) Spawn_Prop =
+{
+	local entity _l_1752;
+	local vector _l_1753;
+
+	_l_1752 = self;
+	_l_1753 = '0.200000 1.000000 0.200000';
+	newmis = spawn ();
+	self = newmis;
+	newmis.movetype = 6.000000;
+	if ((_p_1750 == 1.000000))
+	{
+		newmis.solid = 2.000000;
+	}
+	else
+	{
+		newmis.solid = 0.000000;
+	}
+	newmis.mdl = "progs/player.mdl";
+	setmodel (newmis, newmis.mdl);
+	setsize (newmis, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 32.000000');
+	newmis.classname = "player_prop";
+	setorigin (newmis, _p_1746);
+	newmis.cam_origin = _p_1746;
+	makevectors (_p_1745.v_angle);
+	v_forward_z = v_forward_z / 12.000000;
+	newmis.angles = vectoangles (v_forward);
+	newmis.team_no = _p_1745.team_no;
+	newmis.undercover_team = _p_1745.undercover_team;
+	newmis.is_feigning = _p_1745.is_feigning;
+	newmis.owner = _p_1745;
+	newmis.skin = _p_1745.skin;
+	newmis.colormap = _p_1745.colormap;
+	newmis.bugger = _p_1751;
+	newmis.th_pain = player_pain;
+	newmis.th_die = prop_die;
+	newmis.think = prop_think;
+	if ((_p_1745.is_squating == 0.000000))
+	{
+		if ((newmis.is_feigning == 1.000000))
+		{
+			if (((_p_1745.frame >= 41.000000) && (_p_1745.frame <= 49.000000)))
+			{
+				spy_die_ax9 ();
+			}
+			else
+			{
+				if (((_p_1745.frame >= 50.000000) && (_p_1745.frame <= 60.000000)))
+				{
+					spy_diea11 ();
+				}
+				else
+				{
+					if (((_p_1745.frame >= 61.000000) && (_p_1745.frame <= 69.000000)))
+					{
+						spy_dieb9 ();
+					}
+					else
+					{
+						if (((_p_1745.frame >= 70.000000) && (_p_1745.frame <= 84.000000)))
+						{
+							spy_diec15 ();
+						}
+						else
+						{
+							if (((_p_1745.frame >= 85.000000) && (_p_1745.frame <= 93.000000)))
+							{
+								spy_died9 ();
+							}
+							else
+							{
+								if (((_p_1745.frame >= 94.000000) && (_p_1745.frame <= 102.000000)))
+								{
+									spy_diee9 ();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		newmis.frame = 57.000000;
+		newmis.is_squating = 1.000000;
+		setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 8.000000');
+	}
+	newmis.nextthink = (time + 0.500000);
+	newmis.current_weapon = _p_1745.current_weapon;
+	if ((newmis.is_feigning == 0.000000))
+	{
+		newmis.frame = _p_1745.frame;
+	}
+	if ((_p_1750 == 1.000000))
+	{
+		newmis.takedamage = 2.000000;
+		newmis.health = _p_1745.health;
+	}
+	else
+	{
+		newmis.takedamage = 0.000000;
+	}
+	if ((_p_1749 & 2.000000))
+	{
+		newmis.ammo_shells = _p_1745.ammo_shells;
+	}
+	if ((_p_1749 & 4.000000))
+	{
+		newmis.ammo_nails = _p_1745.ammo_nails;
+	}
+	if ((_p_1749 & 8.000000))
+	{
+		newmis.ammo_rockets = _p_1745.ammo_rockets;
+	}
+	if ((_p_1749 & 16.000000))
+	{
+		newmis.ammo_cells = _p_1745.ammo_cells;
+	}
+	if ((_p_1749 & 32.000000))
+	{
+		newmis.armorvalue = _p_1745.armorvalue;
+	}
+	self = _l_1752;
+};
+
+vector (entity _p_1782, float _p_1783) Remove_Prop =
+{
+	local entity _l_1784;
+	local vector _l_1785;
+
+	_l_1784 = find (world, classname, "player_prop");
+	while (_l_1784)
+	{
+		if ((_l_1784.owner == _p_1782))
+		{
+			if ((_l_1784.health != 0.000000))
+			{
+				_p_1782.health = _l_1784.health;
+			}
+			if ((_l_1784.ammo_shells != 0.000000))
+			{
+				_p_1782.ammo_shells = _l_1784.ammo_shells;
+			}
+			if ((_l_1784.ammo_nails != 0.000000))
+			{
+				_p_1782.ammo_nails = _l_1784.ammo_nails;
+			}
+			if ((_l_1784.ammo_rockets != 0.000000))
+			{
+				_p_1782.ammo_rockets = _l_1784.ammo_rockets;
+			}
+			if ((_l_1784.ammo_cells != 0.000000))
+			{
+				_p_1782.ammo_cells = _l_1784.ammo_cells;
+			}
+			if ((_l_1784.armorvalue != 0.000000))
+			{
+				_p_1782.armorvalue = _l_1784.armorvalue;
+			}
+			_l_1785 = _l_1784.origin;
+			dremove (_l_1784);
+			return (_l_1785);
+		}
+		_l_1784 = find (_l_1784, classname, "player_prop");
+	}
+	return _l_1785;
+};
+
+void () CamAttach =
+{
+
+	self.think = SUB_Null;
+	self.nextthink = (time - 1.000000);
+	sound (newmis, 0.000000, "buttons/switch02.wav", 1.000000, 1.000000);
+};
+.float DropFlagDelay;
+
+void () Cam =
+{
+	local vector _l_1799;
+	local vector _l_1802;
+	local entity _l_1805;
+	local entity _l_1806;
+	local vector _l_1807;
+
+	_l_1805 = find (world, classname, "camera");
+	while (_l_1805)
+	{
+		if ((_l_1805.owner == self))
+		{
+			LookThroughCam ();
+			return;
+		}
+		_l_1805 = find (_l_1805, classname, "camera");
+	}
+	if ((self.is_feigning == 1.000000))
+	{
+		return;
+	}
+	if ((self.no_grenades_2 < 1.000000))
+	{
+		sprint (self, 2.000000, "Not enough type 2 grenades... get more\n");
+		self.impulse = 0.000000;
+		if ((self.weaponmodel == "progs/spycamb.mdl"))
+		{
+			self.weaponmodel = "progs/v_shot.mdl";
+			self.currentammo = self.ammo_nails;
+			Attack_Finished (0.700000);
+			self.impulse = 0.000000;
+			self.StatusRefreshTime = (time + 0.100000);
+			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+		}
+		return;
+	}
+	if ((self.weaponmodel != "progs/spycamb.mdl"))
+	{
+		self.tfstate = (self.tfstate | 2.000000);
+		self.oldweaponmodel = self.weaponmodel;
+		self.oldcurrentammo = self.currentammo;
+		self.currentammo = 1.000000;
+		self.weaponmodel = "progs/spycamb.mdl";
+		self.weaponframe = 0.000000;
+		return;
+	}
+	makevectors (self.v_angle);
+	_l_1799 = self.origin + (v_forward * 10.000000);
+//	 = self.absmin_z + (self.size_z * 0.700000);
+	traceline (_l_1799, (_l_1799 + (v_forward * 43.000000)), 0.000000, self);
+	_l_1802 = trace_endpos - (v_forward * 8.000000);
+	if ((trace_fraction != 1.000000))
+	{
+		sprint (self, 2.000000, "Camera set! Drop3 looks through it.\n");
+		self.no_grenades_2 = (self.no_grenades_2 - 1.000000);
+		_l_1807 = self.angles + '0.000000 180.000000 90.000000';
+		_l_1807_x = _l_1807_x * 12.000000;
+		_l_1807_x = rint ((_l_1807_x / 90.000000)) * 90.000000;
+//		_l_1807_y = rint (( / 90.000000)) * 90.000000;
+//		_l_1807_y = rint (( / 90.000000)) * 90.000000;
+//		if ((((_l_1807_y - self.origin_z) <= -14.000000) && ((_l_1807_y - self.origin_z) >= -18.000000)))
+//		{
+//			_l_1807 = '-270.000000 180.000000 90.000000';
+//		}
+		newmis = spawn ();
+		newmis.classname = "camera";
+		newmis.owner = self;
+		newmis.netname = "camera";
+		newmis.weapon = 41.000000;
+		newmis.movetype = 0.000000;
+		newmis.solid = 2.000000;
+		newmis.team_no = self.team_no;
+		newmis.health = 25.000000;
+		newmis.takedamage = 0.000000;
+		newmis.th_die = camera_die;
+		setsize (newmis, '-2.000000 -2.000000 -2.000000', '2.000000 2.000000 2.000000');
+		newmis.angles = _l_1807;
+		newmis.nextthink = (time - 1.000000);
+		newmis.playerclass = 0.000000;
+		newmis.think = SUB_Null;
+		newmis.skin = 0.000000;
+		newmis.frame = 0.000000;
+		setmodel (newmis, "progs/spycamc.mdl");
+		setorigin (newmis, _l_1802);
+		_l_1806 = newmis;
+		newmis = spawn ();
+		newmis.classname = "camera_base";
+		newmis.owner = self;
+		newmis.netname = "camera_base";
+		newmis.movetype = 0.000000;
+		newmis.solid = 0.000000;
+		newmis.team_no = self.team_no;
+		newmis.takedamage = 0.000000;
+		setsize (newmis, '-2.000000 -2.000000 -2.000000', '2.000000 2.000000 2.000000');
+		newmis.angles = _l_1807;
+		newmis.playerclass = 0.000000;
+		newmis.frame = 1.000000;
+		newmis.think = camera_expire;
+		newmis.nextthink = (time + 180.000000);
+		setmodel (newmis, "progs/spycamb.mdl");
+		setorigin (newmis, _l_1802);
+		if ((self.oldweaponmodel != ""))
+		{
+			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+		}
+		self.weaponmodel = self.oldweaponmodel;
+		self.currentammo = self.oldcurrentammo;
+		Attack_Finished (0.700000);
+		self.impulse = 0.000000;
+		self.StatusRefreshTime = (time + 0.100000);
+	}
+};
+
+void () camerathink =
+{
+
+	if ((self.cnt != 1.000000))
+	{
+		self.think = SUB_Null;
+		return;
+	}
+	if ((self.owner.origin != self.owner.cam_origin))
+	{
+		setorigin (self.owner, self.owner.cam_origin);
+	}
+	makevectors (self.owner.v_angle);
+	self.angles = vectoangles (v_forward);
+	self.nextthink = (time + 0.200000);
+};
+
+void () LookThroughCam =
+{
+	local entity _l_1853;
+	local entity _l_1854;
+	local entity _l_1855;
+	local vector _l_1856;
+	local float _l_1859;
+	local vector _l_1860;
+	local string _l_1863;
+
+	_l_1863 = "camera";
+	_l_1853 = find (world, netname, _l_1863);
+	while (_l_1853)
+	{
+		if ((_l_1853.classname == "camera"))
+		{
+			if ((_l_1853.owner == self))
+			{
+				if ((self.tfstate & 1.000000))
+				{
+					TeamFortress_ThrowGrenade ();
+					self.nextthink = (time + 0.300000);
+					self.think = LookThroughCam;
+					return;
+				}
+				if ((self.tfstate & 16.000000))
+				{
+					sprint (self, 2.000000, "You can't view your camera while infected\n");
+					self.impulse = 0.000000;
+					return;
+				}
+				if ((_l_1853.cnt == 1.000000))
+				{
+					_l_1853.cnt = 0.000000;
+					_l_1853.skin = 0.000000;
+					_l_1853.think = SUB_Null;
+					_l_1860 = Remove_Prop (self, 2.000000);
+					if ((self.health > 0.000000))
+					{
+						self.solid = 3.000000;
+						self.oldangle_x = (self.oldangle_x * -1.000000);
+						makevectors (self.oldangle);
+						self.angles = vectoangles (v_forward);
+						self.fixangle = 1.000000;
+					}
+					self.currentammo = self.ammo_shells;
+					self.bugger = 0.000000;
+					self.gravity = 1.000000;
+					stuffcmd (self, "r_drawviewmodel 1\n");
+					self.modelindex = modelindex_player;
+					TeamFortress_SetSpeed (self);
+					setorigin (self, _l_1860);
+					self.impulse = 0.000000;
+					return;
+				}
+				if ((_l_1853.cnt == 0.000000))
+				{
+					_l_1854 = findradius (_l_1853.origin, 32.000000);
+					_l_1859 = 1.000000;
+					while ((_l_1854 != world))
+					{
+						if ((self == _l_1854))
+						{
+							_l_1859 = 0.000000;
+						}
+						_l_1854 = _l_1854.chain;
+					}
+					if ((_l_1859 == 1.000000))
+					{
+						if (!(self.flags & 512.000000))
+						{
+							sprint (self, 2.000000, "You can't view your camera while in the air\n");
+							self.impulse = 0.000000;
+							return;
+						}
+						if (self.hook_out)
+						{
+							return;
+						}
+						_l_1855 = find (world, classname, "item_tfgoal");
+						while (_l_1855)
+						{
+							if ((_l_1855.owner == self))
+							{
+								self.DropFlagDelay = time;
+								DropFlag ();
+								_l_1855 = world;
+							}
+							_l_1855 = find (_l_1855, classname, "item_tfgoal");
+						}
+						_l_1853.skin = 1.000000;
+						_l_1853.think = camerathink;
+						_l_1853.nextthink = (time + 0.200000);
+						self.oldangle = self.v_angle;
+						Spawn_Prop (self, self.origin, 63.000000, 1.000000, 8.000000);
+						self.modelindex = modelindex_null;
+						self.solid = 0.000000;
+						self.gravity = 0.000000;
+						stuffcmd (self, "cl_movespeedkey 1\n");
+						self.maxspeed = 0.000000;
+						self.maxfbspeed = 0.000000;
+						self.maxstrafespeed = 0.000000;
+//						if (1.000000)
+//						{
+							stuffcmd (self, "m_forward 0\n");
+							stuffcmd (self, "m_side 0\n");
+//						}
+						self.velocity = '0.000000 0.000000 0.000000';
+						stuffcmd (self, "cl_backspeed 0\n");
+						stuffcmd (self, "cl_forwardspeed 0\n");
+						stuffcmd (self, "cl_sidespeed 0\n");
+						makevectors (_l_1853.angles);
+						self.angles = vectoangles (v_forward);
+						self.fixangle = 1.000000;
+						_l_1855 = find (world, classname, "camera_base");
+						while (_l_1855)
+						{
+							if ((_l_1855.owner == self))
+							{
+								makevectors (_l_1855.angles);
+								v_forward_z = v_forward_z * -1.000000;
+								_l_1856 = '0.000000 0.000000 -24.000000';
+								if (((self.is_feigning == 1.000000) && (_l_1855.angles_x == -270.000000)))
+								{
+									_l_1856 = '0.000000 0.000000 -8.000000';
+								}
+								setorigin (self, ((_l_1853.origin + _l_1856) + (v_forward * 4.000000)));
+								self.cam_origin = ((_l_1853.origin + _l_1856) + (v_forward * 4.000000));
+							}
+							_l_1855 = find (_l_1855, classname, "camera_base");
+						}
+						_l_1853.cnt = 1.000000;
+						self.bugger = 8.000000;
+						self.impulse = 0.000000;
+						stuffcmd (self, "r_drawviewmodel 0\n");
+						self.health = _l_1853.health;
+						self.ammo_shells = 0.000000;
+						self.ammo_nails = 0.000000;
+						self.ammo_rockets = 0.000000;
+						self.ammo_cells = 0.000000;
+						self.armorvalue = 0.000000;
+						self.currentammo = 0.000000;
+						return;
+					}
+					else
+					{
+						sprint (self, 2.000000, "You are too close to your camera to look through it.\n");
+						self.impulse = 0.000000;
+						return;
+					}
+				}
+				return;
+			}
+		}
+		_l_1853 = find (_l_1853, netname, _l_1863);
+	}
+	sprint (self, 2.000000, "First drop a camera with drop3\n");
+	self.impulse = 0.000000;
+};
+
+void () camera_expire =
+{
+	local entity _l_1909;
+
+	_l_1909 = find (world, classname, "camera");
+	while (_l_1909)
+	{
+		if ((_l_1909.owner == self.owner))
+		{
+			camera_die (_l_1909);
+			return;
+		}
+		_l_1909 = find (_l_1909, classname, "camera");
+	}
+};
+
+void (entity _p_1912) camera_die =
+{
+	local entity _l_1913;
+
+	self = _p_1912;
+	_p_1912.effects = 4.000000;
+	_p_1912.takedamage = 0.000000;
+	make_explosion ();
+	self = _p_1912.owner;
+	sprint (self, 2.000000, "Your camera went bye-bye.\n");
+	if ((_p_1912.cnt == 1.000000))
+	{
+		LookThroughCam ();
+	}
+	_l_1913 = find (world, classname, "camera");
+	while (_l_1913)
+	{
+		if ((_l_1913.owner == self))
+		{
+			dremove (_l_1913);
+		}
+		_l_1913 = find (_l_1913, classname, "camera");
+	}
+	_l_1913 = find (world, classname, "camera_base");
+	while (_l_1913)
+	{
+		if ((_l_1913.owner == self))
+		{
+			dremove (_l_1913);
+		}
+		_l_1913 = find (_l_1913, classname, "camera_base");
+	}
+};
+
+void () activatecam =
+{
+	if ((other.classname == "player"))
+	{
+		return;
+	}
+	self.cnt = 0.000000;
+	self.touch = SUB_Null;
+};
