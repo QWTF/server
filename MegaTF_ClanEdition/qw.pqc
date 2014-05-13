@@ -237,6 +237,7 @@ float already_chosen_map /* = 0.000000 */;
 .float StatusBarSize;
 .float StatusBarRes;
 .float gender;
+.float active_airmirvs;
 float deathmsg /* = 0.000000 */;
 
 void(float psize, entity p) KickPlayer = 

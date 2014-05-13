@@ -1413,40 +1413,40 @@ void () review_timeleft = {
    remaining = seconds - self.no_grenades_1;
    if ((remaining == 5) & (seconds >= 5))
    {
-	       //print "5 seconds left"
-		   bprint(2,"5 SECONDS remaining!\n");
+	       //print "5 SECONDS remaining"
+		   bprint(2,"\{144}\{151} \{211}\{197}\{195}\{207}\{206}\{196}\{211} remaining!\{145}\n");
 		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
    }
 
    else if ((remaining == 30) & (seconds >= 30))
    {
-	       //print "30 seconds left"
-		   bprint(2,"30 SECONDS remaining.\n");
+	       //print "30 SECONDS remaining"
+		   bprint(2,"\{144}\{149}\{146} \{211}\{197}\{195}\{207}\{206}\{196}\{211} remaining.\{145}\n");
 		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
    }
    else if ((remaining == 60) & (seconds >= 60))
    {
-		   //print "1 minute left"
-		   bprint(2,"1 MINUTE remaining.\n");
+		   //print "1 MINUTE remaining"
+		   bprint(2,"\{144}\{147} \{205}\{201}\{206}\{213}\{212}\{197} remaining.\{145}\n");
 		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
    }
 
    else if ((remaining == 300) & (seconds >= 300))
    {
-		   //print "5 minutes left"
-		   bprint(2,"5 minutes remaining.\n");
+		   //print "5 minutes remaining"
+		   bprint(2,"\{144}\{151} \{237}\{233}\{238}\{245}\{244}\{229}\{243} remaining.\{145}\n");
 		   //sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
    }
    else if ((remaining == 900) & (seconds >= 900))
    {
-		//print "15 minutes left"
-		bprint(2,"15 minutes remaining.\n");
+		//print "15 minutes remaining"
+		bprint(2,"\{144}\{147}\{151} \{237}\{233}\{238}\{245}\{244}\{229}\{243} remaining.\{145}\n");
 		//sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
    }
 	else if((remaining == 1800) & (seconds >= 1800))
 	{
-		//print "30 minutes left"
-		bprint(2,"30 minutes remaining.\n");
+		//print "30 minutes remaining"
+		bprint(2,"\{144}\{149}\{146} \{237}\{233}\{238}\{245}\{244}\{229}\{243} remaining.\{145}\n");
 		//sound (self,4,"megatf/timer.wav",TF_FLARE_OFF,TF_FLARE_LIT);
 	}
    /* else if (remaining <= 0) 

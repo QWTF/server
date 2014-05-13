@@ -19,6 +19,7 @@ float exec_class;
 float coloredlights;
 float sr_gren1;
 float sr_gren2;
+float sr_airmirv;
 
 // pablo. class restrictions.
 float(float pc) IsRestrictedClass;
@@ -470,6 +471,14 @@ void () DecodeLevelParms =
 		{
 			sr_gren2 = 10.000000;
 		}
+	
+		_l_5713 = infokey(world, "sr_airmirv");
+		sr_airmirv = stof (_l_5713);
+		if ((sr_airmirv <= 0.000000))
+		{
+			sr_airmirv = 10.000000;
+		}
+
 #ifdef clan_progs
 		_l_5713 = infokey (world, "clan_prematch");
 		if (_l_5713 == "on" || stof(_l_5713) > 0)
@@ -1445,6 +1454,7 @@ void() PutClientInServer =
 	self.on_hook = 0;
 	self.active_grenades_1 = 0;
 	self.active_grenades_2 = 0;
+	self.active_airmirvs = 0;
 	self.hook_out = 0;
 	self.fire_held_down = 0;
 	stuffcmd(self, "play misc/null.wav\n");

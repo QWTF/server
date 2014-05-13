@@ -548,6 +548,7 @@ void (float _p_2420) Stats_Fired;
 float spyjumpoption;
 float quadscore;
 float sr_dropgrens;
+float sr_airmirv;
 .float spy_regjump;
 float engbat;
 

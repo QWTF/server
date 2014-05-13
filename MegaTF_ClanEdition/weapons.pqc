@@ -2853,6 +2853,7 @@ void () BalloonMIRVpop =
 		BalloonMirvGrenadeLaunch ((self.origin + '0 0 -1'), self.owner);
 		i = (i + TF_FLARE_OFF);
 	}
+	self.owner.active_airmirvs = (self.owner.active_airmirvs - 1);
 	BecomeExplosion ();
 };
 
@@ -2880,48 +2881,57 @@ void () BalloonMIRV =
 	{
 		sprint (self, 2, "You need type 2 grens for an AirMIRV\n");
 		return;
-	}
+	}	
 	if ((self.last_saveme_sound > time))
 	{
 		return;
 	}
-	self.last_saveme_sound = (time + 2);
-	self.no_grenades_2 = (self.no_grenades_2 - TF_FLARE_OFF);
-	sprint (self, 2, "AirMIRV released!\n");
-	sound (self, 3, "weapons/chngnu1a.wav", TF_FLARE_OFF, TF_FLARE_OFF);
-	newmis = spawn ();
-	newmis.health = 180;
-	newmis.takedamage = 2;
-	newmis.th_die = BalloonMIRVpop;
-	newmis.owner = self;
-	newmis.weapon = 40;
-	newmis.movetype = 5;
-	newmis.solid = 2;//TF_FLARE_OFF;
-	newmis.classname = "bot";//"grenade";
-	// pablo. netname so i can fudge gun's aim.
-	newmis.netname = "airmirv";
-	//
-	newmis.playerclass = TF_FLARE_LIT;
-	newmis.team_no = self.team_no; // can't shotgun your own airmirvs anyway.
-	makevectors (self.v_angle);
-	if (self.v_angle_x)
+	if ((self.active_airmirvs >= sr_airmirv))
 	{
-		newmis.velocity = ((v_forward * 100) + (v_up * 200));
+		sprint (self, 2, "Maximum number of airmirvs already active.\n");
+		return;
 	}
 	else
 	{
-		newmis.velocity = aim (self, 10000);
-		newmis.velocity = (newmis.velocity * 100);
-		newmis.velocity_z = 200;
+		self.last_saveme_sound = (time + 2);
+		self.no_grenades_2 = (self.no_grenades_2 - TF_FLARE_OFF);
+		self.active_airmirvs = (self.active_airmirvs + 1);
+		sprint (self, 2, "AirMIRV released!\n");
+		sound (self, 3, "weapons/chngnu1a.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+		newmis = spawn ();
+		newmis.health = 180;
+		newmis.takedamage = 2;
+		newmis.th_die = BalloonMIRVpop;
+		newmis.owner = self;
+		newmis.weapon = 40;
+		newmis.movetype = 5;
+		newmis.solid = 2;//TF_FLARE_OFF;
+		newmis.classname = "bot";//"grenade";
+		// pablo. netname so i can fudge gun's aim.
+		newmis.netname = "airmirv";
+		//
+		newmis.playerclass = TF_FLARE_LIT;
+		newmis.team_no = self.team_no; // can't shotgun your own airmirvs anyway.
+		makevectors (self.v_angle);
+		if (self.v_angle_x)
+		{
+			newmis.velocity = ((v_forward * 100) + (v_up * 200));
+		}
+		else
+		{
+			newmis.velocity = aim (self, 10000);
+			newmis.velocity = (newmis.velocity * 100);
+			newmis.velocity_z = 200;
+		}
+		newmis.avelocity = '0 0 0';
+		setsize (newmis, '-8 -8 -8', '8 8 8');
+		setorigin (newmis, self.origin);
+		newmis.nextthink = (time + TF_FLARE_OFF);
+		newmis.think = BalloonMIRVnoise;
+		newmis.touch = BalloonMIRVtouch;
+		setmodel (newmis, "progs/air-mirv.mdl");
+		deathmsg = 40;
 	}
-	newmis.avelocity = '0 0 0';
-	setsize (newmis, '-8 -8 -8', '8 8 8');
-	setorigin (newmis, self.origin);
-	newmis.nextthink = (time + TF_FLARE_OFF);
-	newmis.think = BalloonMIRVnoise;
-	newmis.touch = BalloonMIRVtouch;
-	setmodel (newmis, "progs/air-mirv.mdl");
-	deathmsg = 40;
 };
 
 void (entity from,float damage) LightningHit =
