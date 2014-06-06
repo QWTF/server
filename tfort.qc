@@ -137,7 +137,7 @@ void () TeamFortress_List_Not_Ready =
 		else if (ready_votes > 0) {
 			if (anti_spam_timer_list < time) {
 				search = find (world, classname, "player");
-				bprint (PRINT_HIGH, "\sPlayers not ready:\s\n");
+				bprint (PRINT_HIGH, "\s\nPlayers not ready:\s\n");
 				
 				while (search) {
 					found = 0;
