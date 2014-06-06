@@ -2763,14 +2763,14 @@ void () W_WeaponFrame =
 	    }
     }
 	}
-    server_status = infokey (world, "instantgrenades");
-	if (server_status == "1")
+    server_status = infokey (world, "ig"); //instant grenades, sticky grenades, lets you throwgren while attacking.
+	if ((server_status == "1") || (server_status == "on"))
 	{
 		GrenadeImpulses();
 	}
 	
 	if (time < self.attack_finished) {
-	return;
+		return;
     }
     if ((self.impulse != 0) && (self.has_disconnected == 0)) {
 		if (server_status != "1")
@@ -2778,69 +2778,77 @@ void () W_WeaponFrame =
 			GrenadeImpulses();
 		}
 	
-	ImpulseCommands ();
+		ImpulseCommands ();
     }
     if (cease_fire) {
-	return;
+		return;
     }
     if (((self.is_building != 0) || (self.is_detpacking != 0)) || (self.is_feigning != 0)) {
-	return;
+		return;
     }
     if ((!self.button0 && self.fire_held_down) && (self.current_weapon == 32768)) {
-	self.fire_held_down = 0;
-	self.tfstate = self.tfstate - (self.tfstate & 65536);
-	TeamFortress_SetSpeed (self);
-	player_run ();
+		self.fire_held_down = 0;
+		self.tfstate = self.tfstate - (self.tfstate & 65536);
+		TeamFortress_SetSpeed (self);
+		player_run ();
     }
     if (self.button0 && !self.fire_held_down) {
-	if ((self.current_menu == 6) || (self.current_menu == 7)) {
-	    self.current_menu = 8;
-	    self.menu_count = 25;
-	    Attack_Finished (0.2);
-	} else if (self.current_weapon == 32) {
-	    if (self.tfstate & 2048) {
-		if (self.heat < 400) {
-		    self.heat = self.heat + 3;
+		if ((self.current_menu == 6) || (self.current_menu == 7)) {
+			self.current_menu = 8;
+			self.menu_count = 25;
+			Attack_Finished (0.2);
 		}
-		if (self.height > 30) {
-		    self.height = self.height - 5;
-		    TF_zoom (self.height);
+		else if (self.current_weapon == 32) {
+			if (self.tfstate & 2048) {
+				if (self.heat < 400) {
+					self.heat = self.heat + 3;
+				}
+				if (self.height > 30) {
+					self.height = self.height - 5;
+					TF_zoom (self.height);
+				}
+			}
+			else {
+				tv = self.velocity;
+				tv_z = 0;
+				if (vlen (tv) <= 50) {
+					SniperSight_Create ();
+					self.heat = 50;
+					self.height = 90;
+					self.tfstate = self.tfstate | 2048;
+					TeamFortress_SetSpeed (self);
+				}
+			}
 		}
-	    } else {
-		tv = self.velocity;
-		tv_z = 0;
-		if (vlen (tv) <= 50) {
-		    SniperSight_Create ();
-		    self.heat = 50;
-		    self.height = 90;
-		    self.tfstate = self.tfstate | 2048;
-		    TeamFortress_SetSpeed (self);
+		else if (self.current_weapon == 32768) {
+			if (self.flags & 512) {
+				SuperDamageSound ();
+				W_Attack ();
+			}
+			else {
+				sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
+			}
 		}
-	    }
-	} else if (self.current_weapon == 32768) {
-	    if (self.flags & 512) {
-		SuperDamageSound ();
-		W_Attack ();
-	    } else {
-		sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
-	    }
-	} else {
-	    SuperDamageSound ();
-	    W_Attack ();
-	}
-    } else if (self.playerclass == 0) {
-	self.weaponmode = 0;
-    } else if (self.tfstate & 2048) {
-	if (self.current_weapon != 32768) {
-	    W_Attack ();
-	}
-	self.tfstate = self.tfstate - 2048;
-	TeamFortress_SetSpeed (self);
-	self.heat = 0;
-    } else if (self.tfstate & 65536) {
-	self.tfstate = self.tfstate - 65536;
-	TeamFortress_SetSpeed (self);
-	self.heat = 0;
+		else {
+			SuperDamageSound ();
+			W_Attack ();
+		}
+    }
+	else if (self.playerclass == 0) {
+		self.weaponmode = 0;
+    }
+	else if (self.tfstate & 2048) {
+		if (self.current_weapon != 32768) {
+			W_Attack ();
+		}
+		self.tfstate = self.tfstate - 2048;
+		TeamFortress_SetSpeed (self);
+		self.heat = 0;
+    }
+	else if (self.tfstate & 65536) {
+		self.tfstate = self.tfstate - 65536;
+		TeamFortress_SetSpeed (self);
+		self.heat = 0;
     }
 };
 
