@@ -1324,7 +1324,6 @@ Also, this function is executed every 0.1 seconds.
 				localcmd("serverinfo status \"");
 				localcmd("2 min left");
 				localcmd("\"\n");
-				
 			}
 			if (time_remaining == 60) {
 				anti_spam_timer_reminder = time + 29;
@@ -1342,16 +1341,10 @@ Also, this function is executed every 0.1 seconds.
 				anti_spam_timer_reminder = time + 5;
 				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
 			}
-
-	
-
 		}
-		
-		
 		
 		server_status = infokey (world, "status");
 		
-		 
 		if (timelimit && ( (time - (countdown_start_time + prematch_countdown) ) >= timelimit) && (server_status != "Prematch") && (server_status != "Countdown") )
 			NextLevel ();
 		else if (fraglimit && (self.frags >= fraglimit))
@@ -1359,6 +1352,56 @@ Also, this function is executed every 0.1 seconds.
 		
 	}
 	else { // not a team game
+		
+		//I understand this is messy, but it works. Someone can hopefully fix it later. This code below is copy pasted from above so time remaining reminders
+		//will show in non-match mode. I don't have time to revise the code above so as to not have to have this twice.
+		
+		if ((anti_spam_timer_reminder < time) && timelimit) {
+			if (time_remaining > 121) {
+				if ( (time_remaining / 60) > (rint (time_remaining / 60) ) ) {
+					anti_spam_timer_reminder = time + (time_remaining - ( ( rint(time_remaining / 60) ) * 60 ) );
+				}
+				else {
+					anti_spam_timer_reminder = time + 59;
+					minutes_round = rint (time_remaining / 60); // or else we would get " x.0 minutes.." after the first iteration
+					minutes = ftos (minutes_round);
+					
+					bprint2 (PRINT_HIGH, bracket_open, "");
+					bprint2 (PRINT_HIGH, minutes, "\] minutes remaining\n");
+					
+					localcmd("serverinfo status \"");
+					localcmd(minutes);
+					localcmd(" min left");
+					localcmd("\"\n");
+				}
+			}
+			if (time_remaining == 120) {
+				anti_spam_timer_reminder = time + 59;
+				bprint (PRINT_HIGH, "\[2\] minutes remaining\n");
+				
+				localcmd("serverinfo status \"");
+				localcmd("2 min left");
+				localcmd("\"\n");
+			}
+			if (time_remaining == 60) {
+				anti_spam_timer_reminder = time + 29;
+				bprint (PRINT_HIGH, "\[1\] minute remaining\n");
+				
+				localcmd("serverinfo status \"");
+				localcmd("1 min left");
+				localcmd("\"\n");
+			}
+			if (time_remaining == 30) {
+				anti_spam_timer_reminder = time + 19;
+				bprint (PRINT_HIGH, "\[30\] seconds remaining\n");
+			}
+			if (time_remaining == 10) {
+				anti_spam_timer_reminder = time + 5;
+				bprint (PRINT_HIGH, "\[10\] seconds remaining\n");
+			}
+		}
+	
+	
 		if (timelimit && (time >= timelimit))
 			NextLevel ();
 		else if (fraglimit && (self.frags >= fraglimit))
