@@ -2831,7 +2831,7 @@ void (entity p) TeamFortress_ExecClassScript =
     if (st == string_null)
 	st = infokey (p, "exec_class");
 
-    if (st == "on") {
+    if ((st == "on") || (st == "1")) {
 	if (p.playerclass == PC_SCOUT)
 	    stuffcmd (p, "exec scout.cfg\n");
 	else if (p.playerclass == PC_SNIPER)
@@ -2861,7 +2861,7 @@ void (entity p) TeamFortress_ExecMapScript =
     if (st == string_null)
 	st = infokey (p, "exec_map");
 
-    if (st == "on") {
+    if ((st == "on") || (st == "1")) {
 	stuffcmd (p, "exec mapdefault.cfg\n");
 	stuffcmd (p, "exec ");
 	stuffcmd (p, mapname);

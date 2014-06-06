@@ -239,7 +239,7 @@ void () DecodeLevelParms =
 		if (st == string_null)
 			st = infokey (world, "birthday");
 
-		if (st == "on") {
+		if ((st == "on") || (st == "1")) {
 			birthday = TRUE;
 			te = spawn ();
 			te.weapon = 10;
@@ -253,7 +253,7 @@ void () DecodeLevelParms =
 		if (st == string_null) // maybe they are using "serverinfo clan" instead of "serverinfo c"
 			st = infokey (world, "clan");
 
-		if (st == "on") { // if clan game is set to on
+		if ((st == "on") || (st == "1")) { // if clan game is set to 1/on
 			localcmd ("serverinfo status Prematch\n");
 			localcmd ("serverinfo status2 Prematch\n");
 			
@@ -304,7 +304,7 @@ void () DecodeLevelParms =
 			if (st == string_null)
 				st = infokey (world, "locked_game");
 
-			if (st == "on")
+			if ((st == "on") || (st == "1"))
 				game_locked = TRUE;
 		}
 		else {
@@ -315,7 +315,7 @@ void () DecodeLevelParms =
 		st = infokey (world, "a");
 		if (st == string_null)
 			st = infokey (world, "autoteam");
-		if (st == "on")
+		if ((st == "on") || (st == "1"))
 			toggleflags = toggleflags | TFLAG_AUTOTEAM;
 		else if (st == "off")
 			toggleflags = toggleflags - (toggleflags & TFLAG_AUTOTEAM);
@@ -340,7 +340,7 @@ void () DecodeLevelParms =
 		st = infokey (world, "t");
 		if (st == string_null)
 			st = infokey (world, "teamfrags");
-		if (st == "on")
+		if ((st == "on") || (st == "1"))
 			toggleflags = toggleflags | TFLAG_TEAMFRAGS;
 		else if (st == "off")
 			toggleflags = toggleflags - (toggleflags & TFLAG_TEAMFRAGS);
@@ -348,7 +348,7 @@ void () DecodeLevelParms =
 		st = infokey (world, "fts");
 		if (st == string_null)
 			st = infokey (world, "fullteamscore");
-		if (st == "on")
+		if ((st == "on") || (st == "1"))
 			toggleflags = toggleflags | TFLAG_FULLTEAMSCORE;
 
 		st = infokey (world, "g");
@@ -364,7 +364,7 @@ void () DecodeLevelParms =
 			st = infokey (world, "old_grenades");
 		if (st == string_null)
 			st = infokey (world, "old_grens");
-		if (st == "on")
+		if ((st == "on") || (st == "1"))
 			old_grens = TRUE;
 
 		st = infokey (world, "spy");

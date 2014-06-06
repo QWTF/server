@@ -143,7 +143,7 @@ void () worldspawn =
     }
 
     st = infokey (world, "exec_map_cfgs");
-    if (st == "on") {
+    if ((st == "on") || (st == "1")) {
 
 	st = infokey (world, "cycledir");
 	if (st != string_null) {

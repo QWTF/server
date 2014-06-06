@@ -152,14 +152,14 @@ void (entity Goal) UpdateAbbreviations =
 	    if (st == string_null) {
 		st = infokey (world, "flag_emu");
 	    }
-	    if (st == "on") {
+	    if ((st == "on") || (st == "1")) {
 		toggleflags = toggleflags | TFLAG_FLAGEMU;
 	    }
 	    st = infokey (world, "ws");
 	    if (st == string_null) {
 		st = infokey (world, "use_standard");
 	    }
-	    if (st == "on") {
+	    if ((st == "on") || (st == "1")) {
 		toggleflags = toggleflags | TFLAG_WARSTANDARD;
 	    }
 	    flagem_checked = 1;

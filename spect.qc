@@ -53,7 +53,7 @@ void () SpectatorConnect =
     if (st == string_null)
 		st = infokey (self, "exec_map");
 
-    if (st == "on") {
+    if ((st == "on") || (st == "1")) {
 		stuffcmd (self, "exec mapdefault.cfg\n");
 		stuffcmd (self, "exec spectator.cfg\n");
 		stuffcmd (self, "exec ");
