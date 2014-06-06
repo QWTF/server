@@ -418,17 +418,17 @@ float () TeamFortress_TeamGetWinner =
     local float highest;
     local float highestteam;
 
-    highest = 0;
+    highest = -99999;
     highestteam = 0;
-
     i = 1;
+	
     while (i < (number_of_teams + 1)) {
-	j = TeamFortress_TeamGetScoreFrags (i);
-	if (j > highest) {
-	    highest = j;
-	    highestteam = i;
-	}
-	i = i + 1;
+		j = TeamFortress_TeamGetScoreFrags (i);
+		if (j > highest) {
+			highest = j;
+			highestteam = i;
+		}
+		i = i + 1;
     }
     return (highestteam);
 };
