@@ -43,7 +43,7 @@ void (entity pl) RefreshStatusBar =
 	local string t1name, t2name, t3name, t4name;
 	local string t1score, t2score, t3score, t4score;
 	local string t1full, t2full, t3full, t4full, t12full, t34full;
-	local string st, print_scores, gren1, gren2, gren_print, detpack_print;
+	local string st, print_scores, gren1, gren2, gren_print;
 	
 	if (pl.StatusBarSize == 0) {
 		pl.StatusRefreshTime = time + 60;
@@ -101,14 +101,11 @@ void (entity pl) RefreshStatusBar =
 	print_scores = strcat(t12full,t34full);
 	
 	
-	gren1 = strcat(" \sG1\s:", ftos (self.no_grenades_1));
-	gren2 = strcat(" \sG2\s:", ftos (self.no_grenades_2));
+	gren1 = strcat(" \sG\s: ", ftos (self.no_grenades_1));
+	gren2 = strcat("/", ftos (self.no_grenades_2));
 	gren_print = strcat(gren1, gren2);
 	
-	if (pl.playerclass == PC_DEMOMAN) {
-		if (self.ammo_detpack > 0)
-			detpack_print = strcat(" \sDpack\s:", ftos (self.ammo_detpack));
-	}
+	gren_print = strcat(gren1, gren2);
 
     status_size = GetStatusSize (pl);
     clip_print = ClipSize (pl);
@@ -143,7 +140,7 @@ void (entity pl) RefreshStatusBar =
 		}
 	}
 	
-	centerprint (pl, status_size, misc, print_scores, clip_print, gren_print, detpack_print);
+	centerprint (pl, status_size, misc, print_scores, clip_print, gren_print);
 
 };
 
