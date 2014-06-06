@@ -2631,7 +2631,7 @@ void () DeadImpulses =
     else if ((self.impulse > 100) && (self.impulse <= (100 + 10))) {
 		TeamFortress_ChangeClass ();
     }
-	else if ((self.playerclass != 0) && (self.impulse == 99) && (deathmatch == 3) && (server_status == "Match")) {
+	else if ((self.playerclass != 0) && (self.impulse == 99) && (deathmatch == 3) && ((server_status == "Match") || (server_status == ""))) {
 		self.current_menu = 20;
 		self.menu_count = 25;
     }
