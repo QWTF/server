@@ -1,0 +1,194 @@
+void() TeamFortress_MOTD = 
+{
+	local string ya;
+	local string st;
+	local string st2;
+	local string mu;
+	local float rnum;
+	if (self.motd == 4)
+	{
+		st = infokey(world, "motd1");
+		st2 = infokey(world, "motd2");
+		if (st != string_null)
+		{
+			CenterPrint2(self, st, st2);
+		}
+	}
+	if (self.motd <= 20)
+	{
+		self.motd = self.motd + TF_FLARE_OFF;
+		return;
+	}
+	if (self.motd == 21)
+	{
+//		if (TF_FLARE_LIT == TF_FLARE_LIT)
+//		{
+			self.tfstate = self.tfstate | 4096;
+//		}
+		if (teamplay != TF_FLARE_LIT && self.team_no == TF_FLARE_LIT)
+		{
+			stuffcmd(self, "color ");
+			ya = ftos(TF_FLARE_OFF - TF_FLARE_OFF);
+			stuffcmd(self, ya);
+			stuffcmd(self, "\n");
+		}
+		rnum = random();
+		mu = infokey(self, "tf_music");
+		if (mu != "off" && (infokey(world, "tf_music") != "off"))
+		{
+			if (rnum < 0.33)
+			{
+				stuffcmd(self, "play music/megamnu1.wav\n");
+			}
+			else
+			{
+				if (rnum < 0.66)
+				{
+					stuffcmd(self, "play music/megamnu2.wav\n");
+				}
+				else
+				{
+					stuffcmd(self, "play music/megamnu3.wav\n");
+				}
+			}
+		}
+		st = infokey(world, "hostname");
+		if (st != string_null)
+		{
+			sprint(self, 2, "\n");
+			sprint(self, 2, st);
+			sprint(self, 2, "\n");
+		}
+		self.maxspeed = TF_FLARE_LIT;
+		self.current_menu = 5;
+		self.menu_count = 25;
+		self.motd = 22;
+		if (!old_gl)
+		{
+			stuffcmd(self, "gl_polyblend 1\n");
+			TeamFortress_Alias("gl_polyblend", TF_FLARE_LIT, TF_FLARE_LIT);
+		}
+		stuffcmd (self, "alias stats_dl \"setinfo tf_stats on; set stats_execed 0; echo óôáôó ÷éìì âåçéî ïî ùïõò îåøô ìéæå; download progs/stats.cfg;\"\n");
+		TeamFortress_Alias("+spot", 60, TF_FLARE_LIT);
+		TeamFortress_Alias("-spot", 60, TF_FLARE_LIT);
+		TeamFortress_Alias("inv", 135, TF_FLARE_LIT);
+		TeamFortress_Alias("showtf", 136, TF_FLARE_LIT);
+		TeamFortress_Alias("changeclass", 202, TF_FLARE_LIT);
+		TeamFortress_Alias("autozoom", 174, TF_FLARE_LIT);
+		TeamFortress_Alias("scout", 100 + TF_FLARE_OFF, TF_FLARE_LIT);
+		TeamFortress_Alias("sniper", 100 + 2, TF_FLARE_LIT);
+		TeamFortress_Alias("soldier", 100 + 3, TF_FLARE_LIT);
+		TeamFortress_Alias("demoman", 100 + 4, TF_FLARE_LIT);
+		TeamFortress_Alias("medic", 100 + 5, TF_FLARE_LIT);
+		TeamFortress_Alias("hwguy", 100 + 6, TF_FLARE_LIT);
+		TeamFortress_Alias("pyro", 100 + 7, TF_FLARE_LIT);
+		TeamFortress_Alias("spy", 100 + 8, TF_FLARE_LIT);
+		TeamFortress_Alias("engineer", 100 + 9, TF_FLARE_LIT);
+		TeamFortress_Alias("randompc", 100 + 10, TF_FLARE_LIT);
+		TeamFortress_Alias("primeone", 150, TF_FLARE_LIT);
+		TeamFortress_Alias("primetwo", 151, TF_FLARE_LIT);
+		TeamFortress_Alias("throwgren", 152, TF_FLARE_LIT);
+		TeamFortress_Alias("+gren1", 150, TF_FLARE_LIT);
+		TeamFortress_Alias("+gren2", 151, TF_FLARE_LIT);
+		TeamFortress_Alias("-gren1", 152, TF_FLARE_LIT);
+		TeamFortress_Alias("-gren2", 152, TF_FLARE_LIT);
+		TeamFortress_Alias("detpipe", 170, TF_FLARE_LIT);
+		TeamFortress_Alias("reload", 173, TF_FLARE_LIT);
+		TeamFortress_Alias("scan10", 162, TF_FLARE_LIT);
+		TeamFortress_Alias("scan30", 163, TF_FLARE_LIT);
+		TeamFortress_Alias("scan100", 164, TF_FLARE_LIT);
+		TeamFortress_Alias("scanf", 161, TF_FLARE_LIT);
+		TeamFortress_Alias("scane", 160, TF_FLARE_LIT);
+		TeamFortress_Alias("det5", 165, TF_FLARE_LIT);
+		TeamFortress_Alias("det20", 166, TF_FLARE_LIT);
+		TeamFortress_Alias("det50", 167, TF_FLARE_LIT);
+		TeamFortress_Alias("+det5", 165, TF_FLARE_LIT);
+		TeamFortress_Alias("-det5", 169, TF_FLARE_LIT);
+		TeamFortress_Alias("+det20", 166, TF_FLARE_LIT);
+		TeamFortress_Alias("-det20", 169, TF_FLARE_LIT);
+		TeamFortress_Alias("+det50", 167, TF_FLARE_LIT);
+		TeamFortress_Alias("-det50", 169, TF_FLARE_LIT);
+		TeamFortress_Alias("showscores", 145, TF_FLARE_LIT);
+		TeamFortress_Alias("showclasses", 144, TF_FLARE_LIT);
+		TeamFortress_Alias("query", 119, TF_FLARE_LIT);
+//		TeamFortress_Alias("dropkey", 175, TF_FLARE_LIT);
+		TeamFortress_Alias("dropammo", 172, TF_FLARE_LIT);
+		TeamFortress_Alias("showloc", 118, TF_FLARE_LIT);
+		TeamFortress_Alias("special", 171, TF_FLARE_LIT);
+		TeamFortress_Alias("saveme", 181, TF_FLARE_LIT);
+		TeamFortress_Alias("discard", 184, TF_FLARE_LIT);
+		TeamFortress_Alias("id", 185, TF_FLARE_LIT);
+		TeamFortress_Alias ("autoid_on", 186.000000, 0.000000);
+		TeamFortress_Alias ("autoid_off", 187.000000, 0.000000);
+		TeamFortress_Alias ("discardmode_max", 236.000000, 0.000000);
+		TeamFortress_Alias ("discardmode_normal", 237.000000, 0.000000);
+		TeamFortress_Alias ("autodiscard_on", 238.000000, 0.000000);
+		TeamFortress_Alias ("autodiscard_off", 239.000000, 0.000000);
+//		TeamFortress_Alias("autoscreenshot", 186, TF_FLARE_LIT);
+		TeamFortress_Alias("flaginfo", 23, TF_FLARE_LIT);
+		TeamFortress_Alias("maphelp", 131, TF_FLARE_LIT);
+		TeamFortress_Alias("disguise", 177, TF_FLARE_LIT);
+		TeamFortress_Alias ("sfeign", 180.000000, 0.000000);
+		TeamFortress_Alias("feign", 178, TF_FLARE_LIT);
+		TeamFortress_Alias("build", 179, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_on", 182, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_off", 183, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_200", 71, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_240", 71 + TF_FLARE_OFF, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_300", 71 + 2, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_350", 71 + 3, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_384", 71 + 4, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_400", 71 + 5, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_480", 71 + 6, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_600", 71 + 7, TF_FLARE_LIT);
+		TeamFortress_Alias("sbar_768", 71 + 8, TF_FLARE_LIT);
+		TeamFortress_Alias ("efstatus", 234.000000, 0.000000);
+		TeamFortress_Alias ("ofstatus", 235.000000, 0.000000);
+		TeamFortress_Alias ("say_efstatus", 241.000000, 0.000000);
+		TeamFortress_Alias ("say_ofstatus", 242.000000, 0.000000);
+		TeamFortress_Alias("is_aliased", 13, TF_FLARE_LIT);
+#ifdef clan_progs
+		TeamFortress_Alias("showstats", 69, TF_FLARE_LIT);
+		TeamFortress_Alias("throwflag", 206, TF_FLARE_LIT);
+#endif
+		stuffcmd(self, "bind 9 \"impulse 9\"\n");
+		stuffcmd(self, "bind 0 \"impulse 10\"\n");
+	}
+};
+
+void() TeamFortress_HelpMap = 
+{
+	local entity te;
+	te = find(world, classname, "info_tfdetect");
+	if (te)
+	{
+		if (te.non_team_broadcast != string_null)
+		{
+			sprint(self, 2, te.non_team_broadcast);
+			sprint(self, 2, "\nNew Commands:\n");
+			sprint(self, 2, " 'bic' to flick your bic!\n");
+			sprint(self, 2, " 'Hey' to yell 'hey!'\n");
+			sprint(self, 2, " 'bHole' to taunt player!\n");
+			sprint(self, 2, " 'holo' to activate holographic replica!\n");
+			sprint(self, 2, " 'jetjump' to activate AirScout jetPack\n");
+			sprint(self, 2, " 'lay' to activate laydown mode\n");
+			sprint(self, 2, " 'ir' to activate Night Vision (InfraRed)\n");
+			sprint(self, 2, " 'lay' to activate laydown mode\n");
+			sprint(self, 2, " 'drop2' to drop a Toaster (in water)\n");
+			sprint(self, 2, " 'dropflag' to drop the enemy flag\n");
+			return;
+		}
+	}
+	sprint(self, 2, "\nNew Commands:\n");
+	sprint(self, 2, " 'bic' to flick your bic!\n");
+	sprint(self, 2, " 'Hey' to yell 'hey!'\n");
+	sprint(self, 2, " 'bHole' to taunt player!\n");
+	sprint(self, 2, " 'holo' to activate holographic replica!\n");
+	sprint(self, 2, " 'jetjump' to activate AirScout jetPack\n");
+	sprint(self, 2, " 'lay' to activate laydown mode\n");
+	sprint(self, 2, " 'ir' to activate Night Vision (InfraRed)\n");
+	sprint(self, 2, " 'drop1' to drop a special mine\n");
+	sprint(self, 2, " 'drop2' to drop a Toaster (in water)\n");
+	sprint(self, 2, " 'dropflag' to drop the enemy flag\n");
+};
+

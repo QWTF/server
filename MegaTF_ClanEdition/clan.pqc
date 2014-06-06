@@ -1,0 +1,15 @@
+#define clan_progs
+#define fte_rankings		// comment this out if not running fte server or dont want rankings enabled
+#define new_solid		// rocket hitting invisible wall fix (may be buggy, comment this out if it is..)
+
+#define WEAP_SNIPER_RIFLE_MAX_TIME  3 // PZ - Randomer's charge-up fix
+#define WEAP_SNIPER_RIFLE_MIN_DAMG  50 //
+#define WEAP_SNIPER_RIFLE_MAX_DAMG  400 //
+
+#define PC_SPY_MAXSPEED				320
+
+#define TL_ANY_SOLID	0
+#define TL_BSP_ONLY		1 // will hit BSP only
+
+//menus
+#define MENU_CLAN_PREMATCH		45

@@ -1,0 +1,2 @@
+// defines compiler to compile with t 2.9 entities
+#define tf29ents

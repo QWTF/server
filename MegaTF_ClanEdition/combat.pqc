@@ -1,0 +1,746 @@
+void () T_MissileTouch;
+void () info_player_start;
+void (entity targ,entity attacker) ClientObituary;
+void (entity Goal,entity AP,float addb) DoResults;
+float (entity Goal,entity AP) Activated;
+float (entity targ,entity attacker,float damage) TeamEqualiseDamage;
+
+entity (float gno) Findgoal;
+
+/*entity (float gno) Findgoal =
+{
+  	local entity tg;
+  	local string st;
+
+  	tg = find (world, classname, "info_tfgoal");
+  	while (tg)
+  	{
+  		if ((tg.goal_no == gno))
+  		{
+  			return (tg);
+  		}
+  		tg = find (tg, classname, "info_tfgoal");
+  	}
+  	dprint ("Could not find a goal with a goal_no of ");
+  	st = ftos (gno);
+  	dprint (st);
+  	dprint (".\n");
+  };
+*/
+
+  void() monster_death_use = 
+  {
+    	if (self.flags & TF_FLARE_OFF)
+    	{
+    		self.flags = self.flags - TF_FLARE_OFF;
+    	}
+    	if (self.flags & 2)
+    	{
+    		self.flags = self.flags - 2;
+    	}
+    	if (!(self.target))
+    	{
+    		return;
+    	}
+    	activator = self.enemy;
+    	SUB_UseTargets();
+    };
+
+    float(entity targ, entity inflictor) CanDamage = 
+    {
+      	if (targ.movetype == 7)
+      	{
+      		traceline(inflictor.origin, 0.5 * (targ.absmin + targ.absmax), TF_FLARE_OFF, self);
+      		if (trace_fraction == TF_FLARE_OFF)
+      		{
+      			return TF_FLARE_OFF;
+      		}
+      		if (trace_ent == targ)
+      		{
+      			return TF_FLARE_OFF;
+      		}
+      		return TF_FLARE_LIT;
+      	}
+      	traceline(inflictor.origin, targ.origin, TF_FLARE_OFF, self);
+      	if (trace_fraction == TF_FLARE_OFF)
+      	{
+      		return TF_FLARE_OFF;
+      	}
+      	traceline(inflictor.origin, targ.origin + '15 15 0', TF_FLARE_OFF, self);
+      	if (trace_fraction == TF_FLARE_OFF)
+      	{
+      		return TF_FLARE_OFF;
+      	}
+      	traceline(inflictor.origin, targ.origin + '-15 -15 0', TF_FLARE_OFF, self);
+      	if (trace_fraction == TF_FLARE_OFF)
+      	{
+      		return TF_FLARE_OFF;
+      	}
+      	traceline(inflictor.origin, targ.origin + '-15 15 0', TF_FLARE_OFF, self);
+      	if (trace_fraction == TF_FLARE_OFF)
+      	{
+      		return TF_FLARE_OFF;
+      	}
+      	traceline(inflictor.origin, targ.origin + '15 -15 0', TF_FLARE_OFF, self);
+      	if (trace_fraction == TF_FLARE_OFF)
+      	{
+      		return TF_FLARE_OFF;
+      	}
+      	return TF_FLARE_LIT;
+      };
+
+      void(entity targ, entity attacker) Killed = 
+      {
+        	local entity oself;
+        	oself = self;
+        	self = targ;
+        	if (self.health < -99)
+        	{
+        		self.health = -99;
+        	}
+        	if (self.movetype == 7 || self.movetype == TF_FLARE_LIT)
+        	{
+        		self.th_die();
+        		self = oself;
+        		return;
+        	}
+        	self.enemy = attacker;
+        	if (self.flags & 32)
+        	{
+        		killed_monsters = killed_monsters + TF_FLARE_OFF;
+        		WriteByte(2, 27);
+        	}
+        	ClientObituary(self, attacker);
+        	self.takedamage = TF_FLARE_LIT;
+        	self.touch = SUB_Null;
+        	monster_death_use();
+        	self.th_die();
+        	self = oself;
+        };
+
+        void(entity targ, entity inflictor, entity attacker, float damage) T_Damage = 
+        {
+          	local vector dir;
+          	local entity oldself;
+          	local entity te;
+          	local float save;
+          	local float take;
+          	if (!(targ.takedamage))
+          	{
+          		return;
+          	}
+          	if (attacker.classname == "player")
+          	{
+          		damage = damage * 0.9;
+          	}
+          	if (attacker.classname == "player")
+          	{
+          		if (targ.classname != "player" && targ.classname != "bot")
+          		{
+          			if (!Activated(targ, attacker))
+          			{
+          				if (targ.else_goal != TF_FLARE_LIT)
+          				{
+          					te = Findgoal(targ.else_goal);
+          					if (te)
+          					{
+          						DoResults(te, attacker, targ.goal_result & 2);
+          					}
+          				}
+          				return;
+          			}
+          		}
+          	}
+
+		if (((((targ.classname == "player") || (targ.classname == "building_sentrygun")) || (targ.classname == "building_dispenser")) || (targ.classname == "bot")))
+		{
+			if (((attacker.stats_on == 1.000000) && (attacker.team_no != targ.team_no)))
+			{
+				oldself = self;
+				self = attacker;
+				if ((deathmsg == 28.000000))
+				{
+					Stats_Hit (33.000000);
+				}
+				else
+				{
+					if ((deathmsg == 29.000000))
+					{
+						Stats_Hit (34.000000);
+					}
+				}
+				self = oldself;
+			}
+		}
+
+          	damage_attacker = attacker;
+          	if (attacker.super_damage_finished > time)
+          	{
+          		damage = damage * 4;
+          	}
+          	if (teamplay & (64 | 32))
+          	{
+          		damage = TeamEqualiseDamage(targ, attacker, damage);
+          	}
+          	save = ceil(targ.armortype * damage);
+          	if (save >= targ.armorvalue)
+          	{
+          		save = targ.armorvalue;
+          		targ.armortype = TF_FLARE_LIT;
+          		targ.armorclass = TF_FLARE_LIT;
+          		targ.items = targ.items - (targ.items & (8192 | 16384 | 32768));
+          	}
+          	targ.armorvalue = targ.armorvalue - save;
+          	take = ceil(damage - save);
+          	if (targ.flags & 8)
+          	{
+          		targ.dmg_take = targ.dmg_take + take;
+          		targ.dmg_save = targ.dmg_save + save;
+          		targ.dmg_inflictor = inflictor;
+          	}
+          	if (inflictor != world && targ.movetype == 3)
+          	{
+          		targ.immune_to_check = time + damage / 20;
+          		dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
+          		dir = normalize(dir);
+		if (targ.jet_time < time)
+		{
+if ((((damage < 60) & ((attacker.classname == "player") & (targ.classname == "player"))) & (attacker.netname != targ.netname)))
+          		{
+          			targ.velocity = targ.velocity + dir * damage * 11;
+          		}
+          		else
+          		{
+          			targ.velocity = targ.velocity + dir * damage * 8;
+          		}
+          		if (rj > TF_FLARE_OFF && (attacker.classname == "player" && targ.classname == "player") && attacker.netname == targ.netname)
+          		{
+          			targ.velocity = targ.velocity + dir * damage * rj;
+          		}
+		}
+          	}
+          	if (targ.flags & 64)
+          	{
+          		return;
+          	}
+          	if (targ.invincible_finished >= time)
+          	{
+          		if (self.invincible_sound < time)
+          		{
+          			sound(targ, 3, "items/protect3.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+          			self.invincible_sound = time + 2;
+          		}
+          		return;
+          	}
+          	if (attacker.classname == "player" && (targ.classname == "player" || targ.classname == "building_sentrygun"))
+          	{
+          		if (targ.team_no > TF_FLARE_LIT && targ.team_no == attacker.team_no && targ != attacker)
+          		{
+          			if (teamplay & 16)
+          			{
+          				return;
+          			}
+          			else
+          			{
+          				if (teamplay & 8)
+          				{
+          					take = take / 2;
+          				}
+          			}
+          		}
+          	}
+          	if (take < TF_FLARE_OFF)
+          	{
+          		take = TF_FLARE_OFF;
+          	}
+          	targ.health = targ.health - take;
+          	if (targ.armorvalue < TF_FLARE_OFF)
+          	{
+          		targ.armorclass = TF_FLARE_LIT;
+          		targ.armorvalue = TF_FLARE_LIT;
+          	}
+          	if (targ.health <= TF_FLARE_LIT)
+          	{
+          		Killed(targ, attacker);
+          		return;
+          	}
+          	oldself = self;
+          	self = targ;
+          	if (self.th_pain)
+          	{
+          		self.th_pain(attacker, take);
+          		if (skill >= 3)
+          		{
+          			self.pain_finished = time + 5;
+          		}
+          	}
+          	self = oldself;
+          };
+
+          void(entity targ, entity inflictor, entity attacker, float damage, float T_flags, float T_AttackType) TF_T_Damage = 
+          {
+            	local vector dir;
+            	local entity oldself;
+            	local entity te;
+            	local float save;
+            	local float take;
+
+            	if (!(targ.takedamage))
+            	{
+            		return;
+            	}
+            	if (attacker.classname == "player")
+            	{
+            		damage = damage * 0.9;
+            	}
+            	if (attacker.classname == "player")
+            	{
+            		if (targ.classname != "player" && targ.classname != "bot" && targ.classname != "building_sentrygun" && targ.classname != "building_dispenser")
+            		{
+            			if (!Activated(targ, attacker))
+            			{
+            				if (targ.else_goal != TF_FLARE_LIT)
+            				{
+            					te = Findgoal(targ.else_goal);
+            					if (te)
+            					{
+            						DoResults(te, attacker, targ.goal_result & 2);
+            					}
+            				}
+            				return;
+            			}
+            		}
+            	}
+
+	if (((((targ.classname == "player") || (targ.classname == "building_sentrygun")) || (targ.classname == "building_dispenser")) || (targ.classname == "bot")))
+	{
+		if (((attacker.stats_on == 1.000000) && (attacker.team_no != targ.team_no)))
+		{
+			oldself = self;
+			self = attacker;
+			if ((deathmsg == 1.000000))
+			{
+				Stats_Hit (128.000000);
+			}
+			else
+			{
+				if ((deathmsg == 2.000000))
+				{
+					Stats_Hit (256.000000);
+				}
+				else
+				{
+					if ((deathmsg == 3.000000))
+					{
+						Stats_Hit (512.000000);
+					}
+					else
+					{
+						if ((deathmsg == 4.000000))
+						{
+							Stats_Hit (1024.000000);
+						}
+						else
+						{
+							if ((deathmsg == 5.000000))
+							{
+								Stats_Hit (2048.000000);
+							}
+							else
+							{
+								if ((deathmsg == 6.000000))
+								{
+									Stats_Hit (8192.000000);
+								}
+								else
+								{
+									if ((deathmsg == 8.000000))
+									{
+										Stats_Hit (666.000000);
+									}
+									else
+									{
+										if ((deathmsg == 11.000000))
+										{
+											Stats_Hit (2054.000000);
+										}
+										else
+										{
+											if ((deathmsg == 17.000000))
+											{
+												Stats_Hit (8.000000);
+											}
+											else
+											{
+												if ((deathmsg == 18.000000))
+												{
+													Stats_Hit (32.000000);
+												}
+												else
+												{
+													if ((deathmsg == 19.000000))
+													{
+														Stats_Hit (64.000000);
+													}
+													else
+													{
+														if ((deathmsg == 20.000000))
+														{
+															Stats_Hit (32768.000000);
+														}
+														else
+														{
+															if ((deathmsg == 25.000000))
+															{
+																Stats_Hit (262144.000000);
+															}
+															else
+															{
+																if ((deathmsg == 26.000000))
+																{
+																	Stats_Hit (524288.000000);
+																}
+																else
+																{
+																	if ((deathmsg == 46.000000))
+																	{
+																		Stats_Hit (32768.000000);
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			self = oldself;
+		}
+	}
+
+            	damage_attacker = attacker;
+            	if (attacker.super_damage_finished > time)
+            	{
+            		damage = damage * 4;
+            	}
+	if (teamplay != 1 && teamplay != 2)
+	{
+	            	if (targ.team_no == attacker.team_no && targ != attacker)
+            		{
+            			damage = TF_FLARE_LIT;
+           		}
+	}
+            	if (teamplay & (64 | 32))
+            	{
+            		damage = TeamEqualiseDamage(targ, attacker, damage);
+            	}
+            	if (targ.armorclass != TF_FLARE_LIT && T_AttackType != TF_FLARE_LIT)
+            	{
+            		if (targ.armorclass & TF_FLARE_OFF && T_AttackType == TF_FLARE_OFF)
+            		{
+            			damage = floor(damage * 0.5);
+            		}
+            		else
+            		{
+            			if (targ.armorclass & 2 && T_AttackType == 2)
+            			{
+            				damage = floor(damage * 0.5);
+            			}
+            			else
+            			{
+            				if (targ.armorclass & 4 && T_AttackType == 4)
+            				{
+            					damage = floor(damage * 0.5);
+            				}
+            				else
+            				{
+            					if (targ.armorclass & 8 && T_AttackType == 8)
+            					{
+            						damage = floor(damage * 0.5);
+            					}
+            					else
+            					{
+            						if (targ.armorclass & 16 && T_AttackType == 16)
+            						{
+            							damage = floor(damage * 0.5);
+            						}
+            					}
+            				}
+            			}
+            		}
+            	}
+            	if (T_flags & TF_FLARE_OFF)
+            	{
+            		take = damage;
+            		save = TF_FLARE_LIT;
+            	}
+            	else
+            	{
+            		save = ceil(targ.armortype * damage);
+            		if (save >= targ.armorvalue)
+            		{
+            			save = targ.armorvalue;
+            			targ.armortype = TF_FLARE_LIT;
+            			targ.armorclass = TF_FLARE_LIT;
+            			targ.items = targ.items - (targ.items & (8192 | 16384 | 32768));
+            		}
+            		targ.armorvalue = targ.armorvalue - save;
+            		take = ceil(damage - save);
+            	}
+            	if (targ.flags & 8)
+            	{
+            		targ.dmg_take = targ.dmg_take + take;
+            		targ.dmg_save = targ.dmg_save + save;
+            		targ.dmg_inflictor = inflictor;
+            	}
+            	if (inflictor != world && targ.movetype == 3)
+            	{
+            		if (deathmsg != 9)
+            		{
+            			if (targ.playerclass != 6 && targ.jet_time < time)
+            			{
+            				targ.immune_to_check = time + damage / 20;
+            				dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
+            				dir = normalize(dir);
+if ((((damage < 60) & ((attacker.classname == "player") & (targ.classname == "player"))) & (attacker.netname != targ.netname)))
+            				{
+            					if (attacker.playerclass == 5)
+            					{
+            						targ.velocity = targ.velocity + dir * damage * 3;
+            					}
+            					else
+            					{
+            						targ.velocity = targ.velocity + dir * damage * 11;
+            					}
+            				}
+            				else
+            				{
+            					targ.velocity = targ.velocity + dir * damage * 8;
+            				}
+            				if (rj > TF_FLARE_OFF && (attacker.classname == "player" && targ.classname == "player") && attacker.netname == targ.netname)
+            				{
+            					targ.velocity = targ.velocity + dir * damage * rj;
+            				}
+            			}
+            		}
+            	}
+            	if (targ.flags & 64)
+            	{
+            		return;
+            	}
+            	if (targ.invincible_finished >= time)
+            	{
+            		if (self.invincible_sound < time)
+            		{
+            			sound(targ, 3, "items/protect3.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+            			self.invincible_sound = time + 2;
+            		}
+            		return;
+            	}
+            	if (attacker.classname == "player" && (targ.classname == "player" || targ.classname == "building_sentrygun"))
+            	{
+            		if (T_flags & 2)
+            		{
+            			if (targ.team_no > TF_FLARE_LIT && targ.team_no == attacker.team_no && targ != attacker)
+            			{
+            				if (teamplay & 4)
+            				{
+            					return;
+            				}
+            				else
+            				{
+            					if (teamplay & 2)
+            					{
+            						take = take / 2;
+            					}
+            				}
+            			}
+            		}
+            		else
+            		{
+            			if (targ.team_no > TF_FLARE_LIT && targ.team_no == attacker.team_no && targ != attacker)
+            			{
+            				if (teamplay & 16)
+            				{
+            					return;
+            				}
+            				else
+            				{
+            					if (teamplay & 8)
+            					{
+            						take = take / 2;
+            					}
+            				}
+            			}
+            		}
+            	}
+            	if (T_flags & 4)
+            	{
+            		if (targ == attacker)
+            		{
+            			return;
+            		}
+            	}
+            	if (take < TF_FLARE_OFF)
+            	{
+            		take = TF_FLARE_OFF;
+            	}
+            	targ.health = targ.health - take;
+            	if (targ.armorvalue < TF_FLARE_OFF)
+            	{
+            		targ.armorclass = TF_FLARE_LIT;
+            		targ.armorvalue = TF_FLARE_LIT;
+            	}
+
+	if ((((deathmsg == 34.000000) && (targ.classname == "building_sentrygun")) && (targ.health <= 0.000000)))
+	{
+		if (((targ.goalentity.classname == "bot") || (targ.goalentity.classname == "airmirv")))
+		{
+			targ.goalentity = targ.goalentity.owner;
+		}
+		bprint (1.000000, targ.real_owner.netname);
+		bprint (1.000000, "'s sentrygun blew itself up thanks to ");
+		bprint (1.000000, targ.goalentity.netname);
+		bprint (1.000000, "\n");
+		targ.goalentity.real_frags = (targ.goalentity.real_frags + 2.000000);
+		logfrag (targ.goalentity, targ.real_owner);
+		if (!(toggleflags & 128.000000))
+		{
+			targ.goalentity.frags = targ.goalentity.real_frags;
+		}
+	}
+
+            	if (targ.health <= TF_FLARE_LIT)
+            	{
+            		if (inflictor.classname == "detpack" && inflictor.weaponmode == TF_FLARE_OFF && inflictor.enemy == targ)
+            		{
+            			deathmsg = 16;
+            		}
+            		Killed(targ, attacker);
+            		return;
+            	}
+            	oldself = self;
+            	self = targ;
+            	if (self.th_pain)
+            	{
+            		self.th_pain(attacker, take);
+            		if (skill >= 3)
+            		{
+            			self.pain_finished = time + 5;
+            		}
+            	}
+            	self = oldself;
+            };
+
+            void(entity inflictor, entity attacker, float damage, entity ignore) T_RadiusDamage = 
+            {
+              	local float points;
+              	local entity head;
+              	local entity te;
+              	local vector org;
+              	head = findradius(inflictor.origin, damage + 40);
+              	while (head)
+              	{
+              		if (head != ignore)
+              		{
+              			if (head.classname == "info_tfgoal")
+              			{
+              				if (inflictor.classname == "detpack")
+              				{
+              					if (head.goal_activation & 2 && head.search_time == TF_FLARE_LIT)
+              					{
+              						traceline(inflictor.origin, head.origin, TF_FLARE_OFF, inflictor);
+              						if (trace_fraction == TF_FLARE_OFF)
+              						{
+              							if (Activated(head, attacker))
+              							{
+              								DoResults(head, attacker, TF_FLARE_OFF);
+              							}
+              							else
+              							{
+              								if (head.else_goal != TF_FLARE_LIT)
+              								{
+              									te = Findgoal(head.else_goal);
+              									if (te)
+              									{
+              										DoResults(te, attacker, head.goal_result & 2);
+              									}
+              								}
+              								return;
+              							}
+              						}
+              					}
+              				}
+              			}
+              			else
+              			{
+              				if (head.takedamage)
+              				{
+              					org = head.origin + (head.mins + head.maxs) * 0.5;
+              					points = 0.5 * vlen(inflictor.origin - org);
+              					if (points < TF_FLARE_LIT)
+              					{
+              						points = TF_FLARE_LIT;
+              					}
+              					points = damage - points;
+              					if (head == attacker)
+              					{
+              						points = points * 0.75;
+              					}
+              					if (points > TF_FLARE_LIT)
+              					{
+              						if (CanDamage(head, inflictor))
+              						{
+              							if (head.classname == "monster_shambler")
+              							{
+              								T_Damage(head, inflictor, attacker, points * 0.5);
+              							}
+              							else
+              							{
+              								TF_T_Damage(head, inflictor, attacker, points, 2, 4);
+              							}
+              						}
+              					}
+              				}
+              			}
+              		}
+              		head = head.chain;
+              	}
+              };
+
+              void(entity attacker, float damage) T_BeamDamage = 
+              {
+                	local float points;
+                	local entity head;
+                	head = findradius(attacker.origin, damage + 40);
+                	while (head)
+                	{
+                		if (head.takedamage)
+                		{
+                			points = 0.5 * vlen(attacker.origin - head.origin);
+                			if (points < TF_FLARE_LIT)
+                			{
+                				points = TF_FLARE_LIT;
+                			}
+                			points = damage - points;
+                			if (head == attacker)
+                			{
+                				points = points * 0.5;
+                			}
+                			if (points > TF_FLARE_LIT)
+                			{
+                				if (CanDamage(head, attacker))
+                				{
+                					T_Damage(head, attacker, attacker, points);
+                				}
+                			}
+                		}
+                		head = head.chain;
+                	}
+                };

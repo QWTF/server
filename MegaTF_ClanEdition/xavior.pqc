@@ -1,0 +1,450 @@
+//////////////////////////////
+// Some random crap I added //
+// (Note: this is not the   //
+// vote code, I put that in //
+// rpg.pqc).                //
+//////////////////////////////
+
+// Periodic server messages
+// For those servers that dont have this function built-in
+
+void() messagetimer =
+{
+	if (infokey (world, "message1"))
+	{
+		newmis = spawn();
+		newmis.classname = "timer";
+		newmis.nextthink = time + msg1time;
+		newmis.think = display_message;
+	}
+};
+
+void() display_message =
+{
+	if (msg1first == 0)
+	{
+		msg1first = 1;
+		newmis = spawn();
+		newmis.classname = "timer";
+		newmis.nextthink = time + 5;
+		newmis.think = display_message;
+		return;
+	}
+	local string messageONE;
+	messageONE = (infokey (world, "message1"));
+	if (num_players > 0)
+	{
+		localcmd ("say ");
+		localcmd (messageONE);
+		localcmd ("\n");
+	}
+	messagetimer ();
+	dremove (self);
+};
+
+void() messagetimer2 =
+{
+	if (infokey (world, "message2"))
+	{
+		newmis = spawn();
+		newmis.classname = "timer";
+		newmis.nextthink = time + msg2time;
+		newmis.think = display_message2;
+	}
+};
+
+void() display_message2 =
+{
+	if (msg2first == 0)
+	{
+		msg2first = 1;
+		newmis = spawn();
+		newmis.classname = "timer";
+		newmis.nextthink = time + 5;
+		newmis.think = display_message2;
+		return;
+	}
+	local string message2;
+	message2 = (infokey (world, "message2"));
+	if (num_players > 0)
+	{
+		localcmd ("say ");
+		localcmd (message2);
+		localcmd ("\n");
+	}
+	messagetimer2 ();
+	dremove (self);
+};
+
+void() pre_messagetimer2 =
+{
+	local string msgd;
+	msgd = infokey (world, "svmsg_delay");
+	msgdelay = stof(msgd);
+	if (msgdelay > 0)
+	{
+		newmis = spawn();
+		newmis.classname = "timer";
+		newmis.nextthink = time + msgdelay;
+		newmis.think = display_message2;
+		return;
+	}
+	else
+	{
+		messagetimer2 ();
+	}
+};
+
+// 11.11.04 code for the stats_dl function.
+void (float _p_2420) Stats_Fired =
+{
+
+	if ((self.stats_on == 1.000000))
+	{
+		stuffcmd (self, "inc ");
+		if ((_p_2420 == 8.000000))
+		{
+			stuffcmd (self, "stats_axe_f");
+		}
+		else
+		{
+			if ((_p_2420 == 16.000000))
+			{
+				stuffcmd (self, "stats_axe_f");
+			}
+			else
+			{
+				if ((_p_2420 == 1.000000))
+				{
+					stuffcmd (self, "stats_grap_f");
+				}
+				else
+				{
+					if ((_p_2420 == 128.000000))
+					{
+						stuffcmd (self, "stats_sg_f");
+					}
+					else
+					{
+						if ((_p_2420 == 256.000000))
+						{
+							stuffcmd (self, "stats_ssg_f");
+						}
+						else
+						{
+							if ((_p_2420 == 512.000000))
+							{
+								stuffcmd (self, "stats_ng_f");
+							}
+							else
+							{
+								if ((_p_2420 == 1024.000000))
+								{
+									stuffcmd (self, "stats_sng_f");
+								}
+								else
+								{
+									if (((_p_2420 == 2048.000000) && (self.weaponmode == 1.000000)))
+									{
+										stuffcmd (self, "stats_pb_f");
+									}
+									else
+									{
+										if ((_p_2420 == 2048.000000))
+										{
+											stuffcmd (self, "stats_gl_f");
+										}
+										else
+										{
+											if ((_p_2420 == 8192.000000))
+											{
+												stuffcmd (self, "stats_rl_f");
+											}
+											else
+											{
+												if ((_p_2420 == 32.000000))
+												{
+													stuffcmd (self, "stats_sr_f");
+												}
+												else
+												{
+													if ((_p_2420 == 64.000000))
+													{
+														stuffcmd (self, "stats_mg_f");
+													}
+													else
+													{
+														if (((_p_2420 == 32768.000000) && (self.option4 == 1.000000)))
+														{
+															stuffcmd (self, "stats_20mm_f");
+														}
+														else
+														{
+															if ((_p_2420 == 32768.000000))
+															{
+																stuffcmd (self, "stats_ac_f");
+															}
+															else
+															{
+																if ((_p_2420 == 4096.000000))
+																{
+																	stuffcmd (self, "stats_ft_f");
+																}
+																else
+																{
+																	if ((_p_2420 == 16384.000000))
+																	{
+																		stuffcmd (self, "stats_incend_f");
+																	}
+																	else
+																	{
+																		if ((_p_2420 == 4.000000))
+																		{
+																			stuffcmd (self, "stats_ba_f");
+																		}
+																		else
+																		{
+																			if ((_p_2420 == 2.000000))
+																			{
+																				stuffcmd (self, "stats_ba_f");
+																			}
+																			else
+																			{
+																				if ((_p_2420 == 262144.000000))
+																				{
+																					stuffcmd (self, "stats_tranq_f");
+																				}
+																				else
+																				{
+																					if ((_p_2420 == 524288.000000))
+																					{
+																						stuffcmd (self, "stats_rg_f");
+																					}
+																					else
+																					{
+																						if ((_p_2420 == 666.000000))
+																						{
+																							stuffcmd (self, "stats_g1_f");
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		stuffcmd (self, " 1\n");
+	}
+};
+
+void (float _p_2445) Stats_Hit =
+{
+
+	if ((self.stats_on == 1.000000))
+	{
+		stuffcmd (self, "inc ");
+		if ((_p_2445 == 8.000000))
+		{
+			stuffcmd (self, "stats_axe_h");
+		}
+		else
+		{
+			if ((_p_2445 == 16.000000))
+			{
+				stuffcmd (self, "stats_axe_h");
+			}
+			else
+			{
+				if ((_p_2445 == 1.000000))
+				{
+					stuffcmd (self, "stats_grap_h");
+				}
+				else
+				{
+					if ((_p_2445 == 128.000000))
+					{
+						stuffcmd (self, "stats_sg_h");
+					}
+					else
+					{
+						if ((_p_2445 == 256.000000))
+						{
+							stuffcmd (self, "stats_ssg_h");
+						}
+						else
+						{
+							if ((_p_2445 == 512.000000))
+							{
+								stuffcmd (self, "stats_ng_h");
+							}
+							else
+							{
+								if ((_p_2445 == 1024.000000))
+								{
+									stuffcmd (self, "stats_sng_h");
+								}
+								else
+								{
+									if ((_p_2445 == 2054.000000))
+									{
+										stuffcmd (self, "stats_pb_h");
+									}
+									else
+									{
+										if ((_p_2445 == 2048.000000))
+										{
+											stuffcmd (self, "stats_gl_h");
+										}
+										else
+										{
+											if ((_p_2445 == 8192.000000))
+											{
+												stuffcmd (self, "stats_rl_h");
+											}
+											else
+											{
+												if ((_p_2445 == 34.000000))
+												{
+													stuffcmd (self, "stats_sr_h 1\n inc ");
+													stuffcmd (self, "stats_sr_hs");
+												}
+												else
+												{
+													if ((_p_2445 == 33.000000))
+													{
+														stuffcmd (self, "stats_sr_h 1\n inc ");
+														stuffcmd (self, "stats_sr_ls");
+													}
+													else
+													{
+														if ((_p_2445 == 32.000000))
+														{
+															stuffcmd (self, "stats_sr_h 1\n inc ");
+															stuffcmd (self, "stats_sr_cs");
+														}
+														else
+														{
+															if ((_p_2445 == 64.000000))
+															{
+																stuffcmd (self, "stats_mg_h");
+															}
+															else
+															{
+																if (((_p_2445 == 32768.000000) && (self.option4 == 1.000000)))
+																{
+																	stuffcmd (self, "stats_20mm_h");
+																}
+																else
+																{
+																	if ((_p_2445 == 32768.000000))
+																	{
+																		stuffcmd (self, "stats_ac_h");
+																	}
+																	else
+																	{
+																		if ((_p_2445 == 4096.000000))
+																		{
+																			stuffcmd (self, "stats_ft_h");
+																		}
+																		else
+																		{
+																			if ((_p_2445 == 16384.000000))
+																			{
+																				stuffcmd (self, "stats_incend_h");
+																			}
+																			else
+																			{
+																				if ((_p_2445 == 4.000000))
+																				{
+																					stuffcmd (self, "stats_ba_h");
+																				}
+																				else
+																				{
+																					if ((_p_2445 == 2.000000))
+																					{
+																						stuffcmd (self, "stats_ba_h");
+																					}
+																					else
+																					{
+																						if ((_p_2445 == 262144.000000))
+																						{
+																							stuffcmd (self, "stats_tranq_h");
+																						}
+																						else
+																						{
+																							if ((_p_2445 == 524288.000000))
+																							{
+																								stuffcmd (self, "stats_rg_h");
+																							}
+																							else
+																							{
+																								if ((_p_2445 == 666.000000))
+																								{
+																									stuffcmd (self, "stats_g1_h");
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		stuffcmd (self, " 1\n");
+	}
+};
+
+//    PM User-ID listings
+//Shows the list of users and userids. Note that this is only the same as the built-in "users" function
+//when you are running a server that supports getuserid() (so basically only prozac and hughie's modded eq).
+//If you are running a server that supports that function, be sure to have "localinfo prozacserver" set to 1.
+void() pm_list =
+{
+	local entity entar;
+	local string str;
+
+	entar = find(world, classname, "player");
+	while(entar)
+	{
+	if (entar.userid != 0)
+	{
+		str = ftos(entar.userid);
+		sprint (self, 2, str);
+		sprint (self, 2, "     ");
+		sprint (self, 2, entar.netname);
+		sprint (self, 2, "\n");
+	}
+		entar = find(entar, classname, "player");
+	}
+};
+
+void () testfunct =
+{
+}

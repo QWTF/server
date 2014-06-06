@@ -1,0 +1,25 @@
+void(entity te) dremove = 
+{
+	if (te == world)
+	{
+		dprint("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n");
+		dprint("WORLD has nearly been removed. Don't worry\n");
+		dprint("***BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG***\n");
+		return;
+	}
+	if (te.is_removed == TF_FLARE_OFF)
+	{
+		return;
+	}
+	te.is_removed = TF_FLARE_OFF;
+	remove(te);
+};
+
+void() display_location = 
+{
+	local string st;
+	st = vtos(self.origin);
+	sprint(self, 2, st);
+	sprint(self, 2, "\n");
+};
+

@@ -1,0 +1,304 @@
+// ammo fix... fix :P
+.float grappleupdatetime;
+void(entity rhook) Reset_Grapple = 
+{
+	sound(rhook.owner, TF_FLARE_OFF, "doors/ddoor2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	rhook.owner.on_hook = TF_FLARE_LIT;
+	rhook.owner.hook_out = TF_FLARE_LIT;
+	rhook.owner.fire_held_down = TF_FLARE_LIT;
+	rhook.owner.weaponframe = TF_FLARE_LIT;
+	rhook.think = SUB_Remove;
+	rhook.nextthink = time;
+};
+
+void() Reset_My_Grapple = 
+{
+	sound(self.owner, TF_FLARE_OFF, "doors/ddoor2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	self.owner.on_hook = TF_FLARE_LIT;
+	self.owner.hook_out = TF_FLARE_LIT;
+	self.owner.fire_held_down = TF_FLARE_LIT;
+	self.owner.weaponframe = TF_FLARE_LIT;
+	self.owner.off_hook = time + 1;
+	self.think = SUB_Remove;
+	self.nextthink = time;
+};
+
+void() Grapple_Track = 
+{
+	if (!(self.owner.on_hook) || self.owner.health <= TF_FLARE_LIT)
+	{
+		Reset_Grapple(self);
+		return;
+	}
+	if (self.enemy.classname != "player")
+	{
+		self.velocity = self.enemy.velocity;
+	}
+	self.nextthink = time + 0.1;
+};
+
+entity() MakeLink = 
+{
+	newmis = spawn();
+	newmis.movetype = 9;
+	newmis.solid = TF_FLARE_LIT;
+	newmis.owner = self;
+	setmodel(newmis, "progs/rope.mdl");
+	setorigin(newmis, self.origin);
+	setsize(newmis, '0 0 0', '0 0 0');
+	newmis.angles = vectoangles(newmis.velocity);
+	return newmis;
+};
+
+void() Remove_Chain = 
+{
+	self.think = SUB_Remove;
+	self.nextthink = time;
+	if (self.goalentity)
+	{
+		self.goalentity.think = SUB_Remove;
+		self.goalentity.nextthink = time;
+		if (self.goalentity.goalentity)
+		{
+			self.goalentity.goalentity.think = SUB_Remove;
+			self.goalentity.goalentity.nextthink = time;
+		}
+	}
+};
+
+void() Update_Chain = 
+{
+	local vector temp;
+	if (!(self.owner.hook_out))
+	{
+		self.think = Remove_Chain;
+		self.nextthink = time;
+		return;
+	}
+	temp = self.owner.hook.origin - self.owner.origin;
+	setorigin(self, self.owner.origin + temp * 0.3);
+	setorigin(self.goalentity, self.owner.origin + temp * 0.6);
+	setorigin(self.goalentity.goalentity, self.owner.origin + temp * 0.9);
+	self.angles = vectoangles(temp);
+	self.goalentity.angles = vectoangles(temp);
+	self.goalentity.goalentity.angles = vectoangles(temp);
+	self.nextthink = time + 0.2;
+};
+
+void() Build_Chain = 
+{
+	self.goalentity = MakeLink();
+	self.goalentity.think = Update_Chain;
+	self.goalentity.nextthink = time + 0.1;
+	self.goalentity.owner = self.owner;
+	self.goalentity.goalentity = MakeLink();
+	self.goalentity.goalentity.goalentity = MakeLink();
+};
+
+// fixes the grappling hook for FTE servers so that it will lock on when the player is on the ground
+void () FTE_FixGrapple =
+{
+	if (trace_startsolid)
+		trace_fraction = 1;
+}
+
+float() Check_Overhead = 
+{
+	local vector src;
+	local vector end;
+	makevectors(self.owner.angles);
+	src = self.owner.origin - '0 0 24';
+	end = self.owner.origin - '0 0 24';
+	traceline(src, end, TF_FLARE_LIT, self.owner);
+	FTE_FixGrapple();
+	if (trace_fraction != TF_FLARE_OFF)
+	{
+		return TF_FLARE_LIT;
+	}
+	src = self.owner.origin - '0 0 24' - v_forward * 16;
+	end = self.owner.origin - '0 0 24' - v_forward * 16 + '0 0 58';
+	traceline(src, end, TF_FLARE_LIT, self.owner);
+	FTE_FixGrapple();
+	if (trace_fraction != TF_FLARE_OFF)
+	{
+		return TF_FLARE_LIT;
+	}
+	src = self.owner.origin - '0 0 24' + v_forward * 16;
+	end = self.owner.origin - '0 0 24' + v_forward * 16 + '0 0 58';
+	traceline(src, end, TF_FLARE_LIT, self.owner);
+	FTE_FixGrapple();
+	if (trace_fraction != TF_FLARE_OFF)
+	{
+		return TF_FLARE_LIT;
+	}
+	src = self.owner.origin - '0 0 24' - v_right * 16;
+	end = self.owner.origin - '0 0 24' - v_right * 16 + '0 0 58';
+	traceline(src, end, TF_FLARE_LIT, self.owner);
+	FTE_FixGrapple();
+	if (trace_fraction != TF_FLARE_OFF)
+	{
+		return TF_FLARE_LIT;
+	}
+	src = self.owner.origin - '0 0 24' + v_right * 16;
+	end = self.owner.origin - '0 0 24' + v_right * 16 + '0 0 58';
+	traceline(src, end, TF_FLARE_LIT, self.owner);
+	FTE_FixGrapple();
+	if (trace_fraction != TF_FLARE_OFF)
+	{
+		return TF_FLARE_LIT;
+	}
+	return TF_FLARE_OFF;
+};
+
+void() Anchor_Grapple = 
+{
+	local float test;
+	if (other == self.owner)
+	{
+		return;
+	}
+	if (other.classname == "missile" || other.classname == "grenade" || other.classname == "spike" || other.classname == "hook")
+	{
+		return;
+	}
+	if (pointcontents(self.origin) == -6)
+	{
+		Reset_Grapple(self);
+		return;
+	}
+	self.health = TF_FLARE_OFF;
+	self.takedamage = 2;
+	self.classname = "bot";
+	self.team_no = TF_FLARE_LIT;
+	self.th_die = Reset_My_Grapple;
+	if (other.takedamage)
+	{
+		sound(self, TF_FLARE_OFF, "shambler/smack.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	else
+	{
+		sound(self, TF_FLARE_OFF, "player/axhit2.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	}
+	if (other.takedamage)
+	{
+		T_Damage(other, self, self.owner, 10);
+	}
+	self.velocity = '0 0 0';
+	self.avelocity = '0 0 0';
+	sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	sound(self.owner, TF_FLARE_LIT, "weapons/retract.wav", 0.8, TF_FLARE_OFF);
+	local string newgrapple;
+	newgrapple = infokey (world, "newgrapple");
+	if (newgrapple == "1")
+	{
+		self.owner.ammo_cells = self.owner.ammo_cells - 10;
+	}
+	else
+	{
+		self.owner.ammo_cells = 0;
+	}
+	if (!(self.owner.button0))
+	{
+		Reset_Grapple(self);
+		return;
+	}
+	test = Check_Overhead();
+	if (!test)
+	{
+		Reset_Grapple(self);
+		return;
+	}
+	self.owner.on_hook = TF_FLARE_OFF;
+	if (self.owner.flags & 512)
+	{
+		self.owner.flags = self.owner.flags - 512;
+		setorigin(self.owner, self.owner.origin + '0 0 1');
+	}
+	self.owner.lefty = TF_FLARE_OFF;
+	self.enemy = other;
+	self.think = Grapple_Track;
+	self.nextthink = time;
+	self.touch = SUB_Null;
+};
+
+void() Throw_Grapple = 
+{
+	if (self.hook_out)
+	{
+		return;
+	}
+	KickPlayer(-1, self);
+	newmis = spawn();
+	newmis.movetype = 9;
+	newmis.solid = 2;
+	newmis.owner = self;
+	self.hook = newmis;
+	newmis.classname = "hook";
+	makevectors(self.v_angle);
+	newmis.velocity = v_forward * 2000;
+	newmis.angles = vectoangles(newmis.velocity);
+	newmis.touch = Anchor_Grapple;
+	newmis.think = Build_Chain;
+	newmis.nextthink = time + 0.1;
+	setmodel(newmis, "progs/hook.mdl");
+	setorigin(newmis, self.origin + v_forward * 16 + '0 0 16');
+	setsize(newmis, '-1 -1 -1', '1 1 1');
+	self.hook_out = TF_FLARE_OFF;
+	self.fire_held_down = TF_FLARE_OFF;
+};
+
+void() Service_Grapple = 
+{
+	local vector hook_dir;
+	if (!(self.button0))
+	{
+		self.fire_held_down = TF_FLARE_LIT;
+		if (self.current_weapon == TF_FLARE_OFF)
+		{
+			Reset_Grapple(self.hook);
+		}
+	}
+	if (self.hook.enemy.classname == "player" || self.hook.enemy.classname == "bot")
+	{
+		if (self.hook.enemy.health > TF_FLARE_OFF)
+		{
+			hook_dir = self.hook.enemy.origin - self.origin;
+		}
+		else
+		{
+			Reset_Grapple(self.hook);
+		}
+	}
+	else
+	{
+		if (self.hook.enemy.classname != "player")
+		{
+			hook_dir = self.hook.origin - self.origin;
+		}
+	}
+#ifdef clan_progs
+	self.velocity = normalize(hook_dir) * #PC_SPY_MAXSPEED * 2;
+#else
+	self.velocity = normalize(hook_dir) * self.maxfbspeed * 2;
+#endif
+	if (vlen(hook_dir) <= 100 && self.lefty)
+	{
+		if (self.hook.goalentity)
+		{
+			self.hook.goalentity.think = Remove_Chain;
+			self.hook.goalentity.nextthink = time;
+		}
+		self.lefty = TF_FLARE_LIT;
+	}
+// Seems that when spy was on grapple this would cause a serious bug making spies not able to use gun weapons
+// Thanks "the skip" for pointing this bug out
+	if (self.grappleupdatetime < time)
+	{
+		self.currentammo = self.ammo_cells;
+		self.grappleupdatetime = time + 1;
+	}
+	else
+	{
+		self.grappleupdatetime = time + 1;
+	}
+};

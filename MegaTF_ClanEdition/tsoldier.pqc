@@ -1,0 +1,68 @@
+// Functions outside this file
+
+// Functions inside this file
+// Nail Grenade Functions
+void() NailGrenadeTouch;
+void() NailGrenadeExplode;
+void() NailGrenadeNailEm;
+void() NailGrenadeLaunchNail;
+
+
+void() NailGrenadeTouch = 
+{
+	if (other == self.owner)
+	{
+		return;
+	}
+	sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	if (self.velocity == '0 0 0')
+	{
+		self.avelocity = '0 0 0';
+	}
+};
+
+void() NailGrenadeExplode = 
+{
+	self.movetype = 5;
+	setorigin(self, self.origin + '0 0 32');
+	self.avelocity = '0 500 0';
+	self.nextthink = time + 0.7;
+	self.think = NailGrenadeNailEm;
+};
+
+void() NailGrenadeNailEm = 
+{
+	self.velocity = '0 0 0';
+	self.nextthink = time + 0.1;
+	self.think = NailGrenadeLaunchNail;
+	self.playerclass = TF_FLARE_LIT;
+};
+
+void() NailGrenadeLaunchNail = 
+{
+	local float i;
+	local float j;
+	i = TF_FLARE_LIT;
+	while (i < TF_FLARE_OFF)
+	{
+		j = (random() + 2) * 5;
+		current_yaw = anglemod(self.angles_y + j);
+		self.angles_y = current_yaw;
+		self.angles_x = TF_FLARE_LIT;
+		self.angles_z = TF_FLARE_LIT;
+		makevectors(self.angles);
+		deathmsg = 9;
+		launch_spike(self.origin, v_forward);
+		newmis.touch = superspike_touch;
+		newmis.weapon = 9;
+		i = i + TF_FLARE_OFF;
+	}
+	self.playerclass = self.playerclass + TF_FLARE_OFF;
+	self.nextthink = time + 0.1;
+	if (self.playerclass > 40)
+	{
+		self.weapon = 9;
+		self.think = GrenadeExplode;
+	}
+};
+

@@ -1,0 +1,244 @@
+void() AirStrike_Explode;
+
+void() MushroomFlame = 
+{
+	local entity flame;
+	flame = spawn();
+	flame.owner = self;
+	flame.movetype = 9;
+	flame.solid = TF_FLARE_LIT;
+	flame.classname = "flamerflame";
+	flame.effects = 4;
+	if (self.classname == "airstrike")
+	{
+		flame.velocity_x = random() * 1000;
+	}
+	flame.velocity_y = random() * 1000;
+	flame.velocity_z = 200;
+	flame.think = s_explode1;
+	flame.nextthink = time + 0.3;
+	setmodel(flame, "progs/s_explod.spr");
+	setsize(flame, '0 0 0', '0 0 0');
+	setorigin(flame, self.origin + '0 0 16');
+};
+
+void() AirStrike = 
+{
+	sound(self, TF_FLARE_LIT, "weapons/airstrik.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	self.think = AirStrike_Explode;
+	self.nextthink = time + 1.7;
+};
+
+void() AirStrike_FlyBy = 
+{
+	bprint(TF_FLARE_OFF, "INCOMING AIRSTRIKE!\n");
+	sound(self, TF_FLARE_LIT, "weapons/fighter.wav", TF_FLARE_OFF, TF_FLARE_LIT);
+	self.think = AirStrike;
+	self.nextthink = time + 5;
+};
+
+void() AirStrike_Explode = 
+{
+	WriteByte(4, 23);
+	WriteByte(4, 3);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+	self.classname = "airstrike";
+	MushroomFlame();
+	MushroomFlame();
+	MushroomFlame();
+	MushroomFlame();
+	WriteByte(4, 23);
+	WriteByte(4, 10);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+	deathmsg = 43;
+	T_RadiusDamage(self, self.owner, 300, world);
+	dremove(self);
+};
+
+void(vector org) AirStrike_Target = 
+{
+	newmis = spawn();
+	newmis.movetype = TF_FLARE_LIT;
+	newmis.solid = TF_FLARE_LIT;
+	newmis.team_no = self.owner.team_no;
+	newmis.owner = self.owner;
+	setsize(newmis, '0 0 0', '0 0 1');
+	setmodel(newmis, "progs/dot3.spr");
+	newmis.effects = 8;
+	setorigin(newmis, org + '0 0 5');
+	newmis.nextthink = time + 10 + random() * 10;
+	newmis.think = AirStrike_FlyBy;
+};
+
+void() TeamFortress_SniperWeapon = 
+{
+	self.impulse = TF_FLARE_LIT;
+	if (self.tfstate & 2)
+	{
+		return;
+	}
+	if (!(self.weapons_carried & 32 && (self.weapons_carried & 64)))
+	{
+		return;
+	}
+	if (self.ammo_shells < TF_FLARE_OFF)
+	{
+		sprint(self, 2, "not enough ammo.\n");
+		return;
+	}
+	if (self.current_weapon == 32)
+	{
+		self.current_weapon = 64;
+	}
+	else
+	{
+		self.current_weapon = 32;
+	}
+	W_SetCurrentAmmo();
+};
+
+void(float zoom_level) TF_zoom = 
+{
+	local string zl;
+	if (self.tfstate & 4096)
+	{
+		return;
+	}
+	zl = ftos(zoom_level);
+	stuffcmd(self, "fov ");
+	stuffcmd(self, zl);
+	stuffcmd(self, "\n");
+};
+
+void () SniperSight_Update =
+{
+	local vector org;
+
+	self.frame = 0.000000;
+	if ((!(self.owner.tfstate & 2048.000000) || (self.owner.current_weapon != 32.000000)))
+	{
+		self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048.000000));
+		TeamFortress_SetSpeed (self.owner);
+		self.owner.heat = 0.000000;
+		dremove (self);
+		return;
+	}
+	makevectors (self.owner.v_angle);
+	org = self.owner.origin + (v_forward * 10.000000);
+	org_z = self.owner.absmin_z + (self.owner.size_z * 0.700000);
+	traceline (org, (org + (v_forward * 9192.000000)), 0.000000, self);
+	if ((trace_fraction == 1.000000))
+	{
+		setorigin (self, self.owner.origin);
+		return;
+	}
+	self.angles = vectoangles (v_forward);
+	setorigin (self, trace_endpos);
+	if ((self.owner.option == 9.000000))
+	{
+		traceline(self.origin + '0 0 5', self.origin + '0 0 2048', TF_FLARE_LIT, self);
+		if ((pointcontents (trace_endpos) == -6.000000))
+		{
+			if ((self.owner.last_used > time))
+			{
+				sprint (self.owner, 2.000000, "Reinforcements not in attack position yet... wait 2 minutes\n");
+				self.owner.option = 0.000000;
+			}
+			else
+			{
+				sound (self.owner, 0.000000, "weapons/radioair.wav", 1.000000, 1.000000);
+				self.owner.last_used = (time + 120.000000);
+				self.owner.option = 0.000000;
+				AirStrike_Target(self.origin + '0 0 5');
+			}
+		}
+		else
+		{
+			sprint (self.owner, 2.000000, "Target NOT visible from air!\n");
+			if ((self.owner.last_saveme_sound < time))
+			{
+				sound (self.owner, 0.000000, "weapons/notarget.wav", 1.000000, 1.000000);
+				self.owner.last_saveme_sound = (time + 3.000000);
+			}
+			self.owner.option = 0.000000;
+		}
+	}
+	if ((self.owner.option2 == 1.000000))
+	{
+		self.effects = 8.000000;
+	}
+	else
+	{
+		self.effects = 0.000000;
+	}
+	self.nextthink = (time + 0.100000);
+};
+
+void () SniperSight_Create =
+{
+	local entity sight;
+
+	self.tfstate = (self.tfstate | 2048.000000);
+	sight = spawn ();
+	sight.owner = self;
+	sight.movetype = 8.000000;
+	sight.solid = 0.000000;
+	if ((self.option2 == 1.000000))
+	{
+		sight.effects = 8.000000;
+	}
+	if ((self.option4 != 1.000000))
+	{
+		if ((self.team_no == 1.000000))
+		{
+			setmodel (sight, "progs/dot1.spr");
+		}
+		else
+		{
+			if ((self.team_no == 3.000000))
+			{
+				setmodel (sight, "progs/dot3.spr");
+			}
+			else
+			{
+				if ((self.team_no == 4.000000))
+				{
+					setmodel (sight, "progs/dot4.spr");
+				}
+				else
+				{
+					setmodel (sight, "progs/dot2.spr");
+				}
+			}
+		}
+	}
+	sight.classname = "timer";
+	setorigin (sight, self.origin);
+	sight.think = SniperSight_Update;
+	if ((self.option > 1.000000))
+	{
+		self.option = 1.000000;
+	}
+	sight.nextthink = (time + 0.050000);
+};
+
+void() TeamFortress_AutoZoomToggle = 
+{
+	if (self.tfstate & 4096)
+	{
+		self.tfstate = self.tfstate - 4096;
+		sprint(self, 2, "autozoom ON\n");
+	}
+	else
+	{
+		self.tfstate = self.tfstate | 4096;
+		sprint(self, 2, "autozoom OFF\n");
+	}
+};
+

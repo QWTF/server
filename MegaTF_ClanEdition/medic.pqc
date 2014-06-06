@@ -1,0 +1,127 @@
+
+// Medic's self heal function
+
+void () HealSelf =
+{
+	local entity te;
+	local float healed;
+
+	// Only medic's can heal themselves
+	if (self.playerclass != 5)
+		return;
+
+	// Costs 1 type 2 gren
+	if (self.no_grenades_2 < 1)
+	{
+		sprint(self, 2, "Not enough type 2 grenades... get more\n");
+		return;
+	}
+
+	healed = 0;
+
+	// Leg shots
+	if ((self.leg_damage > 0))
+	{
+		sprint (self, 2, "Your leg wound has been healed!\n");
+		self.leg_damage = 0;
+		TeamFortress_SetSpeed (self);
+		healed = 1;
+	}
+	
+	// Concs
+	te = find (world, classname, "timer");
+	while ((((te.owner != self) || (te.think != ConcussionGrenadeTimer)) && (te != world)))
+	{
+		te = find (te, classname, "timer");
+	}
+	if ((te != world))
+	{
+		stuffcmd (self, "v_idlescale 0\n");		
+		sprint (self, 2, "you have been healed of your concussion\n");
+		dremove (te);
+		healed = 1;
+	}
+
+	// Gas
+	if ((self.tfstate & 16384))
+	{
+		te = find (world, classname, "timer");
+		while ((((te.owner != self) || (te.think != HallucinationTimer)) && (te != world)))
+		{
+			te = find (te, classname, "timer");
+		}
+		if ((te != world))
+		{
+			stuffcmd (self, "v_idlescale 0\n");
+			self.tfstate = (self.tfstate - (self.tfstate & 16384));
+			sprint (self, 2, "you have been healed of your hallucinations\n");
+			dremove (te);
+			healed = 1;
+		}
+	}
+
+	// Tranq
+	if ((self.tfstate & 32768))
+	{
+		te = find (world, classname, "timer");
+		while ((((te.owner != self) || (te.think != TranquiliserTimer)) && (te != world)))
+		{
+			te = find (te, classname, "timer");
+		}
+		if ((te != world))
+		{
+			self.tfstate = (self.tfstate - (self.tfstate & 32768));
+			TeamFortress_SetSpeed (self);
+			stuffcmd (self, "v_cshift 0 0 0 0\n");
+			sprint (self, 2, "you have been healed of your tranquilisation\n");
+			dremove (te);
+			healed = 1;
+		}
+	}
+
+	// Flash
+	if ((self.FlashTime > 0.000000))
+	{
+		te = find (world, netname, "flashtimer");
+		while ((((te.owner != self) || (te.classname != "timer")) && (te != world)))
+		{
+			te = find (te, netname, "flashtimer");
+		}
+		if ((te != world))
+		{			
+			stuffcmd (self, "v_cshift 0 0 0 0\n");
+			dremove (te);
+		}
+		self.FlashTime = 0.000000;
+		healed = 1;
+	}
+
+	// Flames
+	if ((self.numflames > 0.000000))
+	{
+		self.numflames = 0.000000;
+		sprint (self, 2, "The flames have been doused!\n");
+		healed = 1;
+	}
+
+	if (healed == 0)
+	{
+		sprint(self, 2, "You have nothing to cure.\n");
+	}
+	else
+	{
+		self.no_grenades_2 = self.no_grenades_2 - 1;
+
+		WriteByte(4, 23);
+		WriteByte(4, 11);
+		WriteCoord(4, self.origin_x);
+		WriteCoord(4, self.origin_y);
+		WriteCoord(4, self.origin_z);
+		multicast(self.origin, TF_FLARE_OFF);
+
+		sound (self, 3, "items/r_item2.wav", 1, 1);
+
+		//sound (self, 1, "items/r_item1.wav", 1, 1);
+		//SpawnBlood (self.origin, 20);
+	}
+}

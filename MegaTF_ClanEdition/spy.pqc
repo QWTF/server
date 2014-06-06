@@ -1,0 +1,1274 @@
+// I changed the spy messages to spam less and look more colorful.
+// Also fixed is the spy disguise-cancel bug which would allow players
+// to keep undercover while shooting.
+
+void() TeamFortress_SpyGoUndercover;
+void (float _p_9330) TeamFortress_SpyFeignDeath;
+void(entity spy) TeamFortress_SpyCalcName;
+void() TeamFortress_SpyUndercoverThink;
+void(float class) TeamFortress_SpyChangeSkin;
+void(float teamno) TeamFortress_SpyChangeColor;
+void() GasGrenadeMakeGas;
+void() HallucinationTimer;
+void() W_FireTranq;
+void() T_TranqDartTouch;
+void() TranquiliserTimer;
+void(entity spy) Spy_RemoveDisguise;
+
+void(entity Item, entity AP, float method) tfgoalitem_RemoveFromPlayer;
+
+void() spy_diea1 = [50, spy_diea2]
+{
+};
+
+void() spy_diea2 = [51, spy_diea3]
+{
+};
+
+void() spy_diea3 = [52, spy_diea4]
+{
+};
+
+void() spy_diea4 = [53, spy_diea5]
+{
+};
+
+void() spy_diea5 = [54, spy_diea6]
+{
+};
+
+void() spy_diea6 = [55, spy_diea7]
+{
+};
+
+void() spy_diea7 = [56, spy_diea8]
+{
+};
+
+void() spy_diea8 = [57, spy_diea9]
+{
+};
+
+void() spy_diea9 = [58, spy_diea10]
+{
+};
+
+void() spy_diea10 = [59, spy_diea11]
+{
+};
+
+void() spy_diea11 = [60, spy_diea11]
+{
+};
+
+void() spy_dieb1 = [61, spy_dieb2]
+{
+};
+
+void() spy_dieb2 = [62, spy_dieb3]
+{
+};
+
+void() spy_dieb3 = [63, spy_dieb4]
+{
+};
+
+void() spy_dieb4 = [64, spy_dieb5]
+{
+};
+
+void() spy_dieb5 = [65, spy_dieb6]
+{
+};
+
+void() spy_dieb6 = [66, spy_dieb7]
+{
+};
+
+void() spy_dieb7 = [67, spy_dieb8]
+{
+};
+
+void() spy_dieb8 = [68, spy_dieb9]
+{
+};
+
+void() spy_dieb9 = [69, spy_dieb9]
+{
+};
+
+void() spy_diec1 = [70, spy_diec2]
+{
+};
+
+void() spy_diec2 = [71, spy_diec3]
+{
+};
+
+void() spy_diec3 = [72, spy_diec4]
+{
+};
+
+void() spy_diec4 = [73, spy_diec5]
+{
+};
+
+void() spy_diec5 = [74, spy_diec6]
+{
+};
+
+void() spy_diec6 = [75, spy_diec7]
+{
+};
+
+void() spy_diec7 = [76, spy_diec8]
+{
+};
+
+void() spy_diec8 = [77, spy_diec9]
+{
+};
+
+void() spy_diec9 = [78, spy_diec10]
+{
+};
+
+void() spy_diec10 = [79, spy_diec11]
+{
+};
+
+void() spy_diec11 = [80, spy_diec12]
+{
+};
+
+void() spy_diec12 = [81, spy_diec13]
+{
+};
+
+void() spy_diec13 = [82, spy_diec14]
+{
+};
+
+void() spy_diec14 = [83, spy_diec15]
+{
+};
+
+void() spy_diec15 = [84, spy_diec15]
+{
+};
+
+void() spy_died1 = [85, spy_died2]
+{
+};
+
+void() spy_died2 = [86, spy_died3]
+{
+};
+
+void() spy_died3 = [87, spy_died4]
+{
+};
+
+void() spy_died4 = [88, spy_died5]
+{
+};
+
+void() spy_died5 = [89, spy_died6]
+{
+};
+
+void() spy_died6 = [90, spy_died7]
+{
+};
+
+void() spy_died7 = [91, spy_died8]
+{
+};
+
+void() spy_died8 = [92, spy_died9]
+{
+};
+
+void() spy_died9 = [93, spy_died9]
+{
+};
+
+void() spy_diee1 = [94, spy_diee2]
+{
+};
+
+void() spy_diee2 = [95, spy_diee3]
+{
+};
+
+void() spy_diee3 = [96, spy_diee4]
+{
+};
+
+void() spy_diee4 = [97, spy_diee5]
+{
+};
+
+void() spy_diee5 = [98, spy_diee6]
+{
+};
+
+void() spy_diee6 = [99, spy_diee7]
+{
+};
+
+void() spy_diee7 = [100, spy_diee8]
+{
+};
+
+void() spy_diee8 = [101, spy_diee9]
+{
+};
+
+void() spy_diee9 = [102, spy_diee9]
+{
+};
+
+void() spy_die_ax1 = [41, spy_die_ax2]
+{
+};
+
+void() spy_die_ax2 = [42, spy_die_ax3]
+{
+};
+
+void() spy_die_ax3 = [43, spy_die_ax4]
+{
+};
+
+void() spy_die_ax4 = [44, spy_die_ax5]
+{
+};
+
+void() spy_die_ax5 = [45, spy_die_ax6]
+{
+};
+
+void() spy_die_ax6 = [46, spy_die_ax7]
+{
+};
+
+void() spy_die_ax7 = [47, spy_die_ax8]
+{
+};
+
+void() spy_die_ax8 = [48, spy_die_ax9]
+{
+};
+
+void() spy_die_ax9 = [49, spy_die_ax9]
+{
+};
+
+void() spy_upb1 = [69, spy_upb2]
+{
+};
+
+void() spy_upb2 = [68, spy_upb3]
+{
+};
+
+void() spy_upb3 = [67, spy_upb4]
+{
+};
+
+void() spy_upb4 = [66, spy_upb5]
+{
+};
+
+void() spy_upb5 = [65, spy_upb6]
+{
+};
+
+void() spy_upb6 = [64, spy_upb7]
+{
+};
+
+void() spy_upb7 = [63, spy_upb8]
+{
+};
+
+void() spy_upb8 = [62, spy_upb9]
+{
+};
+
+void() spy_upb9 = [61, spy_upb9]
+{
+	player_stand1();
+};
+
+void() spy_upc1 = [84, spy_upc2]
+{
+};
+
+void() spy_upc2 = [83, spy_upc3]
+{
+};
+
+void() spy_upc3 = [82, spy_upc4]
+{
+};
+
+void() spy_upc4 = [81, spy_upc5]
+{
+};
+
+void() spy_upc5 = [80, spy_upc6]
+{
+};
+
+void() spy_upc6 = [79, spy_upc7]
+{
+};
+
+void() spy_upc7 = [78, spy_upc8]
+{
+};
+
+void() spy_upc8 = [77, spy_upc9]
+{
+};
+
+void() spy_upc9 = [76, spy_upc10]
+{
+};
+
+void() spy_upc10 = [75, spy_upc11]
+{
+};
+
+void() spy_upc11 = [74, spy_upc12]
+{
+};
+
+void() spy_upc12 = [73, spy_upc13]
+{
+};
+
+void() spy_upc13 = [72, spy_upc14]
+{
+};
+
+void() spy_upc14 = [71, spy_upc15]
+{
+};
+
+void() spy_upc15 = [70, spy_upc15]
+{
+	player_stand1();
+};
+
+void() spy_upd1 = [93, spy_upd2]
+{
+};
+
+void() spy_upd2 = [92, spy_upd3]
+{
+};
+
+void() spy_upd3 = [91, spy_upd4]
+{
+};
+
+void() spy_upd4 = [90, spy_upd5]
+{
+};
+
+void() spy_upd5 = [89, spy_upd6]
+{
+};
+
+void() spy_upd6 = [88, spy_upd7]
+{
+};
+
+void() spy_upd7 = [87, spy_upd8]
+{
+};
+
+void() spy_upd8 = [86, spy_upd9]
+{
+};
+
+void() spy_upd9 = [85, spy_upd9]
+{
+	player_stand1();
+};
+
+void() spy_upe1 = [94, spy_upe9]
+{
+};
+
+void() spy_upe2 = [95, spy_upe8]
+{
+};
+
+void() spy_upe3 = [96, spy_upe7]
+{
+};
+
+void() spy_upe4 = [97, spy_upe6]
+{
+};
+
+void() spy_upe5 = [98, spy_upe5]
+{
+};
+
+void() spy_upe6 = [99, spy_upe4]
+{
+};
+
+void() spy_upe7 = [100, spy_upe3]
+{
+};
+
+void() spy_upe8 = [101, spy_upe2]
+{
+};
+
+void() spy_upe9 = [102, spy_upe1]
+{
+	player_stand1();
+};
+
+void() spy_upaxe1 = [49, spy_upaxe2]
+{
+};
+
+void() spy_upaxe2 = [48, spy_upaxe3]
+{
+};
+
+void() spy_upaxe3 = [47, spy_upaxe4]
+{
+};
+
+void() spy_upaxe4 = [46, spy_upaxe5]
+{
+};
+
+void() spy_upaxe5 = [45, spy_upaxe6]
+{
+};
+
+void() spy_upaxe6 = [44, spy_upaxe7]
+{
+};
+
+void() spy_upaxe7 = [43, spy_upaxe8]
+{
+};
+
+void() spy_upaxe8 = [42, spy_upaxe9]
+{
+};
+
+void() spy_upaxe9 = [41, spy_upaxe9]
+{
+	player_stand1();
+};
+
+// begin new spy code
+
+void (float _p_9330) TeamFortress_SpyFeignDeath =
+{
+	local float _l_9331;
+	local entity _l_9332;
+	local entity te;
+
+	if ((self.bugger == 8.000000))
+	{
+		return;
+	}
+	if (self.hook_out)
+	{
+		return;
+	}
+	if (self.is_feigning)
+	{
+		_l_9332 = findradius (self.origin, 48.000000);
+		_l_9331 = 1.000000;
+		while ((_l_9332 != world))
+		{
+			if ((((_l_9332.classname == "player") && (_l_9332.deadflag == 0.000000)) && (self != _l_9332)))
+			{
+				_l_9331 = 0.000000;
+			}
+			_l_9332 = _l_9332.chain;
+		}
+		if ((_l_9331 == 1.000000))
+		{
+			_l_9331 = 1.000000 + floor ((random () * 5.000000));
+			self.velocity = '0.000000 0.000000 0.000000';
+			unlay ();
+			self.view_ofs = '0.000000 0.000000 22.000000';
+			self.movetype = 3.000000;
+			self.is_feigning = 0.000000;
+			self.current_weapon = self.weapon;
+			W_SetCurrentAmmo ();
+			self.tfstate = (self.tfstate - (self.tfstate & 65536.000000));
+			TeamFortress_SetSpeed (self);
+			if ((self.weapon <= 16.000000))
+			{
+				spy_upaxe1 ();
+				return;
+			}
+			if ((_l_9331 == 1.000000))
+			{
+				spy_upb1 ();
+			}
+			else
+			{
+				if ((_l_9331 == 2.000000))
+				{
+					spy_upc1 ();
+				}
+				else
+				{
+					if ((_l_9331 == 3.000000))
+					{
+						spy_upd1 ();
+					}
+					else
+					{
+						spy_upe1 ();
+					}
+				}
+			}
+		}
+		else
+		{
+			sprint (self, 2.000000, "You can't get up while someone is standing on you.\n");
+		}
+	}
+	else
+	{
+		if ((!(self.flags & 512.000000) && (self.waterlevel == 0.000000)))
+		{
+			sprint (self, 2.000000, "You can't feign in the air.\n");
+			return;
+		}
+		_l_9332 = findradius (self.origin, 64.000000);
+		while ((_l_9332 != world))
+		{
+			if ((((_l_9332.classname == "player") && (self != _l_9332)) && (_l_9332.is_feigning == 1.000000)))
+			{
+				sprint (self, 2.000000, "You can't feign on top of another spy!\n");
+				return;
+			}
+			_l_9332 = _l_9332.chain;
+		}
+		self.immune_to_check = (time + 5.000000);
+		self.tfstate = (self.tfstate | 65536.000000);
+		self.velocity = (self.velocity * 0.650000);
+		self.is_feigning = 1.000000;
+		Attack_Finished (0.800000);
+		if (self.hook_out)
+		{
+			Reset_Grapple (self.hook);
+			Attack_Finished (0.750000);
+			self.hook_out = 1.000000;
+		}
+		if (((self.undercover_team == 0.000000) && (self.undercover_skin == 0.000000)))
+		{
+			self.items = (self.items - (self.items & 524288.000000));
+		}
+		TeamFortress_ThrowGrenade ();
+		self.invisible_finished = 0.000000;
+		self.modelindex = modelindex_player;
+		self.weapon = self.current_weapon;
+		self.current_weapon = 0.000000;
+		self.weaponmodel = "";
+		self.weaponframe = 0.000000;
+		self.maxspeed = 0.000000;
+		self.movetype = 6.000000;
+		setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 4.000000');
+		self.view_ofs = '0.000000 0.000000 -8.000000';
+		if ((_p_9330 == 0.000000))
+		{
+			DeathSound ();
+		}
+		self.angles_x = 0.000000;
+		self.angles_z = 0.000000;
+		if ((self.weapon <= 16.000000))
+		{
+			spy_die_ax1 ();
+			return;
+		}
+	te = find (world, classname, "item_tfgoal");
+	while (te) {
+	    if (te.owner == self) {
+		if (!(te.goal_activation & 256) || (self.has_disconnected == 1)) {
+		    tfgoalitem_RemoveFromPlayer (te, self, 0);
+		}
+		if (CTF_Map == 1) {
+		    if (te.goal_no == 1)
+			bprint (2, self.netname, " Ãœ”‘ the ¬Ã’≈ flag!\n");
+		    else if (te.goal_no == 2)
+			bprint (2, self.netname, " Ãœ”‘ the “≈ƒ flag!\n");
+		}
+	    }
+	    te = find (te, classname, "item_tfgoal");
+	}
+		_l_9331 = 1.000000 + floor ((random () * 6.000000));
+		if ((_l_9331 == 1.000000))
+		{
+			spy_diea1 ();
+		}
+		else
+		{
+			if ((_l_9331 == 2.000000))
+			{
+				spy_dieb1 ();
+			}
+			else
+			{
+				if ((_l_9331 == 3.000000))
+				{
+					spy_diec1 ();
+				}
+				else
+				{
+					if ((_l_9331 == 4.000000))
+					{
+						spy_died1 ();
+					}
+					else
+					{
+						spy_diee1 ();
+					}
+				}
+			}
+		}
+	}
+};
+
+
+// end new spy code
+
+void() TeamFortress_SpyGoUndercover = 
+{
+	local entity te;
+	if (self.effects & (8 | 4))
+	{
+		sprint(self, 1, "You cannot disguise while glowing.\n");
+		return;
+	}
+	if (invis_only == 1)
+	{
+		if (self.is_undercover == 1)
+		{
+			self.is_undercover = 0;
+			self.modelindex = modelindex_player;
+			self.items = self.items - (self.items & 524288);
+		}
+		else
+		{
+			if (self.is_undercover == 2)
+			{
+// There's no need for this function; MegaTF undercover is instant.
+//				sprint(self, 2, "You stop going undercover.\n");
+//				self.is_undercover = 0;
+				return;
+			}
+			else
+			{
+				if (self.ammo_cells > 1)
+				{
+// No need for this message either.
+//					sprint(self, 2, "Going undercover...\n");
+					self.is_undercover = 2;
+					te = spawn();
+					te.classname = "timer";
+					te.owner = self;
+					te.think = TeamFortress_SpyUndercoverThink;
+					te.nextthink = time + 0;
+				}
+			}
+		}
+		self.StatusRefreshTime = time + 0.1;
+	}
+	else
+	{
+		if (self.is_undercover != 2)
+		{
+			self.current_menu = 12;
+			self.menu_count = 25;
+		}
+		else
+		{
+// There's no need for this function; MegaTF undercover is instant.
+//			sprint(self, 2, "You stop going undercover.\n");
+//			self.is_undercover = 0;
+			return;
+		}
+	}
+};
+
+void(entity spy) TeamFortress_SpyCalcName = 
+{
+	local entity te;
+	spy.undercover_name = string_null;
+	if (spy.undercover_team != 0)
+	{
+		te = find(world, classname, "player");
+		while (te)
+		{
+			if (te.team_no == spy.undercover_team && te.skin == spy.undercover_skin)
+			{
+				spy.undercover_name = te.netname;
+				te = world;
+			}
+			else
+			{
+				te = find(te, classname, "player");
+			}
+		}
+		if (spy.undercover_name == string_null)
+		{
+			te = find(world, classname, "player");
+			while (te)
+			{
+				if (te.team_no == spy.undercover_team)
+				{
+					spy.undercover_name = te.netname;
+					te = world;
+				}
+				else
+				{
+					te = find(te, classname, "player");
+				}
+			}
+		}
+	}
+};
+
+void() TeamFortress_SpyUndercoverThink = 
+{
+	local float tc;
+	local string st;
+	if (self.owner.playerclass != 8)
+	{
+		return;
+	}
+	if (self.owner.is_undercover == 2)
+	{
+//		sprint(self.owner, 2, "You Are Disguised\n");
+		if (infokey(world, "spymsgs") == "1")
+		{
+			sprint(self.owner, 2, "ŸÔı ·ÚÂ ‰ÈÛÁıÈÛÂ‰\n");
+		}
+		if (invis_only == 1)
+		{
+			self.owner.items = self.owner.items | 524288;
+			self.owner.frame = 0;
+			self.owner.modelindex = modelindex_eyes;
+			self.owner.is_undercover = 1;
+		}
+		else
+		{
+			self.owner.immune_to_check = time + 20;
+			if (self.skin != 0)
+			{
+//				sprint(self.owner, 2, "Skin set to ");
+				sprint(self.owner, 2, "”ÎÈÓ ÛÂÙ ÙÔ ê");
+				TeamFortress_PrintClassName(self.owner, self.skin, 0, 2);
+				self.owner.undercover_skin = self.skin;
+				TeamFortress_SetSkin(self.owner);
+			}
+			if (self.team != 0)
+			{
+				self.owner.immune_to_check = time + 10;
+//				sprint(self.owner, 2, "Colors set to Team ");
+				sprint(self.owner, 2, "√ÔÏÔÚÛ ÛÂÙ ÙÔ ‘Â·Ì ê");
+				st = ftos(self.team);
+				sprint(self.owner, 2, st);
+				sprint(self.owner, 2, "ë\n");
+				self.owner.undercover_team = self.team;
+				stuffcmd(self.owner, "color ");
+				tc = TeamFortress_TeamGetColor(self.team) - 1;
+				st = ftos(tc);
+				stuffcmd(self.owner, st);
+				stuffcmd(self.owner, "\n");
+			}
+			TeamFortress_SpyCalcName(self.owner);
+			if (self.owner.StatusBarSize == 0)
+			{
+				CenterPrint(self.owner, "You are now disguised.\n");
+			}
+			self.owner.is_undercover = 1;
+		}
+	}
+	self.owner.StatusRefreshTime = time + 0.1;
+	dremove(self);
+};
+
+void(float class) TeamFortress_SpyChangeSkin = 
+{
+	local entity te;
+	if (class == 8)
+	{
+//		sprint(self, 2, "Skin reset.\n");
+		sprint(self, 2, "”ÎÈÓ ÚÂÛÂÙÆ\n");
+		self.undercover_skin = 0;
+		TeamFortress_SetSkin(self);
+		if (self.undercover_team == 0)
+		{
+			self.items = self.items - (self.items & 524288);
+			self.is_undercover = 0;
+		}
+		return;
+	}
+// No need for this message
+//	sprint(self, 2, "Going undercover...\n");
+	self.is_undercover = 2;
+	te = spawn();
+	te.classname = "timer";
+	te.owner = self;
+	te.think = TeamFortress_SpyUndercoverThink;
+	te.nextthink = time + 0;
+	te.skin = class;
+	TeamFortress_SetSkin(self);
+};
+
+void(float teamno) TeamFortress_SpyChangeColor = 
+{
+	local entity te;
+	local string st;
+	local float tc;
+	
+	// pablo. spy bug fix.
+	if (self.is_undercover && (self.undercover_team == teamno) )
+		return;
+	//
+
+	if (teamno == self.team_no)
+	{
+//		sprint(self, 2, "Colors reset.\n");
+		sprint(self, 2, "√ÔÏÔÚÛ ÚÂÛÂÙÆ\n");
+		self.immune_to_check = time + 15;
+		self.undercover_team = 0;
+		stuffcmd(self, "color ");
+		tc = TeamFortress_TeamGetColor(self.team_no) - 1;
+		st = ftos(tc);
+		stuffcmd(self, st);
+		stuffcmd(self, "\n");
+		if (self.undercover_skin == 0)
+		{
+			self.items = self.items - (self.items & 524288);
+			self.is_undercover = 0;
+		}
+		return;
+	}
+// No need for this message
+//	sprint(self, 2, "Going undercover...\n");
+	self.is_undercover = 2;
+	te = spawn();
+	te.classname = "timer";
+	te.owner = self;
+	te.think = TeamFortress_SpyUndercoverThink;
+	te.nextthink = time + 0;
+	te.team = teamno;
+};
+
+void() GasGrenadeTouch = 
+{
+	sound(self, 1, "weapons/bounce.wav", 1, 1);
+	if (self.velocity == '0 0 0')
+	{
+		self.avelocity = '0 0 0';
+	}
+};
+
+void() GasGrenadeExplode = 
+{
+	local entity te;
+	local float pos;
+	pos = pointcontents(self.origin);
+	if (pos == -1)
+	{
+		te = spawn();
+		te.think = GasGrenadeMakeGas;
+		te.nextthink = time + 0.1;
+		te.heat = 0;
+		te.origin = self.origin;
+		te.owner = self.owner;
+		te.team_no = self.owner.team_no;
+		te.weapon = 0;
+	}
+	else
+	{
+		pos = 0;
+		while (pos < 10)
+		{
+			newmis = spawn();
+			setmodel(newmis, "progs/s_bubble.spr");
+			setorigin(newmis, self.origin);
+			newmis.movetype = 8;
+			newmis.solid = 0;
+			newmis.velocity = '0 0 15';
+			newmis.velocity_z = 10 + random() * 20;
+			newmis.nextthink = time + 0.5;
+			newmis.think = bubble_bob;
+			newmis.classname = "bubble";
+			newmis.frame = 0;
+			newmis.cnt = 0;
+			setsize(newmis, '-8 -8 -8', '8 8 8');
+			pos = pos + 1;
+		}
+	}
+	BecomeExplosion();
+	dremove(self);
+};
+
+void () GasGrenadeMakeGas =
+{
+	local entity _l_9407;
+	local entity _l_9408;
+	local entity _l_9409;
+
+	self.nextthink = (time + 0.750000);
+	_l_9407 = findradius (self.origin, 200.000000);
+	while ((_l_9407 != world))
+	{
+		if ((((_l_9407.team_no == self.owner.team_no) && (_l_9407.last_used < time)) && (_l_9407.classname == "player")))
+		{
+			sound (_l_9407, 4.000000, "player/gas_mask.wav", 1.000000, 1.000000);
+			_l_9407.last_used = (time + 2.000000);
+		}
+		if (!(_l_9407.items & 2097152.000000))
+		{
+			if (((((_l_9407.classname == "player") && (_l_9407.deadflag == 0.000000)) && (_l_9407.team_no != self.owner.team_no)) && (_l_9407.bugger == 0.000000)))
+			{
+				deathmsg = 24.000000;
+				TF_T_Damage (_l_9407, world, self.owner, 10.000000, 2.000000, 0.000000);
+				if ((_l_9407.tfstate & 16384.000000))
+				{
+					_l_9409 = find (world, classname, "timer");
+					while ((((_l_9409.owner != _l_9407) || (_l_9409.think != HallucinationTimer)) && (_l_9409 != world)))
+					{
+						_l_9409 = find (_l_9409, classname, "timer");
+					}
+					if ((_l_9409 != world))
+					{
+						_l_9409.health = (_l_9409.health + 25.000000);
+						if ((_l_9409.health < 100.000000))
+						{
+							_l_9409.health = 100.000000;
+						}
+						_l_9409.nextthink = (time + 0.500000);
+					}
+				}
+				else
+				{
+					sprint (_l_9407, 2.000000, "Far out man!\n");
+					_l_9408 = find (world, classname, "timer");
+					while ((((_l_9408.owner != _l_9407) || (_l_9408.think != ConcussionGrenadeTimer)) && (_l_9408 != world)))
+					{
+						_l_9408 = find (_l_9408, classname, "timer");
+					}
+					if ((_l_9408 == world))
+					{
+						stuffcmd (_l_9407, "v_idlescale 10\n");
+					}
+					_l_9407.tfstate = (_l_9407.tfstate | 16384.000000);
+					_l_9409 = spawn ();
+					_l_9409.nextthink = (time + 0.500000);
+					_l_9409.think = HallucinationTimer;
+					_l_9409.classname = "timer";
+					_l_9409.owner = _l_9407;
+					_l_9409.health = 100.000000;
+					_l_9409.team_no = self.team_no;
+				}
+			}
+		}
+		_l_9407 = _l_9407.chain;
+	}
+	self.heat = (self.heat + 1.000000);
+	if ((self.heat == 1.000000))
+	{
+		WriteByte (4.000000, 23.000000);
+		WriteByte (4.000000, 4.000000);
+		WriteCoord (4.000000, self.origin_x);
+		WriteCoord (4.000000, self.origin_y);
+		WriteCoord (4.000000, self.origin_z);
+		multicast (self.origin, 2.000000);
+		return;
+	}
+	if ((self.heat <= 20.000000))
+	{
+		self.weapon = (self.weapon + 1.000000);
+		if ((self.weapon == 1.000000))
+		{
+			WriteByte (4.000000, 23.000000);
+			WriteByte (4.000000, 10.000000);
+			WriteCoord (4.000000, self.origin_x);
+			WriteCoord (4.000000, self.origin_y);
+			WriteCoord (4.000000, (self.origin_z - 24.000000));
+			multicast (self.origin, 2.000000);
+			sound (self, 0.000000, "misc/vapeur2.wav", 1.000000, 1.000000);
+		}
+		else
+		{
+			if ((self.weapon == 2.000000))
+			{
+				self.weapon = 0.000000;
+			}
+		}
+		return;
+	}
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	dremove (self);
+};
+
+void () HallucinationTimer =
+{
+	local entity _l_9418;
+	local entity _l_9419;
+	local float _l_9420;
+	local float _l_9421;
+	local float _l_9422;
+
+	self.health = (self.health - 2.500000);
+	if ((self.owner.playerclass == 5.000000))
+	{
+		self.health = (self.health - 2.500000);
+	}
+	if ((self.health <= 0.000000))
+	{
+		self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 16384.000000));
+	}
+	if (!(self.owner.tfstate & 16384.000000))
+	{
+		sprint (self.owner, 2.000000, "You're sobering up now.\n");
+		stuffcmd (self.owner, "v_idlescale 0\n");
+		dremove (self);
+		return;
+	}
+	_l_9419 = find (world, classname, "timer");
+	while ((((_l_9419.owner != self.owner) || (_l_9419.think != ConcussionGrenadeTimer)) && (_l_9419 != world)))
+	{
+		_l_9419 = find (_l_9419, classname, "timer");
+	}
+	if ((_l_9419 == world))
+	{
+		stuffcmd (self.owner, "v_idlescale 10\n");
+	}
+	self.nextthink = (time + 0.500000);
+	if ((random () < 0.500000))
+	{
+		KickPlayer (-10.000000, self.owner);
+	}
+	_l_9420 = (random () * 800.000000) - 400.000000;
+	_l_9421 = (random () * 800.000000) - 400.000000;
+	_l_9422 = random ();
+	msg_entity = self.owner;
+	if ((_l_9422 < 0.400000))
+	{
+		WriteByte (1.000000, 23.000000);
+		if ((_l_9422 < 0.500000))
+		{
+			WriteByte (1.000000, 3.000000);
+		}
+		else
+		{
+			if ((_l_9422 < 0.550000))
+			{
+				WriteByte (1.000000, 4.000000);
+			}
+			else
+			{
+				WriteByte (1.000000, 10.000000);
+			}
+		}
+		WriteCoord (1.000000, (msg_entity.origin_x + _l_9420));
+		WriteCoord (1.000000, (msg_entity.origin_y + _l_9421));
+		WriteCoord (1.000000, msg_entity.origin_z);
+	}
+	else
+	{
+		if ((_l_9422 < 0.700000))
+		{
+			WriteByte (1.000000, 23.000000);
+			WriteByte (1.000000, 11.000000);
+			WriteCoord (1.000000, (msg_entity.origin_x + _l_9420));
+			WriteCoord (1.000000, (msg_entity.origin_y + _l_9421));
+			WriteCoord (1.000000, msg_entity.origin_z);
+		}
+		else
+		{
+			_l_9418 = spawn ();
+			_l_9418.origin_x = (msg_entity.origin_x + _l_9420);
+			_l_9418.origin_y = (msg_entity.origin_y + _l_9421);
+			_l_9418.origin_z = msg_entity.origin_z;
+			WriteByte (1.000000, 23.000000);
+			WriteByte (1.000000, 6.000000);
+			WriteEntity (1.000000, _l_9418);
+			WriteCoord (1.000000, _l_9418.origin_x);
+			WriteCoord (1.000000, _l_9418.origin_y);
+			WriteCoord (1.000000, _l_9418.origin_z);
+			_l_9420 = (random () * 800.000000) - 400.000000;
+			_l_9421 = (random () * 800.000000) - 400.000000;
+			WriteCoord (1.000000, (msg_entity.origin_x + _l_9420));
+			WriteCoord (1.000000, (msg_entity.origin_y + _l_9421));
+			WriteCoord (1.000000, msg_entity.origin_z);
+			dremove (_l_9418);
+		}
+	}
+};
+
+void() W_FireTranq = 
+{
+	local vector dir;
+	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+	KickPlayer(-1, self);
+	dir = aim(self, 1000);
+	newmis = spawn();
+	newmis.owner = self;
+	newmis.movetype = 9;
+	newmis.solid = 2;
+	newmis.angles = vectoangles(dir);
+	newmis.touch = T_TranqDartTouch;
+	newmis.classname = "spike";
+	newmis.think = SUB_Remove;
+	newmis.nextthink = time + 3;
+	setmodel(newmis, "progs/spike.mdl");
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, self.origin + '0 0 16');
+	newmis.velocity = dir * 2000;
+};
+
+void() T_TranqDartTouch = 
+{
+	local entity timer;
+	if (other.solid == 1)
+	{
+		return;
+	}
+	if (pointcontents(self.origin) == -6)
+	{
+		dremove(self);
+		return;
+	}
+	if (other.takedamage)
+	{
+		spawn_touchblood(9);
+		deathmsg = 25;
+		TF_T_Damage(other, self, self.owner, 20, 2, 2);
+		if (other.classname == "player" && other.team_no != self.owner.team_no)
+		{
+			if (other.tfstate & 32768)
+			{
+				timer = find(world, classname, "timer");
+				while (timer.owner != other || timer.think != TranquiliserTimer && timer != world)
+				{
+					timer = find(timer, classname, "timer");
+				}
+				if (timer != world)
+				{
+					timer.nextthink = time + 15;
+				}
+			}
+			else
+			{
+				sprint(other, 2, "You're getting sleepy...\n");
+				stuffcmd(other, "v_cshift 125 0 255 100\n");
+				other.tfstate = other.tfstate | 32768;
+				timer = spawn();
+				timer.nextthink = time + 15;
+				timer.think = TranquiliserTimer;
+				timer.classname = "timer";
+				timer.owner = other;
+				timer.team_no = self.owner.team_no;
+				TeamFortress_SetSpeed(other);
+			}
+		}
+	}
+	else
+	{
+		WriteByte(4, 23);
+		if (self.classname == "wizspike")
+		{
+			WriteByte(4, 7);
+		}
+		else
+		{
+			if (self.classname == "knightspike")
+			{
+				WriteByte(4, 8);
+			}
+			else
+			{
+				WriteByte(4, 0);
+			}
+		}
+		WriteCoord(4, self.origin_x);
+		WriteCoord(4, self.origin_y);
+		WriteCoord(4, self.origin_z);
+		multicast(self.origin, 2);
+	}
+	dremove(self);
+};
+
+void() TranquiliserTimer = 
+{
+	self.owner.tfstate = self.owner.tfstate - (self.owner.tfstate & 32768);
+	TeamFortress_SetSpeed(self.owner);
+	stuffcmd(self.owner, "v_cshift 0 0 0 0\n");
+	sprint(self.owner, 2, "You feel more alert now\n");
+	dremove(self);
+};
+
+void(entity spy) Spy_RemoveDisguise = 
+{
+	local string st;
+	local float tc;
+	if (invis_only != 1)
+	{
+		if (spy.playerclass == 8)
+		{
+			if (spy.undercover_skin != 0)
+			{
+				spy.items = spy.items - (spy.items & 524288);
+				spy.immune_to_check = time + 10;
+				spy.undercover_skin = 0;
+				spy.skin = 0;
+				TeamFortress_SetSkin(spy);
+			}
+			if (spy.undercover_team != 0)
+			{
+				spy.items = spy.items - (spy.items & 524288);
+				spy.immune_to_check = time + 10;
+				spy.undercover_team = 0;
+				stuffcmd(spy, "color ");
+				tc = TeamFortress_TeamGetColor(spy.team_no) - 1;
+				st = ftos(tc);
+				stuffcmd(spy, st);
+				stuffcmd(spy, "\n");
+			}
+			spy.is_undercover = 0;
+			self.StatusRefreshTime = time + 0.1;
+			TeamFortress_SpyCalcName(spy);
+		}
+	}
+	else
+	{
+		if (spy.is_undercover)
+		{
+			spy.is_undercover = 0;
+			spy.modelindex = modelindex_player;
+			if (spy.items & 524288)
+			{
+				spy.items = spy.items - 524288;
+			}
+			self.StatusRefreshTime = time + 0.1;
+		}
+	}
+};
+

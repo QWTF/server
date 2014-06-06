@@ -1,0 +1,410 @@
+
+// Prematch by PabloTheGreat
+// 
+// rcon serverinfo prematch on
+//		Activates prematch next time the map cycles
+//
+// rcon serverinfo pm_time n
+//		Sets the length of prematch in minutes
+
+float teamfrags;
+//entity prematch2;
+
+void () PrematchCountDown =
+{
+	local string st;
+	local entity te, flag01, flag02, flag03, flag04, flag05, flag06, flag07, flag08, flag09, flag10, flag11, flag12, flag13, flag14, flag15, flag16, flag17, flag18, flag19;
+
+	if (self.health == 0)
+	{
+		// Prematch is over.
+		// Clear frags. Send a msg. Toggle TeamFrags properly.
+
+#ifdef clan_progs
+		if (clan_prematch == -1)
+		{
+			clan_prematch = 0;
+			timelimit = cvar ("timelimit") * 60;		// resets game timelimit
+			pointer_timeleft.no_grenades_1 = 0;		///
+		}
+#endif
+		te = find(world, classname, "player");
+		while (te)
+		{
+			CenterPrint2(te, st, "Attack!");	
+			stuffcmd(te, "bf\n");
+			T_Damage (te, te, te, 500);
+			te.real_frags = 0;
+			te.frags = 0;
+			te = find(te, classname, "player");
+		}		
+		
+		if (teamfrags == 0)
+		{
+			toggleflags = toggleflags & (toggleflags - 128);
+		}
+
+		// flags
+	flag01 = find (world, classname, "item_tfgoal");
+	while (flag01)
+	{
+		flag01.touch = item_tfgoal_touch;	
+		flag01 = find (flag01, classname, "item_tfgoal");
+	}
+	flag02 = find (world, classname, "info_tfgoal");
+	while (flag02)
+	{
+		flag02.goal_activation = flag02.DropFlagDelay;	
+		flag02 = find (flag02, classname, "info_tfgoal");
+	}
+	flag03 = find (world, classname, "item_armor1");
+	while (flag03)
+	{
+		flag03.touch = armor_touch;	
+		flag03 = find (flag03, classname, "item_armor1");
+	}
+	flag04 = find (world, classname, "item_armor2");
+	while (flag04)
+	{
+		flag04.touch = armor_touch;	
+		flag04 = find (flag04, classname, "item_armor2");
+	}
+	flag05 = find (world, classname, "item_armorInv");
+	while (flag05)
+	{
+		flag05.touch = armor_touch;	
+		flag05 = find (flag05, classname, "item_armorInv");
+	}
+	flag06 = find (world, classname, "item_artifact_envirosuit");
+	while (flag06)
+	{
+		flag06.touch = powerup_touch;	
+		flag06 = find (flag06, classname, "item_artifact_envirosuit");
+	}
+	flag07 = find (world, classname, "item_artifact_invisibility");
+	while (flag07)
+	{
+		flag07.touch = powerup_touch;	
+		flag07 = find (flag07, classname, "item_artifact_invisibility");
+	}
+	flag08 = find (world, classname, "item_artifact_invulnerability");
+	while (flag08)
+	{
+		flag08.touch = powerup_touch;	
+		flag08 = find (flag08, classname, "item_artifact_invulnerability");
+	}
+	flag09 = find (world, classname, "item_artifact_super_damage");
+	while (flag09)
+	{
+		flag09.touch = powerup_touch;	
+		flag09 = find (flag09, classname, "item_artifact_super_damage");
+	}
+	flag10 = find (world, classname, "item_cells");
+	while (flag10)
+	{
+		flag10.touch = ammo_touch;	
+		flag10 = find (flag10, classname, "item_cells");
+	}
+	flag11 = find (world, classname, "item_health");
+	while (flag11)
+	{
+		flag11.touch = health_touch;	
+		flag11 = find (flag11, classname, "item_health");
+	}
+	flag12 = find (world, classname, "item_key1");
+	while (flag12)
+	{
+		flag12.touch = key_touch;	
+		flag12 = find (flag12, classname, "item_key1");
+	}
+	flag13 = find (world, classname, "item_key2");
+	while (flag13)
+	{
+		flag13.touch = key_touch;	
+		flag13 = find (flag13, classname, "item_key2");
+	}
+	flag14 = find (world, classname, "item_rockets");
+	while (flag14)
+	{
+		flag14.touch = ammo_touch;	
+		flag14 = find (flag14, classname, "item_rockets");
+	}
+	flag15 = find (world, classname, "item_shells");
+	while (flag15)
+	{
+		flag15.touch = ammo_touch;	
+		flag15 = find (flag15, classname, "item_shells");
+	}
+	flag16 = find (world, classname, "item_sigil");	//gold.  still not sure what sigil is *shrug*
+	while (flag16)
+	{
+		flag16.touch = sigil_touch;	
+		flag16 = find (flag16, classname, "item_sigil");
+	}
+	flag17 = find (world, classname, "item_spikes");
+	while (flag17)
+	{
+		flag17.touch = ammo_touch;	
+		flag17 = find (flag17, classname, "item_spikes");
+	}
+	flag18 = find (world, classname, "item_weapon");
+	while (flag18)
+	{
+		flag18.touch = weapon_touch;	
+		flag18 = find (flag18, classname, "item_weapon");
+	}
+	flag19 = find (world, classname, "func_button");
+	while (flag19)
+	{
+		flag19.touch = button_touch;
+		flag19 = find (flag19, classname, "func_button");
+	}
+
+/*		// blue flag/key
+		te = Finditem(2);
+		if (te != world)
+		{
+			te.touch = item_tfgoal_touch;
+		}
+
+		// any other various flags
+		te = find(world, mdl, "progs/tf_flag.mdl");
+		while (te)
+		{
+			te.touch = item_tfgoal_touch;
+			te = find(te, mdl, "progs/tf_flag.mdl");
+		}*/
+
+		prematch = 0;
+		dremove(self);
+		return;
+	}
+
+	// Countdown!
+	if (self.health == 3)
+	{
+		st = "\n3...";
+	}
+	else
+	{
+		if (self.health == 2)
+		{
+			st = "\n\n2...";
+		}			
+		else
+		{
+			if (self.health == 1)
+			{
+				st = "\n\n\n1...";
+			}
+		}
+	}
+
+	te = find(world, classname, "player");
+	while (te != world)
+	{
+		CenterPrint(te, st);
+		stuffcmd(te, "bf\n");
+		te = find(te, classname, "player");
+	}
+	self.health = self.health - 1;
+	self.nextthink = (time + 1);
+}
+
+void () PrematchThink =
+{
+	local entity te;
+	local string st;
+
+	if (self.health <= 0)
+	{
+		self.health = 3;
+		self.think = PrematchCountDown;
+		self.nextthink = (time + 1);
+		return;
+	}
+	else
+	{
+		st = ftos(self.health);
+
+		te = find(world, classname, "player");
+		while (te)
+		{
+			if (self.health == 1)
+			{
+				CenterPrint2(te, st, "minute left!");
+			}
+			else
+			{
+				CenterPrint2(te, st, "minutes left!");
+			}
+			stuffcmd(te, "bf\n");
+			te = find(te, classname, "player");
+		}
+		self.nextthink = (time + 60);
+	}
+
+	self.health = self.health - 1;
+}
+
+void () SetUpPrematch = 
+{
+	local entity flag01, flag02, flag03, flag04, flag05, flag06, flag07, flag08, flag09, flag10, flag11, flag12, flag13, flag14, flag15, flag16, flag17, flag18, flag19;
+
+	// Turn on teamfrags and remember what to set it back to
+	if (toggleflags & 128)
+	{
+		teamfrags = 1;
+	}
+	else
+	{
+		teamfrags = 0;
+		toggleflags = toggleflags | 128;
+	}
+
+	flag01 = find (world, classname, "item_tfgoal");
+	while (flag01)
+	{
+		flag01.touch = SUB_Null;	
+		flag01 = find (flag01, classname, "item_tfgoal");
+	}
+	flag02 = find (world, classname, "info_tfgoal");
+	while (flag02)
+	{
+		flag02.DropFlagDelay = flag02.goal_activation;
+		flag02.goal_activation = 0;
+		flag02 = find (flag02, classname, "info_tfgoal");
+	}
+	flag03 = find (world, classname, "item_armor1");
+	while (flag03)
+	{
+		flag03.touch = SUB_Null;	
+		flag03 = find (flag03, classname, "item_armor1");
+	}
+	flag04 = find (world, classname, "item_armor2");
+	while (flag04)
+	{
+		flag04.touch = SUB_Null;	
+		flag04 = find (flag04, classname, "item_armor2");
+	}
+	flag05 = find (world, classname, "item_armorInv");
+	while (flag05)
+	{
+		flag05.touch = SUB_Null;	
+		flag05 = find (flag05, classname, "item_armorInv");
+	}
+	flag06 = find (world, classname, "item_artifact_envirosuit");
+	while (flag06)
+	{
+		flag06.touch = SUB_Null;	
+		flag06 = find (flag06, classname, "item_artifact_invisibility");
+	}
+	flag07 = find (world, classname, "item_armor2");
+	while (flag07)
+	{
+		flag07.touch = SUB_Null;	
+		flag07 = find (flag07, classname, "item_artifact_invisibility");
+	}
+	flag08 = find (world, classname, "item_artifact_invulnerability");
+	while (flag08)
+	{
+		flag08.touch = SUB_Null;	
+		flag08 = find (flag08, classname, "item_artifact_invulnerability");
+	}
+	flag09 = find (world, classname, "item_artifact_super_damage");
+	while (flag09)
+	{
+		flag09.touch = SUB_Null;	
+		flag09 = find (flag09, classname, "item_artifact_super_damage");
+	}
+	flag10 = find (world, classname, "item_cells");
+	while (flag10)
+	{
+		flag10.touch = SUB_Null;	
+		flag10 = find (flag10, classname, "item_cells");
+	}
+	flag11 = find (world, classname, "item_health");
+	while (flag11)
+	{
+		flag11.touch = SUB_Null;	
+		flag11 = find (flag11, classname, "item_health");
+	}
+	flag12 = find (world, classname, "item_key1");
+	while (flag12)
+	{
+		flag12.touch = SUB_Null;	
+		flag12 = find (flag12, classname, "item_key1");
+	}
+	flag13 = find (world, classname, "item_key2");
+	while (flag13)
+	{
+		flag13.touch = SUB_Null;	
+		flag13 = find (flag13, classname, "item_key2");
+	}
+	flag14 = find (world, classname, "item_rockets");
+	while (flag14)
+	{
+		flag14.touch = SUB_Null;	
+		flag14 = find (flag14, classname, "item_rockets");
+	}
+	flag15 = find (world, classname, "item_shells");
+	while (flag15)
+	{
+		flag15.touch = SUB_Null;	
+		flag15 = find (flag15, classname, "item_shells");
+	}
+	flag16 = find (world, classname, "item_sigil");	//gold.  still not sure what sigil is *shrug*
+	while (flag16)
+	{
+		flag16.touch = SUB_Null;	
+		flag16 = find (flag16, classname, "item_sigil");
+	}
+	flag17 = find (world, classname, "item_spikes");
+	while (flag17)
+	{
+		flag17.touch = SUB_Null;	
+		flag17 = find (flag17, classname, "item_spikes");
+	}
+	flag18 = find (world, classname, "item_weapon");
+	while (flag18)
+	{
+		flag18.touch = SUB_Null;	
+		flag18 = find (flag18, classname, "item_weapon");
+	}
+	flag19 = find (world, classname, "func_button");
+	while (flag19)
+	{
+		flag19.touch = SUB_Null;
+		flag19 = find (flag19, classname, "func_button");
+	}
+	
+/*  // pablo. haha. that doesn't work :/
+	flag = Finditem(1);
+	if (flag != world)
+	{
+		flag.touch = SUB_Null;
+	}
+
+	flag = Finditem(2);
+	if (flag != world)
+	{		
+		flag.touch = SUB_Null;
+	}*/
+
+	/*
+	newmis = spawn ();
+	newmis.classname = "timer";
+
+	newmis.nextthink = (time + (prematch - floor(prematch)) * 60);
+	newmis.think = PrematchThink;
+	newmis.health = floor(prematch);
+	*/
+
+	newmis = spawn ();
+	newmis.classname = "pmtimer";
+	newmis.nextthink = (time + ((prematch - floor (prematch)) * 60.000000));
+	newmis.think = PrematchThink;
+	newmis.health = floor (prematch);
+	pointer_prematchtimer = newmis;
+}
+

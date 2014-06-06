@@ -1,0 +1,350 @@
+#ifdef fte_rankings
+// Ranking systems
+//
+	//float(string s) stof = #81;
+float(string filename, float mode) fopen = #110;
+void(float handle) fclose = #111;
+string(float handle) fgets = #112;
+void(float handle, string s) fputs = #113;
+float (string s) strlen = #114;
+	//string(string s1, string s2) strcat = #115;
+string(string s, float start, float length) substring = #116;
+vector(string s) stov = #117;
+//string(string s) strzone = #118;	// moved to defs
+//void(string s) strunzone = #119; 	/// 
+float FILE_READ = 0;
+float FILE_APPEND = 1;
+float FILE_WRITE = 2;
+
+//float Ranks_Updated;		// moved to defs
+
+////	Player Ranks	////
+// RANK_NUMBER =	How many frags you need (maybe change this to a "points" system?)
+#define RANK_ONE		100
+#define RANK_TWO	250
+#define RANK_THREE	500
+#define RANK_FOUR	1000
+#define RANK_FIVE	1500
+#define RANK_SIX		2150
+
+// Called at player join -- this will create the rank file if there is not already one
+void (entity rank_ent) Rank_FindStats =
+{
+	local string rank;
+	local string frgs;
+	local string fers;
+	local string dths;
+	local string caps;
+
+	local float file;
+	local string lin;
+	local string h;
+	local string filename;
+
+	if (!rank_ent.rank_name || rank_ent.rank_name == "")
+		return;
+
+	filename = strcat(rank_ent.rank_name,".txt");
+	filename = strzone(filename);
+
+	file = fopen(filename, FILE_READ);
+	if (file == -1)	// file not found -- lets make the player a new one!
+	{
+		fclose(file);
+
+		rank_ent.global_rank = 0;
+		rank_ent.global_frags = 0;
+		rank_ent.global_fers = 0;
+		rank_ent.global_dths = 0;
+		rank_ent.global_caps = 0;
+
+//		bprint(2,"gets this far\n");
+
+		file = fopen(filename, FILE_WRITE);
+		fputs(file, "Rankings for player");
+		fputs(file, "\n");
+
+		h = ftos(0);
+		fputs(file, h);
+		fputs(file, "\n");
+		h = ftos(0);
+		fputs(file, h);
+		fputs(file, "\n");
+		h = ftos(0);
+		fputs(file, h);
+		fputs(file, "\n");
+		h = ftos(0);
+		fputs(file, h);
+		fputs(file, "\n");
+		h = ftos(0);
+		fputs(file, h);
+		fputs(file, "\n");
+		fclose(file);
+	}
+	else
+	{
+		fclose(file);
+		file = fopen(filename, FILE_READ);
+		lin = fgets(file);	// This is the comment, skip it
+
+		lin = fgets(file);	// this is the rank
+		lin = strzone(lin);
+		rank = lin;
+		rank = strzone(rank);
+		strunzone(lin);
+
+		lin = fgets(file);	// this is the frag count
+		lin = strzone(lin);
+		frgs = lin;
+		frgs = strzone(frgs);
+		strunzone(lin);
+
+		lin = fgets(file);	// this is the fer count
+		lin = strzone(lin);
+		fers = lin;
+		fers = strzone(fers);
+		strunzone(lin);
+
+		lin = fgets(file);	// this is the death count
+		lin = strzone(lin);
+		dths = lin;
+		dths = strzone(dths);
+		strunzone(lin);
+
+		lin = fgets(file);	// this is for flag caps
+		lin = strzone(lin);
+		caps = lin;
+		caps = strzone(caps);
+		strunzone(lin);
+
+		fclose(file);
+
+		rank_ent.global_rank = stof(rank);
+		rank_ent.global_frags = stof(frgs);
+		rank_ent.global_fers = stof(fers);
+		rank_ent.global_dths = stof(dths);
+		rank_ent.global_caps = stof(caps);
+
+		strunzone(rank);
+		strunzone(frgs);
+		strunzone(fers);
+		strunzone(dths);
+		strunzone(caps);
+	}
+	strunzone(filename);
+};
+
+void (entity rank_ent) Rank_UpdateStats =
+{
+	local float file;
+	local string h;
+
+	local string rankname;
+	rankname = strcat(rank_ent.rank_name,".txt");
+	rankname = strzone(rankname);
+
+	file = fopen(rankname, FILE_WRITE);
+	fputs(file, strcat("Rankings for: ",rank_ent.rank_name," Rank -- Frags -- Fers -- Deaths -- Caps :\n"));
+
+	h = ftos(rank_ent.global_rank);
+	h = strzone(h);
+	fputs(file, h);
+	fputs(file, "\n");
+	strunzone(h);
+
+	h = ftos(rank_ent.global_frags);
+	h = strzone(h);
+	fputs(file, h);
+	fputs(file, "\n");
+	strunzone(h);
+
+	h = ftos(rank_ent.global_fers);
+	h = strzone(h);
+	fputs(file, h);
+	fputs(file, "\n");
+	strunzone(h);
+
+	h = ftos(rank_ent.global_dths);
+	h = strzone(h);
+	fputs(file, h);
+	fputs(file, "\n");
+	strunzone(h);
+
+	h = ftos(rank_ent.global_caps);
+	h = strzone(h);
+	fputs(file, h);
+	fputs(file, "\n");
+	strunzone(h);
+
+	fclose(file);
+	strunzone(rankname);
+//	strunzone(h);
+};
+
+// The following updates the stats for all players on the map; This is only allowed once per map
+// and is called at intermission or votemap win time -- if a vote fails with "map not found" this function is
+// allowed to execute again.
+void () Rank_UpdateStatsGlobal =
+{
+	if (Ranks_Updated == 1)
+		return;
+	Ranks_Updated = 1;
+
+	local entity head;
+	head = nextent(world);
+	while (head != world)
+	{
+		if (head.classname == "player") { Rank_UpdateStats(head); }
+		head = nextent(head); 
+	}
+};
+
+void (entity plyr) Rank_PrintStats =
+{
+	sprint(self, 2,"Rank: ");
+	sprint(self, 2, ftos(plyr.global_rank));
+	sprint(self, 2," Frags: ");
+	sprint(self, 2, ftos(plyr.global_frags));
+	sprint(self, 2," Fers: ");
+	sprint(self, 2, ftos(plyr.global_fers));
+	sprint(self, 2," Deaths: ");
+	sprint(self, 2, ftos(plyr.global_dths));
+	sprint(self, 2," Caps: ");
+	sprint(self, 2, ftos(plyr.global_caps));
+	sprint(self, 2, "\n");
+}
+
+// called from impulse 69
+void () Rank_ShowStats =
+{
+	sprint(self, 2, "Your ranks:\n");
+	Rank_PrintStats(self);
+};
+
+void (entity rank_ent, float addscore) Rank_AddRank =
+{
+	rank_ent.global_rank = rank_ent.global_rank + addscore;
+
+	bprint(2, strcat(rank_ent.rank_name," has earned rank ",ftos(rank_ent.global_rank),"!\n"));
+
+	Rank_UpdateStats(rank_ent);
+}
+
+void (entity rank_ent) Rank_CheckForIncrease =
+{
+	// Check to see if frags and caps add up for a new rank
+	if (rank_ent.global_rank == 0 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_ONE)
+		Rank_AddRank(rank_ent, 1);
+	else if (rank_ent.global_rank == 1 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_TWO)
+		Rank_AddRank(rank_ent, 1);
+	else if (rank_ent.global_rank == 2 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_THREE)
+		Rank_AddRank(rank_ent, 1);
+	else if (rank_ent.global_rank == 3 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_FOUR)
+		Rank_AddRank(rank_ent, 1);
+	else if (rank_ent.global_rank == 3 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_FIVE)
+		Rank_AddRank(rank_ent, 1);
+	else if (rank_ent.global_rank == 3 && (rank_ent.global_frags + (rank_ent.global_caps * 10)) >= #RANK_SIX)
+		Rank_AddRank(rank_ent, 1);
+};
+
+void (entity rank_ent, float addscore) Rank_AddFrags =
+{
+	rank_ent.global_frags = rank_ent.global_frags + addscore;
+	Rank_CheckForIncrease(rank_ent);
+}
+void (entity rank_ent, float addscore) Rank_AddFers =
+{
+	rank_ent.global_fers = rank_ent.global_fers + addscore;
+}
+void (entity rank_ent, float addscore) Rank_AddDeaths =
+{
+	rank_ent.global_dths = rank_ent.global_dths + addscore;
+}
+void (entity rank_ent, float addscore) Rank_AddCaps =
+{
+	rank_ent.global_caps = rank_ent.global_caps + addscore;
+	Rank_CheckForIncrease(rank_ent);
+}
+
+// This is a temporary function
+void (entity plyr, float addfrags) Rank_FragIncrease =
+{
+	//bprint(2,"GOING\n");
+	local float file;
+	local float flt;
+	local string h;
+	local string lin;
+	local string lin2;
+	local string frgs;
+
+	file = fopen(strcat(self.rank_name,".txt"), FILE_READ);
+	if (file == -1)	// file not found -- lets make the player a new one!
+	{
+		bprint(2," NOT FOUND \n");
+		file = fopen(strcat(self.rank_name,".txt"), FILE_WRITE);
+		fputs(file, strcat("Rankings for: ",self.rank_name," Rank -- Frags -- fers -- deaths :\n"));
+		h = ftos(addfrags);
+		fputs(file, h);
+		fputs(file, "\n");
+		fclose(file);
+	}
+	else
+	{
+		bprint(2,"FOUND \n");
+		file = fopen(strcat(self.rank_name,".txt"), FILE_READ);
+		lin = fgets(file);	// This is the comment, skip it
+		lin = fgets(file);	// this is the rank
+		lin = strzone(lin);
+		frgs = lin;
+		strunzone(lin);
+		fclose(file);
+
+		file = fopen(strcat(self.rank_name,".txt"), FILE_WRITE);
+		fputs(file, strcat("Rankings for: ",self.rank_name," Rank -- Frags -- fers -- deaths :\n"));
+		flt = stof(frgs) + addfrags;
+		lin2 = ftos (flt);
+		fputs(file, lin2);
+		fputs(file, "\n");
+		fclose(file);
+	}
+/*
+	file = fopen("ranks.txt", FILE_READ);	// First lets check if the player has stats already..
+	h = fgets(file);
+	looptill == h;
+	while (looptill != "")
+	{
+		if (h == self.rank_name)	// OK we found the player!
+		{
+			looptill = "";
+		}
+		else
+		{
+			h = fgets(file);
+		}
+	}
+
+
+	file = fopen("ranks.txt", FILE_APPEND);
+
+	fputs(file, strcat("// Rankings for: ",self.rank_name,"\n"));
+
+	h = ftos(addfrags);
+
+	fputs(file, h);
+
+	fputs(file, "\n");
+
+	fclose(file);*/
+};
+
+void (entity plyr) Rank_PrintRank =
+{
+	if (plyr.classname != "player")
+	{
+		bprint(2, "Tried to print ranks of non-player -- FIXME\n");
+		return;
+	}
+	sprint(self, 2, plyr.rank_name);
+	sprint(self, 2, " (rank: ",ftos(plyr.global_rank),")\n");
+};
+#endif

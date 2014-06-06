@@ -1,0 +1,560 @@
+// Functions inside this file
+// Concussion Grenade Functions
+void() ConcussionGrenadeTouch;
+void() ConcussionGrenadeExplode;
+void() ConcussionGrenadeTimer;
+// Scanner Functions
+void(float scanrange) TeamFortress_Scan;
+//void(entity inflictor, entity attacker, float bounce, entity ignore) T_RadiusBounce;
+void (entity _p_9676, entity _p_9677, float _p_9678, entity _p_9679, float _p_9680) T_RadiusBounce;
+entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusScan;
+
+
+void() FlashGrenadeTouch = 
+{
+	sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	if (self.velocity == '0 0 0')
+	{
+		self.avelocity = '0 0 0';
+	}
+};
+
+void () FlashTimer =
+{
+	local entity te;
+	local string st;
+
+	te = self.owner;
+	te.FlashTime = (te.FlashTime - 0.100000);
+	if ((te.FlashTime < 0.000000))
+	{
+		te.FlashTime = 0.000000;
+		stuffcmd (te, "v_cshift 0\n");
+		remove (self);
+		return;
+	}
+	if ((te.FlashTime < 1.700000))
+	{
+		st = ftos ((te.FlashTime * 150.000000));
+		stuffcmd (te, "v_cshift ");
+		stuffcmd (te, st);
+		stuffcmd (te, " ");
+		stuffcmd (te, st);
+		stuffcmd (te, " ");
+		stuffcmd (te, st);
+		stuffcmd (te, " ");
+		stuffcmd (te, st);
+		stuffcmd (te, "\n");
+	}
+	if ((te.FlashTime >= 1.700000))
+	{
+		stuffcmd (te, "v_cshift 255 255 255 255\n");
+	}
+	if (((te.client != "zquake") && (te.client != "fuhquake")))
+	{
+		stuffcmd (te, "gl_polyblend 1\n");
+	}
+	if ((te.client == "moreqw"))
+	{
+		stuffcmd (te, "gl_cshiftpercent 100\n");
+	}
+	self.nextthink = (time + 0.100000);
+};
+
+void() FlashGrenadeExplode = 
+{
+	local entity te;
+	self.effects = self.effects | 4;
+	WriteByte(4, 23);
+	WriteByte(4, 4);
+	WriteCoord(4, self.origin_x);
+	WriteCoord(4, self.origin_y);
+	WriteCoord(4, self.origin_z);
+	multicast(self.origin, TF_FLARE_OFF);
+	te = findradius(self.origin, 200);
+	while (te)
+	{
+		if (te.classname == "player" && te.team_no != self.owner.team_no)
+		{
+			deathmsg = 35;
+			TF_T_Damage(te, self, self.owner, 60, TF_FLARE_LIT, 16);
+			if (te.health > TF_FLARE_LIT)
+			{
+				if (te.FlashTime == TF_FLARE_LIT)
+				{
+					newmis = spawn ();
+					newmis.classname = "timer";
+					newmis.netname = "flashtimer";
+					newmis.team_no = self.owner.team_no;
+					newmis.owner = te;
+					newmis.think = FlashTimer;
+					newmis.nextthink = (time + 0.100000);
+				}
+//				te.FlashTime = 2.500000; //changed to 3 seconds
+				te.FlashTime = 3.000000;
+				if (((te.client != "zquake") && (te.client != "fuhquake")))
+				{
+					stuffcmd (te, "gl_polyblend 1\ngl_cshiftpercent 100\n");
+				}
+				stuffcmd (te, "v_cshift 255 255 255 255\n");
+			}
+		}
+		te = te.chain;
+	}
+	BecomeExplosion ();
+	self.owner.active_grenades_1 = (self.owner.active_grenades_1 - 1.000000);
+	dremove (self);
+};
+
+
+void() ConcussionGrenadeTouch = 
+{
+	sound(self, TF_FLARE_OFF, "weapons/bounce.wav", TF_FLARE_OFF, TF_FLARE_OFF);
+	if (self.velocity == '0 0 0')
+	{
+		self.avelocity = '0 0 0';
+	}
+};
+
+void () ConcussionGrenadeExplode =
+{
+
+	T_RadiusBounce (self, self.owner, 240.000000, world, 100.000000);
+	WriteByte (4.000000, 23.000000);
+	WriteByte (4.000000, 3.000000);
+	WriteCoord (4.000000, self.origin_x);
+	WriteCoord (4.000000, self.origin_y);
+	WriteCoord (4.000000, self.origin_z);
+	BecomeExplosion ();
+	multicast (self.origin, 1.000000);
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	dremove (self);
+};
+
+// new scout and medic conc timer code begin
+void () ConcussionGrenadeTimer =
+{
+	if (!oldconc)
+	{
+	local string _l_9623;
+	local float _l_9624;
+
+	self.cnt = (self.cnt + 0.200000);
+	if (((self.owner.client != "zquake") && (self.owner.client != "fuhquake")))
+	{
+		_l_9623 = ftos (self.health);
+		stuffcmd (self.owner, "v_idlescale ");
+		stuffcmd (self.owner, _l_9623);
+		stuffcmd (self.owner, "\n");
+	}
+	_l_9624 = rint ((self.cnt * 10));
+	if (((((((((_l_9624 == 50) || (_l_9624 == 100)) || (_l_9624 == 150)) || (_l_9624 == 200)) || (_l_9624 == 250)) || (_l_9624 == 300)) || (_l_9624 == 350)) || (_l_9624 == 400)))
+	{
+		if ((self.owner.invincible_finished > time))
+		{
+			stuffcmd (self.owner, "v_idlescale 0\n");
+			dremove (self);
+			return;
+		}
+		newmis = spawn ();
+		setmodel (newmis, "progs/s_bubble.spr");
+		setorigin (newmis, self.owner.origin);
+		newmis.movetype = 8;
+		newmis.solid = 0;
+		newmis.velocity = '0.000000 0.000000 15.000000';
+		newmis.nextthink = (time + 0.500000);
+		newmis.think = bubble_bob;
+		newmis.touch = bubble_remove;
+		newmis.classname = "bubble";
+		newmis.frame = 0;
+		newmis.cnt = 0;
+		setsize (newmis, '-8.000000 -8.000000 -8.000000', '8.000000 8.000000 8.000000');
+		self.health = (self.health - 20);
+		if ((self.owner.playerclass == 5))
+		{
+			self.health = (self.health - 20);
+		}
+		if ((self.health < 0))
+		{
+			self.health = 0;
+		}
+		self.nextthink = (time + 5);
+		_l_9623 = ftos (self.health);
+		stuffcmd (self.owner, "v_iroll_cycle 0.5\n");
+		stuffcmd (self.owner, "v_ipitch_cycle 1\n");
+		stuffcmd (self.owner, "v_iyaw_cycle 2\n");
+		stuffcmd (self.owner, "v_iroll_level 0.1\n");
+		stuffcmd (self.owner, "v_ipitch_level 0.3\n");
+		stuffcmd (self.owner, "v_iyaw_level 0.3\n");
+		stuffcmd (self.owner, "v_idlescale ");
+		stuffcmd (self.owner, _l_9623);
+		stuffcmd (self.owner, "\n");
+		if ((self.health == 0))
+		{
+			dremove (self);
+		}
+	}
+	self.nextthink = (time + 0.200000);
+	}
+	else
+	{
+    local vector src;
+    local float pos;
+    local float concadjust;
+    local float stumble;
+
+    if (self.owner.invincible_finished > time) {
+	sprint (self.owner, 2, "Your head feels better now.\n");
+	self.owner.fixangle = 0;
+	dremove (self);
+	return;
+    }
+    if ((self.health == 200) || (self.health == 400) || (self.health == 600)
+	|| (self.health == 800) || (self.health == 1000)) {
+	newmis = spawn ();
+	setmodel (newmis, "progs/s_bubble.spr");
+	setorigin (newmis, self.owner.origin);
+	newmis.movetype = 8;
+	newmis.solid = 0;
+	newmis.velocity = '0 0 15';
+	newmis.nextthink = time + 0.5;
+	newmis.think = bubble_bob;
+	newmis.touch = bubble_remove;
+	newmis.classname = "bubble";
+	newmis.frame = 0;
+	newmis.cnt = 0;
+	setsize (newmis, '-8 -8 -8', '8 8 8');
+    }
+    self.health = self.health - 10;
+    if (self.owner.playerclass == 5)
+	self.health = self.health - 10;
+
+    if (self.health < 0)
+	self.health = 0;
+
+    concadjust = 1;
+    self.nextthink = time + 0.25 * concadjust;
+
+    if (concadjust > 1)
+	self.health = self.health - concadjust;
+
+    pos = pointcontents (self.owner.origin);
+    src_x = self.owner.origin_x + self.owner.maxs_x + 2;
+    src_y = self.owner.origin_y + self.owner.maxs_y + 2;
+    src_z = self.owner.origin_z;
+    pos = pointcontents (src);
+
+    if ((self.owner.flags & 512) || (self.owner.flags & 16)) {
+	if (!((self.owner.tfstate & 65536)
+	      && (self.owner.current_weapon == 32768))) {
+	    if (self.owner.is_feigning == 0) {
+		makevectors (self.owner.v_angle);
+		stumble = crandom () * self.health;
+		if (!((pos == -2) && (self.owner.velocity == '0 0 0'))) {
+		    if ((crandom () < 0)) {
+			self.owner.velocity_x = self.owner.velocity_y + stumble;
+			self.owner.velocity_y = self.owner.velocity_x + stumble;
+		    } else {
+			self.owner.velocity_x = -1 * self.owner.velocity_y + stumble;
+			self.owner.velocity_y = -1 * self.owner.velocity_x + stumble;
+		    }
+		}
+	    }
+	}
+    }
+    if (self.health <= 0) {
+	sprint (self.owner, 2, "Your head feels better now.\n");
+	dremove (self);
+    }
+	}
+};
+
+// new scout and medic conc timer code end
+
+void(float scanrange) TeamFortress_Scan = 
+{
+	local entity list;
+	local float scen;
+	local float scfr;
+	local vector lightningvec;
+	local float enemy_detected;
+	local float any_detected;
+	self.impulse = TF_FLARE_LIT;
+	self.last_impulse = TF_FLARE_LIT;
+	if (self.classname == "player")
+	{
+		if (!(self.tf_items & TF_FLARE_OFF))
+		{
+			return;
+		}
+		if (scanrange == 160)
+		{
+			if (self.tf_items_flags & TF_FLARE_OFF)
+			{
+				sprint(self, 2, "Enemy Scanning disabled.\n");
+				self.tf_items_flags = self.tf_items_flags - TF_FLARE_OFF;
+				return;
+			}
+			sprint(self, 2, "Enemy Scanning enabled.\n");
+			self.tf_items_flags = self.tf_items_flags | TF_FLARE_OFF;
+			return;
+		}
+		if (scanrange == 161)
+		{
+			if (self.tf_items_flags & 2)
+			{
+				sprint(self, 2, "Friendly Scanning disabled.\n");
+				self.tf_items_flags = self.tf_items_flags - 2;
+				return;
+			}
+			sprint(self, 2, "Friendly Scanning enabled.\n");
+			self.tf_items_flags = self.tf_items_flags | 2;
+			return;
+		}
+		scen = TF_FLARE_LIT;
+		scfr = TF_FLARE_LIT;
+		if (self.tf_items_flags & TF_FLARE_OFF)
+		{
+			scen = TF_FLARE_OFF;
+		}
+		if (self.tf_items_flags & 2)
+		{
+			scfr = TF_FLARE_OFF;
+		}
+		if (scen == TF_FLARE_LIT && scfr == TF_FLARE_LIT)
+		{
+			sprint(self, 2, "All scanner functions are disabled.\n");
+			return;
+		}
+		scanrange = scanrange * 100;
+		list = T_RadiusScan(self, scanrange, scen, scfr);
+	}
+	scen = TF_FLARE_LIT;
+	scfr = TF_FLARE_LIT;
+	makevectors(self.v_angle);
+	while (list)
+	{
+		any_detected = TF_FLARE_OFF;
+		if (self.tf_items_flags & 4)
+		{
+			if (vlen(list.velocity) > 50)
+			{
+				if (list.team_no > TF_FLARE_LIT && self.team_no > TF_FLARE_LIT && list.team_no == self.team_no)
+				{
+					scfr = scfr + TF_FLARE_OFF;
+					enemy_detected = TF_FLARE_LIT;
+				}
+				else
+				{
+					scen = scen + TF_FLARE_OFF;
+					enemy_detected = TF_FLARE_OFF;
+				}
+			}
+			else
+			{
+				any_detected = TF_FLARE_LIT;
+			}
+		}
+		else
+		{
+			if (list.team_no > TF_FLARE_LIT && self.team_no > TF_FLARE_LIT && list.team_no == self.team_no)
+			{
+				scfr = scfr + TF_FLARE_OFF;
+				enemy_detected = TF_FLARE_LIT;
+			}
+			else
+			{
+				scen = scen + TF_FLARE_OFF;
+				enemy_detected = TF_FLARE_OFF;
+			}
+		}
+		if (any_detected)
+		{
+			lightningvec = normalize(list.origin - self.origin);
+			lightningvec = lightningvec * (vlen(list.origin - self.origin) / 5);
+			lightningvec = lightningvec + self.origin;
+			msg_entity = self;
+			WriteByte(TF_FLARE_OFF, 23);
+			WriteByte(TF_FLARE_OFF, 6);
+			WriteEntity(TF_FLARE_OFF, self);
+			WriteCoord(TF_FLARE_OFF, self.origin_x);
+			WriteCoord(TF_FLARE_OFF, self.origin_y);
+			WriteCoord(TF_FLARE_OFF, self.origin_z + 8);
+			WriteCoord(TF_FLARE_OFF, lightningvec_x);
+			WriteCoord(TF_FLARE_OFF, lightningvec_y);
+			WriteCoord(TF_FLARE_OFF, lightningvec_z + 8);
+		}
+		list = list.linked_list;
+	}
+	if (scen == TF_FLARE_LIT && scfr == TF_FLARE_LIT)
+	{
+		sprint(self, 2, "No blips.\n");
+		return;
+	}
+	W_SetCurrentAmmo();
+	return;
+};
+
+void (entity _p_9676, entity _p_9677, float _p_9678, entity _p_9679, float _p_9680) T_RadiusBounce =
+{
+	local float _l_9681;
+	local entity _l_9682;
+	local entity _l_9683;
+	local entity _l_9684;
+	local vector _l_9685;
+
+	_l_9682 = findradius (_p_9676.origin, (_p_9678 + 40));
+	while (_l_9682)
+	{
+		if ((_l_9682 != _p_9679))
+		{
+			if (_l_9682.takedamage)
+			{
+				_l_9685 = _l_9682.origin + ((_l_9682.mins + _l_9682.maxs) * 0.500000);
+				_l_9681 = 0.500000 * vlen ((_l_9685 - _p_9676.origin));
+				if ((_l_9681 < 0))
+				{
+					_l_9681 = 0;
+				}
+				_l_9681 = _p_9678 - _l_9681;
+				if ((((_l_9682.classname != "building_sentrygun") && (_l_9682.classname != "building_sentrygun_base")) && (_l_9681 > 0)))
+				{
+					if (((_l_9682.classname == "player") && (_l_9682.bugger > 0)))
+					{
+						return;
+					}
+					if ((_l_9682.classname == "player_prop"))
+					{
+						_l_9684 = self;
+						self = _l_9682.owner;
+						LookThroughCam ();
+						self = _l_9684;
+						_l_9682 = _l_9682.owner;
+					}
+					_l_9682.velocity = (_l_9685 - _p_9676.origin);
+					_l_9682.velocity = (_l_9682.velocity * (_l_9681 / 20));
+					if ((_l_9682.classname != "player"))
+					{
+						if ((_l_9682.flags & 512))
+						{
+							_l_9682.flags = (_l_9682.flags - 512);
+						}
+					}
+					else
+					{
+						_l_9683 = find (world, classname, "timer");
+						while ((((_l_9683.owner != _l_9682) || (_l_9683.think != ConcussionGrenadeTimer)) && (_l_9683 != world)))
+						{
+							_l_9683 = find (_l_9683, classname, "timer");
+						}
+						if (((_l_9683 != world) && (_l_9683.playerclass != 6)))
+						{
+							stuffcmd (_l_9682, "v_iroll_cycle 0.5\n");
+							stuffcmd (_l_9682, "v_ipitch_cycle 1\n");
+							stuffcmd (_l_9682, "v_iyaw_cycle 2\n");
+							stuffcmd (self.owner, "v_iroll_level 0.1\n");
+							stuffcmd (self.owner, "v_ipitch_level 0.3\n");
+							stuffcmd (self.owner, "v_iyaw_level 0.3\n");
+							stuffcmd (_l_9682, "v_idlescale ");
+							stuffcmd (_l_9682, ftos (_p_9680));
+							stuffcmd (_l_9682, "\n");
+							_l_9683.health = _p_9680;
+							_l_9683.nextthink = (time + 0.200000);
+						}
+						else
+						{
+							if (((_l_9682.team_no != _p_9677.team_no) || (_l_9682 == _p_9677)))
+							{
+								if (oldconc)
+								{
+									local entity te;
+									te = spawn ();
+									te.nextthink = time + 0.25;
+									te.think = ConcussionGrenadeTimer;
+									te.team_no = _p_9677.team_no;
+									te.classname = "timer";
+									te.owner = _l_9682;
+									te.health = 750;
+								}
+								else
+								{
+								stuffcmd (_l_9682, "v_iroll_cycle 0.5\n");
+								stuffcmd (_l_9682, "v_ipitch_cycle 1\n");
+								stuffcmd (_l_9682, "v_iyaw_cycle 2\n");
+								stuffcmd (self.owner, "v_iroll_level 0.1\n");
+								stuffcmd (self.owner, "v_ipitch_level 0.3\n");
+								stuffcmd (self.owner, "v_iyaw_level 0.3\n");
+								stuffcmd (_l_9682, "v_idlescale ");
+								stuffcmd (_l_9682, ftos (_p_9680));
+								stuffcmd (_l_9682, "\n");
+								stuffcmd (_l_9682, "bf\n");
+								_l_9683 = spawn ();
+								_l_9683.nextthink = (time + 0.200000);
+								_l_9683.think = ConcussionGrenadeTimer;
+								_l_9683.team_no = _p_9677.team_no;
+								_l_9683.classname = "timer";
+								_l_9683.owner = _l_9682;
+								_l_9683.health = _p_9680;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		_l_9682 = _l_9682.chain;
+	}
+};
+
+entity(entity scanner, float scanrange, float enemies, float friends) T_RadiusScan = 
+{
+	local entity head;
+	local entity list_head;
+	local entity list;
+	local float gotatarget;
+	head = findradius(scanner.origin, scanrange + 40);
+	while (head)
+	{
+		gotatarget = TF_FLARE_LIT;
+		if (head != scanner)
+		{
+			if (head.takedamage)
+			{
+				if (head.classname == "player" && (friends || enemies))
+				{
+					if (teamplay)
+					{
+						if (friends && head.team_no > TF_FLARE_LIT && scanner.team_no > TF_FLARE_LIT && head.team_no == scanner.team_no)
+						{
+							gotatarget = TF_FLARE_OFF;
+						}
+						if (enemies && head.team_no > TF_FLARE_LIT && scanner.team_no > TF_FLARE_LIT && head.team_no != scanner.team_no)
+						{
+							gotatarget = TF_FLARE_OFF;
+						}
+					}
+					else
+					{
+						gotatarget = TF_FLARE_OFF;
+					}
+				}
+			}
+		}
+		if (gotatarget)
+		{
+			if (list)
+			{
+				list.linked_list = head;
+				list = list.linked_list;
+			}
+			else
+			{
+				list_head = head;
+				list = head;
+			}
+		}
+		head = head.chain;
+	}
+	return list_head;
+};
+
