@@ -1,8 +1,42 @@
 *============================================================================*
-* TeamFortress v2.93.2	                                        versions.txt *
+* TeamFortress v2.93.3	                                        versions.txt *
 *============================================================================*
 
 Changelog:
+
+--------------------------------------------
+Version 2.93.3					  06/20/2014
+--------------------------------------------
+
+Changes:
+	- The following serverinfo values now accept both "on" and "1" for convenience: (Up2)
+		bd/birthday
+		lg/locked_game
+		a/autoteam
+		t/teamfrags
+		fts/fullteamscore
+		og/old_grenades/old_grens
+		ncd/newcountdown
+		ec/exec_class
+		em/exec_map
+		exec_map_cfgs
+		flag_emu
+		ws/use_standard
+	- Serverinfo shorthand for "instantgrenades" is now "ig", for "newcountdown" is "ncd" (Up2)
+	- Displaying the number of detpacks the demoman has remaining in the sbar has been removed (too much space) (Up2)
+	- Status bar now displays grenades 1/2 as "G: x/y" instead of "G1: x G2: y" so it's more legible (Up2)
+
+Bugs Fixed:
+	- Bugfix from tf2.9: Correctly display the winning team with less negative frags than other teams with more negative frags
+		(and 0 caps on either team) (Up2)
+	- Changeclass now works in Public mode (hifi)
+	- Time remaining reminders now work in all game modes (match/public servers) (Up2)
+	
+Known Bugs:
+	- Changeclass does not currently work during prematch
+	- Ceasefire may not work correctly since /ready system has been introduced
+	- /rpickup after the first time isn't very random
+	- Some players may have to /ready multiple times before it registers
 
 --------------------------------------------
 Version 2.93.2					  02/14/2014
@@ -25,6 +59,7 @@ Features Added:
 	- New countdown menu (similar to KTX) has been fixed. It will automatically detect if you have sbar on,
 	  and if so, turn it off during countdown and then turn it back on when countdown is over. No more flickering.
 	  Must use "serverinfo newcountdown on" at the moment to use it. (Up2/KillJoy)
+	- Grenades can now be thrown while firing a weapon. Must have serverinfo instantgrenades 1 (Basic)
 
 Changes:
 	- Status bar updated. For spies it will display "Not undercover" when not disguised. Lots of bugs fixed and
@@ -38,7 +73,7 @@ Changes:
 
 Bugs Fixed:
 	- Bugfix from tf2.9: setinfo sbs/sbr not being detected if you are a spectator. (Up2)
-	- Bugfix from tf2.9: Fixed bug where TF didn't detect a match is a draw is four teams were playing (Up2)
+	- Bugfix from tf2.9: Fixed bug where TF didn't detect whether a match is a draw if all four teams were playing (Up2)
 	- Large amounts of unused/unnecessary code removed/rewrote (Up2)
 	- Rewrote match output code for alignment bugfixes (Up2)
 
