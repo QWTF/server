@@ -12,8 +12,9 @@ void () PreMatch_Think =
 // Quick and ugly hack. Leave countdown menu off by default, have user set serverinfo newcountdown on to use it.
 
 st = infokey (world, "newcountdown");
-		if (st == string_null)
-			st = infokey (world, "ncd");
+if (st == string_null)
+		st = infokey (world, "ncd");
+
 if ((st == "on") || (st == "1")) {
 	local string countdown;
 	local string sinfo_timelimit;

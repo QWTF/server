@@ -9,20 +9,21 @@ Version 2.93.3					  06/20/2014
 --------------------------------------------
 
 Changes:
+	- Serverinfo shorthand for "instantgrenades" is now "ig", for "newcountdown" is "ncd" (Up2)
 	- The following serverinfo values now accept both "on" and "1" for convenience: (Up2)
-		bd/birthday
-		lg/locked_game
 		a/autoteam
-		t/teamfrags
-		fts/fullteamscore
-		og/old_grenades/old_grens
-		ncd/newcountdown
+		bd/birthday
 		ec/exec_class
 		em/exec_map
 		exec_map_cfgs
 		flag_emu
+		fts/fullteamscore
+		ig/instantgrenades
+		lg/locked_game
+		ncd/newcountdown
+		og/old_grenades/old_grens
+		t/teamfrags
 		ws/use_standard
-	- Serverinfo shorthand for instant grenades is now "ig", for "newcountdown" is "ncd" (Up2)
 	- Displaying the number of detpacks the demoman has remaining in the sbar has been removed (too much space) (Up2)
 	- Status bar now displays grenades 1/2 as "G: x/y" instead of "G1: x G2: y" so it's more legible (Up2)
 

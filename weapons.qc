@@ -2763,11 +2763,15 @@ void () W_WeaponFrame =
 	    }
     }
 	}
-    server_status = infokey (world, "ig"); //instant grenades, sticky grenades, lets you throwgren while attacking.
+	
+	server_status = infokey (world, "ig");
+	if (server_status == string_null)
+		server_status = infokey (world, "instantgrenades"); //instant grenades, sticky grenades, lets you throwgren while attacking.
 	if ((server_status == "1") || (server_status == "on"))
 	{
 		GrenadeImpulses();
 	}
+	
 	if (intermission_running)
 		return;
 	if (time < self.attack_finished) {
