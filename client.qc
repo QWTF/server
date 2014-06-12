@@ -494,13 +494,13 @@ void () GotoNextMap =
 
     if (nextmap != mapname) {
 	changelevel (nextmap);
-	already_chosen_map = TRUE;
+	already_chosen_map = time;
     }
 
     sl = infokey (world, mapname);
     if (sl != string_null) {
 	nextmap = sl;
-	already_chosen_map = TRUE;
+	already_chosen_map = time;
 	return;
     }
 
@@ -528,10 +528,16 @@ void () GotoNextMap =
 
 	localcmd (sl);
 	localcmd (".cfg\n");
-	already_chosen_map = TRUE;
+	already_chosen_map = time;
     }
     if (infokey (world, "n") == "0")
-	already_chosen_map = FALSE;
+	already_chosen_map = 0;
+
+	// avoid endless intermission by restarting the current map
+	if (already_chosen_map + 15 < time) {
+		changelevel(mapname);
+		already_chosen_map = time;
+	}
 };
 
 void () ExitIntermission =
