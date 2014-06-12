@@ -392,6 +392,8 @@ float deathmsg;		// Global, which is set before every T_Damage, to indicate
 			// the death message that should be used.
 
 float birthday;
+float intermission_running;
+float intermission_exittime;
 
 //============================================================================
 

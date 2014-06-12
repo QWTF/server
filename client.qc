@@ -48,8 +48,6 @@ void () CTF_FlagCheck;
 void () TeamFortress_RandomTheTeams;
 
 string nextmap;
-float intermission_running;
-float intermission_exittime;
 float hideconsoletext;
 float rpickup_votes;
 float arr_rpickup_voters[32];
@@ -669,6 +667,31 @@ void () IntermissionThink =
 	localcmd ("localinfo nmap \"\"\n");
     }
 };
+
+void () PutClientInIntermission =
+{
+	local entity pos;
+
+	pos = FindIntermission ();
+
+	if (pos) {
+		WriteByte (MSG_ONE, SVC_CDTRACK);
+		WriteByte (MSG_ONE, 3);
+
+		WriteByte (MSG_ONE, SVC_INTERMISSION);
+		WriteCoord (MSG_ONE, pos.origin_x);
+		WriteCoord (MSG_ONE, pos.origin_y);
+		WriteCoord (MSG_ONE, pos.origin_z);
+		WriteAngle (MSG_ONE, pos.mangle_x);
+		WriteAngle (MSG_ONE, pos.mangle_y);
+		WriteAngle (MSG_ONE, pos.mangle_z);
+	}
+
+	self.takedamage = DAMAGE_NO;
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+}
 
 void () execute_changelevel =
 {
@@ -1966,8 +1989,10 @@ void () ClientConnect =
     TeamFortress_ExecMapScript (self);
     self.has_disconnected = 0;
 
-    if (intermission_running)
-		GotoNextMap ();
+	if (intermission_running) {
+		PutClientInIntermission();
+		GotoNextMap();
+	}
 
     st2 = infokey (world, "apw");
     if (st2 == string_null)

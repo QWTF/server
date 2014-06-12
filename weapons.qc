@@ -2768,7 +2768,8 @@ void () W_WeaponFrame =
 	{
 		GrenadeImpulses();
 	}
-	
+	if (intermission_running)
+		return;
 	if (time < self.attack_finished) {
 		return;
     }
