@@ -22,7 +22,7 @@ Changes:
 		exec_map_cfgs
 		flag_emu
 		ws/use_standard
-	- Serverinfo shorthand for "instantgrenades" is now "ig", for "newcountdown" is "ncd" (Up2)
+	- Serverinfo shorthand for instant grenades is now "ig", for "newcountdown" is "ncd" (Up2)
 	- Displaying the number of detpacks the demoman has remaining in the sbar has been removed (too much space) (Up2)
 	- Status bar now displays grenades 1/2 as "G: x/y" instead of "G1: x G2: y" so it's more legible (Up2)
 
@@ -31,6 +31,8 @@ Bugs Fixed:
 		(and 0 caps on either team) (Up2)
 	- Changeclass now works in Public mode (hifi)
 	- Time remaining reminders now work in all game modes (match/public servers) (Up2)
+	- Removed decimal places from sentrygun ammo/health (hifi)
+	- Fix endless intermission if there is no next map (hifi)
 	
 Known Bugs:
 	- Changeclass does not currently work during prematch
