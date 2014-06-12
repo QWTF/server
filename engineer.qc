@@ -69,7 +69,7 @@ void () W_FireLaser =
     local vector vec, org;
 
     self.ammo_nails = self.ammo_nails - 1;
-    self.currentammo = self.ammo_nails - 1;
+    self.currentammo = self.ammo_nails;
 
     makevectors (self.v_angle);
     org = self.origin + v_forward * 8;

@@ -776,7 +776,7 @@ void () W_FireShotgun =
 
     KickPlayer (-2, self);
     self.ammo_shells = self.ammo_shells - 1;
-    self.currentammo = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells;
     dir = aim (self, 100000);
     deathmsg = DMSG_SHOTGUN;
     FireBullets (6, dir, '0.04 0.04 0');
@@ -794,7 +794,7 @@ void () W_FireSuperShotgun =
 
     KickPlayer (-4, self);
     self.ammo_shells = self.ammo_shells - 2;
-    self.currentammo = self.ammo_shells - 2;
+    self.currentammo = self.ammo_shells;
     dir = aim (self, 100000);
     deathmsg = DMSG_SSHOTGUN;
     FireBullets (14, dir, '0.14 0.08 0');
@@ -831,7 +831,7 @@ void () W_FireSniperRifle =
     sound (self ,CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
     KickPlayer (-2, self);
     self.ammo_shells = self.ammo_shells - 1;
-    self.currentammo = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells;
 
     makevectors (self.v_angle);
     src = self.origin + v_forward * 10;
@@ -920,7 +920,7 @@ void () W_FireAutoRifle =
 
     KickPlayer (-1, self);
     self.ammo_shells = self.ammo_shells - 1;
-    self.currentammo = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells;
     makevectors (self.v_angle);
     dir = v_forward;
     deathmsg = DMSG_AUTORIFLE;
@@ -933,7 +933,7 @@ void () W_FireAssaultCannon =
 
     KickPlayer (-4, self);
     self.ammo_shells = self.ammo_shells - 1;
-    self.currentammo = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells;
     dir = aim (self, 100000);
     deathmsg = DMSG_ASSAULTCANNON;
     FireBullets (5, dir, '0.1 0.1 0');
@@ -990,7 +990,7 @@ void () T_MissileTouch =
 void () W_FireRocket =
 {
     self.ammo_rockets = self.ammo_rockets - 1;
-    self.currentammo = self.ammo_rockets - 1;
+    self.currentammo = self.ammo_rockets;
     sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
     KickPlayer (-2, self);
 
@@ -1090,7 +1090,7 @@ void () W_FireLightning =
     KickPlayer (-2, self);
 
     self.ammo_cells = self.ammo_cells - 1;
-    self.currentammo = self.ammo_cells - 1;
+    self.currentammo = self.ammo_cells;
 
     org = self.origin + '0 0 16';
     traceline (org, org + v_forward * 600, 1, self);
@@ -1303,7 +1303,7 @@ void () W_FireGrenade =
 	server_status = infokey (world, "status");
 
 	self.ammo_rockets = self.ammo_rockets - 1;
-	self.currentammo = self.ammo_rockets - 1;
+	self.currentammo = self.ammo_rockets;
 	sound (self, 1, "weapons/grenade.wav", 1, 1);
 	KickPlayer (-2, self);
 	newmis = spawn ();
@@ -1392,7 +1392,7 @@ void () W_FireSuperSpikes =
     sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 
     self.ammo_nails = self.ammo_nails - 4;
-    self.currentammo = self.ammo_nails - 4;
+    self.currentammo = self.ammo_nails;
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16', dir);
     newmis.touch = superspike_touch;
@@ -1422,10 +1422,10 @@ void (float ox) W_FireSpikes =
     sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
     if (self.ammo_nails == 1) {
 	self.ammo_nails = self.ammo_nails - 1;
-	self.currentammo = self.ammo_nails - 1;
+	self.currentammo = self.ammo_nails;
     } else {
 	self.ammo_nails = self.ammo_nails - 2;
-	self.currentammo = self.ammo_nails - 2;
+	self.currentammo = self.ammo_nails;
     }
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16' + v_right * ox, dir);

@@ -625,7 +625,7 @@ void () W_FireFlame =
 	return;
     }
     self.ammo_cells = self.ammo_cells - 1;
-    self.currentammo = self.ammo_cells - 1;
+    self.currentammo = self.ammo_cells;
     sound (self, CHAN_AUTO, "weapons/flmfire2.wav", 1, ATTN_NORM);
     flame = spawn ();
     flame.owner = self;
@@ -695,7 +695,7 @@ void () W_FireIncendiaryCannon =
 	return;
     }
     self.ammo_rockets = self.ammo_rockets - 3;
-    self.currentammo = self.ammo_rockets - 3;
+    self.currentammo = self.ammo_rockets;
     sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
     KickPlayer (-3, self);
     newmis = spawn ();

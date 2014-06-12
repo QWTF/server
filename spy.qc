@@ -751,7 +751,7 @@ void () HallucinationTimer =
 void () W_FireTranq =
 {
     self.ammo_shells = self.ammo_shells - 1;
-    self.currentammo = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells;
     KickPlayer (-2, self);
     newmis = spawn ();
     newmis.owner = self;

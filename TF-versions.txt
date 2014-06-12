@@ -29,11 +29,12 @@ Changes:
 Bugs Fixed:
 	- Bugfix from tf2.9: Correctly display the winning team with less negative frags than other teams with more negative frags
 		(and 0 caps on either team) (Up2)
+	- Bugfix from tf2.9: Removed decimal places from sentrygun ammo/health (hifi)
+	- Bugfix from tf2.9: Fix endless intermission if there is no next map (hifi)
+	- Bugfix from tf2.9: Don't allow spawning during intermission (hifi)
+	- Bugfix from tf2.9: Fix broken HUD ammo display (Empezar)
 	- Changeclass now works in Public mode (hifi)
 	- Time remaining reminders now work in all game modes (match/public servers) (Up2)
-	- Removed decimal places from sentrygun ammo/health (hifi)
-	- Fix endless intermission if there is no next map (hifi)
-	- Don't allow spawning during intermission (hifi)
 	
 Known Bugs:
 	- Changeclass does not currently work during prematch
