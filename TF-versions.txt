@@ -41,7 +41,7 @@ Known Bugs:
 	- Changeclass does not currently work during prematch
 	- Ceasefire may not work correctly since /ready system has been introduced
 	- /rpickup after the first time isn't very random
-	- Some players may have to /ready multiple times before it registers
+	- Some players may have to /ready multiple times before it registers, doesn't keep correct count
 
 --------------------------------------------
 Version 2.93.2					  02/14/2014
