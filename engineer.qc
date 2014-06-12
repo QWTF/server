@@ -645,14 +645,14 @@ void (entity gun) Engineer_UseSentryGun =
     local string st;
 
     sprint (self, PRINT_HIGH, "Level ");
-    st = ftos (gun.weapon);
+    st = ftos (floor(gun.weapon));
     sprint (self, PRINT_HIGH, st, " Sentry Gun has ");
-    st = ftos (gun.health);
+    st = ftos (floor(gun.health));
     sprint (self, PRINT_HIGH, st, " health, ");
-    st = ftos (gun.ammo_shells);
+    st = ftos (floor(gun.ammo_shells));
     sprint (self, PRINT_HIGH, st, " shells");
     if (gun.weapon == 3) {
-		st = ftos (gun.ammo_rockets);
+		st = ftos (floor(gun.ammo_rockets));
 		sprint (self, PRINT_HIGH, ", ", st, " rockets");
     }
     sprint (self, PRINT_HIGH, "\n");
