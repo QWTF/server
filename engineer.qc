@@ -605,6 +605,7 @@ void () Dispenser_Explode =
 
 void () Dispenser_Die =
 {
+	sprint (self.real_owner, PRINT_HIGH, "Your dispenser was destroyed.\n");
     self.real_owner.has_dispenser = 0;
     self.think = Dispenser_Explode;
     self.nextthink = time + 0.1;
