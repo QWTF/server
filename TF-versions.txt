@@ -35,6 +35,7 @@ Bugs Fixed:
 	- Bugfix from tf2.9: Don't allow spawning during intermission (hifi)
 	- Bugfix from tf2.9: Fix broken HUD ammo display (Empezar)
 	- Bugfix from tf2.9: When the dispenser is destroyed, the Engineer now receives a message (similar to a destroyed sg) (Up2)
+	- Bugfix from tf2.9: We no longer spam the "cannot fire the assault cannon without .. feet on ground", it's 1x3 seconds (Up2)
 	- Changeclass now works in Public mode (hifi)
 	- Time remaining reminders now work in all game modes (match/public servers) (Up2)
 	

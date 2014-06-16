@@ -2830,8 +2830,10 @@ void () W_WeaponFrame =
 				SuperDamageSound ();
 				W_Attack ();
 			}
-			else {
-				sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
+			
+			else if (anti_spam_timer_hwguy_cannon < time) {
+			sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
+			anti_spam_timer_hwguy_cannon = time + 3; // We don't need to spam this message
 			}
 		}
 		else {

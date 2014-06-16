@@ -1528,16 +1528,21 @@ void () PlayerJump =
     sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
 
     if (self.fire_held_down && (self.current_weapon == WEAP_ASSAULT_CANNON)) {
-	stuffcmd (self, "v_idlescale 0\n");
-	sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
-	self.tfstate = self.tfstate | TFSTATE_AIMING;
-	TeamFortress_SetSpeed (self);
-	self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
-	TeamFortress_SetSpeed (self);
-	self.weaponframe = 0;
-	self.count = 1;
-	self.heat = 0;
-	player_assaultcannondown1 ();
+		stuffcmd (self, "v_idlescale 0\n");
+		
+		if (anti_spam_timer_hwguy_cannon < time) {
+			sprint (self, PRINT_MEDIUM, "You cannot fire the assault cannon without your feet on the ground...\n");
+			anti_spam_timer_hwguy_cannon = time + 3; // We don't need to spam this message
+		}
+		
+		self.tfstate = self.tfstate | TFSTATE_AIMING;
+		TeamFortress_SetSpeed (self);
+		self.tfstate = self.tfstate - (self.tfstate & TFSTATE_CANT_MOVE);
+		TeamFortress_SetSpeed (self);
+		self.weaponframe = 0;
+		self.count = 1;
+		self.heat = 0;
+		player_assaultcannondown1 ();
     }
     if (old_grens != 1) {
 	te = find (world, classname, "timer");

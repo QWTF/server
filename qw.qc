@@ -59,6 +59,7 @@ float anti_spam_timer_reminder;
 float anti_spam_timer_ready;
 float anti_spam_timer_list;
 float anti_spam_timer_rpickup;
+float anti_spam_timer_hwguy_cannon;
 string is_sbar_on;
 string sbar_code_executed;
 
