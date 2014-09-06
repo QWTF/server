@@ -817,8 +817,8 @@ void (float inp) Menu_EngineerFix_Dispenser_Input =
 		self.building.health = (self.building.health + (metalcost * 5));
 	    } else {
 		if (inp == 4) {
-		    sprint (self, PRINT_HIGH, "You dismantle the Dispenser.\n");
-		    self.ammo_cells = (self.ammo_cells + (100 / 2));
+		    sprint (self, PRINT_HIGH, "You dismantled the Dispenser and got 50 cells.\n");
+		    self.ammo_cells = self.ammo_cells + 50;
 		    if (self.building.real_owner != self) {
 			sprint2 (self.building.real_owner, PRINT_HIGH,
 				 self.netname, " dismantled your Dispenser.\n");
@@ -920,8 +920,8 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 	    self.ammo_cells = self.ammo_cells - metalcost;
 	    self.building.health = self.building.health + metalcost * 5;
 	} else if (inp == 4) {
-	    sprint (self, PRINT_HIGH, "You dismantle the Sentry Gun.\n");
-	    self.ammo_cells = (self.ammo_cells + (130 / 2));
+	    sprint (self, PRINT_HIGH, "You dismantled the Sentry Gun and got 65 cells.\n");
+	    self.ammo_cells = self.ammo_cells + 65;
 	    if (self.building.real_owner != self) {
 		sprint2 (self.building.real_owner, PRINT_HIGH, self.netname, " dismantled your Sentry Gun.\n");
 		teamsprint (self.building.real_owner.team_no,
