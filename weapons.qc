@@ -2425,7 +2425,7 @@ void () DeadImpulses;
 void () GrenadeImpulses =
 {
 	server_status = infokey (world, "status");
-	if ((server_status == "Prematch") || (server_status == "Countdown") || cease_fire) {
+	if ((server_status == "Countdown") || cease_fire) {
 		return;
 	}
 	
