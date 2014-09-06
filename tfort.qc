@@ -293,63 +293,65 @@ void () TeamFortress_ChangeClass =
 	server_status = infokey (world, "status2");
 
     if (self.playerclass != 0) {
-	if ((deathmatch != 3) && (server_status == "Match"))
-	    return;
+		if ((deathmatch != 3) && (server_status == "Match"))
+			return;
 
-	if (TeamFortress_TeamIsCivilian (self.team_no)) {
-	    sprint (self, PRINT_HIGH, "You cannot change class.\n");
-	    return;
-	}
-	if (!IsLegalClass (self.impulse - 100)) {
-	    sprint (self, PRINT_HIGH, "Your team cannot play that class.\n");
-	    TeamFortress_DisplayLegalClasses ();
-	    return;
-	}
-	if ((spy_off == 1) && ((self.impulse - 100) == 8)) {
-	    sprint (self, PRINT_HIGH, "The spy class has been disabled on the server by the administrator.\n");
-	    return;
-	}
-	if (ClassIsRestricted (self.team_no, (self.impulse - 100))) {
-	    sprint (self, PRINT_HIGH, "Your team already has enough of that class.\n");
-	    return;
-	}
-	self.nextpc = self.impulse - 100;
-	sprint (self, PRINT_HIGH, "After dying, you will return as a ");
-	TeamFortress_PrintClassName (self, self.nextpc, self.tfstate & 8);
-	self.immune_to_check = time + 10;
-	return;
+		if (TeamFortress_TeamIsCivilian (self.team_no)) {
+			sprint (self, PRINT_HIGH, "You cannot change class.\n");
+			return;
+		}
+		if (!IsLegalClass (self.impulse - 100)) {
+			sprint (self, PRINT_HIGH, "Your team cannot play that class.\n");
+			TeamFortress_DisplayLegalClasses ();
+			return;
+		}
+		if ((spy_off == 1) && ((self.impulse - 100) == 8)) {
+			sprint (self, PRINT_HIGH, "The spy class has been disabled on the server by the administrator.\n");
+			return;
+		}
+		if (ClassIsRestricted (self.team_no, (self.impulse - 100))) {
+			sprint (self, PRINT_HIGH, "Your team already has enough of that class.\n");
+			return;
+		}
+		self.nextpc = self.impulse - 100;
+		sprint (self, PRINT_HIGH, "After dying, you will return as a ");
+		TeamFortress_PrintClassName (self, self.nextpc, self.tfstate & 8);
+		self.immune_to_check = time + 10;
+		return;
     }
     if (teamplay && (self.team_no == 0)) {
-	if (toggleflags & TFLAG_AUTOTEAM) {
-	    if (TeamFortress_TeamPutPlayerInTeam () == 0)
-		return;
-	} else {
-	    sprint (self, PRINT_HIGH, "You must join a team first. \n");
-	    return;
-	}
+		if (toggleflags & TFLAG_AUTOTEAM) {
+			if (TeamFortress_TeamPutPlayerInTeam () == 0)
+				return;
+		}
+		else {
+			sprint (self, PRINT_HIGH, "You must join a team first. \n");
+			return;
+		}
     }
     if (self.lives == 0) {
-	sprint (self, PRINT_HIGH, "You have no lives left.\n");
-	return;
+		sprint (self, PRINT_HIGH, "You have no lives left.\n");
+		return;
     }
     if (!IsLegalClass ((self.impulse - 100)) && (self.impulse != 1)) {
-	sprint (self, PRINT_HIGH, "You cannot play that playerclass on this map. \n");
-	TeamFortress_DisplayLegalClasses ();
-	return;
+		sprint (self, PRINT_HIGH, "You cannot play that playerclass on this map. \n");
+		TeamFortress_DisplayLegalClasses ();
+		return;
     }
     if ((spy_off == 1) && ((self.impulse - 100) == 8)) {
-	sprint (self, PRINT_HIGH, "The spy class has been disabled on the server by the administrator.\n");
-	return;
+		sprint (self, PRINT_HIGH, "The spy class has been disabled on the server by the administrator.\n");
+		return;
     }
     if (ClassIsRestricted (self.team_no, (self.impulse - 100))) {
-	sprint (self, PRINT_HIGH, "Your team has enough of that class.\n");
-	return;
+		sprint (self, PRINT_HIGH, "Your team has enough of that class.\n");
+		return;
     }
     TeamFortress_ExecClassScript (self);
+	
     if (self.impulse != 1)
-	self.playerclass = self.impulse - 100;
+		self.playerclass = self.impulse - 100;
     else
-	self.playerclass = 11;
+		self.playerclass = 11;
 
     self.nextpc = 0;
     self.takedamage = 2;
@@ -373,47 +375,50 @@ void () TeamFortress_ChangeClass =
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
     self.view_ofs = '0 0 22';
     player_stand1 ();
+	
     if (deathmatch || coop) {
-	makevectors (self.angles);
-	spawn_tfog (self.origin + v_forward * 20);
+		makevectors (self.angles);
+		spawn_tfog (self.origin + v_forward * 20);
     }
+	
     if (self.playerclass == PC_RANDOM) {
-	sprint (self, PRINT_HIGH, "Random Playerclass.\n");
-	self.tfstate = self.tfstate | TFSTATE_RANDOMPC;
-	self.playerclass = 1 + floor (random () * 9);
+		sprint (self, PRINT_HIGH, "Random Playerclass.\n");
+		self.tfstate = self.tfstate | TFSTATE_RANDOMPC;
+		self.playerclass = 1 + floor (random () * 9);
     }
+	
 	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
-	if (spot.items != 0) {
-	    te = Finditem (spot.items);
-	    if (te)
-		tfgoalitem_GiveToPlayer (te, self, self);
-	    if (!(spot.goal_activation & TFSP_MULTIPLEITEMS))
-		spot.items = 0;
-	}
-	if (spot.message) {
-	    CenterPrint (self, spot.message);
-	    if (!(spot.goal_activation & TFSP_MULTIPLEMSGS))
-		spot.message = string_null;
-	}
-	if (spot.activate_goal_no != 0) {
-	    te = Findgoal (spot.activate_goal_no);
-	    if (te)
-		AttemptToActivate (te, self, spot);
-	}
-	if (spot.goal_effects == 1) {
-	    spot.classname = "deadpoint";
-	    spot.team_str_home = string_null;
-	    spot.nextthink = time + 1;
-	    spot.think = SUB_Remove;
-	}
+		if (spot.items != 0) {
+			te = Finditem (spot.items);
+			if (te)
+				tfgoalitem_GiveToPlayer (te, self, self);
+			if (!(spot.goal_activation & TFSP_MULTIPLEITEMS))
+				spot.items = 0;
+		}
+		if (spot.message) {
+			CenterPrint (self, spot.message);
+			if (!(spot.goal_activation & TFSP_MULTIPLEMSGS))
+				spot.message = string_null;
+		}
+		if (spot.activate_goal_no != 0) {
+			te = Findgoal (spot.activate_goal_no);
+			if (te)
+				AttemptToActivate (te, self, spot);
+		}
+		if (spot.goal_effects == 1) {
+			spot.classname = "deadpoint";
+			spot.team_str_home = string_null;
+			spot.nextthink = time + 1;
+			spot.think = SUB_Remove;
+		}
     }
     spot = find (world, classname, "player");
     while (spot) {
-	if ((spot.team_no == self.team_no) && (spot != self)) {
-	    sprint (spot, PRINT_HIGH, self.netname, " is playing as a ");
-	    TeamFortress_PrintClassName (spot, self.playerclass, self.tfstate & 8);
-	}
-	spot = find (spot, classname, "player");
+		if ((spot.team_no == self.team_no) && (spot != self)) {
+			sprint (spot, PRINT_HIGH, self.netname, " is playing as a ");
+			TeamFortress_PrintClassName (spot, self.playerclass, self.tfstate & 8);
+		}
+		spot = find (spot, classname, "player");
     }
     TeamFortress_PrintClassName (self, self.playerclass, (self.tfstate & 8));
     TeamFortress_SetEquipment ();
