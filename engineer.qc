@@ -24,8 +24,7 @@ void () LaserBolt_Think =
 };
 
 //=========================================================================
-// Laserbolt touch function. Just moves through the player and comes out
-// the other side.
+// Laserbolt (Railgun) touch function. Just moves through the player and comes out the other side.
 void () LaserBolt_Touch =
 {
     local vector org;
