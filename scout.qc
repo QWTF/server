@@ -52,7 +52,8 @@ void () CaltropScatterThink =
 			sound (self, CHAN_AUTO, "weapons/tink1.wav", 1, ATTN_NORM);
 			setorigin (self, self.origin);
 			return;
-		} else {
+		}
+		else {
 			self.nextthink = time + 10 + random () * 5;
 			self.think = SUB_Remove;
 			self.solid = SOLID_TRIGGER;
@@ -62,17 +63,17 @@ void () CaltropScatterThink =
 			return;
 		}
     }
-    traceline (self.movedir, self.origin, 1, self);
+	self.heat = self.heat + 1;
+	if (self.heat > 50) {
+		remove (self);
+		return;
+	}
+	traceline (self.movedir, self.origin, 1, self);
     if (trace_fraction == 1) {
 		self.movedir = self.origin;
 		return;
     }
     self.velocity = self.velocity * -1;
-    self.heat = self.heat + 1;
-    if (self.heat > 10) {
-		remove (self);
-		return;
-    }
 };
 
 void () ScatterCaltrops =
@@ -219,77 +220,21 @@ void () ConcussionGrenadeExplode =
 
 void () OldConcussionGrenadeTimer =
 {
-    local string st;
+	server_status = infokey (world, "status");
+	if ((server_status != "Prematch") && (server_status != "Countdown")) { // Disable conc effect during prematch/countdown
+	
+		local string st;
 
-    if (self.owner.invincible_finished > time) {
-		stuffcmd (self.owner, "v_idlescale 0; wait; fov 90\n");
-		dremove (self);
-		return;
-    }
-    newmis = spawn ();
-    setmodel (newmis, "progs/s_bubble.spr");
-    setorigin (newmis, self.owner.origin);
-    newmis.movetype = 8;
-    newmis.solid = 0;
-    newmis.velocity = '0 0 15';
-    newmis.nextthink = time + 0.5;
-    newmis.think = bubble_bob;
-    newmis.touch = bubble_remove;
-    newmis.classname = "bubble";
-    newmis.frame = 0;
-    newmis.cnt = 0;
-    setsize (newmis, '-8 -8 -8', '8 8 8');
-
-    self.health = self.health - 20;
-    if (self.owner.playerclass == 5)
-		self.health = self.health - 20;
-    if (self.health < 0)
-		self.health = 0;
-
-    self.nextthink = time + 5;
-    stuffcmd (self.owner, "v_iroll_cycle 0.5\n");
-    stuffcmd (self.owner, "v_ipitch_cycle 1\n");
-    stuffcmd (self.owner, "v_iyaw_cycle 2\n");
-
-    st = ftos (self.health);
-    stuffcmd (self.owner, "v_idlescale ");
-    stuffcmd (self.owner, st);
-    stuffcmd (self.owner, "\n");
-
-    st = ftos (90 + self.health / 2);
-    stuffcmd (self.owner, "fov ");
-    stuffcmd (self.owner, st);
-    stuffcmd (self.owner, "\n");
-    if (self.health == 0)
-		dremove (self);
-};
-
-void () ConcussionGrenadeTimer =
-{
-/*
-Up2 fixme
-For later:
-if ( (practice == on) && (clanbattle = TRUE) {
-}
-else {
-*/
-    local vector src;
-    local float pos;
-    local float concadjust;
-    local float stumble;
-
-    if (self.owner.invincible_finished > time) {
-		sprint (self.owner, PRINT_HIGH, "Your head feels better now.\n");
-		self.owner.fixangle = 0;
-		dremove (self);
-		return;
-    }
-    if ((self.health == 200) || (self.health == 400) || (self.health == 600) || (self.health == 800) || (self.health == 1000)) {
+		if (self.owner.invincible_finished > time) {
+			stuffcmd (self.owner, "v_idlescale 0; wait; fov 90\n");
+			dremove (self);
+			return;
+		}
 		newmis = spawn ();
 		setmodel (newmis, "progs/s_bubble.spr");
 		setorigin (newmis, self.owner.origin);
-		newmis.movetype = MOVETYPE_NOCLIP;
-		newmis.solid = SOLID_NOT;
+		newmis.movetype = 8;
+		newmis.solid = 0;
 		newmis.velocity = '0 0 15';
 		newmis.nextthink = time + 0.5;
 		newmis.think = bubble_bob;
@@ -298,47 +243,105 @@ else {
 		newmis.frame = 0;
 		newmis.cnt = 0;
 		setsize (newmis, '-8 -8 -8', '8 8 8');
-    }
-    self.health = self.health - 10;
-    if (self.owner.playerclass == 5)
+
+		self.health = self.health - 20;
+		if (self.owner.playerclass == 5)
+			self.health = self.health - 20;
+		if (self.health < 0)
+			self.health = 0;
+
+		self.nextthink = time + 5;
+		stuffcmd (self.owner, "v_iroll_cycle 0.5\n");
+		stuffcmd (self.owner, "v_ipitch_cycle 1\n");
+		stuffcmd (self.owner, "v_iyaw_cycle 2\n");
+
+		st = ftos (self.health);
+		stuffcmd (self.owner, "v_idlescale ");
+		stuffcmd (self.owner, st);
+		stuffcmd (self.owner, "\n");
+
+		st = ftos (90 + self.health / 2);
+		stuffcmd (self.owner, "fov ");
+		stuffcmd (self.owner, st);
+		stuffcmd (self.owner, "\n");
+		if (self.health == 0)
+			dremove (self);
+	}
+};
+
+void () ConcussionGrenadeTimer =
+{
+
+	server_status = infokey (world, "status");
+	if ((server_status != "Prematch") && (server_status != "Countdown")) { // Disable conc effect during prematch/countdown
+	
+		local vector src;
+		local float pos;
+		local float concadjust;
+		local float stumble;
+
+		if (self.owner.invincible_finished > time) {
+			sprint (self.owner, PRINT_HIGH, "Your head feels better now.\n");
+			self.owner.fixangle = 0;
+			dremove (self);
+			return;
+		}
+		if ((self.health == 200) || (self.health == 400) || (self.health == 600) || (self.health == 800) || (self.health == 1000)) {
+			newmis = spawn ();
+			setmodel (newmis, "progs/s_bubble.spr");
+			setorigin (newmis, self.owner.origin);
+			newmis.movetype = MOVETYPE_NOCLIP;
+			newmis.solid = SOLID_NOT;
+			newmis.velocity = '0 0 15';
+			newmis.nextthink = time + 0.5;
+			newmis.think = bubble_bob;
+			newmis.touch = bubble_remove;
+			newmis.classname = "bubble";
+			newmis.frame = 0;
+			newmis.cnt = 0;
+			setsize (newmis, '-8 -8 -8', '8 8 8');
+		}
 		self.health = self.health - 10;
+		if (self.owner.playerclass == 5)
+			self.health = self.health - 10;
 
-    if (self.health < 0)
-		self.health = 0;
+		if (self.health < 0)
+			self.health = 0;
 
-    concadjust = 1;
-    self.nextthink = time + 0.25 * concadjust;
+		concadjust = 1;
+		self.nextthink = time + 0.25 * concadjust;
 
-    if (concadjust > 1)
-		self.health = self.health - concadjust;
+		if (concadjust > 1)
+			self.health = self.health - concadjust;
 
-    pos = pointcontents (self.owner.origin);
-    src_x = self.owner.origin_x + self.owner.maxs_x + 2;
-    src_y = self.owner.origin_y + self.owner.maxs_y + 2;
-    src_z = self.owner.origin_z;
-    pos = pointcontents (src);
+		pos = pointcontents (self.owner.origin);
+		src_x = self.owner.origin_x + self.owner.maxs_x + 2;
+		src_y = self.owner.origin_y + self.owner.maxs_y + 2;
+		src_z = self.owner.origin_z;
+		pos = pointcontents (src);
 
-    if ((self.owner.flags & 512) || (self.owner.flags & 16)) {
-		if (!((self.owner.tfstate & TFSTATE_CANT_MOVE) && (self.owner.current_weapon == WEAP_ASSAULT_CANNON))) {
-			if (self.owner.is_feigning == 0) {
-				makevectors (self.owner.v_angle);
-				stumble = crandom () * self.health;
-				if (!((pos == -2) && (self.owner.velocity == '0 0 0'))) {
-					if ((crandom () < 0)) {
-						self.owner.velocity_x = self.owner.velocity_y + stumble;
-						self.owner.velocity_y = self.owner.velocity_x + stumble;
-					} else {
-						self.owner.velocity_x = -1 * self.owner.velocity_y + stumble;
-						self.owner.velocity_y = -1 * self.owner.velocity_x + stumble;
+		if ((self.owner.flags & 512) || (self.owner.flags & 16)) {
+			if (!((self.owner.tfstate & TFSTATE_CANT_MOVE) && (self.owner.current_weapon == WEAP_ASSAULT_CANNON))) {
+				if (self.owner.is_feigning == 0) {
+					makevectors (self.owner.v_angle);
+					stumble = crandom () * self.health;
+					if (!((pos == -2) && (self.owner.velocity == '0 0 0'))) {
+						if ((crandom () < 0)) {
+							self.owner.velocity_x = self.owner.velocity_y + stumble;
+							self.owner.velocity_y = self.owner.velocity_x + stumble;
+						} else {
+							self.owner.velocity_x = -1 * self.owner.velocity_y + stumble;
+							self.owner.velocity_y = -1 * self.owner.velocity_x + stumble;
+						}
 					}
 				}
 			}
 		}
-    }
-    if (self.health <= 0) {
-		sprint (self.owner, PRINT_HIGH, "Your head feels better now.\n");
-		dremove (self);
-    }
+		if (self.health <= 0) {
+			sprint (self.owner, PRINT_HIGH, "Your head feels better now.\n");
+			dremove (self);
+		}
+	}
 };
 
 void () ScannerSwitch =

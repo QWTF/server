@@ -1545,21 +1545,25 @@ void () PlayerJump =
 		player_assaultcannondown1 ();
     }
     if (old_grens != 1) {
-	te = find (world, classname, "timer");
-	while (((te.owner != self) || (te.think != ConcussionGrenadeTimer)) && (te != world))
-	    te = find (te, classname, "timer");
+		te = find (world, classname, "timer");
+		while (((te.owner != self) || (te.think != ConcussionGrenadeTimer)) && (te != world))
+			te = find (te, classname, "timer");
 
-	if ((te != world) && (te != self)) {
-	    crandom ();
-	    stumble = crandom () * (te.health / 100);
-	    if (crandom () < 0) {
-		self.velocity_x = self.velocity_y + stumble;
-		self.velocity_y = self.velocity_x + stumble;
-	    } else {
-		self.velocity_x = (-1 * self.velocity_y) + stumble;
-		self.velocity_y = (-1 * self.velocity_x) + stumble;
-	    }
-	}
+		server_status = infokey (world, "status");
+		if ((server_status != "Prematch") && (server_status != "Countdown")) { // Disable the concussion's stumble effect during prematch/countdown
+			if ((te != world) && (te != self)) {
+				crandom ();
+				stumble = crandom () * (te.health / 100);
+				if (crandom () < 0) {
+					self.velocity_x = self.velocity_y + stumble;
+					self.velocity_y = self.velocity_x + stumble;
+				}
+				else {
+					self.velocity_x = (-1 * self.velocity_y) + stumble;
+					self.velocity_y = (-1 * self.velocity_x) + stumble;
+				}
+			}
+		}
     }
 };
 
