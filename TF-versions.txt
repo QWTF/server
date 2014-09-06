@@ -8,16 +8,20 @@ Changelog:
 Version 2.94					  01/01/2015
 --------------------------------------------
 
+Planned:
+ -pm: pipebombs (explode), build sg/disp (explode)
+ - look into rpickup
+
 Changes:
 	- Grenades can now be used during prematch. This is okay because they're disabled during countdown which is 10s (Up2)
 		- Removed concussive and stumble effect from conc grenade during prematch/countdown
 	- Added message stating how many cells you get after dismantling sentry gun (65) or dispenser (50) (hifi)
 
 Bugs Fixed:
+	- Bugfix from tf2.9: Chanceclass works in all game modes (Up2)
 	- Bugfix from tf2.9: Caltrops will disappear if they don't touch the ground within 10 seconds (Empezar/fifi)
 	
 Known Bugs:
-	- Changeclass does not currently work during prematch
 	- Ceasefire may not work correctly since /ready system has been introduced
 	- /rpickup after the first time isn't very random
 	- Some players may have to /ready multiple times before it registers, doesn't keep correct count

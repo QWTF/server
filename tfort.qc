@@ -289,13 +289,9 @@ void () TeamFortress_ChangeClass =
     local entity spot;
     local entity te;
 	
-	
-	server_status = infokey (world, "status2");
-
-    if (self.playerclass != 0) {
-		if ((deathmatch != 3) && (server_status == "Match"))
+	if (self.playerclass != 0) {
+		if (deathmatch != 3)
 			return;
-
 		if (TeamFortress_TeamIsCivilian (self.team_no)) {
 			sprint (self, PRINT_HIGH, "You cannot change class.\n");
 			return;
@@ -387,7 +383,7 @@ void () TeamFortress_ChangeClass =
 		self.playerclass = 1 + floor (random () * 9);
     }
 	
-	if ((spot.classname == "info_player_teamspawn") && (server_status == "Match")) {
+	if (spot.classname == "info_player_teamspawn") {
 		if (spot.items != 0) {
 			te = Finditem (spot.items);
 			if (te)

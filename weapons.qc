@@ -2604,9 +2604,7 @@ void () PreMatchImpulses =
 };
 
 void () DeadImpulses =
-{
-	server_status = infokey (world, "status2");
-	
+{	
 	if (self.impulse == TF_READY) {
         TeamFortress_PlayersReady ();
 		self.impulse = 0;
@@ -2631,8 +2629,8 @@ void () DeadImpulses =
     else if ((self.impulse > 100) && (self.impulse <= (100 + 10))) {
 		TeamFortress_ChangeClass ();
     }
-	else if ((self.playerclass != 0) && (self.impulse == 99) && (deathmatch == 3) && ((server_status == "Match") || (server_status == ""))) {
-		self.current_menu = 20;
+	else if ((self.playerclass != 0) && (self.impulse == 99) && (deathmatch == 3)) {
+		self.current_menu = 20; // 20 is changeclass menu
 		self.menu_count = 25;
     }
 	else if (self.is_admin == 1) {
