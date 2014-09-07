@@ -1,25 +1,24 @@
 *============================================================================*
-* TeamFortress v2.94	                                     TF-versions.txt *
+* TeamFortress v2.94beta                                     TF-versions.txt *
 *============================================================================*
 
 Changelog:
 
 --------------------------------------------
-Version 2.94					  01/01/2015
+Version 2.94beta				  09/06/2014
 --------------------------------------------
-
-Planned:
- -pm: build sg/disp (explode)
 
 Changes:
 	- Various things have been enabled during prematch. This is okay because they're disabled during countdown which is 10s long (Up2)
-		- Removed concussive and stumble effect from conc grenade during prematch/countdown
+		- Conc grenade can be used during prematch. They will have no concussive effects (no drunk) so you can practice conc jumps
 		- Pipebombs can be used during prematch. They will be instantly removed when countdown starts
 	- Added message stating how many cells you get after dismantling sentry gun (65) or dispenser (50) (hifi)
+		- The number of cells you receive has not been changed
 
 Bugs Fixed:
-	- Bugfix from tf2.9: Chanceclass works in all game modes (Up2)
+	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
 	- Bugfix from tf2.9: Caltrops will disappear if they don't touch the ground within 10 seconds (Empezar/fifi)
+		- previously they would always stay
 	- /Rpickup is now random every time it runs (Up2)
 	
 Known Bugs:
