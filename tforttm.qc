@@ -579,8 +579,6 @@ void (entity Player) TeamFortress_TeamShowMemberClasses =
 	}
 	e = find (e, classname, "player");
     }
-    if (!found)
-	sprint (Player, PRINT_HIGH, "There are no other players on your team.\n");
 };
 
 void () CalculateTeamEqualiser =
