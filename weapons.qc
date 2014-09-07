@@ -2571,9 +2571,11 @@ void () PreMatchImpulses =
 		W_ChangeWeapon ();
     else if ((self.impulse == 10) || (self.impulse == 12))
 		CycleWeaponCommand ();
-		
+	
 	if (self.impulse == TF_PB_DETONATE)
 		TeamFortress_DetonatePipebombs ();
+	if (self.impulse == TF_RELOAD)
+		TeamFortress_ReloadCurrentWeapon ();
 
     if (self.impulse == TF_INVENTORY)
 		TeamFortress_Inventory ();
