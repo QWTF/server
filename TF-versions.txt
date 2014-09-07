@@ -12,8 +12,10 @@ Changes:
 	- Various things have been enabled during prematch. This is okay because they're disabled during countdown which is 10s long (Up2)
 		- Conc grenade can be used during prematch. They will have no concussive effects (no drunk) so you can practice conc jumps
 		- Pipebombs can be used during prematch. They will be instantly removed when countdown starts
+		- You can reload your weapon
 	- Added message stating how many cells you get after dismantling sentry gun (65) or dispenser (50) (hifi)
 		- The number of cells you receive has not been changed
+	- Removed "There are no other players on your team" message. It's not necessary (Up2)
 
 Bugs Fixed:
 	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
