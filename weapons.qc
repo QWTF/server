@@ -1298,8 +1298,6 @@ void () GrenadeTouch =
 
 void () W_FireGrenade =
 {
-	
-
 	server_status = infokey (world, "status");
 
 	self.ammo_rockets = self.ammo_rockets - 1;
@@ -1312,7 +1310,7 @@ void () W_FireGrenade =
 	newmis.movetype = 10;
 	newmis.solid = 2;
    
-	if ((self.weaponmode == 0) || (server_status == "Prematch") || (server_status == "Countdown")) {
+	if ((self.weaponmode == 0) || (server_status == "Countdown")) {
 		newmis.weapon = 5;
 		newmis.classname = "grenade";
 		newmis.skin = 1;
@@ -1339,6 +1337,7 @@ void () W_FireGrenade =
 		newmis.weapon = 11;
 		newmis.team_no = self.team_no;
 	}
+	
 	makevectors (self.v_angle);
 	if (self.v_angle_x) {
 		newmis.velocity = (((v_forward * 600) + (v_up * 200)) + ((crandom () * v_right) * 10)) + ((crandom () * v_up) * 10);
@@ -2046,8 +2045,8 @@ void () W_PrintWeaponMessage =
     else if (self.current_weapon == WEAP_GRENADE_LAUNCHER) {
 		if (self.weaponmode == GL_NORMAL)
 			sprint (self, PRINT_MEDIUM, "Normal grenade mode\n");
-		else if ( (server_status == "Prematch") || (server_status == "Countdown") )
-			sprint (self, PRINT_MEDIUM, "Pipebomb mode not available in PreMatch\n");
+		else if ( (server_status == "Countdown") )
+			sprint (self, PRINT_MEDIUM, "Pipebomb mode not available during Countdown\n");
 		else if (self.weaponmode == GL_PIPEBOMB)
 			sprint (self, PRINT_MEDIUM, "Pipebomb mode\n");
     }
@@ -2572,6 +2571,9 @@ void () PreMatchImpulses =
 		W_ChangeWeapon ();
     else if ((self.impulse == 10) || (self.impulse == 12))
 		CycleWeaponCommand ();
+		
+	if (self.impulse == TF_PB_DETONATE)
+		TeamFortress_DetonatePipebombs ();
 
     if (self.impulse == TF_INVENTORY)
 		TeamFortress_Inventory ();

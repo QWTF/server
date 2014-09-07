@@ -110,6 +110,7 @@ void () TeamFortress_PlayersReady =
 			ent.nextthink = time + 1;
 			
 			localcmd ("serverinfo status Countdown\n");
+			TeamFortress_DetonatePipebombs (); //clear pipebombs as soon as countdown starts
 		}
 		return;
 	}
@@ -240,7 +241,7 @@ void () TeamFortress_RandomTheTeams =
             self = search;
             
             stuffcmd (self, "color 0 0\n");
-            TeamFortress_TeamPutPlayerInTeam ();
+			stuffcmd (self, "impulse 5\n"); // autoteam
         }
         
         search = find (search, classname, "player");
