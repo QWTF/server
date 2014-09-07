@@ -25,9 +25,10 @@ Changes:
 	- Removed Bindings menu (hifi)
 
 Bugs Fixed:
-	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
 	- Bugfix from tf2.9: Caltrops will disappear if they don't touch the ground within 10 seconds (Empezar/fifi)
 		- previously they would stay if dropped in an awkward spot and they never dispersed
+	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
+	- Bugfix from tf2.9: Fixed flaginfo message when flag is captured to not show server info (e.g. MVDSV version) (Empezar)
 	- /Rpickup is now random every time it runs (Up2)
 	
 Known Bugs:

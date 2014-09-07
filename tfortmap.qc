@@ -2236,41 +2236,47 @@ void (entity Item) tfgoalitem_checkgoalreturn =
 
 void (entity Goal, entity Player, entity Item) DisplayItemStatus =
 {
-    if (Item.goal_state == 1) {
-	if ((Goal.team_str_carried != string_null) || (Goal.non_team_str_carried != string_null)) {
-	    if (Player.team_no == Item.owned_by) {
-		sprint (Player, PRINT_HIGH, Goal.team_str_carried);
-	    } else {
-		sprint (Player, PRINT_HIGH, Goal.non_team_str_carried);
-	    }
-	    sprint (Player, PRINT_HIGH, " ");
-	    if (Player == Item.owner) {
-		sprint (Player, PRINT_HIGH, "You");
-	    } else {
-		sprint (Player, PRINT_HIGH, Item.owner.netname);
-	    }
-	    sprint (Player, PRINT_HIGH, ".\n");
-	}
-    } else {
-	if (Item.origin != Item.oldorigin) {
-	    if ((Goal.team_str_moved != string_null) || (Goal.non_team_str_moved != string_null)) {
-		if (Player.team_no == Item.owned_by) {
-		    sprint (Player, PRINT_HIGH, Goal.team_str_moved);
-		} else {
-		    sprint (Player, PRINT_HIGH, Goal.non_team_str_moved);
+    if (Item.goal_state == 1 && Item.owner != world) {
+		if ((Goal.team_str_carried != string_null) || (Goal.non_team_str_carried != string_null)) {
+			if (Player.team_no == Item.owned_by) {
+				sprint (Player, PRINT_HIGH, Goal.team_str_carried);
+			}
+			else {
+				sprint (Player, PRINT_HIGH, Goal.non_team_str_carried);
+			}
+			sprint (Player, PRINT_HIGH, " ");
+			if (Player == Item.owner) {
+				sprint (Player, PRINT_HIGH, "You");
+			}
+			else {
+				sprint (Player, PRINT_HIGH, Item.owner.netname);
+			}
+			sprint (Player, PRINT_HIGH, ".\n");
 		}
-		sprint (Player, PRINT_HIGH, "\n");
-	    }
-	} else {
-	    if ((Goal.team_str_home != string_null) || (Goal.non_team_str_home != string_null)) {
-		if (Player.team_no == Item.owned_by) {
-		    sprint (Player, PRINT_HIGH, Goal.team_str_home);
-		} else {
-		    sprint (Player, PRINT_HIGH, Goal.non_team_str_home);
+    }
+	else {
+		if (Item.origin != Item.oldorigin) {
+			if ((Goal.team_str_moved != string_null) || (Goal.non_team_str_moved != string_null)) {
+				if (Player.team_no == Item.owned_by) {
+					sprint (Player, PRINT_HIGH, Goal.team_str_moved);
+				}
+				else {
+					sprint (Player, PRINT_HIGH, Goal.non_team_str_moved);
+				}
+				sprint (Player, PRINT_HIGH, "\n");
+			}
 		}
-		sprint (Player, PRINT_HIGH, "\n");
-	    }
-	}
+		else {
+			if ((Goal.team_str_home != string_null) || (Goal.non_team_str_home != string_null)) {
+				if (Player.team_no == Item.owned_by) {
+					sprint (Player, PRINT_HIGH, Goal.team_str_home);
+				}
+				else {
+					sprint (Player, PRINT_HIGH, Goal.non_team_str_home);
+				}
+				sprint (Player, PRINT_HIGH, "\n");
+			}
+		}
     }
 };
 
