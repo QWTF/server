@@ -2261,7 +2261,7 @@ void () TeamFortress_AmmoboxTouch =
 	    quantity = ftos (self.ammo_cells);
 	    sprint2 (other, PRINT_HIGH, quantity, " cells  ");
 	}
-	sprint3 (other, PRINT_HIGH, " from ", self.enemy.netname, "'s discarded pack.\n");
+	sprint3 (other, PRINT_HIGH, "from ", self.enemy.netname, "'s discarded pack.\n");
     } else if (self.weapon == 1) {
 	if (other.ammo_shells >= TeamFortress_GetMaxAmmo (other, 256))
 	    return;
