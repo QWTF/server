@@ -59,12 +59,10 @@ void (float inp) Menu_Spy_Color_Input;
 void () Menu_Engineer;
 void () Menu_EngineerFix_Dispenser;
 void () Menu_EngineerFix_SentryGun;
-void () Menu_EngineerFix_Mortar;
 
 void (float inp) Menu_Engineer_Input;
 void (float inp) Menu_EngineerFix_Dispenser_Input;
 void (float inp) Menu_EngineerFix_SentryGun_Input;
-void (float inp) Menu_EngineerFix_Mortar_Input;
 
 void () Menu_Dispenser;
 void (float inp) Menu_Dispenser_Input;
@@ -341,8 +339,6 @@ void (float inp) Menu_Input =
 	Menu_Engineer_Input (inp);
     } else if (self.current_menu == MENU_ENGINEER_FIX_DISPENSER) {
 	Menu_EngineerFix_Dispenser_Input (inp);
-    } else if (self.current_menu == MENU_ENGINEER_FIX_MORTAR) {
-	Menu_EngineerFix_Mortar_Input (inp);
     } else if (self.current_menu == MENU_ENGINEER_FIX_SENTRYGUN) {
 	Menu_EngineerFix_SentryGun_Input (inp);
     } else if (self.current_menu == MENU_DISPENSER) {
@@ -871,28 +867,6 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 	    self.armortype = 0;
 	    self.armorclass = 0;
 	    self.items = (self.items - (self.items & ((8192 | 16384) | 32768)));
-	}
-	W_SetCurrentAmmo ();
-    }
-};
-
-void () Menu_EngineerFix_Mortar =
-{
-    CenterPrint (self, "Action:                            \n“‘ Reload Mortar               \n•‘ Repair Mortar               \n–‘ Dismantle Mortar            \n—‘ Nothing                     \n\n");
-};
-
-void (float inp) Menu_EngineerFix_Mortar_Input =
-{
-    if ((inp >= 1) && (inp <= 5)) {
-	ResetMenu ();
-	self.impulse = 0;
-
-	bound_other_ammo (self);
-
-	if (self.armorvalue == 0) {
-	    self.armortype = 0;
-	    self.armorclass = 0;
-	    self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
 	}
 	W_SetCurrentAmmo ();
     }

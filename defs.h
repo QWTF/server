@@ -479,22 +479,18 @@
 // Building types
 #define BUILD_DISPENSER			1
 #define BUILD_SENTRYGUN			2
-#define BUILD_MORTAR			3
 
 // Building metal costs
 #define BUILD_COST_DISPENSER	100
 #define BUILD_COST_SENTRYGUN	130
-#define BUILD_COST_MORTAR	150
 
 // Building times
 #define BUILD_TIME_DISPENSER	2		// 2 seconds to build
 #define BUILD_TIME_SENTRYGUN	5		// 5 seconds to build
-#define BUILD_TIME_MORTAR	5		// 5 seconds to build
 
 // Building health levels
 #define BUILD_HEALTH_DISPENSER	150
 #define BUILD_HEALTH_SENTRYGUN	150
-#define BUILD_HEALTH_MORTAR	200
 
 // Dispenser's maximum carrying capability
 #define BUILD_DISPENSER_MAX_SHELLS  400
@@ -1076,7 +1072,7 @@
 #define MENU_ENGINEER				15
 #define MENU_ENGINEER_FIX_DISPENSER		16
 #define MENU_ENGINEER_FIX_SENTRYGUN		17
-#define MENU_ENGINEER_FIX_MORTAR		18
+//free		18
 #define MENU_DISPENSER				19
 
 #define MENU_REFRESH_RATE 			25

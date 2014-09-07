@@ -231,9 +231,7 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
 	if ((targ.classname != "player")
 	    && (targ.classname != "bot")
 	    && (targ.classname != "building_sentrygun")
-	    && (targ.classname != "building_dispenser")
-	    && (targ.classname != "building_teleporter_entrance")
-	    && (targ.classname != "building_teleporter_exit")) {
+	    && (targ.classname != "building_dispenser")) {
 
 	    if (!Activated (targ, attacker)) {
 		if (targ.else_goal != 0) {
@@ -362,9 +360,7 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
     if ((attacker.classname == "player")
 	&& ((targ.classname == "player")
 	    || (targ.classname == "building_sentrygun")
-	    || (targ.classname == "building_dispenser")
-	    || (targ.classname == "building_teleporter_entrance")
-	    || (targ.classname == "building_teleporter_exit"))) {
+	    || (targ.classname == "building_dispenser"))) {
 
 	if ((targ.team_no > 0) && (targ.team_no == attacker.team_no)
 	    && (targ != attacker) && (T_flags & TF_TD_NOTTEAM)) {
@@ -399,9 +395,7 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
     if ((attacker.classname == "player")
 	&& ((targ.classname == "player")
 	    || (targ.classname == "building_sentrygun")
-	    || (targ.classname == "building_dispenser")
-	    || (targ.classname == "building_teleporter_entrance")
-	    || (targ.classname == "building_teleporter_exit"))) {
+	    || (targ.classname == "building_dispenser"))) {
 
 	if ((targ.team_no > 0) && (targ.team_no == attacker.team_no)
 	    && (targ != attacker) && (T_flags & 2)) {

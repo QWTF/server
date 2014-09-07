@@ -79,7 +79,6 @@ void () fadefromwhite;
 
 void (entity disp) Engineer_UseDispenser;
 void (entity gun) Engineer_UseSentryGun;
-void (entity mortar) Engineer_UseMortar;
 
 void () TeamFortress_MOTD;
 void () TeamFortress_HelpMap;
@@ -2532,10 +2531,6 @@ void () ImpulseCommands =
 		DestroyBuilding (self, "building_sentrygun");
     else if ((self.impulse == TF_ENGINEER_DETDISP) && (self.playerclass == PC_ENGINEER))
 		DestroyBuilding (self, "building_dispenser");
-    else if ((self.impulse == 196) && (self.playerclass == PC_ENGINEER))
-		DestroyBuilding (self, "building_teleporter_exit");
-    else if ((self.impulse == 197) && (self.playerclass == PC_ENGINEER))
-		DestroyBuilding (self, "building_teleporter_entrance");
     else if ((self.impulse == TF_SPY_SPY) && (self.playerclass == PC_SPY))
 		TeamFortress_SpyGoUndercover ();
     else if ((self.impulse == TF_SPY_DIE) && (self.playerclass == PC_SPY))
