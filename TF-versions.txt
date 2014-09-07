@@ -2,6 +2,12 @@
 * TeamFortress v2.94beta                                     TF-versions.txt *
 *============================================================================*
 
+The original QuakeWorld TeamFortress 2.9 + upgrades. No gameplay changes.
+Maintained by Up2nOgOod[ROCK]
+https://github.com/quaketf
+http://www.quakeworld.nu
+
+
 Changelog:
 
 --------------------------------------------
@@ -9,22 +15,23 @@ Version 2.94beta				  09/06/2014
 --------------------------------------------
 
 Changes:
-	- Various things have been enabled during prematch. This is okay because they're disabled during countdown which is 10s long (Up2)
+	- Various things have been enabled during prematch. This is safe because they're disabled during countdown which is 10s long (Up2)
 		- Conc grenade can be used during prematch. They will have no concussive effects (no drunk) so you can practice conc jumps
 		- Pipebombs can be used during prematch. They will be instantly removed when countdown starts
 		- You can reload your weapon
 	- Added message stating how many cells you get after dismantling sentry gun (65) or dispenser (50) (hifi)
 		- The number of cells you receive has not been changed
 	- Removed "There are no other players on your team" message. It's not necessary (Up2)
+	- Removed Bindings menu (hifi)
 
 Bugs Fixed:
 	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
 	- Bugfix from tf2.9: Caltrops will disappear if they don't touch the ground within 10 seconds (Empezar/fifi)
-		- previously they would always stay
+		- previously they would stay if dropped in an awkward spot and they never dispersed
 	- /Rpickup is now random every time it runs (Up2)
 	
 Known Bugs:
-	- Ceasefire may not work correctly since /ready system has been introduced
+	- Ceasefire may not work correctly since /ready system has been introduced. Needs testing
 	- Some players may have to /ready multiple times before it registers, doesn't keep correct count
 
 --------------------------------------------
@@ -121,7 +128,6 @@ Features Added:
 	  Allows you to combine two strings. (Up2)
 
 Changes:
-	- The highest team score is now displayed in red in the Match Results table (Up2)
 	- Misc small code changes, alignment changes, etc. (Up2)
 	- Rpickup bug fixed. Rpickup will now only work in prematch. (Up2)
 

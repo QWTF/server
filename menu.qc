@@ -47,9 +47,6 @@ void () Menu_ClassHelp;
 void () Menu_ClassHelp2;
 void () Menu_StuffClassHelp;
 void (float inp) Menu_ClassHelp_Input;
-void () Menu_DoBindings;
-void () Menu_ShowBindings1;
-void () Menu_ShowBindings2;
 void () Menu_RepeatHelp;
 void () Menu_Spy;
 void () Menu_Spy_Skin;
@@ -123,22 +120,6 @@ void () Player_Menu =
 	} else
 	    self.menu_displaytime = self.menu_displaytime + 1;
 
-    } else if (self.current_menu == MENU_SHOWBINDS1) {
-
-	Menu_ShowBindings1 ();
-	if (self.menu_displaytime > 8)
-	    self.current_menu = MENU_DEFAULT;
-	else
-	    self.menu_displaytime = self.menu_displaytime + 1;
-
-    } else if (self.current_menu == MENU_SHOWBINDS2) {
-       
-	Menu_ShowBindings2 ();
-	if (self.menu_displaytime > 8)
-	   self.current_menu = MENU_DEFAULT;
-	else
-	   self.menu_displaytime = self.menu_displaytime + 1;
-
     } else if (self.current_menu == MENU_DROP) {
 
 	Menu_Drop ();
@@ -182,10 +163,6 @@ void () Player_Menu =
 	Menu_RepeatHelp ();
 	self.current_menu = 1;
 
-    } else if (self.current_menu == MENU_PICKBINDS) {
-
-	Menu_DoBindings ();
-
     } else if (self.current_menu == 20) {
 
 	Menu_Class ();
@@ -220,7 +197,7 @@ void () Menu_Team =
     }
 
     if (CTF_Map == 1) {
-	CenterPrint (self, "=== Choose Your Team ===\n\n“‘ Blue Team           \n”‘ Red Team            \n\n\n\n™‘ Bind my keys for me!\n\nFor full details on this patch:\nhttp://www.planetfortress.com/teamfortress/\n");
+	CenterPrint (self, "=== Choose Your Team ===\n\n“‘ Blue Team           \n”‘ Red Team            \n\n\n\n—‘ Auto Team \n");
     } else if (number_of_teams == 1) {
 	CenterPrint (self, "=== Choose Your Team ===\n\n“‘ Team One  \n");
     } else if (number_of_teams == 2) {
@@ -240,8 +217,6 @@ void (float inp) Menu_Team_Input =
 	TeamFortress_TeamSet (inp, 0);
     } else if ((number_of_teams == 0) && (inp <= 4)) {
 	TeamFortress_TeamSet (inp, 0);
-    } else if (inp == 7) {
-	self.current_menu = MENU_PICKBINDS;
     }
     ResetMenu ();
     self.impulse = 0;
@@ -348,43 +323,6 @@ void (float inp) Menu_Drop_Input =
     self.impulse = 0;
 };
 
-void (float inp) Menu_DoBindings_Input =
-{
-    if (inp < 4) {
-	self.impulse = 0;
-	if (inp == 1) {
-	    stuffcmd (self, "bind q \"impulse 23\"\n");
-	    stuffcmd (self, "bind e \"impulse 22\"\n");
-	    stuffcmd (self, "bind r \"+gren1\"\n");
-	    stuffcmd (self, "bind f \"+gren2\"\n");
-	    stuffcmd (self, "bind v \"detpipe\"\n");
-	    stuffcmd (self, "bind c \"dropammo\"\n");
-	    stuffcmd (self, "bind x \"autoscan\"\n");
-	    stuffcmd (self, "bind g \"showclasses\"\n");
-	    stuffcmd (self, "bind z \"inv\"\n");
-	    self.menu_count = 25;
-	    self.current_menu = 10;
-	    self.menu_displaytime = 0;
-	    return;
-	} else if (inp == 2) {
-            stuffcmd (self, "bind s \"impulse 23\"\n");
-            stuffcmd (self, "bind x \"impulse 22\"\n");
-            stuffcmd (self, "bind d \"+gren1\"\n");
-            stuffcmd (self, "bind c \"+gren2\"\n");
-            stuffcmd (self, "bind f \"detpipe\"\n");
-            stuffcmd (self, "bind v \"dropammo\"\n");
-            stuffcmd (self, "bind b \"autoscan\"\n");
-            stuffcmd (self, "bind g \"showclasses\"\n");
-            stuffcmd (self, "bind n \"inv\"\n");
-            self.menu_count = 25;
-            self.current_menu = 11;
-            self.menu_displaytime = 0;
-            return;
-	}
-	ResetMenu ();
-    }
-};
-
 void (float inp) Menu_Input =
 {
     if (self.current_menu == MENU_TEAM) {
@@ -417,8 +355,6 @@ void (float inp) Menu_Input =
 	Menu_Birthday_Input (inp);
     } else if (self.current_menu == MENU_CLASSHELP) {
 	Menu_ClassHelp_Input (inp);
-    } else if (self.current_menu == MENU_PICKBINDS) {
-	Menu_DoBindings_Input (inp);
     }
 };
 
@@ -534,21 +470,6 @@ void (float inp) Menu_ClassHelp_Input =
 	self.menu_displaytime = 0;
 	self.impulse = 0;
     }
-};
-
-void () Menu_DoBindings =
-{
-    CenterPrint (self, "“‘ Use keys: E R F V C Q X G Z\n”‘ Use keys: S X D C F V B G N\n•‘ Don't make bindings        \n");
-};
-
-void () Menu_ShowBindings1 =
-{
-    CenterPrint (self, "Ñ.. Flaginfo      \nÅ.. Hook          \nÒ.. Throw Gren 1  \nÆ.. Throw Gren 2  \nÖ.. Det. Pipebombs\nÃ.. Drop ammo     \nØ.. Use Scanner   \nÇ.. Showclasses   \nÚ.. inventory     \n");
-};
-
-void () Menu_ShowBindings2 =
-{
-    CenterPrint (self, "Ó.. Flaginfo      \nØ.. Hook          \nÄ.. Throw Gren 1  \nÃ.. Throw Gren 2  \nÆ.. Det. Pipebombs\nÖ.. Drop ammo     \nÂ.. Use Scanner   \nÇ.. Showclasses   \nÎ.. inventory     \n");
 };
 
 void () Menu_Spy =
