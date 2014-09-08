@@ -331,7 +331,7 @@ void () TeamFortress_ChangeClass =
 		return;
     }
     if (!IsLegalClass ((self.impulse - 100)) && (self.impulse != 1)) {
-		sprint (self, PRINT_HIGH, "You cannot play that playerclass on this map. \n");
+		sprint (self, PRINT_HIGH, "You cannot play that playerclass on this map.\n");
 		TeamFortress_DisplayLegalClasses ();
 		return;
     }
@@ -2827,13 +2827,6 @@ void (entity pl, float fr) TF_AddFrags =
 
 void (entity p) TeamFortress_ExecClassScript =
 {
-    local string st;
-
-    st = infokey (p, "ec");
-    if (st == string_null)
-	st = infokey (p, "exec_class");
-
-    if ((st == "on") || (st == "1")) {
 	if (p.playerclass == PC_SCOUT)
 	    stuffcmd (p, "exec scout.cfg\n");
 	else if (p.playerclass == PC_SNIPER)
@@ -2852,7 +2845,6 @@ void (entity p) TeamFortress_ExecClassScript =
 	    stuffcmd (p, "exec spy.cfg\n");
 	else if (p.playerclass == PC_ENGINEER)
 	    stuffcmd (p, "exec engineer.cfg\n");
-    }
 };
 
 void (entity p) TeamFortress_ExecMapScript =
