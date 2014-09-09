@@ -590,51 +590,43 @@ void (entity Player) TeamFortress_TeamShowMemberClasses =
 };
 
 void () TeamFortress_StatusQuery =
-{
-    local float ft;
-    local string st;
-
-    sprint (self, PRINT_HIGH, "players per team: ");
-    ft = TeamFortress_TeamGetNoPlayers (1);
-    st = ftos (ft);
-    sprint (self, PRINT_HIGH, st, "  ");
-    ft = TeamFortress_TeamGetNoPlayers (2);
-    st = ftos (ft);
-    sprint (self, PRINT_HIGH, st, "  ");
-    ft = TeamFortress_TeamGetNoPlayers (3);
-    st = ftos (ft);
-    sprint (self, PRINT_HIGH, st, "  ");
-    ft = TeamFortress_TeamGetNoPlayers (4);
-    st = ftos (ft);
-    sprint (self, PRINT_HIGH, st, "\n");
+{	
+	local float t1_players = TeamFortress_TeamGetNoPlayers (1);
+	local float t2_players = TeamFortress_TeamGetNoPlayers (2);
+	local float t3_players = TeamFortress_TeamGetNoPlayers (3);
+	local float t4_players = TeamFortress_TeamGetNoPlayers (4);
+	
+	sprint(self, PRINT_HIGH, "players per team: ", ftos (t1_players), " ", ftos (t2_players), " ", ftos (t3_players));
+	sprint(self, PRINT_HIGH, " ", ftos (t4_players), "\n"); //can only have 8 arguments
 };
 
 float (float tno) TeamFortress_TeamGetIllegalClasses =
 {
     if (tno == 1)
-	return (illegalclasses1);
+		return (illegalclasses1);
     if (tno == 2)
-	return (illegalclasses2);
+		return (illegalclasses2);
     if (tno == 3)
-	return (illegalclasses3);
+		return (illegalclasses3);
     if (tno == 4)
-	return (illegalclasses4);
+		return (illegalclasses4);
+		
     return (0);
 };
 
 float (float tno) TeamFortress_TeamIsCivilian =
 {
     if (tno == 1) {
-	if (civilianteams & 1)
-	    return (1);
+		if (civilianteams & 1)
+			return (1);
     } else if (tno == 2) {
-	if (civilianteams & 2)
-	    return (1);
+		if (civilianteams & 2)
+			return (1);
     } else if (tno == 3) {
-	if (civilianteams & 4)
-	    return (1);
+		if (civilianteams & 4)
+			return (1);
     } else if (civilianteams & 8)
-	return (1);
+		return (1);
 
     return (0);
 };
