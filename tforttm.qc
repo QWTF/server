@@ -96,20 +96,20 @@ float () TeamFortress_TeamPutPlayerInTeam =
 float (float tno) TeamFortress_TeamGetColor =
 {
     if (tno == 1)
-	return (DARKBLUE);
+		return (BLUE);
     if (tno == 2)
-	return (RED);
+		return (RED);
     if (tno == 3)
-	return (YELLOW);
+		return (YELLOW);
     if (tno == 4)
-	return (DARKGREEN);
+		return (GREEN);
     return (0);
 };
 
 void (float tno) TeamFortress_TeamSetColor =
 {
     if (tno == 1) {
-	team1col = DARKBLUE;
+	team1col = BLUE;
 	return;
     }
     if (tno == 2) {
@@ -121,7 +121,7 @@ void (float tno) TeamFortress_TeamSetColor =
 	return;
     }
     if (tno == 4) {
-	team4col = DARKGREEN;
+	team4col = GREEN;
 	return;
     }
 };
@@ -466,62 +466,70 @@ void (float all) TeamFortress_TeamShowScores =
 
     i = 1;
     if (all == 2) {
-	while (i <= number_of_teams) {
-	    if (TeamFortress_TeamGetColor (i) > 0) {
-		j = TeamFortress_TeamGetScore (i);
-		st = TeamFortress_TeamGetColorString (i);
-		bprint (PRINT_HIGH, st, ": ");
-		st = ftos (j);
-		bprint (PRINT_HIGH, st, " ");
-	    }
-	    i = i + 1;
-	}
-	bprint (PRINT_HIGH, "\n");
-	return;
+		while (i <= number_of_teams) {
+			if (TeamFortress_TeamGetColor (i) > 0) {
+				j = TeamFortress_TeamGetScore (i);
+				st = TeamFortress_TeamGetColorString (i);
+				bprint (PRINT_HIGH, st, ": ");
+				st = ftos (j);
+				bprint (PRINT_HIGH, st, " ");
+			}
+			i = i + 1;
+		}
+		bprint (PRINT_HIGH, "\n");
+		return;
     }
     while (i <= number_of_teams) {
-	if (TeamFortress_TeamGetColor (i) > 0) {
-	    if (all) {
-		bprint (PRINT_HIGH, "Team ");
-	    } else {
-		sprint (self, PRINT_HIGH, "Team ");
-	    }
-	    st = ftos (i);
-	    if (all) {
-		bprint (PRINT_HIGH, st);
-	    } else {
-		sprint (self, PRINT_HIGH, st);
-	    }
-	    if (all) {
-		bprint (PRINT_HIGH, " (");
-	    } else {
-		sprint (self, PRINT_HIGH, " (");
-	    }
-	    st = TeamFortress_TeamGetColorString (i);
-	    if (all) {
-		bprint (PRINT_HIGH, st);
-	    } else {
-		sprint (self, PRINT_HIGH, st);
-	    }
-	    if (all) {
-		bprint (PRINT_HIGH, ") : ");
-	    } else {
-		sprint (self, PRINT_HIGH, ") : ");
-	    }
-	    j = TeamFortress_TeamGetScore (i);
-	    st = ftos (j);
-	    if (all) {
-		bprint (PRINT_HIGH, st);
-	    } else {
-		sprint (self, PRINT_HIGH, st);
-	    }
-	    if (all) {
-		bprint (PRINT_HIGH, "\n");
-	    } else {
-		sprint (self, PRINT_HIGH, "\n");
-	    }
-	}
-	i = i + 1;
+		if (TeamFortress_TeamGetColor (i) > 0) {
+			if (all) {
+				bprint (PRINT_HIGH, "Team ");
+			} else {
+				sprint (self, PRINT_HIGH, "Team ");
+			}
+			
+			st = ftos (i);
+			
+			if (all) {
+				bprint (PRINT_HIGH, st);
+			} else {
+				sprint (self, PRINT_HIGH, st);
+			}
+			
+			if (all) {
+				bprint (PRINT_HIGH, " (");
+			} else {
+				sprint (self, PRINT_HIGH, " (");
+			}
+			
+			st = TeamFortress_TeamGetColorString (i);
+			
+			if (all) {
+				bprint (PRINT_HIGH, st);
+			} else {
+				sprint (self, PRINT_HIGH, st);
+			}
+			
+			if (all) {
+				bprint (PRINT_HIGH, "): ");
+			} else {
+				sprint (self, PRINT_HIGH, "): ");
+			}
+			
+			j = TeamFortress_TeamGetScore (i);
+			st = ftos (j);
+			
+			if (all) {
+				bprint (PRINT_HIGH, st);
+			} else {
+				sprint (self, PRINT_HIGH, st);
+			}
+			if (all) {
+				bprint (PRINT_HIGH, "\n");
+			} else {
+				sprint (self, PRINT_HIGH, "\n");
+			}
+		}
+		i = i + 1;
     }
 };
 
