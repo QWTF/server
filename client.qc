@@ -14,7 +14,6 @@ void () TeamFortress_RemoveTimers;
 void (float Suicided) TeamFortress_SetupRespawn;
 
 float (float pc) IsLegalClass;
-void () SetupTeamEqualiser;
 void () CeaseFire_think;
 
 void (entity eng) Engineer_RemoveBuildings;
@@ -206,8 +205,6 @@ void () DecodeLevelParms =
 			civilianteams = 0;
 		}
 		bprint (PRINT_HIGH, "Mapname: ", mapname, "\n");
-
-		SetupTeamEqualiser ();
 
 		team1frags = 0;
 		team2frags = 0;

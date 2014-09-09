@@ -4,7 +4,6 @@ void (entity targ, entity attacker) ClientObituary;
 
 void (entity Goal, entity AP, float addb) DoResults;
 float (entity Goal, entity AP) Activated;
-float (entity targ, entity attacker, float damage) TeamEqualiseDamage;
 
 void () monster_death_use =
 {
@@ -117,8 +116,6 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage =
 	}
     }
     damage_attacker = attacker;
-    if (teamplay & (TEAMPLAY_LESSSCOREHELP | TEAMPLAY_LESSPLAYERSHELP))
-	damage = TeamEqualiseDamage (targ, attacker, damage);
 
     save = ceil (targ.armortype * damage);
     if (save >= targ.armorvalue) {
@@ -244,9 +241,6 @@ void (entity targ, entity inflictor, entity attacker, float damage, float T_flag
 	}
     }
     damage_attacker = attacker;
-
-    if (teamplay & (TEAMPLAY_LESSSCOREHELP | TEAMPLAY_LESSPLAYERSHELP))
-	damage = TeamEqualiseDamage (targ, attacker, damage);
 
     if ((targ.armorclass != 0) && (T_AttackType != 0)) {
 

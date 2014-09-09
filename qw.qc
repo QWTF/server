@@ -91,10 +91,6 @@ float team1maxplayers;	// Max number of players allowed in each team
 float team2maxplayers;
 float team3maxplayers;
 float team4maxplayers;
-float team1advantage;	// only used if the teamplay equalisation bits are set
-float team2advantage;	// stores the damage ratio players take/give
-float team3advantage;
-float team4advantage;
 
 .float team_no;		// The team you belong to
 .float lives;		// The number of lives you have left
