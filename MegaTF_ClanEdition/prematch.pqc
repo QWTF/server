@@ -15,9 +15,8 @@ void () PrematchCountDown =
 	local string st;
 	local entity te, flag01, flag02, flag03, flag04, flag05, flag06, flag07, flag08, flag09, flag10, flag11, flag12, flag13, flag14, flag15, flag16, flag17, flag18, flag19;
 
-	if (self.health == 0)
+	if (self.health == 0) // Prematch is over.
 	{
-		// Prematch is over.
 		// Clear frags. Send a msg. Toggle TeamFrags properly.
 
 #ifdef clan_progs
@@ -31,6 +30,7 @@ void () PrematchCountDown =
 		te = find(world, classname, "player");
 		while (te)
 		{
+			bprint (2, "MATCH BEGINS NOW\n");
 			CenterPrint2(te, st, "Attack!");	
 			stuffcmd(te, "bf\n");
 			T_Damage (te, te, te, 500);
