@@ -30,7 +30,7 @@ void () PrematchCountDown =
 		te = find(world, classname, "player");
 		while (te)
 		{
-			bprint (2, "MATCH BEGINS NOW\n");
+			//bprint (2, "MATCH BEGINS NOW\n");
 			CenterPrint2(te, st, "Attack!");	
 			stuffcmd(te, "bf\n");
 			T_Damage (te, te, te, 500);
@@ -181,11 +181,6 @@ void () PrematchCountDown =
 	}
 
 	// 10 second prematch countdown
-	if ((self.health == 10) && (self.health > 1)) {
-		st = ftos (self.health);
-		bprint (self, st, " seconds 10101010.\n");
-	}
-	
 	if ((self.health <= 10) && (self.health > 1)) {
 		st = ftos (self.health);
 		bprint (self, st, " seconds.\n");
@@ -365,31 +360,10 @@ void () SetUpPrematch =
 		flag19 = find (flag19, classname, "func_button");
 	}
 	
-/*  // pablo. haha. that doesn't work :/
-	flag = Finditem(1);
-	if (flag != world)
-	{
-		flag.touch = SUB_Null;
-	}
-
-	flag = Finditem(2);
-	if (flag != world)
-	{		
-		flag.touch = SUB_Null;
-	}*/
-
-	/*
-	newmis = spawn ();
-	newmis.classname = "timer";
-
-	newmis.nextthink = (time + (prematch - floor(prematch)) * 60);
-	newmis.think = PrematchThink;
-	newmis.health = floor(prematch);
-	*/
-
+	// "time" starts up from 3 and increases by 1 per second
 	newmis = spawn ();
 	newmis.classname = "pmtimer";
-	newmis.nextthink = (time + ((prematch - floor (prematch)) * 60));
+	newmis.nextthink = (time + ((prematch - floor (prematch)) * 60)); //wtf does this line do? it controls pm..
 	newmis.think = PrematchThink;
 	newmis.health = floor (prematch);
 	pointer_prematchtimer = newmis;
