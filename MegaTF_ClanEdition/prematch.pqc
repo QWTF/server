@@ -180,33 +180,20 @@ void () PrematchCountDown =
 		return;
 	}
 
-	// Countdown!
-	if (self.health == 3)
-	{
-		st = "\n3...";
+	// 10 second prematch countdown
+	if ((self.health == 10) && (self.health > 1)) {
+		st = ftos (self.health);
+		bprint (self, st, " seconds 10101010.\n");
 	}
-	else
-	{
-		if (self.health == 2)
-		{
-			st = "\n\n2...";
-		}			
-		else
-		{
-			if (self.health == 1)
-			{
-				st = "\n\n\n1...";
-			}
-		}
+	
+	if ((self.health <= 10) && (self.health > 1)) {
+		st = ftos (self.health);
+		bprint (self, st, " seconds.\n");
 	}
-
-	te = find(world, classname, "player");
-	while (te != world)
-	{
-		CenterPrint(te, st);
-		stuffcmd(te, "bf\n");
-		te = find(te, classname, "player");
+	else if (self.health > 0) {
+		bprint (self, "1 second.\n");
 	}
+	
 	self.health = self.health - 1;
 	self.nextthink = (time + 1);
 }
