@@ -161,11 +161,11 @@ void() T_IncendiaryTouch =
 			if (other.classname == "player")
 			{
 
-				if (((self.owner.stats_on == 1.000000) && (self.owner != head)))
+				if (((self.owner.stats_on == 1) && (self.owner != head)))
 				{
 					_l_9052 = self;
 					self = self.owner;
-					Stats_Hit (16384.000000);
+					Stats_Hit (16384);
 					self = _l_9052;
 				}
 				stuffcmd(other, "bf\nbf\n");
@@ -187,44 +187,44 @@ void () NapalmGrenadeExplode =
 {
 	local entity _l_9070;
 
-	traceline (self.origin, self.origin, 1.000000, self);
-	if ((trace_inwater == 1.000000))
+	traceline (self.origin, self.origin, 1, self);
+	if ((trace_inwater == 1))
 	{
-		sound (self, 0.000000, "misc/vapeur2.wav", 1.000000, 1.000000);
+		sound (self, 0, "misc/vapeur2.wav", 1, 1);
 		dremove (self);
 		return;
 	}
-	deathmsg = 15.000000;
-	T_RadiusDamage (self, self.owner, 20.000000, world);
-	self.playerclass = (self.playerclass + 1.000000);
+	deathmsg = 15;
+	T_RadiusDamage (self, self.owner, 20, world);
+	self.playerclass = (self.playerclass + 1);
 	self.nextthink = (time + 0.750000);
-	self.effects = (self.effects | 4.000000);
-	_l_9070 = findradius (self.origin, 130.000000);
+	self.effects = (self.effects | 4);
+	_l_9070 = findradius (self.origin, 130);
 	while (_l_9070)
 	{
 		if (_l_9070.takedamage)
 		{
-			deathmsg = 15.000000;
-			TF_T_Damage (_l_9070, self, self.owner, 30.000000, 2.000000, 16.000000);
+			deathmsg = 15;
+			TF_T_Damage (_l_9070, self, self.owner, 30, 2, 16);
 			other = _l_9070;
 			Napalm_touch ();
 			if ((other.classname == "player"))
 			{
 				stuffcmd (other, "bf\nbf\n");
-				KickPlayer (-6.000000, other);
+				KickPlayer (-6, other);
 			}
 		}
 		_l_9070 = _l_9070.chain;
 	}
-	WriteByte (4.000000, 23.000000);
-	WriteByte (4.000000, 3.000000);
-	WriteCoord (4.000000, self.origin_x);
-	WriteCoord (4.000000, self.origin_y);
-	WriteCoord (4.000000, self.origin_z);
-	multicast (self.origin, 1.000000);
-	if ((self.playerclass > 8.000000))
+	WriteByte (4, 23);
+	WriteByte (4, 3);
+	WriteCoord (4, self.origin_x);
+	WriteCoord (4, self.origin_y);
+	WriteCoord (4, self.origin_z);
+	multicast (self.origin, 1);
+	if ((self.playerclass > 8))
 	{
-		self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+		self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1);
 		self.think = SUB_Remove;
 	}
 };
@@ -443,11 +443,11 @@ void() Flamer_stream_touch =
 			}
 			if (other.classname == "player")
 			{
-				if (((self.owner.stats_on == 1.000000) && (self.owner != other)))
+				if (((self.owner.stats_on == 1) && (self.owner != other)))
 				{
 					_l_9140 = self;
 					self = self.owner;
-					Stats_Hit (4096.000000);
+					Stats_Hit (4096);
 					self = _l_9140;
 				}
 				if (teamplay & 16 && other.team_no > TF_FLARE_LIT && other.team_no == self.owner.team_no)
@@ -659,45 +659,45 @@ void() W_FireFlame =
 void () W_FireIncendiaryCannon =
 {
 
-	if ((self.ammo_rockets < 2.000000))
+	if ((self.ammo_rockets < 2))
 	{
 		return;
 	}
-	self.ammo_rockets = (self.ammo_rockets - 2.000000);
-	self.currentammo = (self.ammo_rockets - 2.000000);
-	sound (self, 1.000000, "doors/airdoor2.wav", 1.000000, 1.000000);
-	KickPlayer (-3.000000, self);
+	self.ammo_rockets = (self.ammo_rockets - 2);
+	self.currentammo = (self.ammo_rockets - 2);
+	sound (self, 1, "doors/airdoor2.wav", 1, 1);
+	KickPlayer (-3, self);
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = 9.000000;
-	newmis.solid = 2.000000;
+	newmis.movetype = 9;
+	newmis.solid = 2;
 	makevectors (self.v_angle);
-	newmis.velocity = aim (self, 1000.000000);
-//	newmis.velocity = (newmis.velocity * 750.000000);
-	newmis.velocity = (newmis.velocity * 1000.000000);
+	newmis.velocity = aim (self, 1000);
+//	newmis.velocity = (newmis.velocity * 750);
+	newmis.velocity = (newmis.velocity * 1000);
 	newmis.angles = vectoangles (newmis.velocity);
-	newmis.playerclass = 0.000000;
+	newmis.playerclass = 0;
 	newmis.touch = T_IncendiaryTouch;
-	newmis.nextthink = (time + 5.000000);
+	newmis.nextthink = (time + 5);
 	newmis.think = SUB_Remove;
-	newmis.weapon = 33.000000;
+	newmis.weapon = 33;
 	setmodel (newmis, "progs/incenrkt.mdl");
-	setsize (newmis, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
-	setorigin (newmis, ((self.origin + (v_forward * 8.000000)) + '0.000000 0.000000 16.000000'));
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, ((self.origin + (v_forward * 8)) + '0 0 16'));
 };
 
 void () TeamFortress_IncendiaryCannon =
 {
-	if (!(self.weapons_carried & 16384.000000))
+	if (!(self.weapons_carried & 16384))
 	{
 		return;
 	}
-	if ((self.ammo_rockets < 2.000000))
+	if ((self.ammo_rockets < 2))
 	{
-		sprint (self, 2.000000, "not enough ammo.\n");
+		sprint (self, 2, "not enough ammo.\n");
 		return;
 	}
-	self.current_weapon = 16384.000000;
+	self.current_weapon = 16384;
 	W_SetCurrentAmmo ();
 };
 

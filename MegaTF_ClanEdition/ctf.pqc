@@ -2,24 +2,24 @@ void () TeamFortress_CTF_FlagInfo =
 {
 	local entity _l_11235;
 
-	_l_11235 = Finditem (1.000000);
-	if ((_l_11235.goal_state == 1.000000))
+	_l_11235 = Finditem (1);
+	if ((_l_11235.goal_state == 1))
 	{
 		if ((self == _l_11235.owner))
 		{
-			sprint (self, 2.000000, "You have the enemy flag. ");
+			sprint (self, 2, "You have the enemy flag. ");
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_11235.owner.netname);
-			sprint (self, 2.000000, " has");
-			if ((self.team_no == 1.000000))
+			sprint (self, 2, _l_11235.owner.netname);
+			sprint (self, 2, " has");
+			if ((self.team_no == 1))
 			{
-				sprint (self, 2.000000, " your flag. ");
+				sprint (self, 2, " your flag. ");
 			}
 			else
 			{
-				sprint (self, 2.000000, " the enemy flag. ");
+				sprint (self, 2, " the enemy flag. ");
 			}
 		}
 	}
@@ -27,45 +27,45 @@ void () TeamFortress_CTF_FlagInfo =
 	{
 		if ((_l_11235.origin != _l_11235.oldorigin))
 		{
-			if ((self.team_no == 1.000000))
+			if ((self.team_no == 1))
 			{
-				sprint (self, 2.000000, "Your flag is lying about. ");
+				sprint (self, 2, "Your flag is lying about. ");
 			}
 			else
 			{
-				sprint (self, 2.000000, "The enemy flag is lying about. ");
+				sprint (self, 2, "The enemy flag is lying about. ");
 			}
 		}
 		else
 		{
-			if ((self.team_no == 1.000000))
+			if ((self.team_no == 1))
 			{
-				sprint (self, 2.000000, "Your flag is in your base. ");
+				sprint (self, 2, "Your flag is in your base. ");
 			}
 			else
 			{
-				sprint (self, 2.000000, "The enemy flag is in their base. ");
+				sprint (self, 2, "The enemy flag is in their base. ");
 			}
 		}
 	}
-	_l_11235 = Finditem (2.000000);
-	if ((_l_11235.goal_state == 1.000000))
+	_l_11235 = Finditem (2);
+	if ((_l_11235.goal_state == 1))
 	{
 		if ((self == _l_11235.owner))
 		{
-			sprint (self, 2.000000, "You have the enemy flag.\n");
+			sprint (self, 2, "You have the enemy flag.\n");
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_11235.owner.netname);
-			sprint (self, 2.000000, " has");
-			if ((self.team_no == 2.000000))
+			sprint (self, 2, _l_11235.owner.netname);
+			sprint (self, 2, " has");
+			if ((self.team_no == 2))
 			{
-				sprint (self, 2.000000, " your flag.\n");
+				sprint (self, 2, " your flag.\n");
 			}
 			else
 			{
-				sprint (self, 2.000000, " the enemy flag.\n");
+				sprint (self, 2, " the enemy flag.\n");
 			}
 		}
 	}
@@ -73,24 +73,24 @@ void () TeamFortress_CTF_FlagInfo =
 	{
 		if ((_l_11235.origin != _l_11235.oldorigin))
 		{
-			if ((self.team_no == 2.000000))
+			if ((self.team_no == 2))
 			{
-				sprint (self, 2.000000, "Your flag is lying about.\n");
+				sprint (self, 2, "Your flag is lying about.\n");
 			}
 			else
 			{
-				sprint (self, 2.000000, "The enemy flag is lying about.\n");
+				sprint (self, 2, "The enemy flag is lying about.\n");
 			}
 		}
 		else
 		{
-			if ((self.team_no == 2.000000))
+			if ((self.team_no == 2))
 			{
-				sprint (self, 2.000000, "Your flag is in your base.\n");
+				sprint (self, 2, "Your flag is in your base.\n");
 			}
 			else
 			{
-				sprint (self, 2.000000, "The enemy flag is in their base.\n");
+				sprint (self, 2, "The enemy flag is in their base.\n");
 			}
 		}
 	}

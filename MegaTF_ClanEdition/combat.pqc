@@ -154,19 +154,19 @@ entity (float gno) Findgoal;
 
 		if (((((targ.classname == "player") || (targ.classname == "building_sentrygun")) || (targ.classname == "building_dispenser")) || (targ.classname == "bot")))
 		{
-			if (((attacker.stats_on == 1.000000) && (attacker.team_no != targ.team_no)))
+			if (((attacker.stats_on == 1) && (attacker.team_no != targ.team_no)))
 			{
 				oldself = self;
 				self = attacker;
-				if ((deathmsg == 28.000000))
+				if ((deathmsg == 28))
 				{
-					Stats_Hit (33.000000);
+					Stats_Hit (33);
 				}
 				else
 				{
-					if ((deathmsg == 29.000000))
+					if ((deathmsg == 29))
 					{
-						Stats_Hit (34.000000);
+						Stats_Hit (34);
 					}
 				}
 				self = oldself;
@@ -314,97 +314,97 @@ if ((((damage < 60) & ((attacker.classname == "player") & (targ.classname == "pl
 
 	if (((((targ.classname == "player") || (targ.classname == "building_sentrygun")) || (targ.classname == "building_dispenser")) || (targ.classname == "bot")))
 	{
-		if (((attacker.stats_on == 1.000000) && (attacker.team_no != targ.team_no)))
+		if (((attacker.stats_on == 1) && (attacker.team_no != targ.team_no)))
 		{
 			oldself = self;
 			self = attacker;
-			if ((deathmsg == 1.000000))
+			if ((deathmsg == 1))
 			{
-				Stats_Hit (128.000000);
+				Stats_Hit (128);
 			}
 			else
 			{
-				if ((deathmsg == 2.000000))
+				if ((deathmsg == 2))
 				{
-					Stats_Hit (256.000000);
+					Stats_Hit (256);
 				}
 				else
 				{
-					if ((deathmsg == 3.000000))
+					if ((deathmsg == 3))
 					{
-						Stats_Hit (512.000000);
+						Stats_Hit (512);
 					}
 					else
 					{
-						if ((deathmsg == 4.000000))
+						if ((deathmsg == 4))
 						{
-							Stats_Hit (1024.000000);
+							Stats_Hit (1024);
 						}
 						else
 						{
-							if ((deathmsg == 5.000000))
+							if ((deathmsg == 5))
 							{
-								Stats_Hit (2048.000000);
+								Stats_Hit (2048);
 							}
 							else
 							{
-								if ((deathmsg == 6.000000))
+								if ((deathmsg == 6))
 								{
-									Stats_Hit (8192.000000);
+									Stats_Hit (8192);
 								}
 								else
 								{
-									if ((deathmsg == 8.000000))
+									if ((deathmsg == 8))
 									{
-										Stats_Hit (666.000000);
+										Stats_Hit (666);
 									}
 									else
 									{
-										if ((deathmsg == 11.000000))
+										if ((deathmsg == 11))
 										{
-											Stats_Hit (2054.000000);
+											Stats_Hit (2054);
 										}
 										else
 										{
-											if ((deathmsg == 17.000000))
+											if ((deathmsg == 17))
 											{
-												Stats_Hit (8.000000);
+												Stats_Hit (8);
 											}
 											else
 											{
-												if ((deathmsg == 18.000000))
+												if ((deathmsg == 18))
 												{
-													Stats_Hit (32.000000);
+													Stats_Hit (32);
 												}
 												else
 												{
-													if ((deathmsg == 19.000000))
+													if ((deathmsg == 19))
 													{
-														Stats_Hit (64.000000);
+														Stats_Hit (64);
 													}
 													else
 													{
-														if ((deathmsg == 20.000000))
+														if ((deathmsg == 20))
 														{
-															Stats_Hit (32768.000000);
+															Stats_Hit (32768);
 														}
 														else
 														{
-															if ((deathmsg == 25.000000))
+															if ((deathmsg == 25))
 															{
-																Stats_Hit (262144.000000);
+																Stats_Hit (262144);
 															}
 															else
 															{
-																if ((deathmsg == 26.000000))
+																if ((deathmsg == 26))
 																{
-																	Stats_Hit (524288.000000);
+																	Stats_Hit (524288);
 																}
 																else
 																{
-																	if ((deathmsg == 46.000000))
+																	if ((deathmsg == 46))
 																	{
-																		Stats_Hit (32768.000000);
+																		Stats_Hit (32768);
 																	}
 																}
 															}
@@ -598,19 +598,19 @@ if ((((damage < 60) & ((attacker.classname == "player") & (targ.classname == "pl
             		targ.armorvalue = TF_FLARE_LIT;
             	}
 
-	if ((((deathmsg == 34.000000) && (targ.classname == "building_sentrygun")) && (targ.health <= 0.000000)))
+	if ((((deathmsg == 34) && (targ.classname == "building_sentrygun")) && (targ.health <= 0)))
 	{
 		if (((targ.goalentity.classname == "bot") || (targ.goalentity.classname == "airmirv")))
 		{
 			targ.goalentity = targ.goalentity.owner;
 		}
-		bprint (1.000000, targ.real_owner.netname);
-		bprint (1.000000, "'s sentrygun blew itself up thanks to ");
-		bprint (1.000000, targ.goalentity.netname);
-		bprint (1.000000, "\n");
-		targ.goalentity.real_frags = (targ.goalentity.real_frags + 2.000000);
+		bprint (1, targ.real_owner.netname);
+		bprint (1, "'s sentrygun blew itself up thanks to ");
+		bprint (1, targ.goalentity.netname);
+		bprint (1, "\n");
+		targ.goalentity.real_frags = (targ.goalentity.real_frags + 2);
 		logfrag (targ.goalentity, targ.real_owner);
-		if (!(toggleflags & 128.000000))
+		if (!(toggleflags & 128))
 		{
 			targ.goalentity.frags = targ.goalentity.real_frags;
 		}

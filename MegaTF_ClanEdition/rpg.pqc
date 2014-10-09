@@ -43,8 +43,8 @@ void() voteyes =
 	else
 	{
 		self.has_voted = 1;
-		bprint (1.000000, self.netname);
-		bprint (1.000000, " has agreed on the map vote.\n");
+		bprint (1, self.netname);
+		bprint (1, " has agreed on the map vote.\n");
 		num_votes = num_votes + 1;
 		if (num_votes > (num_players * 0.5))
 		{
@@ -52,8 +52,8 @@ void() voteyes =
 			themap = infokey (world, "themap");
 			if (infokey(world, "fteserver") == "1" || infokey(world, "fteserver") == "on")
 				themap = strzone(themap);
-			bprint (1.000000, themap);
-			bprint (1.000000, " it is!\n");
+			bprint (1, themap);
+			bprint (1, " it is!\n");
 #ifdef fte_rankings
 			if (FTE_Server == 1)
 				Rank_UpdateStatsGlobal ();
@@ -89,13 +89,13 @@ void() voteyes =
 		votesneeded = votesneededtostring ();
 		if (votesneeded == "1")
 		{
-			bprint (1.000000, votesneeded);
-			bprint (1.000000, " more vote needed.\n");
+			bprint (1, votesneeded);
+			bprint (1, " more vote needed.\n");
 		}
 		else
 		{
-			bprint (1.000000, votesneeded);
-			bprint (1.000000, " more votes needed");
+			bprint (1, votesneeded);
+			bprint (1, " more votes needed");
 			bprint (1, " ");
 			themap = infokey (world, "themap");
 			bprint (1, themap);
@@ -151,12 +151,12 @@ void(string put) votemap_start =
 		localcmd ("localinfo  themap ");
 		localcmd (put);
 		localcmd ("\n");
-		bprint (1.000000, self.netname);
-		bprint (1.000000, " has voted for ");
-		bprint (1.000000, put);
+		bprint (1, self.netname);
+		bprint (1, " has voted for ");
+		bprint (1, put);
             mapdispfix = put;
-		bprint (1.000000, " - use voteyes to agree. If more than 50% is not agreed before one minute the vote will end.\n");
-//		sound (world, 4.000000, "misc/runekey.wav", 1.000000, 0.000000);
+		bprint (1, " - use voteyes to agree. If more than 50% is not agreed before one minute the vote will end.\n");
+//		sound (world, 4, "misc/runekey.wav", 1, 0);
 // Since the sound would not play for everyone in the game with the old sound code, I make it play the sound
 // individually for all players
 		local entity head;
@@ -196,13 +196,13 @@ void(string put) votemap_start =
 		votesneeded = votesneededtostring ();
 		if (votesneeded == "1")
 		{
-			bprint (1.000000, votesneeded);
-			bprint (1.000000, " more vote needed.\n");
+			bprint (1, votesneeded);
+			bprint (1, " more vote needed.\n");
 		}
 		else
 		{
-			bprint (1.000000, votesneeded);
-			bprint (1.000000, " more votes needed");
+			bprint (1, votesneeded);
+			bprint (1, " more votes needed");
 			bprint (1, " ");
 			themap = infokey (world, "themap");
 			bprint (1, mapdispfix);
@@ -343,7 +343,7 @@ float(float num_args, string arg1, string arg2, string arg3, string arg4, string
 		thisiscnn = arg2;
 		if (!arg2)
 		{
-			sprint (self, 2.000000, "Please use [cmd votemap mapname] in the console.\n");
+			sprint (self, 2, "Please use [cmd votemap mapname] in the console.\n");
 			return 1;
 		}
 		if (validatemap(arg2))
@@ -381,7 +381,7 @@ void (string d, string st) FTE_VoteMap =
 {
 			if (d == "")
 			{
-				sprint (self, 2.000000, "Please specify a map name (EX: cmd votemap 2mach1)\n");
+				sprint (self, 2, "Please specify a map name (EX: cmd votemap 2mach1)\n");
 				return;
 			}
 			local float handle;
@@ -441,7 +441,7 @@ void SV_ParseClientCommand (string st)
         	{
 		if (!d)
 		{
-			sprint (self, 2.000000, "Please use [cmd pm userid \"message\"] in the console:\n");
+			sprint (self, 2, "Please use [cmd pm userid \"message\"] in the console:\n");
 			pm_list ();
 			return;
 		}
@@ -449,13 +449,13 @@ void SV_ParseClientCommand (string st)
 		{
 			if (!f)
 			{
-				sprint (self, 2.000000, "Please use [cmd pm userid \"message\"] in the console:\n");
+				sprint (self, 2, "Please use [cmd pm userid \"message\"] in the console:\n");
 				pm_list ();
 				return;
 			}
 			if (g != "")
 			{
-				sprint (self, 2.000000, "Use your message text inside \"quotes like this\"!\n");
+				sprint (self, 2, "Use your message text inside \"quotes like this\"!\n");
 				return;
 			}
 			else
@@ -479,7 +479,7 @@ void SV_ParseClientCommand (string st)
 					}
 					te = find(te,classname,"player");
 				}
-				sprint (self, 2.000000, "User not found. Please choose a userid from this list:\n");
+				sprint (self, 2, "User not found. Please choose a userid from this list:\n");
 				pm_list ();
 				return;
 			}

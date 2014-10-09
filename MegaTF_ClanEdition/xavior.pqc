@@ -99,130 +99,130 @@ void() pre_messagetimer2 =
 void (float _p_2420) Stats_Fired =
 {
 
-	if ((self.stats_on == 1.000000))
+	if ((self.stats_on == 1))
 	{
 		stuffcmd (self, "inc ");
-		if ((_p_2420 == 8.000000))
+		if ((_p_2420 == 8))
 		{
 			stuffcmd (self, "stats_axe_f");
 		}
 		else
 		{
-			if ((_p_2420 == 16.000000))
+			if ((_p_2420 == 16))
 			{
 				stuffcmd (self, "stats_axe_f");
 			}
 			else
 			{
-				if ((_p_2420 == 1.000000))
+				if ((_p_2420 == 1))
 				{
 					stuffcmd (self, "stats_grap_f");
 				}
 				else
 				{
-					if ((_p_2420 == 128.000000))
+					if ((_p_2420 == 128))
 					{
 						stuffcmd (self, "stats_sg_f");
 					}
 					else
 					{
-						if ((_p_2420 == 256.000000))
+						if ((_p_2420 == 256))
 						{
 							stuffcmd (self, "stats_ssg_f");
 						}
 						else
 						{
-							if ((_p_2420 == 512.000000))
+							if ((_p_2420 == 512))
 							{
 								stuffcmd (self, "stats_ng_f");
 							}
 							else
 							{
-								if ((_p_2420 == 1024.000000))
+								if ((_p_2420 == 1024))
 								{
 									stuffcmd (self, "stats_sng_f");
 								}
 								else
 								{
-									if (((_p_2420 == 2048.000000) && (self.weaponmode == 1.000000)))
+									if (((_p_2420 == 2048) && (self.weaponmode == 1)))
 									{
 										stuffcmd (self, "stats_pb_f");
 									}
 									else
 									{
-										if ((_p_2420 == 2048.000000))
+										if ((_p_2420 == 2048))
 										{
 											stuffcmd (self, "stats_gl_f");
 										}
 										else
 										{
-											if ((_p_2420 == 8192.000000))
+											if ((_p_2420 == 8192))
 											{
 												stuffcmd (self, "stats_rl_f");
 											}
 											else
 											{
-												if ((_p_2420 == 32.000000))
+												if ((_p_2420 == 32))
 												{
 													stuffcmd (self, "stats_sr_f");
 												}
 												else
 												{
-													if ((_p_2420 == 64.000000))
+													if ((_p_2420 == 64))
 													{
 														stuffcmd (self, "stats_mg_f");
 													}
 													else
 													{
-														if (((_p_2420 == 32768.000000) && (self.option4 == 1.000000)))
+														if (((_p_2420 == 32768) && (self.option4 == 1)))
 														{
 															stuffcmd (self, "stats_20mm_f");
 														}
 														else
 														{
-															if ((_p_2420 == 32768.000000))
+															if ((_p_2420 == 32768))
 															{
 																stuffcmd (self, "stats_ac_f");
 															}
 															else
 															{
-																if ((_p_2420 == 4096.000000))
+																if ((_p_2420 == 4096))
 																{
 																	stuffcmd (self, "stats_ft_f");
 																}
 																else
 																{
-																	if ((_p_2420 == 16384.000000))
+																	if ((_p_2420 == 16384))
 																	{
 																		stuffcmd (self, "stats_incend_f");
 																	}
 																	else
 																	{
-																		if ((_p_2420 == 4.000000))
+																		if ((_p_2420 == 4))
 																		{
 																			stuffcmd (self, "stats_ba_f");
 																		}
 																		else
 																		{
-																			if ((_p_2420 == 2.000000))
+																			if ((_p_2420 == 2))
 																			{
 																				stuffcmd (self, "stats_ba_f");
 																			}
 																			else
 																			{
-																				if ((_p_2420 == 262144.000000))
+																				if ((_p_2420 == 262144))
 																				{
 																					stuffcmd (self, "stats_tranq_f");
 																				}
 																				else
 																				{
-																					if ((_p_2420 == 524288.000000))
+																					if ((_p_2420 == 524288))
 																					{
 																						stuffcmd (self, "stats_rg_f");
 																					}
 																					else
 																					{
-																						if ((_p_2420 == 666.000000))
+																						if ((_p_2420 == 666))
 																						{
 																							stuffcmd (self, "stats_g1_f");
 																						}
@@ -253,145 +253,145 @@ void (float _p_2420) Stats_Fired =
 void (float _p_2445) Stats_Hit =
 {
 
-	if ((self.stats_on == 1.000000))
+	if ((self.stats_on == 1))
 	{
 		stuffcmd (self, "inc ");
-		if ((_p_2445 == 8.000000))
+		if ((_p_2445 == 8))
 		{
 			stuffcmd (self, "stats_axe_h");
 		}
 		else
 		{
-			if ((_p_2445 == 16.000000))
+			if ((_p_2445 == 16))
 			{
 				stuffcmd (self, "stats_axe_h");
 			}
 			else
 			{
-				if ((_p_2445 == 1.000000))
+				if ((_p_2445 == 1))
 				{
 					stuffcmd (self, "stats_grap_h");
 				}
 				else
 				{
-					if ((_p_2445 == 128.000000))
+					if ((_p_2445 == 128))
 					{
 						stuffcmd (self, "stats_sg_h");
 					}
 					else
 					{
-						if ((_p_2445 == 256.000000))
+						if ((_p_2445 == 256))
 						{
 							stuffcmd (self, "stats_ssg_h");
 						}
 						else
 						{
-							if ((_p_2445 == 512.000000))
+							if ((_p_2445 == 512))
 							{
 								stuffcmd (self, "stats_ng_h");
 							}
 							else
 							{
-								if ((_p_2445 == 1024.000000))
+								if ((_p_2445 == 1024))
 								{
 									stuffcmd (self, "stats_sng_h");
 								}
 								else
 								{
-									if ((_p_2445 == 2054.000000))
+									if ((_p_2445 == 2054))
 									{
 										stuffcmd (self, "stats_pb_h");
 									}
 									else
 									{
-										if ((_p_2445 == 2048.000000))
+										if ((_p_2445 == 2048))
 										{
 											stuffcmd (self, "stats_gl_h");
 										}
 										else
 										{
-											if ((_p_2445 == 8192.000000))
+											if ((_p_2445 == 8192))
 											{
 												stuffcmd (self, "stats_rl_h");
 											}
 											else
 											{
-												if ((_p_2445 == 34.000000))
+												if ((_p_2445 == 34))
 												{
 													stuffcmd (self, "stats_sr_h 1\n inc ");
 													stuffcmd (self, "stats_sr_hs");
 												}
 												else
 												{
-													if ((_p_2445 == 33.000000))
+													if ((_p_2445 == 33))
 													{
 														stuffcmd (self, "stats_sr_h 1\n inc ");
 														stuffcmd (self, "stats_sr_ls");
 													}
 													else
 													{
-														if ((_p_2445 == 32.000000))
+														if ((_p_2445 == 32))
 														{
 															stuffcmd (self, "stats_sr_h 1\n inc ");
 															stuffcmd (self, "stats_sr_cs");
 														}
 														else
 														{
-															if ((_p_2445 == 64.000000))
+															if ((_p_2445 == 64))
 															{
 																stuffcmd (self, "stats_mg_h");
 															}
 															else
 															{
-																if (((_p_2445 == 32768.000000) && (self.option4 == 1.000000)))
+																if (((_p_2445 == 32768) && (self.option4 == 1)))
 																{
 																	stuffcmd (self, "stats_20mm_h");
 																}
 																else
 																{
-																	if ((_p_2445 == 32768.000000))
+																	if ((_p_2445 == 32768))
 																	{
 																		stuffcmd (self, "stats_ac_h");
 																	}
 																	else
 																	{
-																		if ((_p_2445 == 4096.000000))
+																		if ((_p_2445 == 4096))
 																		{
 																			stuffcmd (self, "stats_ft_h");
 																		}
 																		else
 																		{
-																			if ((_p_2445 == 16384.000000))
+																			if ((_p_2445 == 16384))
 																			{
 																				stuffcmd (self, "stats_incend_h");
 																			}
 																			else
 																			{
-																				if ((_p_2445 == 4.000000))
+																				if ((_p_2445 == 4))
 																				{
 																					stuffcmd (self, "stats_ba_h");
 																				}
 																				else
 																				{
-																					if ((_p_2445 == 2.000000))
+																					if ((_p_2445 == 2))
 																					{
 																						stuffcmd (self, "stats_ba_h");
 																					}
 																					else
 																					{
-																						if ((_p_2445 == 262144.000000))
+																						if ((_p_2445 == 262144))
 																						{
 																							stuffcmd (self, "stats_tranq_h");
 																						}
 																						else
 																						{
-																							if ((_p_2445 == 524288.000000))
+																							if ((_p_2445 == 524288))
 																							{
 																								stuffcmd (self, "stats_rg_h");
 																							}
 																							else
 																							{
-																								if ((_p_2445 == 666.000000))
+																								if ((_p_2445 == 666))
 																								{
 																									stuffcmd (self, "stats_g1_h");
 																								}

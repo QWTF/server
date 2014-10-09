@@ -677,12 +677,12 @@ void () trigger_jumper_touch =
 
 	if (!Activated (self, other))
 	{
-		if ((self.else_goal != 0.000000))
+		if ((self.else_goal != 0))
 		{
 			_l_7024 = Findgoal (self.else_goal);
 			if (_l_7024)
 			{
-				DoResults (_l_7024, other, (self.goal_result & 2.000000));
+				DoResults (_l_7024, other, (self.goal_result & 2));
 			}
 		}
 		return;
@@ -693,23 +693,23 @@ void () trigger_jumper_touch =
 	}
 	else
 	{
-		if (((other.health > 0.000000) && !self.armorclass))
+		if (((other.health > 0) && !self.armorclass))
 		{
-			other.velocity_z = (self.speed * 7.000000);
+			other.velocity_z = (self.speed * 7);
 			if ((other.classname == "player"))
 			{
 				if ((other.fly_sound < time))
 				{
 					other.fly_sound = (time + 1.500000);
-					if (!(self.spawnflags & 2.000000))
+					if (!(self.spawnflags & 2))
 					{
-						sound (other, 0.000000, "misc/boing.wav", 1.000000, 1.000000);
+						sound (other, 0, "misc/boing.wav", 1, 1);
 					}
 				}
 			}
 		}
 	}
-	if ((self.spawnflags & 1.000000))
+	if ((self.spawnflags & 1))
 	{
 		dremove (self);
 	}
@@ -717,7 +717,7 @@ void () trigger_jumper_touch =
 
 void () trigger_jumper =
 {
-	if ((CheckExistence () == 0.000000))
+	if ((CheckExistence () == 0))
 	{
 		dremove (self);
 		return;
@@ -727,7 +727,7 @@ void () trigger_jumper =
 	self.touch = trigger_jumper_touch;
 	if (!self.speed)
 	{
-		self.speed = 1000.000000;
+		self.speed = 1000;
 	}
 };
 

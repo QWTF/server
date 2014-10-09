@@ -196,12 +196,12 @@ void() TeamFortress_ToggleGenderMessage =
 	if (self.gender < 1)
 	{
 		self.gender = 1.0;
-		sprint (self, 2.000000, "çGender set to Female.\n");		
+		sprint (self, 2, "çGender set to Female.\n");		
 	}
 	else
 	{
 		self.gender = 0.0;
-		sprint (self, 2.000000, "çGender set to Male.\n");		
+		sprint (self, 2, "çGender set to Male.\n");		
 	}
 };
 
@@ -444,9 +444,9 @@ void() TeamFortress_ChangeClass =
 //The following was causing a slight delay in the spawn so i put it in client.pqc
 //	stuffcmd (self, "alias aa_enabled impulse 240\nalias cl_accel impulse 240\nalias cl_speed impulse 240\nalias aa_lag impulse 240\nalias autofire impulse 240\nalias +autofire impulse 240\nalias autodet impulse 240\nalias +showradar impulse 240\n");
 	stuffcmd (self, "cl_sidespeed 500\ncl_backspeed 500\ncl_forwardspeed 500\n");
-	if ((quadscore > 0.000000))
+	if ((quadscore > 0))
 	{
-		if ((self.team_no == 2.000000))
+		if ((self.team_no == 2))
 		{
 			self.frags = quadscore;
 			self.real_frags = quadscore;
@@ -560,25 +560,25 @@ void (float _p_10136) TeamFortress_ItemStatus =
 	local entity _l_10138;
 	local float _l_10139;
 
-	_l_10139 = 0.000000;
-	if ((_p_10136 >= 10.000000))
+	_l_10139 = 0;
+	if ((_p_10136 >= 10))
 	{
-		_l_10139 = 1.000000;
-		_p_10136 = _p_10136 - 10.000000;
+		_l_10139 = 1;
+		_p_10136 = _p_10136 - 10;
 	}
-	if ((_p_10136 == 0.000000))
+	if ((_p_10136 == 0))
 	{
 		_p_10136 = self.team_no;
 	}
 	else
 	{
-		if ((self.team_no == 1.000000))
+		if ((self.team_no == 1))
 		{
-			_p_10136 = 2.000000;
+			_p_10136 = 2;
 		}
 		else
 		{
-			_p_10136 = 1.000000;
+			_p_10136 = 1;
 		}
 	}
 	_l_10137 = find (world, classname, "item_tfgoal");
@@ -590,7 +590,7 @@ void (float _p_10136) TeamFortress_ItemStatus =
 		}
 		_l_10137 = find (_l_10137, classname, "item_tfgoal");
 	}
-	if ((((((_l_10138 != world) && (_l_10138.owner == world)) && (_l_10138.think == tfgoalitem_remove)) && ((_l_10138.nextthink - time) > 0.000000)) && (_l_10138.origin != _l_10138.oldorigin)))
+	if ((((((_l_10138 != world) && (_l_10138.owner == world)) && (_l_10138.think == tfgoalitem_remove)) && ((_l_10138.nextthink - time) > 0)) && (_l_10138.origin != _l_10138.oldorigin)))
 	{
 		if (_l_10139)
 		{
@@ -602,15 +602,15 @@ void (float _p_10136) TeamFortress_ItemStatus =
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_10138.netname);
-			sprint (self, 2.000000, " returns in ");
+			sprint (self, 2, _l_10138.netname);
+			sprint (self, 2, " returns in ");
 			ftos (rint ((_l_10138.nextthink - time)));
-			sprint (self, 2.000000, ftos (rint ((_l_10138.nextthink - time))));
-			sprint (self, 2.000000, " seconds.\n");
+			sprint (self, 2, ftos (rint ((_l_10138.nextthink - time))));
+			sprint (self, 2, " seconds.\n");
 		}
 		return;
 	}
-	if ((((((_l_10138 != world) && (_l_10138.owner == world)) && (_l_10138.think == tfgoalitem_dropthink)) && ((_l_10138.nextthink - time) > 0.000000)) && (_l_10138.origin != _l_10138.oldorigin)))
+	if ((((((_l_10138 != world) && (_l_10138.owner == world)) && (_l_10138.think == tfgoalitem_dropthink)) && ((_l_10138.nextthink - time) > 0)) && (_l_10138.origin != _l_10138.oldorigin)))
 	{
 		if (_l_10139)
 		{
@@ -620,8 +620,8 @@ void (float _p_10136) TeamFortress_ItemStatus =
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_10138.netname);
-			sprint (self, 2.000000, " has been dropped.\n");
+			sprint (self, 2, _l_10138.netname);
+			sprint (self, 2, " has been dropped.\n");
 		}
 		return;
 	}
@@ -635,8 +635,8 @@ void (float _p_10136) TeamFortress_ItemStatus =
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_10138.netname);
-			sprint (self, 2.000000, " is on its post.\n");
+			sprint (self, 2, _l_10138.netname);
+			sprint (self, 2, " is on its post.\n");
 		}
 		return;
 	}
@@ -650,8 +650,8 @@ void (float _p_10136) TeamFortress_ItemStatus =
 		}
 		else
 		{
-			sprint (self, 2.000000, _l_10138.netname);
-			sprint (self, 2.000000, " is being carried.\n");
+			sprint (self, 2, _l_10138.netname);
+			sprint (self, 2, " is being carried.\n");
 		}
 		return;
 	}
@@ -665,100 +665,100 @@ void () TeamFortress_Inventory =
 	local string _l_10157;
 	local string _l_10159;
 
-	sprint (self, 2.000000, "You're on the ");
+	sprint (self, 2, "You're on the ");
 	_l_10157 = ftos (self.team_no);
 	if ((_l_10157 == "1"))
 	{
-		sprint (self, 2.000000, "¬Ã’≈");
+		sprint (self, 2, "¬Ã’≈");
 	}
 	if ((_l_10157 == "2"))
 	{
-		sprint (self, 2.000000, "“≈ƒ");
+		sprint (self, 2, "“≈ƒ");
 	}
 	if ((_l_10157 == "3"))
 	{
-		sprint (self, 2.000000, "Ÿ≈ÃÃœ◊");
+		sprint (self, 2, "Ÿ≈ÃÃœ◊");
 	}
 	if ((_l_10157 == "4"))
 	{
-		sprint (self, 2.000000, "«“≈≈Œ");
+		sprint (self, 2, "«“≈≈Œ");
 	}
-	sprint (self, 2.000000, " team.\n");
-	if ((self.lives != -1.000000))
+	sprint (self, 2, " team.\n");
+	if ((self.lives != -1))
 	{
 		_l_10157 = ftos (self.lives);
-		sprint (self, 2.000000, "You've got ");
-		sprint (self, 2.000000, _l_10157);
-		if ((self.lives == 1.000000))
+		sprint (self, 2, "You've got ");
+		sprint (self, 2, _l_10157);
+		if ((self.lives == 1))
 		{
-			sprint (self, 2.000000, " life.\n");
+			sprint (self, 2, " life.\n");
 		}
 		else
 		{
-			sprint (self, 2.000000, " lives.\n");
+			sprint (self, 2, " lives.\n");
 		}
 	}
-	if ((self.no_grenades_1 > 0.000000))
+	if ((self.no_grenades_1 > 0))
 	{
-		sprint (self, 2.000000, " €");
+		sprint (self, 2, " €");
 		_l_10157 = ftos (self.no_grenades_1);
-		sprint (self, 2.000000, _l_10157);
-		sprint (self, 2.000000, "› ");
-		if ((self.tp_grenades_1 == 1.000000))
+		sprint (self, 2, _l_10157);
+		sprint (self, 2, "› ");
+		if ((self.tp_grenades_1 == 1))
 		{
-			sprint (self, 2.000000, "normal grenade");
+			sprint (self, 2, "normal grenade");
 		}
 		else
 		{
-			if ((self.tp_grenades_1 == 2.000000))
+			if ((self.tp_grenades_1 == 2))
 			{
-				sprint (self, 2.000000, "concussion grenade");
+				sprint (self, 2, "concussion grenade");
 			}
 			else
 			{
-				if ((self.tp_grenades_1 == 3.000000))
+				if ((self.tp_grenades_1 == 3))
 				{
-					sprint (self, 2.000000, "nail grenade");
+					sprint (self, 2, "nail grenade");
 				}
 				else
 				{
-					if ((self.tp_grenades_1 == 4.000000))
+					if ((self.tp_grenades_1 == 4))
 					{
-						sprint (self, 2.000000, "MIRV grenade");
+						sprint (self, 2, "MIRV grenade");
 					}
 					else
 					{
-						if ((self.tp_grenades_1 == 5.000000))
+						if ((self.tp_grenades_1 == 5))
 						{
-							sprint (self, 2.000000, "napalm grenade");
+							sprint (self, 2, "napalm grenade");
 						}
 						else
 						{
-							if ((self.tp_grenades_1 == 6.000000))
+							if ((self.tp_grenades_1 == 6))
 							{
-								sprint (self, 2.000000, "flare");
+								sprint (self, 2, "flare");
 							}
 							else
 							{
-								if ((self.tp_grenades_1 == 7.000000))
+								if ((self.tp_grenades_1 == 7))
 								{
-									sprint (self, 2.000000, "hallucinogenic grenade");
+									sprint (self, 2, "hallucinogenic grenade");
 								}
 								else
 								{
-									if ((self.tp_grenades_1 == 8.000000))
+									if ((self.tp_grenades_1 == 8))
 									{
-										sprint (self, 2.000000, "EMP grenade");
+										sprint (self, 2, "EMP grenade");
 									}
 									else
 									{
-										if ((self.tp_grenades_1 == 9.000000))
+										if ((self.tp_grenades_1 == 9))
 										{
-											sprint (self, 2.000000, "flash grenade");
+											sprint (self, 2, "flash grenade");
 										}
 										else
 										{
-											sprint (self, 2.000000, "BUG(");
+											sprint (self, 2, "BUG(");
 										}
 									}
 								}
@@ -770,71 +770,71 @@ void () TeamFortress_Inventory =
 		}
 		if ((_l_10157 != "1"))
 		{
-			sprint (self, 2.000000, "s");
+			sprint (self, 2, "s");
 		}
-		sprint (self, 2.000000, "\n");
+		sprint (self, 2, "\n");
 	}
-	if ((self.no_grenades_2 > 0.000000))
+	if ((self.no_grenades_2 > 0))
 	{
-		sprint (self, 2.000000, " €");
+		sprint (self, 2, " €");
 		_l_10157 = ftos (self.no_grenades_2);
-		sprint (self, 2.000000, _l_10157);
-		sprint (self, 2.000000, "› ");
-		if ((self.tp_grenades_2 == 1.000000))
+		sprint (self, 2, _l_10157);
+		sprint (self, 2, "› ");
+		if ((self.tp_grenades_2 == 1))
 		{
-			sprint (self, 2.000000, "normal grenade");
+			sprint (self, 2, "normal grenade");
 		}
 		else
 		{
-			if ((self.tp_grenades_2 == 2.000000))
+			if ((self.tp_grenades_2 == 2))
 			{
-				sprint (self, 2.000000, "concussion grenade");
+				sprint (self, 2, "concussion grenade");
 			}
 			else
 			{
-				if ((self.tp_grenades_2 == 3.000000))
+				if ((self.tp_grenades_2 == 3))
 				{
-					sprint (self, 2.000000, "nail grenade");
+					sprint (self, 2, "nail grenade");
 				}
 				else
 				{
-					if ((self.tp_grenades_2 == 4.000000))
+					if ((self.tp_grenades_2 == 4))
 					{
-						sprint (self, 2.000000, "MIRV grenade");
+						sprint (self, 2, "MIRV grenade");
 					}
 					else
 					{
-						if ((self.tp_grenades_2 == 5.000000))
+						if ((self.tp_grenades_2 == 5))
 						{
-							sprint (self, 2.000000, "napalm grenade");
+							sprint (self, 2, "napalm grenade");
 						}
 						else
 						{
-							if ((self.tp_grenades_2 == 6.000000))
+							if ((self.tp_grenades_2 == 6))
 							{
-								sprint (self, 2.000000, "flare");
+								sprint (self, 2, "flare");
 							}
 							else
 							{
-								if ((self.tp_grenades_2 == 7.000000))
+								if ((self.tp_grenades_2 == 7))
 								{
-									sprint (self, 2.000000, "hallucinogenic grenade");
+									sprint (self, 2, "hallucinogenic grenade");
 								}
 								else
 								{
-									if ((self.tp_grenades_2 == 8.000000))
+									if ((self.tp_grenades_2 == 8))
 									{
-										sprint (self, 2.000000, "EMP grenade");
+										sprint (self, 2, "EMP grenade");
 									}
 									else
 									{
-										if ((self.tp_grenades_2 == 9.000000))
+										if ((self.tp_grenades_2 == 9))
 										{
-											sprint (self, 2.000000, "flash grenade");
+											sprint (self, 2, "flash grenade");
 										}
 										else
 										{
-											sprint (self, 2.000000, "BUG(");
+											sprint (self, 2, "BUG(");
 										}
 									}
 								}
@@ -846,23 +846,23 @@ void () TeamFortress_Inventory =
 		}
 		if ((_l_10157 != "1"))
 		{
-			sprint (self, 2.000000, "s");
+			sprint (self, 2, "s");
 		}
-		sprint (self, 2.000000, "\n");
+		sprint (self, 2, "\n");
 	}
 	_l_10154 = find (world, classname, "drop1");
 	while (_l_10154)
 	{
 		if ((_l_10154.owner == self))
 		{
-			_l_10155 = _l_10155 + 1.000000;
+			_l_10155 = _l_10155 + 1;
 		}
 		_l_10154 = find (_l_10154, classname, "drop1");
 	}
-	if ((self.playerclass == 1.000000))
+	if ((self.playerclass == 1))
 	{
-		_l_10155 = 1.000000 - _l_10155;
-		if ((_l_10155 <= 0.000000))
+		_l_10155 = 1 - _l_10155;
+		if ((_l_10155 <= 0))
 		{
 			_l_10159 = "";
 		}
@@ -871,43 +871,43 @@ void () TeamFortress_Inventory =
 			_l_10159 = "Flash Mine";
 		}
 	}
-	if ((self.playerclass == 2.000000))
+	if ((self.playerclass == 2))
 	{
 		_l_10159 = "used alarm";
 	}
 	else
 	{
-		if (((self.playerclass == 3.000000) || (self.playerclass == 6.000000)))
+		if (((self.playerclass == 3) || (self.playerclass == 6)))
 		{
-			_l_10155 = 2.000000 - _l_10155;
+			_l_10155 = 2 - _l_10155;
 			_l_10159 = "Spike Trap";
 		}
 		else
 		{
-			if ((self.playerclass == 5.000000))
+			if ((self.playerclass == 5))
 			{
-				_l_10155 = 1.000000 - _l_10155;
+				_l_10155 = 1 - _l_10155;
 				_l_10159 = "Syringe";
 			}
 			else
 			{
-				if ((self.playerclass == 7.000000))
+				if ((self.playerclass == 7))
 				{
-					_l_10155 = 1.000000 - _l_10155;
+					_l_10155 = 1 - _l_10155;
 					_l_10159 = "Lava Pool";
 				}
 				else
 				{
-					if ((self.playerclass == 8.000000))
+					if ((self.playerclass == 8))
 					{
-						_l_10155 = 1.000000 - _l_10155;
+						_l_10155 = 1 - _l_10155;
 						_l_10159 = "Ammo Trap";
 					}
 					else
 					{
-						if ((self.playerclass == 9.000000))
+						if ((self.playerclass == 9))
 						{
-							_l_10155 = 1.000000 - _l_10155;
+							_l_10155 = 1 - _l_10155;
 							_l_10159 = "MagMine";
 						}
 					}
@@ -917,51 +917,51 @@ void () TeamFortress_Inventory =
 	}
 	if (_l_10155)
 	{
-		if ((_l_10155 <= 0.000000))
+		if ((_l_10155 <= 0))
 		{
 			return;
 		}
-		if (!((self.playerclass == 7.000000) && (self.has_syringe == 0.000000)))
+		if (!((self.playerclass == 7) && (self.has_syringe == 0)))
 		{
 			_l_10157 = ftos (_l_10155);
-			sprint (self, 2.000000, _l_10157);
-			sprint (self, 2.000000, " ", _l_10159);
-			if ((_l_10155 > 1.000000))
+			sprint (self, 2, _l_10157);
+			sprint (self, 2, " ", _l_10159);
+			if ((_l_10155 > 1))
 			{
-				sprint (self, 2.000000, "s. ");
+				sprint (self, 2, "s. ");
 			}
 			else
 			{
-				sprint (self, 2.000000, ". ");
+				sprint (self, 2, ". ");
 			}
 		}
 	}
-	if ((self.playerclass == 9.000000))
+	if ((self.playerclass == 9))
 	{
-		if ((self.option3 > 0.000000))
+		if ((self.option3 > 0))
 		{
 			if ((self.last_used <= time))
 			{
-				sprint (self, 2.000000, "1 LaserDrone. ");
+				sprint (self, 2, "1 LaserDrone. ");
 			}
 		}
 	}
-	if ((self.tf_items & 1.000000))
+	if ((self.tf_items & 1))
 	{
-		sprint (self, 2.000000, "Scanner. ");
+		sprint (self, 2, "Scanner. ");
 	}
-	if ((self.weapons_carried & 131072.000000))
+	if ((self.weapons_carried & 131072))
 	{
-		if ((self.ammo_detpack > 0.000000))
+		if ((self.ammo_detpack > 0))
 		{
 			_l_10157 = ftos (self.ammo_detpack);
-			sprint (self, 2.000000, _l_10157);
-			sprint (self, 2.000000, " Detpack");
-			if ((self.ammo_detpack > 1.000000))
+			sprint (self, 2, _l_10157);
+			sprint (self, 2, " Detpack");
+			if ((self.ammo_detpack > 1))
 			{
-				sprint (self, 2.000000, "s");
+				sprint (self, 2, "s");
 			}
-			sprint (self, 2.000000, ". ");
+			sprint (self, 2, ". ");
 		}
 	}
 	_l_10156 = find (world, classname, "item_tfgoal");
@@ -969,30 +969,30 @@ void () TeamFortress_Inventory =
 	{
 		if ((_l_10156.owner == self))
 		{
-			sprint (self, 2.000000, _l_10156.netname);
-			sprint (self, 2.000000, ". ");
+			sprint (self, 2, _l_10156.netname);
+			sprint (self, 2, ". ");
 		}
 		_l_10156 = find (_l_10156, classname, "item_tfgoal");
 	}
-	if ((self.armorvalue > 0.000000))
+	if ((self.armorvalue > 0))
 	{
 		TeamFortress_DescribeArmor (self, self.armorclass);
 	}
 	if (!invis_only)
 	{
-		if (((self.playerclass == 8.000000) && (invis_only == 0.000000)))
+		if (((self.playerclass == 8) && (invis_only == 0)))
 		{
-			sprint (self, 2.000000, "Skin : ");
-			if ((self.undercover_skin != 0.000000))
+			sprint (self, 2, "Skin : ");
+			if ((self.undercover_skin != 0))
 			{
-				TeamFortress_PrintClassName (self, self.undercover_skin, 0.000000, 0);
+				TeamFortress_PrintClassName (self, self.undercover_skin, 0, 0);
 			}
 			else
 			{
-				sprint (self, 2.000000, "Spy\n");
+				sprint (self, 2, "Spy\n");
 			}
-			sprint (self, 2.000000, "Colors : Team ");
-			if ((self.undercover_team != 0.000000))
+			sprint (self, 2, "Colors : Team ");
+			if ((self.undercover_team != 0))
 			{
 				_l_10157 = ftos (self.undercover_team);
 			}
@@ -1000,33 +1000,33 @@ void () TeamFortress_Inventory =
 			{
 				_l_10157 = ftos (self.team_no);
 			}
-			sprint (self, 2.000000, _l_10157);
+			sprint (self, 2, _l_10157);
 		}
 	}
-	sprint (self, 2.000000, "\n");
+	sprint (self, 2, "\n");
 };
 
 float (string st, float ft) ShowTF_PrintCR =
 {
 	local string _l_10200;
 
-	if ((ft == 0.000000))
+	if ((ft == 0))
 	{
-		return (0.000000);
+		return (0);
 	}
 	else
 	{
-		if ((ft == -1.000000))
+		if ((ft == -1))
 		{
-			sprint (self, 2.000000, st, "disabled\n");
+			sprint (self, 2, st, "disabled\n");
 		}
 		else
 		{
 			_l_10200 = ftos (ft);
-			sprint (self, 2.000000, st, _l_10200, "\n");
+			sprint (self, 2, st, _l_10200, "\n");
 		}
 	}
-	return (1.000000);
+	return (1);
 };
 
 
@@ -1035,25 +1035,25 @@ void () TeamFortress_ShowTF =
 	local string _l_10203;
 	local float _l_10205;
 
-	sprint (self, 2.000000, "‘Â·Ì∆ÔÚÙÚÂÛÛ ”ÂÙÙÈÓÁÛ∫\n\n");
-	if ((toggleflags & 1.000000))
+	sprint (self, 2, "‘Â·Ì∆ÔÚÙÚÂÛÛ ”ÂÙÙÈÓÁÛ∫\n\n");
+	if ((toggleflags & 1))
 	{
-		sprint (self, 2.000000, "   Class Persistence On.\n");
+		sprint (self, 2, "   Class Persistence On.\n");
 	}
 	else
 	{
-		sprint (self, 2.000000, "   Class Persistence Off.\n");
+		sprint (self, 2, "   Class Persistence Off.\n");
 	}
-	if ((toggleflags & 64.000000))
+	if ((toggleflags & 64))
 	{
-		sprint (self, 2.000000, "   AutoTeam On.\n");
+		sprint (self, 2, "   AutoTeam On.\n");
 	}
 	else
 	{
-		sprint (self, 2.000000, "   AutoTeam Off.\n");
+		sprint (self, 2, "   AutoTeam Off.\n");
 	}
-	sprint (self, 2.000000, "   ");
-	if ((toggleflags & 4.000000))
+	sprint (self, 2, "   ");
+	if ((toggleflags & 4))
 	{
 		_l_10203 = ftos (respawn_delay_time);
 	}
@@ -1061,31 +1061,31 @@ void () TeamFortress_ShowTF =
 	{
 		_l_10203 = "No";
 	}
-	sprint (self, 2.000000, _l_10203);
+	sprint (self, 2, _l_10203);
 	if ((_l_10203 != "No"))
 	{
-		sprint (self, 2.000000, " second");
+		sprint (self, 2, " second");
 	}
-	sprint (self, 2.000000, " Respawn Delay.\n");
-	if ((toggleflags & 128.000000))
+	sprint (self, 2, " Respawn Delay.\n");
+	if ((toggleflags & 128))
 	{
-		sprint (self, 2.000000, "   TeamFrags On.\n");
+		sprint (self, 2, "   TeamFrags On.\n");
 	}
 	else
 	{
-		sprint (self, 2.000000, "   TeamFrags Off.\n");
+		sprint (self, 2, "   TeamFrags Off.\n");
 	}
 	if (allow_hook)
 	{
-		sprint (self, 2.000000, "   Grapple On.\n");
+		sprint (self, 2, "   Grapple On.\n");
 	}
 	else
 	{
-		sprint (self, 2.000000, "   Grapple Off.\n");
+		sprint (self, 2, "   Grapple Off.\n");
 	}
 	ReCheckRestrictions ();
-	sprint (self, 2.000000, "\n\n\n√Ï·ÛÛ “ÂÛÙÚÈ„ÙÈÔÓÛ∫\n\n");
-	_l_10205 = 0.000000;
+	sprint (self, 2, "\n\n\n√Ï·ÛÛ “ÂÛÙÚÈ„ÙÈÔÓÛ∫\n\n");
+	_l_10205 = 0;
 	_l_10205 = _l_10205 + ShowTF_PrintCR ("   Scout   : ", cr_scout);
 	_l_10205 = _l_10205 + ShowTF_PrintCR ("   Sniper  : ", cr_sniper);
 	_l_10205 = _l_10205 + ShowTF_PrintCR ("   Soldier : ", cr_soldier);
@@ -1097,7 +1097,7 @@ void () TeamFortress_ShowTF =
 	_l_10205 = _l_10205 + ShowTF_PrintCR ("   Engineer: ", cr_engineer);
 	if (!_l_10205)
 	{
-		sprint (self, 2.000000, "   none set\n");
+		sprint (self, 2, "   none set\n");
 	}
 };
 
@@ -1108,60 +1108,60 @@ void () TeamFortress_PrimeGrenade =
 	local string _l_10233;
 	local entity _l_10234;
 
-	if ((self.bugger == 8.000000))
+	if ((self.bugger == 8))
 	{
 		return;
 	}
-	if (((self.tfstate & 1.000000) || (self.tfstate & 1024.000000)))
+	if (((self.tfstate & 1) || (self.tfstate & 1024)))
 	{
 		return;
 	}
-	if ((self.impulse == 150.000000))
+	if ((self.impulse == 150))
 	{
 		_l_10231 = self.tp_grenades_1;
-		if ((self.tp_grenades_1 == 2.000000))
+		if ((self.tp_grenades_1 == 2))
 		{
 			_l_10232 = "Concussion grenade";
 		}
 		else
 		{
-			if ((self.tp_grenades_1 == 3.000000))
+			if ((self.tp_grenades_1 == 3))
 			{
 				_l_10232 = "Nail grenade";
 			}
 			else
 			{
-				if ((self.tp_grenades_1 == 4.000000))
+				if ((self.tp_grenades_1 == 4))
 				{
 					_l_10232 = "Mirv grenade";
 				}
 				else
 				{
-					if ((self.tp_grenades_1 == 5.000000))
+					if ((self.tp_grenades_1 == 5))
 					{
 						_l_10232 = "Napalm grenade";
 					}
 					else
 					{
-						if ((self.tp_grenades_1 == 6.000000))
+						if ((self.tp_grenades_1 == 6))
 						{
 							_l_10232 = "Flare";
 						}
 						else
 						{
-							if ((self.tp_grenades_1 == 7.000000))
+							if ((self.tp_grenades_1 == 7))
 							{
 								_l_10232 = "Gas grenade";
 							}
 							else
 							{
-								if ((self.tp_grenades_1 == 8.000000))
+								if ((self.tp_grenades_1 == 8))
 								{
 									_l_10232 = "EMP grenade";
 								}
 								else
 								{
-									if ((self.tp_grenades_1 == 9.000000))
+									if ((self.tp_grenades_1 == 9))
 									{
 										_l_10232 = "Flash grenade";
 									}
@@ -1176,89 +1176,89 @@ void () TeamFortress_PrimeGrenade =
 				}
 			}
 		}
-		if ((self.active_grenades_1 < 0.000000))
+		if ((self.active_grenades_1 < 0))
 		{
-			self.active_grenades_1 = 0.000000;
+			self.active_grenades_1 = 0;
 		}
-		if ((self.no_grenades_1 > 0.000000))
+		if ((self.no_grenades_1 > 0))
 		{
 			if ((self.active_grenades_1 < sr_gren1))
 			{
-				sound (self, 1.000000, "weapons/prime.wav", 1.000000, 1.000000);
-				_l_10233 = ftos (3.000000);
-				sprint (self, 2.000000, _l_10232);
-				sprint (self, 2.000000, " primed, ");
-				sprint (self, 2.000000, _l_10233);
-				sprint (self, 2.000000, " seconds...\n");
-				self.no_grenades_1 = (self.no_grenades_1 - 1.000000);
-				self.active_grenades_1 = (self.active_grenades_1 + 1.000000);
-				if ((self.tp_grenades_1 == 1.000000))
+				sound (self, 1, "weapons/prime.wav", 1, 1);
+				_l_10233 = ftos (3);
+				sprint (self, 2, _l_10232);
+				sprint (self, 2, " primed, ");
+				sprint (self, 2, _l_10233);
+				sprint (self, 2, " seconds...\n");
+				self.no_grenades_1 = (self.no_grenades_1 - 1);
+				self.active_grenades_1 = (self.active_grenades_1 + 1);
+				if ((self.tp_grenades_1 == 1))
 				{
-					Stats_Fired (666.000000);
+					Stats_Fired (666);
 				}
 				self.StatusRefreshTime = (time + 0.200000);
 			}
 			else
 			{
-				sound (self, 1.000000, "player/pain2.wav", 1.000000, 1.000000);
-				sprint (self, 2.000000, "Your arthritic priming hand is taking a break.\n");
+				sound (self, 1, "player/pain2.wav", 1, 1);
+				sprint (self, 2, "Your arthritic priming hand is taking a break.\n");
 				return;
 			}
 		}
 		else
 		{
-			sprint (self, 2.000000, "No ");
-			sprint (self, 2.000000, _l_10232);
-			sprint (self, 2.000000, "s left.\n");
+			sprint (self, 2, "No ");
+			sprint (self, 2, _l_10232);
+			sprint (self, 2, "s left.\n");
 			return;
 		}
 	}
-	if ((self.impulse == 151.000000))
+	if ((self.impulse == 151))
 	{
 		_l_10231 = self.tp_grenades_2;
-		if ((self.tp_grenades_2 == 2.000000))
+		if ((self.tp_grenades_2 == 2))
 		{
 			_l_10232 = "Concussion grenade";
 		}
 		else
 		{
-			if ((self.tp_grenades_2 == 3.000000))
+			if ((self.tp_grenades_2 == 3))
 			{
 				_l_10232 = "Nail grenade";
 			}
 			else
 			{
-				if ((self.tp_grenades_2 == 4.000000))
+				if ((self.tp_grenades_2 == 4))
 				{
 					_l_10232 = "Mirv grenade";
 				}
 				else
 				{
-					if ((self.tp_grenades_2 == 5.000000))
+					if ((self.tp_grenades_2 == 5))
 					{
 						_l_10232 = "Napalm grenade";
 					}
 					else
 					{
-						if ((self.tp_grenades_2 == 6.000000))
+						if ((self.tp_grenades_2 == 6))
 						{
 							_l_10232 = "Flare";
 						}
 						else
 						{
-							if ((self.tp_grenades_2 == 7.000000))
+							if ((self.tp_grenades_2 == 7))
 							{
 								_l_10232 = "Gas grenade";
 							}
 							else
 							{
-								if ((self.tp_grenades_2 == 8.000000))
+								if ((self.tp_grenades_2 == 8))
 								{
 									_l_10232 = "EMP grenade";
 								}
 								else
 								{
-									if ((self.tp_grenades_2 == 9.000000))
+									if ((self.tp_grenades_2 == 9))
 									{
 										_l_10232 = "Flash grenade";
 									}
@@ -1273,40 +1273,40 @@ void () TeamFortress_PrimeGrenade =
 				}
 			}
 		}
-		if ((self.no_grenades_2 > 0.000000))
+		if ((self.no_grenades_2 > 0))
 		{
-			if ((self.active_grenades_2 < 0.000000))
+			if ((self.active_grenades_2 < 0))
 			{
-				self.active_grenades_2 = 0.000000;
+				self.active_grenades_2 = 0;
 			}
 			if ((rint (self.active_grenades_2) < sr_gren2))
 			{
-				sound (self, 1.000000, "weapons/prime.wav", 1.000000, 1.000000);
-				_l_10233 = ftos (3.000000);
-				sprint (self, 2.000000, _l_10232);
-				sprint (self, 2.000000, " primed, ");
-				sprint (self, 2.000000, _l_10233);
-				sprint (self, 2.000000, " seconds...\n");
-				self.no_grenades_2 = (self.no_grenades_2 - 1.000000);
-				self.active_grenades_2 = (self.active_grenades_2 + 1.000000);
+				sound (self, 1, "weapons/prime.wav", 1, 1);
+				_l_10233 = ftos (3);
+				sprint (self, 2, _l_10232);
+				sprint (self, 2, " primed, ");
+				sprint (self, 2, _l_10233);
+				sprint (self, 2, " seconds...\n");
+				self.no_grenades_2 = (self.no_grenades_2 - 1);
+				self.active_grenades_2 = (self.active_grenades_2 + 1);
 				self.StatusRefreshTime = (time + 0.200000);
 			}
 			else
 			{
-				sound (self, 1.000000, "player/pain2.wav", 1.000000, 1.000000);
-				sprint (self, 2.000000, "Your arthritic priming hand is taking a break.\n");
+				sound (self, 1, "player/pain2.wav", 1, 1);
+				sprint (self, 2, "Your arthritic priming hand is taking a break.\n");
 				return;
 			}
 		}
 		else
 		{
-			sprint (self, 2.000000, "No ");
-			sprint (self, 2.000000, _l_10232);
-			sprint (self, 2.000000, "s left.\n");
+			sprint (self, 2, "No ");
+			sprint (self, 2, _l_10232);
+			sprint (self, 2, "s left.\n");
 			return;
 		}
 	}
-	self.tfstate = (self.tfstate | 1.000000);
+	self.tfstate = (self.tfstate | 1);
 	_l_10234 = spawn ();
 	_l_10234.owner = self;
 	_l_10234.weapon = _l_10231;
@@ -1325,7 +1325,7 @@ void () TeamFortress_GrenadePrimed =
 	local float _l_10252;
 
 	_l_10249 = self.owner;
-	if ((!(_l_10249.tfstate & 1024.000000) && !_l_10249.deadflag))
+	if ((!(_l_10249.tfstate & 1024) && !_l_10249.deadflag))
 	{
 		self.nextthink = (time + 0.100000);
 		if (!self.think)
@@ -1338,144 +1338,144 @@ void () TeamFortress_GrenadePrimed =
 		}
 		return;
 	}
-	if (!(_l_10249.tfstate & 1.000000))
+	if (!(_l_10249.tfstate & 1))
 	{
 		dprint ("GrenadePrimed logic error\n");
 	}
-	_l_10249.tfstate = (_l_10249.tfstate - (_l_10249.tfstate & 1.000000));
-	_l_10249.tfstate = (_l_10249.tfstate - (_l_10249.tfstate & 1024.000000));
-	KickPlayer (-1.000000, _l_10249);
+	_l_10249.tfstate = (_l_10249.tfstate - (_l_10249.tfstate & 1));
+	_l_10249.tfstate = (_l_10249.tfstate - (_l_10249.tfstate & 1024));
+	KickPlayer (-1, _l_10249);
 	newmis = spawn ();
 	newmis.owner = _l_10249;
-	newmis.movetype = 10.000000;
-	newmis.solid = 2.000000;
+	newmis.movetype = 10;
+	newmis.solid = 2;
 	newmis.classname = "grenade";
 	makevectors (_l_10249.v_angle);
 	if (_l_10249.deadflag)
 	{
-		newmis.velocity = '0.000000 0.000000 200.000000';
+		newmis.velocity = '0 0 200';
 	}
 	else
 	{
 		if (_l_10249.v_angle_x)
 		{
-			newmis.velocity = ((((v_forward * 600.000000) + (v_up * 200.000000)) + ((crandom () * v_right) * 10.000000)) + ((crandom () * v_up) * 10.000000));
+			newmis.velocity = ((((v_forward * 600) + (v_up * 200)) + ((crandom () * v_right) * 10)) + ((crandom () * v_up) * 10));
 		}
 		else
 		{
-			newmis.velocity = aim (_l_10249, 10000.000000);
-			newmis.velocity = (newmis.velocity * 600.000000);
-			newmis.velocity_z = 200.000000;
+			newmis.velocity = aim (_l_10249, 10000);
+			newmis.velocity = (newmis.velocity * 600);
+			newmis.velocity_z = 200;
 		}
 	}
 	newmis.angles = vectoangles (newmis.velocity);
 	newmis.think = SUB_Null;
 	newmis.nextthink = self.heat;
-	if ((self.weapon == 1.000000))
+	if ((self.weapon == 1))
 	{
 		newmis.touch = NormalGrenadeTouch;
 		newmis.think = NormalGrenadeExplode;
-		newmis.skin = 0.000000;
-		newmis.avelocity = '300.000000 500.000000 300.000000';
+		newmis.skin = 0;
+		newmis.avelocity = '300 500 300';
 		setmodel (newmis, "progs/hgren2.mdl");
 	}
 	else
 	{
-		if ((self.weapon == 2.000000))
+		if ((self.weapon == 2))
 		{
 			newmis.touch = ConcussionGrenadeTouch;
 			newmis.think = ConcussionGrenadeExplode;
-			newmis.skin = 1.000000;
-			newmis.avelocity = '300.000000 300.000000 300.000000';
-			newmis.skin = 2.000000;
+			newmis.skin = 1;
+			newmis.avelocity = '300 300 300';
+			newmis.skin = 2;
 			setmodel (newmis, "progs/hgren2.mdl");
 		}
 		else
 		{
-			if ((self.weapon == 3.000000))
+			if ((self.weapon == 3))
 			{
 				newmis.touch = NailGrenadeTouch;
 				newmis.think = NailGrenadeExplode;
-				newmis.skin = 1.000000;
-				newmis.avelocity = '0.000000 300.000000 0.000000';
+				newmis.skin = 1;
+				newmis.avelocity = '0 300 0';
 				setmodel (newmis, "progs/biggren.mdl");
 			}
 			else
 			{
-				if ((self.weapon == 4.000000))
+				if ((self.weapon == 4))
 				{
 					newmis.touch = MirvGrenadeTouch;
 					newmis.think = MirvGrenadeExplode;
-					newmis.skin = 0.000000;
-					newmis.avelocity = '0.000000 300.000000 0.000000';
+					newmis.skin = 0;
+					newmis.avelocity = '0 300 0';
 					setmodel (newmis, "progs/biggren.mdl");
 				}
 				else
 				{
-					if ((self.weapon == 5.000000))
+					if ((self.weapon == 5))
 					{
 						newmis.touch = NapalmGrenadeTouch;
 						newmis.think = NapalmGrenadeExplode;
-						newmis.skin = 2.000000;
-						newmis.playerclass = 0.000000;
-						newmis.avelocity = '0.000000 300.000000 0.000000';
+						newmis.skin = 2;
+						newmis.playerclass = 0;
+						newmis.avelocity = '0 300 0';
 						setmodel (newmis, "progs/biggren.mdl");
 					}
 					else
 					{
-						if ((self.weapon == 6.000000))
+						if ((self.weapon == 6))
 						{
 							newmis.classname = "flare";
-							_l_10252 = 0.000000;
+							_l_10252 = 0;
 							_l_10250 = find (world, classname, "flare");
 							while (_l_10250)
 							{
-								_l_10252 = _l_10252 + 1.000000;
+								_l_10252 = _l_10252 + 1;
 								_l_10250 = find (_l_10250, classname, "flare");
 							}
-							if ((_l_10252 > 9.000000))
+							if ((_l_10252 > 9))
 							{
 								dremove (newmis);
 							}
-							newmis.movetype = 5.000000;
-							newmis.velocity_z = 0.000000;
-							newmis.velocity = aim (self, 10000.000000);
-							newmis.velocity = (newmis.velocity * 1300.000000);
+							newmis.movetype = 5;
+							newmis.velocity_z = 0;
+							newmis.velocity = aim (self, 10000);
+							newmis.velocity = (newmis.velocity * 1300);
 							newmis.touch = FlareGrenadeTouch;
 							newmis.think = FlareGrenadeExplode;
-							newmis.skin = 1.000000;
-							newmis.avelocity = '0.000000 0.000000 0.000000';
+							newmis.skin = 1;
+							newmis.avelocity = '0 0 0';
 							setmodel (newmis, "progs/flare.mdl");
-							newmis.solid = 1.000000;
+							newmis.solid = 1;
 						}
 						else
 						{
-							if ((self.weapon == 7.000000))
+							if ((self.weapon == 7))
 							{
 								newmis.touch = GasGrenadeTouch;
 								newmis.think = GasGrenadeExplode;
-								newmis.skin = 3.000000;
-								newmis.avelocity = '300.000000 300.000000 300.000000';
+								newmis.skin = 3;
+								newmis.avelocity = '300 300 300';
 								setmodel (newmis, "progs/grenade2.mdl");
 							}
 							else
 							{
-								if ((self.weapon == 8.000000))
+								if ((self.weapon == 8))
 								{
 									newmis.touch = EMPGrenadeTouch;
 									newmis.think = EMPGrenadeExplode;
-									newmis.skin = 4.000000;
-									newmis.avelocity = '300.000000 300.000000 300.000000';
+									newmis.skin = 4;
+									newmis.avelocity = '300 300 300';
 									setmodel (newmis, "progs/grenade2.mdl");
 								}
 								else
 								{
-									if ((self.weapon == 9.000000))
+									if ((self.weapon == 9))
 									{
 										newmis.touch = FlashGrenadeTouch;
 										newmis.think = FlashGrenadeExplode;
-										newmis.skin = 2.000000;
-										newmis.avelocity = '300.000000 300.000000 300.000000';
+										newmis.skin = 2;
+										newmis.avelocity = '300 300 300';
 										setmodel (newmis, "progs/hgren2.mdl");
 									}
 								}
@@ -1486,7 +1486,7 @@ void () TeamFortress_GrenadePrimed =
 			}
 		}
 	}
-	setsize (newmis, '0.000000 0.000000 0.000000', '1.000000 1.000000 1.000000');
+	setsize (newmis, '0 0 0', '1 1 1');
 	setorigin (newmis, _l_10249.origin);
 	_l_10251 = self;
 	self = self.owner;
@@ -2214,139 +2214,139 @@ void() TeamFortress_SetEquipment =
 //	}
 	if (self.playerclass == 1)
 	{
-		self.weapons_carried = (self.weapons_carried | 656.000000);
-		self.ammo_rockets = 0.000000;
-		self.ammo_nails = 100.000000;
-		self.ammo_shells = 25.000000;
-		self.ammo_cells = 50.000000;
-		self.maxammo_rockets = 25.000000;
-		self.maxammo_nails = 200.000000;
-		self.maxammo_shells = 50.000000;
-		self.maxammo_cells = 100.000000;
-		self.no_grenades_1 = 2.000000;
-		self.no_grenades_2 = 3.000000;
-		self.tp_grenades_1 = 9.000000;
-		self.tp_grenades_2 = 2.000000;
-		self.tf_items = 1.000000;
-		self.tf_items_flags = (self.tf_items_flags | 1.000000);
-		self.armorclass = (self.armorclass | 0.000000);
+		self.weapons_carried = (self.weapons_carried | 656);
+		self.ammo_rockets = 0;
+		self.ammo_nails = 100;
+		self.ammo_shells = 25;
+		self.ammo_cells = 50;
+		self.maxammo_rockets = 25;
+		self.maxammo_nails = 200;
+		self.maxammo_shells = 50;
+		self.maxammo_cells = 100;
+		self.no_grenades_1 = 2;
+		self.no_grenades_2 = 3;
+		self.tp_grenades_1 = 9;
+		self.tp_grenades_2 = 2;
+		self.tf_items = 1;
+		self.tf_items_flags = (self.tf_items_flags | 1);
+		self.armorclass = (self.armorclass | 0);
 		self.armortype = 0.300000;
-		self.armorvalue = 25.000000;
+		self.armorvalue = 25;
 		self.armor_allowed = 0.300000;
-		self.maxarmor = 50.000000;
-		self.current_weapon = 512.000000;
-		self.items_allowed = 656.000000;
-		self.items = (self.items | 5.000000);
+		self.maxarmor = 50;
+		self.current_weapon = 512;
+		self.items_allowed = 656;
+		self.items = (self.items | 5);
 	}
 	else
 	{
 		if (self.playerclass == 2)
 		{
-			self.weapons_carried = (self.weapons_carried | 624.000000);
-			self.ammo_rockets = 0.000000;
-			self.ammo_nails = 50.000000;
-			self.ammo_shells = 60.000000;
-			self.ammo_cells = 25.000000;
-			self.maxammo_rockets = 25.000000;
-			self.maxammo_nails = 100.000000;
-			self.maxammo_shells = 75.000000;
-			self.maxammo_cells = 50.000000;
-			self.no_grenades_1 = 2.000000;
-			self.no_grenades_2 = 3.000000;
-			self.tp_grenades_1 = 1.000000;
-			self.tp_grenades_2 = 6.000000;
-			self.tf_items = 0.000000;
-			self.armorclass = (self.armorclass | 0.000000);
+			self.weapons_carried = (self.weapons_carried | 624);
+			self.ammo_rockets = 0;
+			self.ammo_nails = 50;
+			self.ammo_shells = 60;
+			self.ammo_cells = 25;
+			self.maxammo_rockets = 25;
+			self.maxammo_nails = 100;
+			self.maxammo_shells = 75;
+			self.maxammo_cells = 50;
+			self.no_grenades_1 = 2;
+			self.no_grenades_2 = 3;
+			self.tp_grenades_1 = 1;
+			self.tp_grenades_2 = 6;
+			self.tf_items = 0;
+			self.armorclass = (self.armorclass | 0);
 			self.armortype = 0.300000;
-			self.armorvalue = 0.000000;
+			self.armorvalue = 0;
 			self.armor_allowed = 0.300000;
-			self.maxarmor = 50.000000;
-			self.current_weapon = 32.000000;
-			self.items_allowed = 624.000000;
-			self.items = (self.items | 7.000000);
+			self.maxarmor = 50;
+			self.current_weapon = 32;
+			self.items_allowed = 624;
+			self.items = (self.items | 7);
 		}
 		else
 		{
 			if (self.playerclass == 3)
 			{
-				self.weapons_carried = (self.weapons_carried | 8592.000000);
-				self.ammo_rockets = 25.000000;
-				self.ammo_nails = 0.000000;
-				self.ammo_shells = 50.000000;
-				self.ammo_cells = 0.000000;
-				self.maxammo_rockets = 50.000000;
-				self.maxammo_nails = 100.000000;
-				self.maxammo_shells = 100.000000;
-				self.maxammo_cells = 50.000000;
-				self.no_grenades_1 = 4.000000;
-				self.no_grenades_2 = 1.000000;
-				self.tp_grenades_1 = 1.000000;
-				self.tp_grenades_2 = 3.000000;
-				self.tf_items = 0.000000;
-				self.armorclass = (self.armorclass | 0.000000);
+				self.weapons_carried = (self.weapons_carried | 8592);
+				self.ammo_rockets = 25;
+				self.ammo_nails = 0;
+				self.ammo_shells = 50;
+				self.ammo_cells = 0;
+				self.maxammo_rockets = 50;
+				self.maxammo_nails = 100;
+				self.maxammo_shells = 100;
+				self.maxammo_cells = 50;
+				self.no_grenades_1 = 4;
+				self.no_grenades_2 = 1;
+				self.tp_grenades_1 = 1;
+				self.tp_grenades_2 = 3;
+				self.tf_items = 0;
+				self.armorclass = (self.armorclass | 0);
 				self.armortype = 0.800000;
-				self.armorvalue = 100.000000;
+				self.armorvalue = 100;
 				self.armor_allowed = 0.800000;
-				self.maxarmor = 200.000000;
-				self.current_weapon = 8192.000000;
-				self.items_allowed = 8592.000000;
-				self.items = (self.items | 35.000000);
+				self.maxarmor = 200;
+				self.current_weapon = 8192;
+				self.items_allowed = 8592;
+				self.items = (self.items | 35);
 			}
 			else
 			{
 				if (self.playerclass == 4)
 				{
-					self.weapons_carried = (self.weapons_carried | 133264.000000);
-					self.ammo_rockets = 25.000000;
-					self.ammo_nails = 0.000000;
-					self.ammo_shells = 30.000000;
-					self.ammo_cells = 0.000000;
-					self.maxammo_rockets = 50.000000;
-					self.maxammo_nails = 50.000000;
-					self.maxammo_shells = 75.000000;
-					self.maxammo_cells = 50.000000;
-					self.no_grenades_1 = 4.000000;
-					self.no_grenades_2 = 2.000000;
-					self.tp_grenades_1 = 1.000000;
-					self.tp_grenades_2 = 4.000000;
-					self.tf_items = 0.000000;
-					self.ammo_detpack = 1.000000;
-					self.maxammo_detpack = 1.000000;
-					self.armorclass = (self.armorclass | 4.000000);
+					self.weapons_carried = (self.weapons_carried | 133264);
+					self.ammo_rockets = 25;
+					self.ammo_nails = 0;
+					self.ammo_shells = 30;
+					self.ammo_cells = 0;
+					self.maxammo_rockets = 50;
+					self.maxammo_nails = 50;
+					self.maxammo_shells = 75;
+					self.maxammo_cells = 50;
+					self.no_grenades_1 = 4;
+					self.no_grenades_2 = 2;
+					self.tp_grenades_1 = 1;
+					self.tp_grenades_2 = 4;
+					self.tf_items = 0;
+					self.ammo_detpack = 1;
+					self.maxammo_detpack = 1;
+					self.armorclass = (self.armorclass | 4);
 					self.armortype = 0.600000;
-					self.armorvalue = 50.000000;
+					self.armorvalue = 50;
 					self.armor_allowed = 0.600000;
-					self.maxarmor = 100.000000;
-					self.current_weapon = 2048.000000;
-					self.items_allowed = 133264.000000;
-					self.items = (self.items | 17.000000);
+					self.maxarmor = 100;
+					self.current_weapon = 2048;
+					self.items_allowed = 133264;
+					self.items = (self.items | 17);
 				}
 				else
 				{
 					if (self.playerclass == 5)
 					{
-						self.weapons_carried = (self.weapons_carried | 1414.000000);
-						self.ammo_rockets = 0.000000;
-						self.ammo_nails = 150.000000;
-						self.ammo_shells = 50.000000;
-						self.ammo_cells = 0.000000;
-						self.maxammo_rockets = 25.000000;
-						self.maxammo_nails = 250.000000;
-						self.maxammo_shells = 75.000000;
-						self.maxammo_cells = 60.000000;
-						self.no_grenades_1 = 3.000000;
-						self.no_grenades_2 = 2.000000;
-						self.tp_grenades_1 = 1.000000;
-						self.tp_grenades_2 = 2.000000;
-						self.tf_items = 0.000000;
-						self.armorclass = (self.armorclass | 0.000000);
+						self.weapons_carried = (self.weapons_carried | 1414);
+						self.ammo_rockets = 0;
+						self.ammo_nails = 150;
+						self.ammo_shells = 50;
+						self.ammo_cells = 0;
+						self.maxammo_rockets = 25;
+						self.maxammo_nails = 250;
+						self.maxammo_shells = 75;
+						self.maxammo_cells = 60;
+						self.no_grenades_1 = 3;
+						self.no_grenades_2 = 2;
+						self.tp_grenades_1 = 1;
+						self.tp_grenades_2 = 2;
+						self.tf_items = 0;
+						self.armorclass = (self.armorclass | 0);
 						self.armortype = 0.300000;
-						self.armorvalue = 50.000000;
+						self.armorvalue = 50;
 						self.armor_allowed = 0.600000;
-						self.maxarmor = 100.000000;
-						self.current_weapon = 1024.000000;
-						self.ammo_medikit = 200.000000;
-						self.maxammo_medikit = 200.000000;
+						self.maxarmor = 100;
+						self.current_weapon = 1024;
+						self.ammo_medikit = 200;
+						self.maxammo_medikit = 200;
 						te = spawn();
 						te.nextthink = time + 2;
 						te.think = TeamFortress_Regenerate;
@@ -2359,110 +2359,110 @@ void() TeamFortress_SetEquipment =
 					{
 						if (self.playerclass == 6)
 						{
-							self.weapons_carried = (self.weapons_carried | 33680.000000);
-							self.ammo_rockets = 0.000000;
-							self.ammo_nails = 100.000000;
-							self.ammo_shells = 200.000000;
-							self.ammo_cells = 24.000000;
-							self.maxammo_rockets = 10.000000;
-							self.maxammo_nails = 250.000000;
-							self.maxammo_shells = 250.000000;
-							self.maxammo_cells = 50.000000;
-							self.no_grenades_1 = 4.000000;
-							self.no_grenades_2 = 1.000000;
-							self.tp_grenades_1 = 1.000000;
-							self.tp_grenades_2 = 4.000000;
-							self.tf_items = 0.000000;
-							self.armorclass = (self.armorclass | 0.000000);
+							self.weapons_carried = (self.weapons_carried | 33680);
+							self.ammo_rockets = 0;
+							self.ammo_nails = 100;
+							self.ammo_shells = 200;
+							self.ammo_cells = 24;
+							self.maxammo_rockets = 10;
+							self.maxammo_nails = 250;
+							self.maxammo_shells = 250;
+							self.maxammo_cells = 50;
+							self.no_grenades_1 = 4;
+							self.no_grenades_2 = 1;
+							self.tp_grenades_1 = 1;
+							self.tp_grenades_2 = 4;
+							self.tf_items = 0;
+							self.armorclass = (self.armorclass | 0);
 							self.armortype = 0.800000;
-							self.armorvalue = 150.000000;
+							self.armorvalue = 150;
 							self.armor_allowed = 0.800000;
-							self.maxarmor = 300.000000;
-							self.current_weapon = 32768.000000;
-							self.items_allowed = 33680.000000;
-							self.items = (self.items | 39.000000);
+							self.maxarmor = 300;
+							self.current_weapon = 32768;
+							self.items_allowed = 33680;
+							self.items = (self.items | 39);
 						}
 						else
 						{
 							if (self.playerclass == 7)
 							{
-								self.weapons_carried = (self.weapons_carried | 20624.000000);
-								self.ammo_rockets = 20.000000;
-								self.ammo_nails = 0.000000;
-								self.ammo_shells = 20.000000;
-								self.ammo_cells = 150.000000;
-								self.maxammo_rockets = 40.000000;
-								self.maxammo_nails = 50.000000;
-								self.maxammo_shells = 40.000000;
-								self.maxammo_cells = 250.000000;
-								self.no_grenades_1 = 1.000000;
-								self.no_grenades_2 = 4.000000;
-								self.tp_grenades_1 = 1.000000;
-								self.tp_grenades_2 = 5.000000;
-								self.tf_items = 0.000000;
-								self.armorclass = (self.armorclass | 16.000000);
+								self.weapons_carried = (self.weapons_carried | 20624);
+								self.ammo_rockets = 20;
+								self.ammo_nails = 0;
+								self.ammo_shells = 20;
+								self.ammo_cells = 150;
+								self.maxammo_rockets = 40;
+								self.maxammo_nails = 50;
+								self.maxammo_shells = 40;
+								self.maxammo_cells = 250;
+								self.no_grenades_1 = 1;
+								self.no_grenades_2 = 4;
+								self.tp_grenades_1 = 1;
+								self.tp_grenades_2 = 5;
+								self.tf_items = 0;
+								self.armorclass = (self.armorclass | 16);
 								self.armortype = 0.500000;
-								self.armorvalue = 70.000000;
+								self.armorvalue = 70;
 								self.armor_allowed = 0.800000;
-								self.maxarmor = 150.000000;
-								self.current_weapon = 4096.000000;
-								self.items_allowed = 20624.000000;
-								self.items = (self.items | 49.000000);
+								self.maxarmor = 150;
+								self.current_weapon = 4096;
+								self.items_allowed = 20624;
+								self.items = (self.items | 49);
 							}
 							else
 							{
 								if (self.playerclass == 11)
 								{
-									self.weapons_carried = (self.weapons_carried | 16.000000);
-									self.ammo_rockets = 0.000000;
-									self.ammo_nails = 0.000000;
-									self.ammo_shells = 0.000000;
-									self.ammo_cells = 0.000000;
-									self.maxammo_rockets = 0.000000;
-									self.maxammo_nails = 0.000000;
-									self.maxammo_shells = 0.000000;
-									self.maxammo_cells = 0.000000;
-									self.no_grenades_1 = 0.000000;
-									self.no_grenades_2 = 0.000000;
-									self.tp_grenades_1 = 0.000000;
-									self.tp_grenades_2 = 0.000000;
-									self.tf_items = 0.000000;
-									self.armorclass = (self.armorclass | 0.000000);
-									self.armortype = 0.000000;
-									self.armorvalue = 0.000000;
-									self.armor_allowed = 0.000000;
-									self.maxarmor = 0.000000;
-									self.current_weapon = 16.000000;
-									self.items_allowed = 16.000000;
-									self.items = 0.000000;
+									self.weapons_carried = (self.weapons_carried | 16);
+									self.ammo_rockets = 0;
+									self.ammo_nails = 0;
+									self.ammo_shells = 0;
+									self.ammo_cells = 0;
+									self.maxammo_rockets = 0;
+									self.maxammo_nails = 0;
+									self.maxammo_shells = 0;
+									self.maxammo_cells = 0;
+									self.no_grenades_1 = 0;
+									self.no_grenades_2 = 0;
+									self.tp_grenades_1 = 0;
+									self.tp_grenades_2 = 0;
+									self.tf_items = 0;
+									self.armorclass = (self.armorclass | 0);
+									self.armortype = 0;
+									self.armorvalue = 0;
+									self.armor_allowed = 0;
+									self.maxarmor = 0;
+									self.current_weapon = 16;
+									self.items_allowed = 16;
+									self.items = 0;
 								}
 								else
 								{
 									if (self.playerclass == 8)
 									{
-										self.weapons_carried = (self.weapons_carried | 262928.000000);
-										self.ammo_rockets = 0.000000;
-										self.ammo_nails = 25.000000;
-										self.ammo_shells = 40.000000;
-										self.ammo_cells = 30.000000;
-										self.maxammo_rockets = 15.000000;
-										self.maxammo_nails = 50.000000;
-										self.maxammo_shells = 40.000000;
-										self.maxammo_cells = 30.000000;
-										self.no_grenades_1 = 2.000000;
-										self.no_grenades_2 = 2.000000;
-										self.tp_grenades_1 = 1.000000;
-										self.tp_grenades_2 = 7.000000;
-										self.tf_items = 0.000000;
-										self.armorclass = (self.armorclass | 0.000000);
+										self.weapons_carried = (self.weapons_carried | 262928);
+										self.ammo_rockets = 0;
+										self.ammo_nails = 25;
+										self.ammo_shells = 40;
+										self.ammo_cells = 30;
+										self.maxammo_rockets = 15;
+										self.maxammo_nails = 50;
+										self.maxammo_shells = 40;
+										self.maxammo_cells = 30;
+										self.no_grenades_1 = 2;
+										self.no_grenades_2 = 2;
+										self.tp_grenades_1 = 1;
+										self.tp_grenades_2 = 7;
+										self.tf_items = 0;
+										self.armorclass = (self.armorclass | 0);
 										self.armortype = 0.300000;
-										self.armorvalue = 25.000000;
+										self.armorvalue = 25;
 										self.armor_allowed = 0.300000;
-										self.maxarmor = 100.000000;
-										self.current_weapon = 262144.000000;
-										self.items_allowed = 262928.000000;
-										self.items = (self.items | 71.000000);
-										if ((invis_only == 1.000000))
+										self.maxarmor = 100;
+										self.current_weapon = 262144;
+										self.items_allowed = 262928;
+										self.items = (self.items | 71);
+										if ((invis_only == 1))
 										{
 											te = spawn();
 											te.nextthink = time + 5;
@@ -2475,28 +2475,28 @@ void() TeamFortress_SetEquipment =
 									{
 										if (self.playerclass == 9)
 										{
-											self.weapons_carried = (self.weapons_carried | 524552.000000);
-											self.ammo_rockets = 0.000000;
-											self.ammo_nails = 25.000000;
-											self.ammo_shells = 20.000000;
-											self.ammo_cells = 100.000000;
-											self.maxammo_rockets = 30.000000;
-											self.maxammo_nails = 50.000000;
-											self.maxammo_shells = 50.000000;
-											self.maxammo_cells = 200.000000;
-											self.no_grenades_1 = 2.000000;
-											self.no_grenades_2 = 2.000000;
-											self.tp_grenades_1 = 1.000000;
-											self.tp_grenades_2 = 8.000000;
-											self.tf_items = 0.000000;
-											self.armorclass = (self.armorclass | 0.000000);
+											self.weapons_carried = (self.weapons_carried | 524552);
+											self.ammo_rockets = 0;
+											self.ammo_nails = 25;
+											self.ammo_shells = 20;
+											self.ammo_cells = 100;
+											self.maxammo_rockets = 30;
+											self.maxammo_nails = 50;
+											self.maxammo_shells = 50;
+											self.maxammo_cells = 200;
+											self.no_grenades_1 = 2;
+											self.no_grenades_2 = 2;
+											self.tp_grenades_1 = 1;
+											self.tp_grenades_2 = 8;
+											self.tf_items = 0;
+											self.armorclass = (self.armorclass | 0);
 											self.armortype = 0.300000;
-											self.armorvalue = 25.000000;
+											self.armorvalue = 25;
 											self.armor_allowed = 0.600000;
-											self.maxarmor = 50.000000;
-											self.current_weapon = 524288.000000;
-											self.items_allowed = 524552.000000;
-											self.items = (self.items | 3.000000);
+											self.maxarmor = 50;
+											self.current_weapon = 524288;
+											self.items_allowed = 524552;
+											self.items = (self.items | 3);
 											self.weaponmode = 1;
 										}
 										else
@@ -2619,7 +2619,7 @@ void() TeamFortress_SetEquipment =
 				}
 			}
 		}
-		if ((self.stats_on == 1.000000))
+		if ((self.stats_on == 1))
 		{
 			stuffcmd (self, "exec progs/stats.cfg\n");
 		}
@@ -3126,17 +3126,17 @@ void (float _p_10461) TeamFortress_DropAmmo =
 {
 	local float _l_10462;
 
-	if ((_p_10461 == 1.000000))
+	if ((_p_10461 == 1))
 	{
-		_l_10462 = 20.000000;
+		_l_10462 = 20;
 		if ((self.ammo_shells < _l_10462))
 		{
-			if ((self.playerclass == 9.000000))
+			if ((self.playerclass == 9))
 			{
-				if (((self.ammo_cells / 3.000000) > (_l_10462 - self.ammo_shells)))
+				if (((self.ammo_cells / 3) > (_l_10462 - self.ammo_shells)))
 				{
-					sprint (self, 2.000000, "you make some shells.\n");
-					self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_shells) * 3.000000));
+					sprint (self, 2, "you make some shells.\n");
+					self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_shells) * 3));
 					self.ammo_shells = _l_10462;
 				}
 			}
@@ -3149,17 +3149,17 @@ void (float _p_10461) TeamFortress_DropAmmo =
 	}
 	else
 	{
-		if ((_p_10461 == 2.000000))
+		if ((_p_10461 == 2))
 		{
-			_l_10462 = 20.000000;
+			_l_10462 = 20;
 			if ((self.ammo_nails < _l_10462))
 			{
-				if ((self.playerclass == 9.000000))
+				if ((self.playerclass == 9))
 				{
-					if (((self.ammo_cells / 2.000000) > (_l_10462 - self.ammo_nails)))
+					if (((self.ammo_cells / 2) > (_l_10462 - self.ammo_nails)))
 					{
-						sprint (self, 2.000000, "you make some nails.\n");
-						self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_nails) * 2.000000));
+						sprint (self, 2, "you make some nails.\n");
+						self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_nails) * 2));
 						self.ammo_nails = _l_10462;
 					}
 				}
@@ -3172,17 +3172,17 @@ void (float _p_10461) TeamFortress_DropAmmo =
 		}
 		else
 		{
-			if ((_p_10461 == 3.000000))
+			if ((_p_10461 == 3))
 			{
-				_l_10462 = 10.000000;
+				_l_10462 = 10;
 				if ((self.ammo_rockets < _l_10462))
 				{
-					if ((self.playerclass == 9.000000))
+					if ((self.playerclass == 9))
 					{
-						if (((self.ammo_cells / 5.000000) > (_l_10462 - self.ammo_rockets)))
+						if (((self.ammo_cells / 5) > (_l_10462 - self.ammo_rockets)))
 						{
-							sprint (self, 2.000000, "you make some rockets.\n");
-							self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_rockets) * 5.000000));
+							sprint (self, 2, "you make some rockets.\n");
+							self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_rockets) * 5));
 							self.ammo_rockets = _l_10462;
 						}
 					}
@@ -3195,17 +3195,17 @@ void (float _p_10461) TeamFortress_DropAmmo =
 			}
 			else
 			{
-				if ((_p_10461 == 4.000000))
+				if ((_p_10461 == 4))
 				{
-					_l_10462 = 10.000000;
+					_l_10462 = 10;
 					if ((self.ammo_cells < _l_10462))
 					{
-						if ((self.playerclass == 9.000000))
+						if ((self.playerclass == 9))
 						{
-							if (((self.ammo_cells / 5.000000) > (_l_10462 - self.ammo_cells)))
+							if (((self.ammo_cells / 5) > (_l_10462 - self.ammo_cells)))
 							{
-								sprint (self, 2.000000, "you make some cells.\n");
-								self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_cells) * 5.000000));
+								sprint (self, 2, "you make some cells.\n");
+								self.ammo_cells = (self.ammo_cells - ((_l_10462 - self.ammo_cells) * 5));
 								self.ammo_cells = _l_10462;
 							}
 						}
@@ -3219,101 +3219,101 @@ void (float _p_10461) TeamFortress_DropAmmo =
 			}
 		}
 	}
-	if ((_p_10461 == 5.000000))
+	if ((_p_10461 == 5))
 	{
-		if ((self.no_grenades_1 < 1.000000))
+		if ((self.no_grenades_1 < 1))
 		{
 			return;
 		}
-		self.no_grenades_1 = (self.no_grenades_1 - 1.000000);
+		self.no_grenades_1 = (self.no_grenades_1 - 1);
 	}
-	if ((_p_10461 == 6.000000))
+	if ((_p_10461 == 6))
 	{
-		if ((self.no_grenades_2 < 1.000000))
+		if ((self.no_grenades_2 < 1))
 		{
 			return;
 		}
-		self.no_grenades_2 = (self.no_grenades_2 - 1.000000);
+		self.no_grenades_2 = (self.no_grenades_2 - 1);
 	}
 	W_SetCurrentAmmo ();
-	if ((self.team_no != 0.000000))
+	if ((self.team_no != 0))
 	{
 		increment_team_ammoboxes (self.team_no);
-		if ((num_team_ammoboxes (self.team_no) > (20.000000 / number_of_teams)))
+		if ((num_team_ammoboxes (self.team_no) > (20 / number_of_teams)))
 		{
 			RemoveOldAmmobox (self.team_no);
 		}
 	}
 	else
 	{
-		num_world_ammoboxes = num_world_ammoboxes + 1.000000;
-		if ((num_world_ammoboxes > 20.000000))
+		num_world_ammoboxes = num_world_ammoboxes + 1;
+		if ((num_world_ammoboxes > 20))
 		{
-			RemoveOldAmmobox (0.000000);
+			RemoveOldAmmobox (0);
 		}
 	}
 	newmis = spawn ();
 	newmis.aflag = _l_10462;
 	newmis.weapon = _p_10461;
-	if ((newmis.weapon == 1.000000))
+	if ((newmis.weapon == 1))
 	{
 		newmis.ammo_shells = _l_10462;
 	}
 	else
 	{
-		if ((newmis.weapon == 2.000000))
+		if ((newmis.weapon == 2))
 		{
 			newmis.ammo_nails = _l_10462;
 		}
 		else
 		{
-			if ((newmis.weapon == 3.000000))
+			if ((newmis.weapon == 3))
 			{
 				newmis.ammo_rockets = _l_10462;
 			}
 			else
 			{
-				if ((newmis.weapon == 4.000000))
+				if ((newmis.weapon == 4))
 				{
 					newmis.ammo_cells = _l_10462;
 				}
 			}
 		}
 	}
-	if ((newmis.weapon == 5.000000))
+	if ((newmis.weapon == 5))
 	{
-		newmis.no_grenades_1 = 1.000000;
+		newmis.no_grenades_1 = 1;
 	}
-	if ((newmis.weapon == 6.000000))
+	if ((newmis.weapon == 6))
 	{
-		newmis.no_grenades_2 = 1.000000;
+		newmis.no_grenades_2 = 1;
 	}
 	newmis.enemy = self;
 	newmis.health = time;
-	newmis.movetype = 6.000000;
-	newmis.solid = 1.000000;
+	newmis.movetype = 6;
+	newmis.solid = 1;
 	newmis.classname = "ammobox";
 	newmis.team_no = self.team_no;
 	makevectors (self.v_angle);
 	if (self.v_angle_x)
 	{
-		newmis.velocity = ((v_forward * 400.000000) + (v_up * 200.000000));
+		newmis.velocity = ((v_forward * 400) + (v_up * 200));
 	}
 	else
 	{
-		newmis.velocity = aim (self, 10000.000000);
-		newmis.velocity = (newmis.velocity * 400.000000);
-		newmis.velocity_z = 200.000000;
+		newmis.velocity = aim (self, 10000);
+		newmis.velocity = (newmis.velocity * 400);
+		newmis.velocity_z = 200;
 	}
-	newmis.avelocity = '0.000000 300.000000 0.000000';
-	setsize (newmis, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
+	newmis.avelocity = '0 300 0';
+	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, self.origin);
-	newmis.nextthink = (time + 30.000000);
+	newmis.nextthink = (time + 30);
 	newmis.think = SUB_Remove;
 	newmis.touch = TeamFortress_AmmoboxTouch;
-	newmis.skin = (_p_10461 - 1.000000);
-	sound (newmis, 3.000000, "knight/sword2.wav", 1.000000, 1.000000);
-	if ((sr_dropgrens == 1.000000))
+	newmis.skin = (_p_10461 - 1);
+	sound (newmis, 3, "knight/sword2.wav", 1, 1);
+	if ((sr_dropgrens == 1))
 	{
 		setmodel (newmis, "progs/ammobox2.mdl");
 	}
@@ -3732,16 +3732,16 @@ void() NormalGrenadeTouch =
 void () NormalGrenadeExplode =
 {
 
-	deathmsg = 8.000000;
-	T_RadiusDamage (self, self.owner, 180.000000, world);
-	WriteByte (4.000000, 23.000000);
-	WriteByte (4.000000, 3.000000);
-	WriteCoord (4.000000, self.origin_x);
-	WriteCoord (4.000000, self.origin_y);
-	WriteCoord (4.000000, self.origin_z);
-	multicast (self.origin, 1.000000);
+	deathmsg = 8;
+	T_RadiusDamage (self, self.owner, 180, world);
+	WriteByte (4, 23);
+	WriteByte (4, 3);
+	WriteCoord (4, self.origin_x);
+	WriteCoord (4, self.origin_y);
+	WriteCoord (4, self.origin_z);
+	multicast (self.origin, 1);
 	BecomeExplosion ();
-	self.owner.active_grenades_1 = (self.owner.active_grenades_1 - 1.000000);
+	self.owner.active_grenades_1 = (self.owner.active_grenades_1 - 1);
 	dremove (self);
 };
 
@@ -4163,9 +4163,9 @@ void () ReCheckRestrictions =
 	cr_spy = stof (st);
 	st = infokey (world, "cr_engineer");
 	cr_engineer = stof (st);
-	if ((((((((((cr_scout != 0.000000) && (cr_sniper != 0.000000)) && (cr_soldier != 0.000000)) && (cr_demoman != 0.000000)) && (cr_medic != 0.000000)) && (cr_hwguy != 0.000000)) && (cr_pyro != 0.000000)) && (cr_spy != 0.000000)) && (cr_engineer != 0.000000)))
+	if ((((((((((cr_scout != 0) && (cr_sniper != 0)) && (cr_soldier != 0)) && (cr_demoman != 0)) && (cr_medic != 0)) && (cr_hwguy != 0)) && (cr_pyro != 0)) && (cr_spy != 0)) && (cr_engineer != 0)))
 	{
-		cr_engineer = 0.000000;
+		cr_engineer = 0;
 	}
 }
 

@@ -49,44 +49,44 @@ void() player_touch =
 void () player_stand1 = [ 17, player_stand1 ]
 {
 
-	self.weaponframe = 0.000000;
+	self.weaponframe = 0;
 	if ((self.velocity_x || self.velocity_y))
 	{
-		self.walkframe = 0.000000;
+		self.walkframe = 0;
 		player_run ();
 		return;
 	}
-	if ((self.is_squating == 1.000000))
+	if ((self.is_squating == 1))
 	{
 		lay ();
 	}
-	if ((self.current_weapon <= 16.000000))
+	if ((self.current_weapon <= 16))
 	{
-		if ((self.walkframe >= 12.000000))
+		if ((self.walkframe >= 12))
 		{
-			self.walkframe = 0.000000;
+			self.walkframe = 0;
 		}
-		if ((self.is_squating == 1.000000))
+		if ((self.is_squating == 1))
 		{
-			self.frame = 57.000000;
+			self.frame = 57;
 		}
 		else
 		{
-			self.frame = (17.000000 + self.walkframe);
+			self.frame = (17 + self.walkframe);
 		}
 	}
 	else
 	{
-		if ((self.walkframe >= 5.000000))
+		if ((self.walkframe >= 5))
 		{
-			self.walkframe = 0.000000;
+			self.walkframe = 0;
 		}
-		if ((self.is_squating == 1.000000))
+		if ((self.is_squating == 1))
 		{
-			self.frame = 57.000000;
+			self.frame = 57;
 			if ((!self.current_menu && (self.classname != "player_prop")))
 			{
-				if ((self.StatusBarSize == 0.000000))
+				if ((self.StatusBarSize == 0))
 				{
 					CenterPrint (self, "                  לבשימח\n");
 				}
@@ -94,14 +94,14 @@ void () player_stand1 = [ 17, player_stand1 ]
 		}
 		else
 		{
-			self.frame = (12.000000 + self.walkframe);
+			self.frame = (12 + self.walkframe);
 		}
 	}
-	if (((self.walkframe == 1.000000) && (self.vision == 1.000000)))
+	if (((self.walkframe == 1) && (self.vision == 1)))
 	{
 		TeamFortress_NightVision ();
 	}
-	self.walkframe = (self.walkframe + 1.000000);
+	self.walkframe = (self.walkframe + 1);
 };
 
 void() player_run = [6, player_run]

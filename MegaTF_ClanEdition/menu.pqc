@@ -85,55 +85,55 @@ void() ResetMenu =
 void () Player_Menu =
 {
 
-	if ((self.menu_count > 25.000000))
+	if ((self.menu_count > 25))
 	{
-		self.menu_count = 0.000000;
+		self.menu_count = 0;
 	}
 	else
 	{
-		self.menu_count = (self.menu_count + 1.000000);
+		self.menu_count = (self.menu_count + 1);
 		return;
 	}
 #ifdef clan_progs
 	if (self.current_menu == #MENU_CLAN_PREMATCH)
 	{
 		Menu_Clan_Prematch ();
-		self.current_menu = 1.000000;
+		self.current_menu = 1;
 	}
 	else
 	{
 #endif
-	if ((self.current_menu == 5.000000))
+	if ((self.current_menu == 5))
 	{
 		Menu_Intro ();
-		self.current_menu = 1.000000;
+		self.current_menu = 1;
 	}
 	else
 	{
-		if ((self.current_menu == 6.000000))
+		if ((self.current_menu == 6))
 		{
 			Menu_ClassHelp ();
-			if ((self.menu_displaytime > 8.000000))
+			if ((self.menu_displaytime > 8))
 			{
-				self.current_menu = 1.000000;
+				self.current_menu = 1;
 			}
 			else
 			{
-				self.menu_displaytime = (self.menu_displaytime + 1.000000);
+				self.menu_displaytime = (self.menu_displaytime + 1);
 			}
 		}
 		else
 		{
-			if ((self.current_menu == 7.000000))
+			if ((self.current_menu == 7))
 			{
 				Menu_ClassHelp2 ();
-				if ((self.menu_displaytime > 5.000000))
+				if ((self.menu_displaytime > 5))
 				{
-					self.current_menu = 1.000000;
+					self.current_menu = 1;
 				}
 				else
 				{
-					self.menu_displaytime = (self.menu_displaytime + 1.000000);
+					self.menu_displaytime = (self.menu_displaytime + 1);
 				}
 			}
 			else
@@ -485,7 +485,7 @@ void(float inp) Menu_Class_Input =
 
 void() Menu_Drop = 
 {
-	if ((self.playerclass == 9.000000))
+	if ((self.playerclass == 9))
 	{
 		if (sr_dropgrens)
 		{
@@ -524,27 +524,27 @@ void (float _p_815) Menu_Drop_Input =
 
 	if (sr_dropgrens)
 	{
-		if (((_p_815 > 0.000000) && (_p_815 < 7.000000)))
+		if (((_p_815 > 0) && (_p_815 < 7)))
 		{
 			TeamFortress_DropAmmo (_p_815);
 		}
-		if (((_p_815 > 0.000000) && (_p_815 < 8.000000)))
+		if (((_p_815 > 0) && (_p_815 < 8)))
 		{
 			ResetMenu ();
 		}
 	}
 	else
 	{
-		if (((_p_815 > 0.000000) && (_p_815 < 5.000000)))
+		if (((_p_815 > 0) && (_p_815 < 5)))
 		{
 			TeamFortress_DropAmmo (_p_815);
 		}
-		if (((_p_815 > 0.000000) && (_p_815 < 6.000000)))
+		if (((_p_815 > 0) && (_p_815 < 6)))
 		{
 			ResetMenu ();
 		}
 	}
-	self.impulse = 0.000000;
+	self.impulse = 0;
 };
 
 void(float inp) Menu_DoBindings_Input = 
@@ -944,51 +944,51 @@ void () Menu_ClassHelp =
 	_l_881 = infokey (self, "tf_help");
 	if ((_l_881 != "off"))
 	{
-		if ((self.menu_displaytime < 20.000000))
+		if ((self.menu_displaytime < 20))
 		{
-			if ((self.playerclass == 1.000000))
+			if ((self.playerclass == 1))
 			{
 				CenterPrint (self, "ÁÉÒÓÃÏÕÔ  player details:\n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ shotgun             \n  –‘ mac-10              \n çòåîáäåóº                \n  +gren“º flash grenade   \n  +gren”º conc grenade    \n äòïðóº                   \n  drop“º flash mine       \n  drop•º disarm detpack   \n ãïííáîäóº                \n  specialº jetpack boost  \n");
 			}
 			else
 			{
-				if ((self.playerclass == 2.000000))
+				if ((self.playerclass == 2))
 				{
 					CenterPrint (self, "ÓÎÉÐÅÒ  player details:  \n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ sniper rifle        \n  •‘ auto rifle          \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º flare           \n äòïðóº                   \n  drop“º alarm            \n  drop•º call airstrike   \n ãïííáîäóº                \n  specialº autozoom       \n");
 				}
 				else
 				{
-					if ((self.playerclass == 3.000000))
+					if ((self.playerclass == 3))
 					{
 						CenterPrint (self, "ÓÏÌÄÉÅÒ  player  details:\n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ shotgun             \n  •‘ super shotgun       \n  ™‘ rocket launcher     \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º nail grenade    \n äòïðóº                   \n  drop“º spike trap       \n  drop•º proximity grenade\n ãïííáîäóº                \n  specialº reload         \n");
 					}
 					else
 					{
-						if ((self.playerclass == 4.000000))
+						if ((self.playerclass == 4))
 						{
 							CenterPrint (self, "ÄÅÍÏÍÁÎ  player details: \n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ shotgun             \n  —‘ long-range gren.    \n  ˜‘ grenade launcher    \n  ™‘ pipebomb launcher   \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º MIRV grenade    \n äòïðóº                   \n  drop“º launch airMIRV   \n ãïííáîäóº                \n  specialº detonate pipes \n  det—º  5 second detpack \n  det”’º 20 second detpack\n  det—’º 50 second detpack\n");
 						}
 						else
 						{
-							if ((self.playerclass == 5.000000))
+							if ((self.playerclass == 5))
 							{
 								CenterPrint (self, "ÍÅÄÉÃ  player details:   \n ÷åáðïîóº                 \n  “‘ bioaxe              \n  ”‘ shotgun             \n  •‘ super shotgun       \n  —‘ super nailgun       \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º conc grenade    \n äòïðóº                   \n  drop“º infected syringe \n  drop•º heal self        \n");
 							}
 							else
 							{
-								if ((self.playerclass == 6.000000))
+								if ((self.playerclass == 6))
 								{
 									CenterPrint (self, "È×ÇÕÙ  player details:   \n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ shotgun             \n  •‘ super shotgun       \n  ™‘ assault cannon      \n  ™‘ 20mm cannon         \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º MIRV grenade    \n äòïðóº                   \n  drop“º spike trap       \n");
 								}
 								else
 								{
-									if ((self.playerclass == 7.000000))
+									if ((self.playerclass == 7))
 									{
 										CenterPrint (self, "ÐÙÒÏ  player details:    \n ÷åáðïîóº                 \n  “‘ axe                 \n  ”‘ shotgun             \n  ˜‘ flame-thrower       \n  ™‘ incendiary cannon   \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º napalm grenade  \n äòïðóº                   \n  drop“º lava pool        \n");
 									}
 									else
 									{
-										if ((self.playerclass == 8.000000))
+										if ((self.playerclass == 8))
 										{
 											if (spycam)
 											{
@@ -1001,7 +1001,7 @@ void () Menu_ClassHelp =
 										}
 										else
 										{
-											if ((self.playerclass == 9.000000))
+											if ((self.playerclass == 9))
 											{
 												CenterPrint (self, "ÅÎÇÉÎÅÅÒ  player details:\n ÷åáðïîóº                 \n  “‘ wrench              \n  ”‘ laser gun           \n  •‘ super shotgun       \n çòåîáäåóº                \n  +gren“º normal grenade  \n  +gren”º EMP grenade     \n äòïðóº                   \n  drop“º magnet mine      \n  drop•º laser drone      \n ãïííáîäóº                \n  specialº build menu     \n  dropammoº make ammo menu\n");
 											}
@@ -1016,55 +1016,55 @@ void () Menu_ClassHelp =
 		}
 		else
 		{
-			if ((self.playerclass == 1.000000))
+			if ((self.playerclass == 1))
 			{
 				CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nFlash Grenade       \nConcussion Grenade  \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nScanner: scan10,scan50,scan250\nJetJump: jetjump\ndrop1 :  drop a Flash mine\n\n\nPress š for alias help\n");
 			}
 			else
 			{
-				if ((self.playerclass == 2.000000))
+				if ((self.playerclass == 2))
 				{
 					CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nFlare               \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nautozoom : Toggle Rifle Autozooming\nSet an Alarm   : drop1  \n  Call AirStrike : airstrike\n  SpotLight    : +spot  \n\nPress š for alias help\n");
 				}
 				else
 				{
-					if ((self.playerclass == 3.000000))
+					if ((self.playerclass == 3))
 					{
 						CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nNail Grenade        \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nDrop a Spike Trap   : Drop1\ndrop3 : Set a ProxiMine!     \n\n\nPress š for alias help\n");
 					}
 					else
 					{
-						if ((self.playerclass == 4.000000))
+						if ((self.playerclass == 4))
 						{
 							CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nMirv Grenade        \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nThe Detpack : det5,det20,det50\nDetonate Pipebombs : detpipe  \nAir-MIRV      : drop1      \n\nPress š for alias help\n");
 						}
 						else
 						{
-							if ((self.playerclass == 5.000000))
+							if ((self.playerclass == 5))
 							{
 								CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nConcussion Grenade  \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nHeal Yourself : drop3 or heal\n\n\nPress š for alias help\n");
 							}
 							else
 							{
-								if ((self.playerclass == 6.000000))
+								if ((self.playerclass == 6))
 								{
 									CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nMirv Grenade        \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nSet an Spike Trap : drop1  \n\n\nPress š for alias help\n");
 								}
 								else
 								{
-									if ((self.playerclass == 7.000000))
+									if ((self.playerclass == 7))
 									{
 										CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nNapalm Grenade      \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nDrop a lava pool  : drop1  \n\n\nPress š for alias help\n");
 									}
 									else
 									{
-										if ((self.playerclass == 8.000000))
+										if ((self.playerclass == 8))
 										{
 											CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nHallucinogen Grenade\n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nGo Undercover : disguise\nSet an Ammo Trap : drop1  \n\nPress š for alias help\n");
 										}
 										else
 										{
-											if ((self.playerclass == 9.000000))
+											if ((self.playerclass == 9))
 											{
 												CenterPrint (self, "ÇÒÅÎÁÄÅÓ:            \nHand Grenade        \nEMP Grenade         \n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:   \nStart Building : build  \n    Set a Mag Trap : drop1  \n\n\nPress š for alias help\n");
 											}
@@ -1087,75 +1087,75 @@ void () Menu_StuffClassHelp =
 	_l_902 = infokey (self, "tf_help");
 	if ((_l_902 != "off"))
 	{
-		if ((self.playerclass == 1.000000))
+		if ((self.playerclass == 1))
 		{
-			sprint (self, 2.000000, "ÓÃÏÕÔ Details:\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   4.. MAC-10 \n");
-			sprint (self, 2.000000, "ÇÒÅÎÁÄÅÓ:\n   Concussion Grenade\n   Flare\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
-			sprint (self, 2.000000, "Scanner: scan10,scan30,scan100\nJetJump: jetjump\ndrop1 :  drop a Flash mine\n\n\n");
+			sprint (self, 2, "ÓÃÏÕÔ Details:\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   4.. MAC-10 \n");
+			sprint (self, 2, "ÇÒÅÎÁÄÅÓ:\n   Concussion Grenade\n   Flare\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
+			sprint (self, 2, "Scanner: scan10,scan30,scan100\nJetJump: jetjump\ndrop1 :  drop a Flash mine\n\n\n");
 		}
 		else
 		{
-			if ((self.playerclass == 2.000000))
+			if ((self.playerclass == 2))
 			{
-				sprint (self, 2.000000, "ÓÎÉÐÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Sniper Rifle/Auto Rifle\n");
-				sprint (self, 2.000000, "4.. MAC-10 \nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n\n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
-				sprint (self, 2.000000, "  autozoom : Toggle Scope Autozooming\n  drop1 : drop an alarm mine\nairstrike : call an AirStrike\n +spot : Toggle SpotLight \n\n");
+				sprint (self, 2, "ÓÎÉÐÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Sniper Rifle/Auto Rifle\n");
+				sprint (self, 2, "4.. MAC-10 \nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n\n\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n");
+				sprint (self, 2, "  autozoom : Toggle Scope Autozooming\n  drop1 : drop an alarm mine\nairstrike : call an AirStrike\n +spot : Toggle SpotLight \n\n");
 			}
 			else
 			{
-				if ((self.playerclass == 3.000000))
+				if ((self.playerclass == 3))
 				{
-					sprint (self, 2.000000, "ÓÏÌÄÉÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   3.. Super Shotgun\n");
-					sprint (self, 2.000000, "   7.. Rocket Launcher\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Nail Grenade\n");
-					sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n  drop1 : Drop a Spike Trap  \n  drop3 : Set a ProxiMine!   \n\n\n");
+					sprint (self, 2, "ÓÏÌÄÉÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+					sprint (self, 2, "   7.. Rocket Launcher\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Nail Grenade\n");
+					sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n  drop1 : Drop a Spike Trap  \n  drop3 : Set a ProxiMine!   \n\n\n");
 				}
 				else
 				{
-					if ((self.playerclass == 4.000000))
+					if ((self.playerclass == 4))
 					{
-						sprint (self, 2.000000, "ÄÅÍÏÌÉÔÉÏÎÓ ÍÁÎ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   5.. Long-range Grenades     \n6.. Grenade Launcher      \n7..Pipebomb Launcher\n");
-						sprint (self, 2.000000, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Mirv Grenade\n");
-						sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   The Detpack : det5,det20,det50\n   Detonate Pipebombs : detpipe\n  drop1 : release an AirMIRV      \n\n");
+						sprint (self, 2, "ÄÅÍÏÌÉÔÉÏÎÓ ÍÁÎ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   5.. Long-range Grenades     \n6.. Grenade Launcher      \n7..Pipebomb Launcher\n");
+						sprint (self, 2, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Mirv Grenade\n");
+						sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   The Detpack : det5,det20,det50\n   Detonate Pipebombs : detpipe\n  drop1 : release an AirMIRV      \n\n");
 					}
 					else
 					{
-						if ((self.playerclass == 5.000000))
+						if ((self.playerclass == 5))
 						{
-							sprint (self, 2.000000, "ÍÅÄÉÃ Details:\n\n×ÅÁÐÏÎÓ:\n   1.. Medikit/BioWeapon\n   2.. Shotgun\n   3.. Super Shotgun\n");
-							sprint (self, 2.000000, "   5.. Super Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Concussion Grenade\n");
-							sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Drop1 : drop an infected syringe\n\n\n");
+							sprint (self, 2, "ÍÅÄÉÃ Details:\n\n×ÅÁÐÏÎÓ:\n   1.. Medikit/BioWeapon\n   2.. Shotgun\n   3.. Super Shotgun\n");
+							sprint (self, 2, "   5.. Super Nailgun\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Concussion Grenade\n");
+							sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Drop1 : drop an infected syringe\n\n\n");
 						}
 						else
 						{
-							if ((self.playerclass == 6.000000))
+							if ((self.playerclass == 6))
 							{
-								sprint (self, 2.000000, "ÈÅÁÖÙ ×ÅÁÐÏÎÓ ÇÕÙ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   3.. Super Shotgun\n");
-								sprint (self, 2.000000, "   7.. Assault Cannon\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n");
-								sprint (self, 2.000000, "   Mirv Grenade\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n  drop1 : set a spike trap\n\n\n");
+								sprint (self, 2, "ÈÅÁÖÙ ×ÅÁÐÏÎÓ ÇÕÙ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   3.. Super Shotgun\n");
+								sprint (self, 2, "   7.. Assault Cannon\nÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n");
+								sprint (self, 2, "   Mirv Grenade\nÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n  drop1 : set a spike trap\n\n\n");
 							}
 							else
 							{
-								if ((self.playerclass == 7.000000))
+								if ((self.playerclass == 7))
 								{
-									sprint (self, 2.000000, "ÐÙÒÏ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   6.. Flamethrower\n   7.. Incendiary Cannon\n");
-									sprint (self, 2.000000, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Napalm Grenade\n");
-									sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
+									sprint (self, 2, "ÐÙÒÏ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Shotgun\n   6.. Flamethrower\n   7.. Incendiary Cannon\n");
+									sprint (self, 2, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Napalm Grenade\n");
+									sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   None\n\n\n");
 								}
 								else
 								{
-									if ((self.playerclass == 8.000000))
+									if ((self.playerclass == 8))
 									{
-										sprint (self, 2.000000, "ÓÐÙ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Tranquiliser Gun\n   3.. Super Shotgun\n   4.. MAC-10 \n   8.. Grapple Hook \n");
-										sprint (self, 2.000000, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
-										sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Go Undercover : disguise\n  drop1 : drop an Ammo Trap\n\n");
+										sprint (self, 2, "ÓÐÙ Details:\n\n×ÅÁÐÏÎÓ:\n   2.. Tranquiliser Gun\n   3.. Super Shotgun\n   4.. MAC-10 \n   8.. Grapple Hook \n");
+										sprint (self, 2, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   Hallucinogenic Grenade\n");
+										sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Go Undercover : disguise\n  drop1 : drop an Ammo Trap\n\n");
 									}
 									else
 									{
-										if ((self.playerclass == 9.000000))
+										if ((self.playerclass == 9))
 										{
-											sprint (self, 2.000000, "ÅÎÇÉÎÅÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   1.. Spanner\n   2.. RailGun\n   3.. Super Shotgun\n");
-											sprint (self, 2.000000, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   EMP Grenade\n");
-											sprint (self, 2.000000, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Start Building : build\n      Set a Mag Trap : drop1   \n\n\n");
+											sprint (self, 2, "ÅÎÇÉÎÅÅÒ Details:\n\n×ÅÁÐÏÎÓ:\n   1.. Spanner\n   2.. RailGun\n   3.. Super Shotgun\n");
+											sprint (self, 2, "ÇÒÅÎÁÄÅÓ:\n   Hand Grenade\n   EMP Grenade\n");
+											sprint (self, 2, "ÓÐÅÃÉÁÌ ÃÏÍÍÁÎÄÓ:\n   Start Building : build\n      Set a Mag Trap : drop1   \n\n\n");
 										}
 									}
 								}
@@ -1207,19 +1207,19 @@ void() Menu_Spy =
 	{
 		if (self.is_feigning)
 		{
-			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			if (((self.undercover_team != 0) && (self.undercover_skin != 0)))
 			{
 				CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Skin and Color        \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 			}
 			else
 			{
-				if ((self.undercover_team != 0.000000))
+				if ((self.undercover_team != 0))
 				{
 					CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Color                 \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 				}
 				else
 				{
-					if ((self.undercover_skin != 0.000000))
+					if ((self.undercover_skin != 0))
 					{
 						CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Skin                  \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 					}
@@ -1232,19 +1232,19 @@ void() Menu_Spy =
 		}
 		else
 		{
-			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			if (((self.undercover_team != 0) && (self.undercover_skin != 0)))
 			{
 				CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Skin and Color        \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 			}
 			else
 			{
-				if ((self.undercover_team != 0.000000))
+				if ((self.undercover_team != 0))
 				{
 					CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Color                 \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 				}
 				else
 				{
-					if ((self.undercover_skin != 0.000000))
+					if ((self.undercover_skin != 0))
 					{
 						CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Skin                  \n—.. Change Jump Style           \n˜.. Nothing                     \n\n");
 					}
@@ -1260,19 +1260,19 @@ void() Menu_Spy =
 	{
 		if (self.is_feigning)
 		{
-			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			if (((self.undercover_team != 0) && (self.undercover_skin != 0)))
 			{
 				CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Skin and Color        \n—.. Nothing                     \n\n");
 			}
 			else
 			{
-				if ((self.undercover_team != 0.000000))
+				if ((self.undercover_team != 0))
 				{
 					CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Color                 \n—.. Nothing                     \n\n");
 				}
 				else
 				{
-					if ((self.undercover_skin != 0.000000))
+					if ((self.undercover_skin != 0))
 					{
 						CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Stop Feigning               \n–.. Reset Skin                  \n—.. Nothing                     \n\n");
 					}
@@ -1285,19 +1285,19 @@ void() Menu_Spy =
 		}
 		else
 		{
-			if (((self.undercover_team != 0.000000) && (self.undercover_skin != 0.000000)))
+			if (((self.undercover_team != 0) && (self.undercover_skin != 0)))
 			{
 				CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Skin and Color        \n—.. Nothing                     \n\n");
 			}
 			else
 			{
-				if ((self.undercover_team != 0.000000))
+				if ((self.undercover_team != 0))
 				{
 					CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Color                 \n—.. Nothing                     \n\n");
 				}
 				else
 				{
-					if ((self.undercover_skin != 0.000000))
+					if ((self.undercover_skin != 0))
 					{
 						CenterPrint (self, "Action:                           \n“.. Change Skin                 \n”.. Change Color                \n•.. Start Feigning              \n–.. Reset Skin                  \n—.. Nothing                     \n\n");
 					}
@@ -1314,90 +1314,90 @@ void() Menu_Spy =
 void (float _p_955) Menu_Spy_Input =
 {
 
-	if (((_p_955 == 1.000000) || (_p_955 == 2.000000)))
+	if (((_p_955 == 1) || (_p_955 == 2)))
 	{
-		if ((self.effects & 12.000000))
+		if ((self.effects & 12))
 		{
-			sprint (self, 2.000000, "You can't go undercover while glowing.\n");
+			sprint (self, 2, "You can't go undercover while glowing.\n");
 			ResetMenu ();
-			self.impulse = 0.000000;
+			self.impulse = 0;
 			return;
 		}
-		if ((self.is_unabletospy == 1.000000))
+		if ((self.is_unabletospy == 1))
 		{
-			sprint (self, 2.000000, "You can't go undercover right now.\n");
+			sprint (self, 2, "You can't go undercover right now.\n");
 			ResetMenu ();
-			self.impulse = 0.000000;
+			self.impulse = 0;
 			return;
 		}
 	}
-	if ((_p_955 == 1.000000))
+	if ((_p_955 == 1))
 	{
 		Menu_Spy_Skin ();
-		self.menu_count = 25.000000;
-		self.current_menu = 13.000000;
-		self.menu_displaytime = 0.000000;
-		self.impulse = 0.000000;
+		self.menu_count = 25;
+		self.current_menu = 13;
+		self.menu_displaytime = 0;
+		self.impulse = 0;
 	}
 	else
 	{
-		if ((_p_955 == 2.000000))
+		if ((_p_955 == 2))
 		{
 			Menu_Spy_Color ();
-			self.menu_count = 25.000000;
-			self.current_menu = 14.000000;
-			self.menu_displaytime = 0.000000;
-			self.impulse = 0.000000;
+			self.menu_count = 25;
+			self.current_menu = 14;
+			self.menu_displaytime = 0;
+			self.impulse = 0;
 		}
 		else
 		{
-			if ((_p_955 == 3.000000))
+			if ((_p_955 == 3))
 			{
-				TeamFortress_SpyFeignDeath (0.000000);
+				TeamFortress_SpyFeignDeath (0);
 				ResetMenu ();
-				self.impulse = 0.000000;
+				self.impulse = 0;
 			}
 			else
 			{
-				if ((_p_955 == 4.000000))
+				if ((_p_955 == 4))
 				{
 					Spy_RemoveDisguise (self);
 					ResetMenu ();
-					self.impulse = 0.000000;
+					self.impulse = 0;
 				}
 				else
 				{
-					if ((_p_955 == 5.000000))
+					if ((_p_955 == 5))
 					{
 						if (spyjumpoption)
 						{
-							if ((self.spy_regjump == 1.000000))
+							if ((self.spy_regjump == 1))
 							{
-								self.spy_regjump = 0.000000;
-								sprint (self, 2.000000, "Jump style now high\n");
+								self.spy_regjump = 0;
+								sprint (self, 2, "Jump style now high\n");
 							}
 							else
 							{
-								self.spy_regjump = 1.000000;
-								sprint (self, 2.000000, "Jump style now disguised\n");
+								self.spy_regjump = 1;
+								sprint (self, 2, "Jump style now disguised\n");
 							}
 							ResetMenu ();
-							self.impulse = 0.000000;
+							self.impulse = 0;
 						}
 					}
 					else
 					{
-						if ((((_p_955 == 5.000000) && !spyjumpoption) && ((self.undercover_team != 0.000000) || (self.undercover_skin != 0.000000))))
+						if ((((_p_955 == 5) && !spyjumpoption) && ((self.undercover_team != 0) || (self.undercover_skin != 0))))
 						{
 							ResetMenu ();
-							self.impulse = 0.000000;
+							self.impulse = 0;
 						}
 						else
 						{
-							if (((_p_955 == 6.000000) && ((self.undercover_team != 0.000000) || (self.undercover_skin != 0.000000))))
+							if (((_p_955 == 6) && ((self.undercover_team != 0) || (self.undercover_skin != 0))))
 							{
 								ResetMenu ();
-								self.impulse = 0.000000;
+								self.impulse = 0;
 							}
 						}
 					}
@@ -1701,13 +1701,13 @@ void(float inp) Menu_EngineerFix_Dispenser_Input =
 void () Menu_EngineerFix_SentryGun =
 {
 
-	if (((self.building.weapon < 3.000000) && (self.ammo_cells >= 130.000000)))
+	if (((self.building.weapon < 3) && (self.ammo_cells >= 130)))
 	{
 		CenterPrint (self, "Action:                            \n“‘.. Put Ammo into Sentry Gun    \n”‘.. Upgrade Sentry Gun          \n•‘.. Repair Sentry Gun           \n–‘.. Dismantle Sentry Gun        \n—‘.. Nothing                     \n                                  \n6‘.. Rotate Clockwise            \n\n");
 	}
 	else
 	{
-		if ((self.building.weapon == 3.000000))
+		if ((self.building.weapon == 3))
 		{
 			CenterPrint (self, "Action:                            \n“‘.. Put Ammo into Sentry Gun    \n\n•‘.. Repair Sentry Gun           \n–‘.. Dismantle Sentry Gun        \n—‘.. Nothing                     \n                                  \n6‘.. Rotate Clockwise            \n7‘.. Unload Rockets              \n\n");
 		}
@@ -1728,9 +1728,9 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 	{
 		return;
 	}
-	if ((inp == 1.000000))
+	if ((inp == 1))
 	{
-		am = 40.000000;
+		am = 40;
 		if ((am > self.ammo_shells))
 		{
 			am = self.ammo_shells;
@@ -1741,9 +1741,9 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 		}
 		self.ammo_shells = (self.ammo_shells - am);
 		self.building.ammo_shells = (self.building.ammo_shells + am);
-		if ((self.building.weapon == 3.000000))
+		if ((self.building.weapon == 3))
 		{
-			am = 20.000000;
+			am = 20;
 			if ((am > self.ammo_rockets))
 			{
 				am = self.ammo_rockets;
@@ -1758,29 +1758,29 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 	}
 	else
 	{
-		if ((((self.building.weapon < 3.000000) && (inp == 2.000000)) && (self.ammo_cells >= 130.000000)))
+		if ((((self.building.weapon < 3) && (inp == 2)) && (self.ammo_cells >= 130)))
 		{
-			self.ammo_cells = (self.ammo_cells - 130.000000);
-			self.building.weapon = (self.building.weapon + 1.000000);
+			self.ammo_cells = (self.ammo_cells - 130);
+			self.building.weapon = (self.building.weapon + 1);
 			self.building.max_health = (self.building.max_health * 1.200000);
 			self.building.health = self.building.max_health;
 			self.building.maxammo_shells = (self.building.maxammo_shells * 1.200000);
-			if ((self.building.weapon == 2.000000))
+			if ((self.building.weapon == 2))
 			{
-				sound (self.building, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+				sound (self.building, 3, "weapons/tnkatck4.wav", 1, 1);
 				self.building.think = lvl2_sentry_stand;
-				self.building.skin = 1.000000;
+				self.building.skin = 1;
 			}
 			else
 			{
-				sound (self.building, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+				sound (self.building, 3, "weapons/tnkatck4.wav", 1, 1);
 				self.building.think = lvl3_sentry_stand;
-				self.building.skin = 2.000000;
+				self.building.skin = 2;
 			}
-			sprint (self, 2.000000, "You upgrade the Sentry Gun to level ");
+			sprint (self, 2, "You upgrade the Sentry Gun to level ");
 			st = ftos (self.building.weapon);
-			sprint (self, 2.000000, st);
-			sprint (self, 2.000000, "\n");
+			sprint (self, 2, st);
+			sprint (self, 2, "\n");
 			if (((self.client == "fuhquake") || (self.client == "zquake")))
 			{
 				stuffcmd (self, "set $sentryhealth ");
@@ -1790,16 +1790,16 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 		}
 		else
 		{
-			if ((inp == 3.000000))
+			if ((inp == 3))
 			{
-				metalcost = (self.building.max_health - self.building.health) / 5.000000;
+				metalcost = (self.building.max_health - self.building.health) / 5;
 				if ((metalcost > self.ammo_cells))
 				{
 					metalcost = self.ammo_cells;
 				}
-				sound (self, 3.000000, "items/repair.wav", 1.000000, 1.000000);
+				sound (self, 3, "items/repair.wav", 1, 1);
 				self.ammo_cells = (self.ammo_cells - metalcost);
-				self.building.health = (self.building.health + (metalcost * 5.000000));
+				self.building.health = (self.building.health + (metalcost * 5));
 				if (((self.client == "fuhquake") || (self.client == "zquake")))
 				{
 					stuffcmd (self, "set $sentryhealth ");
@@ -1809,7 +1809,7 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 			}
 			else
 			{
-				if ((inp == 4.000000))
+				if ((inp == 4))
 				{
 					local entity isneardoor;
 					local float candismantle;
@@ -1828,30 +1828,30 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 					{
 						sprint(self, 1, "You cannot dismantle a teammate's sentry gun.\n");
 						ResetMenu ();
-						self.impulse = 0.000000;
+						self.impulse = 0;
 						return;
 					}
-					sprint (self, 2.000000, "You dismantle the Sentry Gun.\n");
+					sprint (self, 2, "You dismantle the Sentry Gun.\n");
 					if ((self.building.real_owner != self))
 					{
-						sprint (self.building.real_owner, 2.000000, self.netname);
-						sprint (self.building.real_owner, 2.000000, " has dismantled your sentry gun.\n");
-						bprint (1.000000, self.netname);
+						sprint (self.building.real_owner, 2, self.netname);
+						sprint (self.building.real_owner, 2, " has dismantled your sentry gun.\n");
+						bprint (1, self.netname);
 						if ((self.building.real_owner.team_no == self.team_no))
 						{
-							bprint (1.000000, " dismantled teammate ");
+							bprint (1, " dismantled teammate ");
 						}
 						else
 						{
-							bprint (1.000000, " humiliated ");
+							bprint (1, " humiliated ");
 						}
-						bprint (1.000000, self.building.real_owner.netname);
-						bprint (1.000000, "'s sentry gun.\n");
+						bprint (1, self.building.real_owner.netname);
+						bprint (1, "'s sentry gun.\n");
 					}
-					self.ammo_cells = (self.ammo_cells + 65.000000);
+					self.ammo_cells = (self.ammo_cells + 65);
 					dremove (self.building.trigger_field);
 					dremove (self.building);
-					self.building.real_owner.has_sentry = 0.000000;
+					self.building.real_owner.has_sentry = 0;
 					if (((self.client == "fuhquake") || (self.client == "zquake")))
 					{
 						stuffcmd (self, "set $sentryhealth 0\n");
@@ -1859,36 +1859,36 @@ void (float inp) Menu_EngineerFix_SentryGun_Input =
 				}
 				else
 				{
-					if ((inp == 6.000000))
+					if ((inp == 6))
 					{
-						sprint (self, 2.000000, "Rotating 45 degrees clockwise...\n");
-						self.building.waitmin = anglemod ((self.building.waitmin - 45.000000));
-						self.building.waitmax = anglemod ((self.building.waitmax - 45.000000));
+						sprint (self, 2, "Rotating 45 degrees clockwise...\n");
+						self.building.waitmin = anglemod ((self.building.waitmin - 45));
+						self.building.waitmax = anglemod ((self.building.waitmax - 45));
 					}
-					if ((inp == 7.000000))
+					if ((inp == 7))
 					{
 						self.ammo_rockets = (self.ammo_rockets + self.building.ammo_rockets);
 						if ((self.ammo_rockets > self.maxammo_rockets))
 						{
 							self.ammo_rockets = self.maxammo_rockets;
 						}
-						self.building.ammo_rockets = 0.000000;
-						sprint (self, 2.000000, "You have unloaded your sentry's rocket cache.\n");
+						self.building.ammo_rockets = 0;
+						sprint (self, 2, "You have unloaded your sentry's rocket cache.\n");
 					}
 				}
 			}
 		}
 	}
-	if (((inp >= 1.000000) && (inp <= 7.000000)))
+	if (((inp >= 1) && (inp <= 7)))
 	{
 		ResetMenu ();
-		self.impulse = 0.000000;
+		self.impulse = 0;
 		bound_other_ammo (self);
-		if ((self.armorvalue == 0.000000))
+		if ((self.armorvalue == 0))
 		{
-			self.armortype = 0.000000;
-			self.armorclass = 0.000000;
-			self.items = (self.items - (self.items & 57344.000000));
+			self.armortype = 0;
+			self.armorclass = 0;
+			self.items = (self.items - (self.items & 57344));
 		}
 		W_SetCurrentAmmo ();
 	}
@@ -1905,12 +1905,12 @@ void (float _p_1052) Menu_Dispenser_Input =
 	local float _l_1054;
 	local entity _l_1055;
 
-	_l_1054 = 0.000000;
-	if ((_p_1052 == 1.000000))
+	_l_1054 = 0;
+	if ((_p_1052 == 1))
 	{
-		if (((((self.building.ammo_shells == 0.000000) && (self.building.ammo_nails == 0.000000)) && (self.building.ammo_rockets == 0.000000)) && (self.building.ammo_cells == 0.000000)))
+		if (((((self.building.ammo_shells == 0) && (self.building.ammo_nails == 0)) && (self.building.ammo_rockets == 0)) && (self.building.ammo_cells == 0)))
 		{
-			_l_1054 = 1.000000;
+			_l_1054 = 1;
 		}
 		else
 		{
@@ -1942,7 +1942,7 @@ void (float _p_1052) Menu_Dispenser_Input =
 			}
 			self.building.ammo_cells = (self.building.ammo_cells - _l_1053);
 			self.ammo_cells = (self.ammo_cells + _l_1053);
-			sound (self, 3.000000, "weapons/rocklr1a.wav", 1.000000, 1.000000);
+			sound (self, 3, "weapons/rocklr1a.wav", 1, 1);
 			if (self.autodiscard)
 			{
 				TeamFortress_Discard ();
@@ -1951,11 +1951,11 @@ void (float _p_1052) Menu_Dispenser_Input =
 	}
 	else
 	{
-		if ((_p_1052 == 2.000000))
+		if ((_p_1052 == 2))
 		{
-			if ((self.building.armorvalue == 0.000000))
+			if ((self.building.armorvalue == 0))
 			{
-				_l_1054 = 1.000000;
+				_l_1054 = 1;
 			}
 			else
 			{
@@ -1964,31 +1964,31 @@ void (float _p_1052) Menu_Dispenser_Input =
 				{
 					_l_1053 = self.building.armorvalue;
 				}
-				if ((self.armortype == 0.000000))
+				if ((self.armortype == 0))
 				{
 					self.armortype = 0.300000;
-					self.items = (self.items | 8192.000000);
+					self.items = (self.items | 8192);
 				}
 				self.building.armorvalue = (self.building.armorvalue - _l_1053);
 				self.armorvalue = (self.armorvalue + _l_1053);
-				sound (self, 3.000000, "weapons/tnkatck4.wav", 1.000000, 1.000000);
+				sound (self, 3, "weapons/tnkatck4.wav", 1, 1);
 			}
 		}
 		else
 		{
-			if ((_p_1052 == 3.000000))
+			if ((_p_1052 == 3))
 			{
-				if ((self.building.armorvalue == 0.000000))
+				if ((self.building.armorvalue == 0))
 				{
-					_l_1054 = 1.000000;
+					_l_1054 = 1;
 				}
 				else
 				{
-					if ((self.building.skin == 1.000000))
+					if ((self.building.skin == 1))
 					{
-						if ((self.leg_damage > 1.000000))
+						if ((self.leg_damage > 1))
 						{
-							sprint (self, 2.000000, "Your leg wound has been healed!\n");
+							sprint (self, 2, "Your leg wound has been healed!\n");
 						}
 						TeamFortress_SetSpeed (self);
 						_l_1055 = find (world, classname, "timer");
@@ -1999,10 +1999,10 @@ void (float _p_1052) Menu_Dispenser_Input =
 						if ((_l_1055 != world))
 						{
 							stuffcmd (self, "v_idlescale 0\n");
-							sprint (self, 2.000000, "you have been healed of your concussion\n");
+							sprint (self, 2, "you have been healed of your concussion\n");
 							dremove (_l_1055);
 						}
-						if ((self.tfstate & 16384.000000))
+						if ((self.tfstate & 16384))
 						{
 							_l_1055 = find (world, classname, "timer");
 							while ((((_l_1055.owner != self) || (_l_1055.think != HallucinationTimer)) && (_l_1055 != world)))
@@ -2012,8 +2012,8 @@ void (float _p_1052) Menu_Dispenser_Input =
 							if ((_l_1055 != world))
 							{
 								stuffcmd (self, "v_idlescale 0\n");
-								self.tfstate = (self.tfstate - (self.tfstate & 16384.000000));
-								sprint (self, 2.000000, "you have been healed of your hallucinations\n");
+								self.tfstate = (self.tfstate - (self.tfstate & 16384));
+								sprint (self, 2, "you have been healed of your hallucinations\n");
 								dremove (_l_1055);
 							}
 							else
@@ -2021,7 +2021,7 @@ void (float _p_1052) Menu_Dispenser_Input =
 								dprint ("Warning: Error in Hallucination Timer logic.\n");
 							}
 						}
-						if ((self.tfstate & 32768.000000))
+						if ((self.tfstate & 32768))
 						{
 							_l_1055 = find (world, classname, "timer");
 							while ((((_l_1055.owner != self) || (_l_1055.think != TranquiliserTimer)) && (_l_1055 != world)))
@@ -2030,10 +2030,10 @@ void (float _p_1052) Menu_Dispenser_Input =
 							}
 							if ((_l_1055 != world))
 							{
-								self.tfstate = (self.tfstate - (self.tfstate & 32768.000000));
+								self.tfstate = (self.tfstate - (self.tfstate & 32768));
 								TeamFortress_SetSpeed (self);
 								stuffcmd (self, "v_cshift 0 0 0 0\n");
-								sprint (self, 2.000000, "you have been healed of your tranquilisation\n");
+								sprint (self, 2, "you have been healed of your tranquilisation\n");
 								dremove (_l_1055);
 							}
 							else
@@ -2041,7 +2041,7 @@ void (float _p_1052) Menu_Dispenser_Input =
 								dprint ("Warning: Error in Tranquilisation Timer logic.\n");
 							}
 						}
-						if ((self.FlashTime > 0.000000))
+						if ((self.FlashTime > 0))
 						{
 							_l_1055 = find (world, netname, "flashtimer");
 							while ((((_l_1055.owner != self) || (_l_1055.classname != "timer")) && (_l_1055 != world)))
@@ -2050,79 +2050,79 @@ void (float _p_1052) Menu_Dispenser_Input =
 							}
 							if ((_l_1055 != world))
 							{
-								self.FlashTime = 0.000000;
+								self.FlashTime = 0;
 								stuffcmd (self, "v_cshift 0 0 0 0\n");
 								dremove (_l_1055);
 							}
 							else
 							{
 								dprint ("Warning: Error in Flash Timer logic.\n");
-								self.FlashTime = 0.000000;
+								self.FlashTime = 0;
 							}
 						}
-						if ((self.tfstate & 16.000000))
+						if ((self.tfstate & 16))
 						{
-							self.tfstate = (self.tfstate - (self.tfstate & 16.000000));
-							deathmsg = 23.000000;
-							sprint (self, 2.000000, "Your infection is cured!\n");
+							self.tfstate = (self.tfstate - (self.tfstate & 16));
+							deathmsg = 23;
+							sprint (self, 2, "Your infection is cured!\n");
 							return;
 						}
-						if ((self.numflames > 0.000000))
+						if ((self.numflames > 0))
 						{
-							sound (self, 1.000000, "items/r_item1.wav", 1.000000, 1.000000);
-							self.numflames = 0.000000;
-							sprint (self, 2.000000, "The flames have been doused!\n");
+							sound (self, 1, "items/r_item1.wav", 1, 1);
+							self.numflames = 0;
+							sprint (self, 2, "The flames have been doused!\n");
 							return;
 						}
-						self.health = (self.health + 25.000000);
-						self.tfstate = (self.tfstate - (self.tfstate & 16.000000));
+						self.health = (self.health + 25);
+						self.tfstate = (self.tfstate - (self.tfstate & 16));
 					}
 					else
 					{
-						sprint (self, 2.000000, "No vaccine has been loaded by Medic\n");
+						sprint (self, 2, "No vaccine has been loaded by Medic\n");
 					}
 					if ((self.health >= self.max_health))
 					{
 						self.health = self.max_health;
 					}
-					sound (self, 3.000000, "items/health1.wav", 1.000000, 1.000000);
+					sound (self, 3, "items/health1.wav", 1, 1);
 				}
 			}
 			else
 			{
-				if ((_p_1052 == 4.000000))
+				if ((_p_1052 == 4))
 				{
-					if ((self.building.skin == 1.000000))
+					if ((self.building.skin == 1))
 					{
-						self.items = (self.items | 2097152.000000);
-						self.rad_time = 1.000000;
-						self.radsuit_finished = (time + 30.000000);
-						sprint (self, 2.000000, "You have a BioSuit\n");
+						self.items = (self.items | 2097152);
+						self.rad_time = 1;
+						self.radsuit_finished = (time + 30);
+						sprint (self, 2, "You have a BioSuit\n");
 					}
 					else
 					{
-						sprint (self, 2.000000, "No BioSuit has been loaded by Medic\n");
+						sprint (self, 2, "No BioSuit has been loaded by Medic\n");
 					}
 				}
 			}
 		}
 	}
-	if (((_p_1052 >= 1.000000) && (_p_1052 <= 5.000000)))
+	if (((_p_1052 >= 1) && (_p_1052 <= 5)))
 	{
 		if (_l_1054)
 		{
-			sprint (self, 2.000000, "The dispenser is empty.\n");
+			sprint (self, 2, "The dispenser is empty.\n");
 		}
 		ResetMenu ();
-		self.impulse = 0.000000;
+		self.impulse = 0;
 		self.building = world;
 		self.building_wait = (time + 0.500000);
 		bound_other_ammo (self);
-		if ((self.armorvalue == 0.000000))
+		if ((self.armorvalue == 0))
 		{
-			self.armortype = 0.000000;
-			self.armorclass = 0.000000;
-			self.items = (self.items - (self.items & 57344.000000));
+			self.armortype = 0;
+			self.armorclass = 0;
+			self.items = (self.items - (self.items & 57344));
 		}
 		W_SetCurrentAmmo ();
 	}
@@ -2203,7 +2203,7 @@ void (float inp) Menu_Clan_Prematch_Input =
 	if ((inp >= 1) && (inp <= 2))
 	{
 		ResetMenu ();
-		self.impulse = 0.000000;
+		self.impulse = 0;
 	}
 };
 #endif

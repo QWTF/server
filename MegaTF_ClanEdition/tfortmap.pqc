@@ -707,12 +707,12 @@ void(entity AD) ParseTFDetect =
 	}
 	if (((AD.message == "engbat\n") || (mapname == "engbat")))
 	{
-		engbat = 1.000000;
-		bprint (1.000000, "engbat mode on\n");
+		engbat = 1;
+		bprint (1, "engbat mode on\n");
 	}
 	else
 	{
-		engbat = 0.000000;
+		engbat = 0;
 	}
 	civilianteams = TF_FLARE_LIT;
 	if (illegalclasses1 == -1)

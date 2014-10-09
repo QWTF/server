@@ -120,62 +120,62 @@ void () SniperSight_Update =
 {
 	local vector org;
 
-	self.frame = 0.000000;
-	if ((!(self.owner.tfstate & 2048.000000) || (self.owner.current_weapon != 32.000000)))
+	self.frame = 0;
+	if ((!(self.owner.tfstate & 2048) || (self.owner.current_weapon != 32)))
 	{
-		self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048.000000));
+		self.owner.tfstate = (self.owner.tfstate - (self.owner.tfstate & 2048));
 		TeamFortress_SetSpeed (self.owner);
-		self.owner.heat = 0.000000;
+		self.owner.heat = 0;
 		dremove (self);
 		return;
 	}
 	makevectors (self.owner.v_angle);
-	org = self.owner.origin + (v_forward * 10.000000);
+	org = self.owner.origin + (v_forward * 10);
 	org_z = self.owner.absmin_z + (self.owner.size_z * 0.700000);
-	traceline (org, (org + (v_forward * 9192.000000)), 0.000000, self);
-	if ((trace_fraction == 1.000000))
+	traceline (org, (org + (v_forward * 9192)), 0, self);
+	if ((trace_fraction == 1))
 	{
 		setorigin (self, self.owner.origin);
 		return;
 	}
 	self.angles = vectoangles (v_forward);
 	setorigin (self, trace_endpos);
-	if ((self.owner.option == 9.000000))
+	if ((self.owner.option == 9))
 	{
 		traceline(self.origin + '0 0 5', self.origin + '0 0 2048', TF_FLARE_LIT, self);
-		if ((pointcontents (trace_endpos) == -6.000000))
+		if ((pointcontents (trace_endpos) == -6))
 		{
 			if ((self.owner.last_used > time))
 			{
-				sprint (self.owner, 2.000000, "Reinforcements not in attack position yet... wait 2 minutes\n");
-				self.owner.option = 0.000000;
+				sprint (self.owner, 2, "Reinforcements not in attack position yet... wait 2 minutes\n");
+				self.owner.option = 0;
 			}
 			else
 			{
-				sound (self.owner, 0.000000, "weapons/radioair.wav", 1.000000, 1.000000);
-				self.owner.last_used = (time + 120.000000);
-				self.owner.option = 0.000000;
+				sound (self.owner, 0, "weapons/radioair.wav", 1, 1);
+				self.owner.last_used = (time + 120);
+				self.owner.option = 0;
 				AirStrike_Target(self.origin + '0 0 5');
 			}
 		}
 		else
 		{
-			sprint (self.owner, 2.000000, "Target NOT visible from air!\n");
+			sprint (self.owner, 2, "Target NOT visible from air!\n");
 			if ((self.owner.last_saveme_sound < time))
 			{
-				sound (self.owner, 0.000000, "weapons/notarget.wav", 1.000000, 1.000000);
-				self.owner.last_saveme_sound = (time + 3.000000);
+				sound (self.owner, 0, "weapons/notarget.wav", 1, 1);
+				self.owner.last_saveme_sound = (time + 3);
 			}
-			self.owner.option = 0.000000;
+			self.owner.option = 0;
 		}
 	}
-	if ((self.owner.option2 == 1.000000))
+	if ((self.owner.option2 == 1))
 	{
-		self.effects = 8.000000;
+		self.effects = 8;
 	}
 	else
 	{
-		self.effects = 0.000000;
+		self.effects = 0;
 	}
 	self.nextthink = (time + 0.100000);
 };
@@ -184,30 +184,30 @@ void () SniperSight_Create =
 {
 	local entity sight;
 
-	self.tfstate = (self.tfstate | 2048.000000);
+	self.tfstate = (self.tfstate | 2048);
 	sight = spawn ();
 	sight.owner = self;
-	sight.movetype = 8.000000;
-	sight.solid = 0.000000;
-	if ((self.option2 == 1.000000))
+	sight.movetype = 8;
+	sight.solid = 0;
+	if ((self.option2 == 1))
 	{
-		sight.effects = 8.000000;
+		sight.effects = 8;
 	}
-	if ((self.option4 != 1.000000))
+	if ((self.option4 != 1))
 	{
-		if ((self.team_no == 1.000000))
+		if ((self.team_no == 1))
 		{
 			setmodel (sight, "progs/dot1.spr");
 		}
 		else
 		{
-			if ((self.team_no == 3.000000))
+			if ((self.team_no == 3))
 			{
 				setmodel (sight, "progs/dot3.spr");
 			}
 			else
 			{
-				if ((self.team_no == 4.000000))
+				if ((self.team_no == 4))
 				{
 					setmodel (sight, "progs/dot4.spr");
 				}
@@ -221,9 +221,9 @@ void () SniperSight_Create =
 	sight.classname = "timer";
 	setorigin (sight, self.origin);
 	sight.think = SniperSight_Update;
-	if ((self.option > 1.000000))
+	if ((self.option > 1))
 	{
-		self.option = 1.000000;
+		self.option = 1;
 	}
 	sight.nextthink = (time + 0.050000);
 };

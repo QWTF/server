@@ -235,17 +235,17 @@ void		end_sys_fields;			// flag for structure dumping
 ==============================================================================
 */
 
-float movedist /* = 0.000000 */;
+float movedist /* = 0 */;
 string string_null /* = "" */;
-//float empty_float /* = 0.000000 */;
+//float empty_float /* = 0 */;
 entity activator;
 entity damage_attacker;
-float framecount /* = 0.000000 */;
-float skill /* = 0.000000 */;
-float teamplay /* = 0.000000 */;
-float timelimit /* = 0.000000 */;
-float fraglimit /* = 0.000000 */;
-float deathmatch /* = 0.000000 */;
+float framecount /* = 0 */;
+float skill /* = 0 */;
+float teamplay /* = 0 */;
+float timelimit /* = 0 */;
+float fraglimit /* = 0 */;
+float deathmatch /* = 0 */;
 //.string wad;
 .string map;
 .float worldtype;
@@ -456,12 +456,12 @@ void () unlay;
 
 void () lay =
 {
-	setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 8.000000');
+	setsize (self, '-16 -16 -24', '16 16 8');
 };
 
 void () unlay =
 {
-	setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 32.000000');
+	setsize (self, '-16 -16 -24', '16 16 32');
 };
 
 //votemap code

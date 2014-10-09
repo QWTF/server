@@ -34,51 +34,51 @@ void () FlareGrenadeThink =
 	local float _l_8724;
 
 	_l_8724 = self.health - time;
-	if ((_l_8724 > 37.000000))
+	if ((_l_8724 > 37))
 	{
 		_l_8723 = random ();
 		if ((_l_8723 < 0.500000))
 		{
-			self.effects = 8.000000;
+			self.effects = 8;
 		}
 		else
 		{
-			self.effects = 0.000000;
+			self.effects = 0;
 		}
 		self.nextthink = ((time + 0.050000) + (random () * 0.100000));
 	}
 	else
 	{
-		if ((_l_8724 > 34.000000))
+		if ((_l_8724 > 34))
 		{
 			_l_8723 = random ();
 			if ((_l_8723 < 0.500000))
 			{
-				self.effects = 4.000000;
+				self.effects = 4;
 			}
 			else
 			{
-				self.effects = 8.000000;
+				self.effects = 8;
 			}
 			self.nextthink = ((time + 0.050000) + (random () * 0.100000));
 		}
 		else
 		{
-			if ((_l_8724 > 15.000000))
+			if ((_l_8724 > 15))
 			{
-				self.effects = 4.000000;
-				self.nextthink = (time + 10.000000);
+				self.effects = 4;
+				self.nextthink = (time + 10);
 			}
 			else
 			{
-				if ((_l_8724 < 1.000000))
+				if ((_l_8724 < 1))
 				{
-					self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+					self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1);
 					remove (self);
 				}
 				else
 				{
-					self.effects = 8.000000;
+					self.effects = 8;
 					self.nextthink = (time + _l_8724);
 				}
 			}
@@ -98,8 +98,8 @@ void() FlareGrenadeExplode =
 
 void () RemoveFlare =
 {
-	self.owner.effects = (self.owner.effects - (self.owner.effects & 4.000000));
-	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	self.owner.effects = (self.owner.effects - (self.owner.effects & 4));
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1);
 	dremove (self);
 };
 

@@ -242,77 +242,77 @@ void () DecodeLevelParms =
 	}
 
 #else
-	if ((toggleflags == 0.000000))
+	if ((toggleflags == 0))
 	{
 		toggleflags = parm10;
-		allow_hook = 0.000000;
-		invis_only = 0.000000;
+		allow_hook = 0;
+		invis_only = 0;
 		if ((coop || !deathmatch))
 		{
-			toggleflags = toggleflags | 1.000000;
+			toggleflags = toggleflags | 1;
 		}
 		nextmap = mapname;
-		allow_hook = 1.000000;
+		allow_hook = 1;
 		_l_5714 = find (world, classname, "info_tfdetect");
 		if ((_l_5714 != world))
 		{
-			if ((teamplay == 0.000000))
+			if ((teamplay == 0))
 			{
 				cvar_set ("teamplay", "21?TeamFortress");
 			}
 			ParseTFDetect (_l_5714);
-			if (((number_of_teams <= 0.000000) || (number_of_teams >= 5.000000)))
+			if (((number_of_teams <= 0) || (number_of_teams >= 5)))
 			{
-				number_of_teams = 4.000000;
+				number_of_teams = 4;
 			}
 		}
 		else
 		{
 			_l_5714 = find (world, classname, "info_player_team1");
-			if (((_l_5714 != world) || (CTF_Map == 1.000000)))
+			if (((_l_5714 != world) || (CTF_Map == 1)))
 			{
-				CTF_Map = 1.000000;
-				if ((teamplay == 0.000000))
+				CTF_Map = 1;
+				if ((teamplay == 0))
 				{
 					cvar_set ("teamplay", "21?TeamFortress");
 				}
 				_l_5714 = spawn ();
-				_l_5714.nextthink = (time + 30.000000);
+				_l_5714.nextthink = (time + 30);
 				_l_5714.think = CTF_FlagCheck;
-				number_of_teams = 2.000000;
+				number_of_teams = 2;
 			}
 			else
 			{
-				number_of_teams = 4.000000;
+				number_of_teams = 4;
 			}
 			cvar_set ("sv_aim", "1");
-			team1lives = -1.000000;
-			team2lives = -1.000000;
-			team3lives = -1.000000;
-			team4lives = -1.000000;
-			illegalclasses1 = 0.000000;
-			illegalclasses2 = 0.000000;
-			illegalclasses3 = 0.000000;
-			illegalclasses4 = 0.000000;
-			team1maxplayers = 100.000000;
-			team2maxplayers = 100.000000;
-			team3maxplayers = 100.000000;
-			team4maxplayers = 100.000000;
-			civilianteams = 0.000000;
+			team1lives = -1;
+			team2lives = -1;
+			team3lives = -1;
+			team4lives = -1;
+			illegalclasses1 = 0;
+			illegalclasses2 = 0;
+			illegalclasses3 = 0;
+			illegalclasses4 = 0;
+			team1maxplayers = 100;
+			team2maxplayers = 100;
+			team3maxplayers = 100;
+			team4maxplayers = 100;
+			civilianteams = 0;
 		}
 #endif
-		bprint (2.000000, "Mapname: ");
-		bprint (2.000000, mapname);
-		bprint (2.000000, "\n");
+		bprint (2, "Mapname: ");
+		bprint (2, mapname);
+		bprint (2, "\n");
 		SetupTeamEqualiser ();
-//		if (1.000000)	// if (toggleflags == 1) ??
+//		if (1)	// if (toggleflags == 1) ??
 //		{
-			toggleflags = toggleflags - (toggleflags & 128.000000);
+			toggleflags = toggleflags - (toggleflags & 128);
 //		}
-		toggleflags = toggleflags | 2.000000;
+		toggleflags = toggleflags | 2;
 		_l_5713 = infokey (world, "temp1");
-		toggleflags = (toggleflags | 256.000000) | stof (_l_5713);
-		_l_5715 = 30.000000;
+		toggleflags = (toggleflags | 256) | stof (_l_5713);
+		_l_5715 = 30;
 		_l_5713 = infokey (world, "a");
 		if ((_l_5713 == string_null))
 		{
@@ -320,19 +320,19 @@ void () DecodeLevelParms =
 		}
 		if ((_l_5713 == "on"))
 		{
-			toggleflags = toggleflags | 64.000000;
+			toggleflags = toggleflags | 64;
 		}
 		else
 		{
 			if ((_l_5713 == "off"))
 			{
-				toggleflags = toggleflags - (toggleflags & 64.000000);
+				toggleflags = toggleflags - (toggleflags & 64);
 			}
 			else
 			{
-				if ((stof (_l_5713) != 0.000000))
+				if ((stof (_l_5713) != 0))
 				{
-					toggleflags = toggleflags | 64.000000;
+					toggleflags = toggleflags | 64;
 					_l_5715 = stof (_l_5713);
 				}
 			}
@@ -344,13 +344,13 @@ void () DecodeLevelParms =
 		}
 		if ((_l_5713 == "on"))
 		{
-			toggleflags = toggleflags | 128.000000;
+			toggleflags = toggleflags | 128;
 		}
 		else
 		{
 			if ((_l_5713 == "off"))
 			{
-				toggleflags = toggleflags - (toggleflags & 128.000000);
+				toggleflags = toggleflags - (toggleflags & 128);
 			}
 		}
 		_l_5713 = infokey (world, "g");
@@ -360,31 +360,31 @@ void () DecodeLevelParms =
 		}
 		if ((_l_5713 == "off"))
 		{
-			allow_hook = 0.000000;
+			allow_hook = 0;
 		}
-		if ((!(toggleflags & 1024.000000) && (_l_5713 != "on")))
+		if ((!(toggleflags & 1024) && (_l_5713 != "on")))
 		{
-			allow_hook = 0.000000;
+			allow_hook = 0;
 		}
 		_l_5713 = infokey (world, "spy");
 		if ((_l_5713 == "off"))
 		{
-			spy_off = 1.000000;
+			spy_off = 1;
 		}
 		_l_5713 = infokey (world, "s");
 		if ((_l_5713 == string_null))
 		{
 			_l_5713 = infokey (world, "spyinvis");
 		}
-		if (((_l_5713 == "on") || (toggleflags & 512.000000)))
+		if (((_l_5713 == "on") || (toggleflags & 512)))
 		{
-			invis_only = 1.000000;
+			invis_only = 1;
 		}
 		else
 		{
 			if ((_l_5713 == "off"))
 			{
-				invis_only = 0.000000;
+				invis_only = 0;
 			}
 		}
 		_l_5713 = infokey (world, "oldconc");
@@ -399,84 +399,84 @@ void () DecodeLevelParms =
 		_l_5713 = infokey (world, "spyjumpoption");
 		if (((_l_5713 == "on") || (_l_5713 == "1")))
 		{
-			spyjumpoption = 1.000000;
+			spyjumpoption = 1;
 		}
 		else
 		{
-			spyjumpoption = 0.000000;
+			spyjumpoption = 0;
 		}
 		_l_5713 = infokey (world, "spycam");
 		if (((_l_5713 == "on") || (_l_5713 == "1")))
 		{
-			spycam = 1.000000;
+			spycam = 1;
 		}
 		else
 		{
-			spycam = 0.000000;
+			spycam = 0;
 		}
-		spycam = 0.000000;
+		spycam = 0;
 		_l_5713 = infokey (world, "medicarmorheal");
 		if (((_l_5713 == "on") || (_l_5713 == "1")))
 		{
-			medicarmorheal = 1.000000;
+			medicarmorheal = 1;
 		}
 		else
 		{
-			medicarmorheal = 0.000000;
+			medicarmorheal = 0;
 		}
 		_l_5713 = infokey (world, "quadscore");
 		if ((_l_5713 != ""))
 		{
 			if ((_l_5713 == "on"))
 			{
-				quadscore = -666.000000;
-				bprint (2.000000, "çQuad Round 1 in progress!\n");
+				quadscore = -666;
+				bprint (2, "çQuad Round 1 in progress!\n");
 			}
 			else
 			{
 				if ((_l_5713 == "0"))
 				{
-					quadscore = 0.000000;
+					quadscore = 0;
 				}
 				else
 				{
-					bprint (2.000000, quadscore);
-					bprint (2.000000, "\n");
+					bprint (2, quadscore);
+					bprint (2, "\n");
 					quadscore = stof (_l_5713);
 					team2score = quadscore;
 					localcmd ("serverinfo quadscore 0\n");
-					bprint (2.000000, "çQuad Round 2 in progress!\n");
-					TeamFortress_TeamShowScores (2.000000);
+					bprint (2, "çQuad Round 2 in progress!\n");
+					TeamFortress_TeamShowScores (2);
 				}
 			}
 		}
 		_l_5713 = infokey (world, "dropgrens");
 		if (((_l_5713 == "on") || (_l_5713 == "1")))
 		{
-			sr_dropgrens = 1.000000;
+			sr_dropgrens = 1;
 		}
 		else
 		{
-			sr_dropgrens = 0.000000;
+			sr_dropgrens = 0;
 		}
 		_l_5713 = infokey (world, "sr_gren1");
 		sr_gren1 = stof (_l_5713);
 		_l_5713 = infokey (world, "sr_gren2");
 		sr_gren2 = stof (_l_5713);
-		if ((sr_gren1 <= 0.000000))
+		if ((sr_gren1 <= 0))
 		{
-			sr_gren1 = 10.000000;
+			sr_gren1 = 10;
 		}
-		if ((sr_gren2 <= 0.000000))
+		if ((sr_gren2 <= 0))
 		{
-			sr_gren2 = 10.000000;
+			sr_gren2 = 10;
 		}
 	
 		_l_5713 = infokey(world, "sr_airmirv");
 		sr_airmirv = stof (_l_5713);
-		if ((sr_airmirv <= 0.000000))
+		if ((sr_airmirv <= 0))
 		{
-			sr_airmirv = 10.000000;
+			sr_airmirv = 10;
 		}
 
 #ifdef clan_progs
@@ -499,7 +499,7 @@ void () DecodeLevelParms =
 #endif
 		_l_5713 = infokey (world, "prematch");
 		prematch = stof (_l_5713);
-		if ((prematch > 0.000000))
+		if ((prematch > 0))
 		{
 			SetUpPrematch ();
 		}
@@ -524,106 +524,106 @@ void () DecodeLevelParms =
 		cr_spy = stof (_l_5713);
 		_l_5713 = infokey (world, "cr_engineer");
 		cr_engineer = stof (_l_5713);
-		if ((((((((((cr_scout != 0.000000) && (cr_sniper != 0.000000)) && (cr_soldier != 0.000000)) && (cr_demoman != 0.000000)) && (cr_medic != 0.000000)) && (cr_hwguy != 0.000000)) && (cr_pyro != 0.000000)) && (cr_spy != 0.000000)) && (cr_engineer != 0.000000)))
+		if ((((((((((cr_scout != 0) && (cr_sniper != 0)) && (cr_soldier != 0)) && (cr_demoman != 0)) && (cr_medic != 0)) && (cr_hwguy != 0)) && (cr_pyro != 0)) && (cr_spy != 0)) && (cr_engineer != 0)))
 		{
-			cr_engineer = 0.000000;
+			cr_engineer = 0;
 		}
 		_l_5713 = infokey (world, "clr_enabled");
 		if ((_l_5713 == "on"))
 		{
-			clr_enabled = 1.000000;
+			clr_enabled = 1;
 		}
 		else
 		{
 			if ((_l_5713 == "1"))
 			{
-				clr_enabled = 1.000000;
+				clr_enabled = 1;
 			}
 			else
 			{
-				clr_enabled = 0.000000;
+				clr_enabled = 0;
 			}
 		}
 		_l_5713 = infokey (world, "airscout");
 		if ((_l_5713 == "off"))
 		{
-			airscout = 0.000000;
+			airscout = 0;
 		}
 		else
 		{
-			airscout = 1.000000;
+			airscout = 1;
 		}
 		_l_5713 = infokey (world, "headkick");
 		if ((_l_5713 == "off"))
 		{
-			headkick = 0.000000;
+			headkick = 0;
 		}
 		else
 		{
-			headkick = 1.000000;
+			headkick = 1;
 		}
 		_l_5713 = infokey (world, "coloredlights");
 		if ((_l_5713 == "on"))
 		{
-			coloredlights = 1.000000;
+			coloredlights = 1;
 		}
 		else
 		{
-			coloredlights = 0.000000;
+			coloredlights = 0;
 		}
 		_l_5713 = infokey (world, "drop3");
 		if ((_l_5713 == "off"))
 		{
-			drop3 = 0.000000;
+			drop3 = 0;
 		}
 		else
 		{
-			drop3 = 1.000000;
+			drop3 = 1;
 		}
 		_l_5713 = infokey (world, "drop2");
 		if ((_l_5713 == "off"))
 		{
-			drop2 = 0.000000;
+			drop2 = 0;
 		}
 		else
 		{
-			drop2 = 1.000000;
+			drop2 = 1;
 		}
 		_l_5713 = infokey (world, "drop1");
 		if ((_l_5713 == "off"))
 		{
-			drop1 = 0.000000;
+			drop1 = 0;
 		}
 		else
 		{
-			drop1 = 1.000000;
+			drop1 = 1;
 		}
 		_l_5713 = infokey (world, "footsteps");
 		if ((_l_5713 == "off"))
 		{
-			footsteps = 0.000000;
+			footsteps = 0;
 		}
 		else
 		{
-			footsteps = 1.000000;
+			footsteps = 1;
 		}
 		_l_5713 = infokey (world, "old_gl");
 		if ((_l_5713 == "off"))
 		{
-			old_gl = 0.000000;
+			old_gl = 0;
 		}
 		else
 		{
-			old_gl = 1.000000;
+			old_gl = 1;
 		}
 		_l_5713 = infokey (world, "exec_class");
 		if ((_l_5713 != "off"))
 		{
-			exec_class = 1.000000;
+			exec_class = 1;
 		}
 		else
 		{
-			exec_class = 0.000000;
+			exec_class = 0;
 		}
 		_l_5713 = infokey (world, "rd");
 		if ((_l_5713 == string_null))
@@ -633,15 +633,15 @@ void () DecodeLevelParms =
 		respawn_delay_time = stof (_l_5713);
 		if (respawn_delay_time)
 		{
-			toggleflags = toggleflags | 4.000000;
+			toggleflags = toggleflags | 4;
 		}
-		if (((toggleflags & 4.000000) && (respawn_delay_time == 0.000000)))
+		if (((toggleflags & 4) && (respawn_delay_time == 0)))
 		{
-			respawn_delay_time = 5.000000;
+			respawn_delay_time = 5;
 		}
-		if ((toggleflags & 64.000000))
+		if ((toggleflags & 64))
 		{
-			toggleflags = toggleflags - (toggleflags & 64.000000);
+			toggleflags = toggleflags - (toggleflags & 64);
 			_l_5714 = spawn ();
 			_l_5714.nextthink = (time + _l_5715);
 			_l_5714.think = autoteam_think;
@@ -651,7 +651,7 @@ void () DecodeLevelParms =
 	{
 		self.tfstate = parm11;
 	}
-	if ((self.playerclass == 0.000000))
+	if ((self.playerclass == 0))
 	{
 		self.playerclass = parm12;
 	}
@@ -696,70 +696,70 @@ float /*WARNING: could not determine return type*/ (entity _p_5763) IsLegalClien
 	}
 	if ((_l_5764 == ""))
 	{
-		return (0.000000);
+		return (0);
 	}
 	_l_5765 = infokey (_p_5763, _l_5764);
 	_l_5766 = infokey (world, "clr_client1n");
 	_l_5767 = infokey (world, "clr_client1v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client2n");
 	_l_5767 = infokey (world, "clr_client2v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client3n");
 	_l_5767 = infokey (world, "clr_client3v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client4n");
 	_l_5767 = infokey (world, "clr_client4v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client5n");
 	_l_5767 = infokey (world, "clr_client5v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client6n");
 	_l_5767 = infokey (world, "clr_client6v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client7n");
 	_l_5767 = infokey (world, "clr_client7v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client8n");
 	_l_5767 = infokey (world, "clr_client8v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client9n");
 	_l_5767 = infokey (world, "clr_client9v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
 	_l_5766 = infokey (world, "clr_client10n");
 	_l_5767 = infokey (world, "clr_client10v");
 	if (((_l_5764 == _l_5766) && (_l_5765 == _l_5767)))
 	{
-		return (1.000000);
+		return (1);
 	}
-	return (0.000000);
+	return (0);
 };
 
 //end authcode3
@@ -1010,7 +1010,7 @@ void() execute_changelevel =
 	WriteAngle(2, pos.mangle_x);
 	WriteAngle(2, pos.mangle_y);
 	WriteAngle(2, pos.mangle_z);
-	if ((quadscore == -666.000000))
+	if ((quadscore == -666))
 	{
 		localcmd ("serverinfo quadscore ");
 		localcmd (ftos (team1score));
@@ -1527,26 +1527,26 @@ void() PutClientInServer =
 	{
 		if (((self.client != "fuhquake") && (self.client != "zquake")))
 		{
-			sprint (self, 2.000000, "Weapon statistics require fuhquake/zquake (www.fuhquake.net)\n");
-			self.stats_on = 0.000000;
+			sprint (self, 2, "Weapon statistics require fuhquake/zquake (www.fuhquake.net)\n");
+			self.stats_on = 0;
 			stuffcmd (self, "setinfo tf_stats off\n");
 		}
 		else
 		{
-			self.stats_on = 1.000000;
+			self.stats_on = 1;
 		}
 	}
 	else
 	{
-		self.stats_on = 0.000000;
+		self.stats_on = 0;
 	}
 	if (clr_enabled)
 	{
 		if (!IsLegalClient (self))
 		{
 			stuffcmd (self, "disconnect\necho\necho çillegal client, restrictions in effect\necho\n");
-			bprint (1.000000, self.netname);
-			bprint (1.000000, " tried to join using an illegal client.\n");
+			bprint (1, self.netname);
+			bprint (1, " tried to join using an illegal client.\n");
 			return;
 		}
 	}
@@ -1719,19 +1719,19 @@ void() PutClientInServer =
 		self.modelindex = modelindex_null;
 		self.current_menu = TF_FLARE_OFF;
 		TeamFortress_Alias("id", 185, 0);
-			bprint (1.000000, self.netname);
-		bprint (1.000000, " is using ");
+			bprint (1, self.netname);
+		bprint (1, " is using ");
 		if ((self.client != "unknown"))
 		{
-			bprint (1.000000, self.client);
-			bprint (1.000000, " ");
-			bprint (1.000000, self.clientv);
+			bprint (1, self.client);
+			bprint (1, " ");
+			bprint (1, self.clientv);
 		}
 		else
 		{
-			bprint (1.000000, "an unknown client");
+			bprint (1, "an unknown client");
 		}
-		bprint (1.000000, "\n");
+		bprint (1, "\n");
 		if (self.stats_on)
 		{
 			stuffcmd (self, "set stats_execed 0\nexec progs/stats.cfg\n");
@@ -1986,92 +1986,92 @@ void () PlayerJump =
 
 	if ((self.nojumptime > time))
 	{
-		if ((self.velocity_x > 70.000000))
+		if ((self.velocity_x > 70))
 		{
-			self.velocity_x = 70.000000;
+			self.velocity_x = 70;
 		}
 		else
 		{
-			if ((self.velocity_x < -70.000000))
+			if ((self.velocity_x < -70))
 			{
-				self.velocity_x = -70.000000;
+				self.velocity_x = -70;
 			}
 		}
-		if ((self.velocity_y > 70.000000))
+		if ((self.velocity_y > 70))
 		{
-			self.velocity_y = 70.000000;
+			self.velocity_y = 70;
 		}
 		else
 		{
-			if ((self.velocity_y < -70.000000))
+			if ((self.velocity_y < -70))
 			{
-				self.velocity_y = -70.000000;
+				self.velocity_y = -70;
 			}
 		}
 	}
-	if ((self.flags & 2048.000000))
+	if ((self.flags & 2048))
 	{
 		return;
 	}
-	if ((self.waterlevel >= 2.000000))
+	if ((self.waterlevel >= 2))
 	{
-		if ((self.watertype == -3.000000))
+		if ((self.watertype == -3))
 		{
-			self.velocity_z = 100.000000;
+			self.velocity_z = 100;
 		}
 		else
 		{
-			if ((self.watertype == -4.000000))
+			if ((self.watertype == -4))
 			{
-				self.velocity_z = 80.000000;
+				self.velocity_z = 80;
 			}
 			else
 			{
-				self.velocity_z = 50.000000;
+				self.velocity_z = 50;
 			}
 		}
 		if ((self.swim_flag < time))
 		{
-			self.swim_flag = (time + 1.000000);
+			self.swim_flag = (time + 1);
 			if ((random () < 0.500000))
 			{
-				sound (self, 4.000000, "misc/water1.wav", 1.000000, 1.000000);
+				sound (self, 4, "misc/water1.wav", 1, 1);
 			}
 			else
 			{
-				sound (self, 4.000000, "misc/water2.wav", 1.000000, 1.000000);
+				sound (self, 4, "misc/water2.wav", 1, 1);
 			}
 		}
 		return;
 	}
-	if (!(self.flags & 512.000000))
+	if (!(self.flags & 512))
 	{
 		return;
 	}
-	if (!(self.flags & 4096.000000))
+	if (!(self.flags & 4096))
 	{
 		return;
 	}
-	self.flags = (self.flags - (self.flags & 4096.000000));
-	self.button2 = 0.000000;
-	if ((self.playerclass == 8.000000))
+	self.flags = (self.flags - (self.flags & 4096));
+	self.button2 = 0;
+	if ((self.playerclass == 8))
 	{
-		if ((self.spy_regjump == 0.000000))
+		if ((self.spy_regjump == 0))
 		{
-			sound (self, 4.000000, "hknight/slash1.wav", 0.700000, 1.000000);
-			self.velocity_z = (self.velocity_z + 400.000000);
+			sound (self, 4, "hknight/slash1.wav", 0.700000, 1);
+			self.velocity_z = (self.velocity_z + 400);
 		}
 		else
 		{
-			sound (self, 4.000000, "player/plyrjmp8.wav", 1.000000, 1.000000);
-			self.velocity_z = (self.velocity_z + 270.000000);
+			sound (self, 4, "player/plyrjmp8.wav", 1, 1);
+			self.velocity_z = (self.velocity_z + 270);
 		}
 		//if( self.velocity_z < 0 ) self.velocity_z = 0; //prozac fix -- still needed for your equake, hughie?
 	}
 	else
 	{
-		sound (self, 4.000000, "player/plyrjmp8.wav", 1.000000, 1.000000);
-		self.velocity_z = (self.velocity_z + 270.000000);
+		sound (self, 4, "player/plyrjmp8.wav", 1, 1);
+		self.velocity_z = (self.velocity_z + 270);
 		//if( self.velocity_z < 0 ) self.velocity_z = 0;
 	}
 };
@@ -2207,26 +2207,26 @@ void () PlayerPreThink =
 	if (self.autoid)
 	{
 		makevectors (self.v_angle);
-		src = self.origin + (v_forward * 10.000000);
+		src = self.origin + (v_forward * 10);
 		src_z = self.absmin_z + (self.size_z * 0.700000);
-		traceline (src, (src + (v_forward * 2048.000000)), 0.000000, self);
+		traceline (src, (src + (v_forward * 2048)), 0, self);
 		if (((trace_ent != world) && (trace_ent.origin != world.origin)))
 		{
-			if ((self.current_menu != 17.000000))
+			if ((self.current_menu != 17))
 			{
 				TeamFortress_ID ();
 				self.StatusRefreshTime = (time + 0.200000);
 			}
 		}
 	}
-	if ((self.is_feigning && (self.waterlevel == 1.000000)))
+	if ((self.is_feigning && (self.waterlevel == 1)))
 	{
-		self.watertype = -3.000000;
-		self.waterlevel = 3.000000;
+		self.watertype = -3;
+		self.waterlevel = 3;
 	}
 	if (intermission_running)
 	{
-		if ((intermission_running && (self.last_used != 999.000000)))
+		if ((intermission_running && (self.last_used != 999)))
 		{
 			if ((random () < 0.500000))
 			{
@@ -2236,48 +2236,48 @@ void () PlayerPreThink =
 			{
 				stuffcmd (self, "play music/megamnu2.wav\n");
 			}
-			self.last_used = 999.000000;
+			self.last_used = 999;
 		}
 		IntermissionThink ();
 		return;
 	}
 	makevectors (self.v_angle);
-	if ((self.playerclass == 0.000000))
+	if ((self.playerclass == 0))
 	{
-		self.maxspeed = 0.000000;
-		self.gravity = 0.000000;
-		if (((self.button2 && (self.current_menu == 2.000000)) && (self.team_no == 0.000000)))
+		self.maxspeed = 0;
+		self.gravity = 0;
+		if (((self.button2 && (self.current_menu == 2)) && (self.team_no == 0)))
 		{
 			if (TeamFortress_TeamPutPlayerInTeam ())
 			{
-				self.current_menu = 3.000000;
-				self.menu_count = 25.000000;
+				self.current_menu = 3;
+				self.menu_count = 25;
 			}
 		}
 	}
-	if ((self.view_ofs == '0.000000 0.000000 0.000000'))
+	if ((self.view_ofs == '0 0 0'))
 	{
 		return;
 	}
 	CheckRules ();
-	if ((self.playerclass != 0.000000))
+	if ((self.playerclass != 0))
 	{
 		WaterMove ();
 	}
-	if ((self.deadflag >= 2.000000))
+	if ((self.deadflag >= 2))
 	{
 		PlayerDeathThink ();
 		return;
 	}
 	if (((self.undercover_team || self.undercover_skin) || self.is_undercover))
 	{
-		if ((self.effects & 12.000000))
+		if ((self.effects & 12))
 		{
-			sprint (self, 1.000000, "The glowing removes your disguise.\n");
+			sprint (self, 1, "The glowing removes your disguise.\n");
 			Spy_RemoveDisguise (self);
 		}
 	}
-	if ((self.deadflag == 1.000000))
+	if ((self.deadflag == 1))
 	{
 		return;
 	}
@@ -2289,21 +2289,21 @@ void () PlayerPreThink =
 		}
 		else
 		{
-			self.flags = (self.flags | 4096.000000);
+			self.flags = (self.flags | 4096);
 		}
 	}
 	else
 	{
 		if (self.waterlevel)
 		{
-			self.velocity_z = -100.000000;
+			self.velocity_z = -100;
 		}
 	}
 	if ((time < self.pausetime))
 	{
-		self.velocity = '0.000000 0.000000 0.000000';
+		self.velocity = '0 0 0';
 	}
-	if ((((time > self.attack_finished) && (self.currentammo == 0.000000)) && (self.weapon > 16.000000)))
+	if ((((time > self.attack_finished) && (self.currentammo == 0)) && (self.weapon > 16)))
 	{
 		self.weapon = W_BestWeapon ();
 		W_SetCurrentAmmo ();
@@ -2812,8 +2812,8 @@ void () ClientDisconnect =
 	self.userid = 0;
 	local entity _l_6062;
 
-	sound (self, 4.000000, "misc/eject.wav", 1.000000, 0.000000);
-	self.has_disconnected = 1.000000;
+	sound (self, 4, "misc/eject.wav", 1, 0);
+	self.has_disconnected = 1;
 	TeamFortress_RemoveTimers ();
 	_l_6062 = find (world, classname, "player_prop");
 	while (_l_6062)
@@ -2847,7 +2847,7 @@ void () ClientDisconnect =
 	{
 		if ((_l_6062.real_owner == self))
 		{
-			TF_T_Damage (_l_6062, world, world, 500.000000, 0.000000, 0.000000);
+			TF_T_Damage (_l_6062, world, world, 500, 0, 0);
 		}
 		_l_6062 = find (_l_6062, classname, "building_dispenser");
 	}
@@ -2856,7 +2856,7 @@ void () ClientDisconnect =
 	{
 		if ((_l_6062.real_owner == self))
 		{
-			TF_T_Damage (_l_6062, world, world, 500.000000, 0.000000, 0.000000);
+			TF_T_Damage (_l_6062, world, world, 500, 0, 0);
 		}
 		_l_6062 = find (_l_6062, classname, "building_sentrygun");
 	}
@@ -2865,7 +2865,7 @@ void () ClientDisconnect =
 	{
 		if ((_l_6062.owner == self))
 		{
-			if ((_l_6062.weaponmode == 1.000000))
+			if ((_l_6062.weaponmode == 1))
 			{
 				TeamFortress_SetSpeed (_l_6062.enemy);
 				dremove (_l_6062.oldenemy);
@@ -2898,9 +2898,9 @@ void () ClientDisconnect =
 	}
 	set_suicide_frame ();
 	self.netname = string_null;
-	self.team_no = 0.000000;
-	self.solid = 0.000000;
-	setsize (self, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
+	self.team_no = 0;
+	self.solid = 0;
+	setsize (self, '0 0 0', '0 0 0');
 };
 
 void(entity targ, entity attacker) ClientObituary = 
@@ -4013,11 +4013,11 @@ void(entity te) ferdisplay =
 		}
 		local string fercount;
 		fercount = ftos(playernamefer.num_kills);
-		bprint (1.000000, playernamefer.netname);
-		bprint (1.000000, " got a ");
-		bprint (1.000000, fercount);
-		bprint (1.000000, "-fer!");
-		bprint (1.000000, "\n");
+		bprint (1, playernamefer.netname);
+		bprint (1, " got a ");
+		bprint (1, fercount);
+		bprint (1, "-fer!");
+		bprint (1, "\n");
 		playernamefer.num_kills = 0;
 #ifdef fte_rankings
 		if (FTE_Server == 1)

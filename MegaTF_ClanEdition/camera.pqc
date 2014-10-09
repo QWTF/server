@@ -438,7 +438,7 @@ void() fadefromwhite =
 void () prop_die =
 {
 
-	self.owner.health = 0.000000;
+	self.owner.health = 0;
 	Killed (self.owner, self.enemy);
 	self = self.owner;
 	LookThroughCam ();
@@ -460,26 +460,26 @@ void (entity _p_1745, vector _p_1746, float _p_1749, float _p_1750, float _p_175
 	local vector _l_1753;
 
 	_l_1752 = self;
-	_l_1753 = '0.200000 1.000000 0.200000';
+	_l_1753 = '0.200000 1 0.200000';
 	newmis = spawn ();
 	self = newmis;
-	newmis.movetype = 6.000000;
-	if ((_p_1750 == 1.000000))
+	newmis.movetype = 6;
+	if ((_p_1750 == 1))
 	{
-		newmis.solid = 2.000000;
+		newmis.solid = 2;
 	}
 	else
 	{
-		newmis.solid = 0.000000;
+		newmis.solid = 0;
 	}
 	newmis.mdl = "progs/player.mdl";
 	setmodel (newmis, newmis.mdl);
-	setsize (newmis, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 32.000000');
+	setsize (newmis, '-16 -16 -24', '16 16 32');
 	newmis.classname = "player_prop";
 	setorigin (newmis, _p_1746);
 	newmis.cam_origin = _p_1746;
 	makevectors (_p_1745.v_angle);
-	v_forward_z = v_forward_z / 12.000000;
+	v_forward_z = v_forward_z / 12;
 	newmis.angles = vectoangles (v_forward);
 	newmis.team_no = _p_1745.team_no;
 	newmis.undercover_team = _p_1745.undercover_team;
@@ -491,41 +491,41 @@ void (entity _p_1745, vector _p_1746, float _p_1749, float _p_1750, float _p_175
 	newmis.th_pain = player_pain;
 	newmis.th_die = prop_die;
 	newmis.think = prop_think;
-	if ((_p_1745.is_squating == 0.000000))
+	if ((_p_1745.is_squating == 0))
 	{
-		if ((newmis.is_feigning == 1.000000))
+		if ((newmis.is_feigning == 1))
 		{
-			if (((_p_1745.frame >= 41.000000) && (_p_1745.frame <= 49.000000)))
+			if (((_p_1745.frame >= 41) && (_p_1745.frame <= 49)))
 			{
 				spy_die_ax9 ();
 			}
 			else
 			{
-				if (((_p_1745.frame >= 50.000000) && (_p_1745.frame <= 60.000000)))
+				if (((_p_1745.frame >= 50) && (_p_1745.frame <= 60)))
 				{
 					spy_diea11 ();
 				}
 				else
 				{
-					if (((_p_1745.frame >= 61.000000) && (_p_1745.frame <= 69.000000)))
+					if (((_p_1745.frame >= 61) && (_p_1745.frame <= 69)))
 					{
 						spy_dieb9 ();
 					}
 					else
 					{
-						if (((_p_1745.frame >= 70.000000) && (_p_1745.frame <= 84.000000)))
+						if (((_p_1745.frame >= 70) && (_p_1745.frame <= 84)))
 						{
 							spy_diec15 ();
 						}
 						else
 						{
-							if (((_p_1745.frame >= 85.000000) && (_p_1745.frame <= 93.000000)))
+							if (((_p_1745.frame >= 85) && (_p_1745.frame <= 93)))
 							{
 								spy_died9 ();
 							}
 							else
 							{
-								if (((_p_1745.frame >= 94.000000) && (_p_1745.frame <= 102.000000)))
+								if (((_p_1745.frame >= 94) && (_p_1745.frame <= 102)))
 								{
 									spy_diee9 ();
 								}
@@ -538,42 +538,42 @@ void (entity _p_1745, vector _p_1746, float _p_1749, float _p_1750, float _p_175
 	}
 	else
 	{
-		newmis.frame = 57.000000;
-		newmis.is_squating = 1.000000;
-		setsize (self, '-16.000000 -16.000000 -24.000000', '16.000000 16.000000 8.000000');
+		newmis.frame = 57;
+		newmis.is_squating = 1;
+		setsize (self, '-16 -16 -24', '16 16 8');
 	}
 	newmis.nextthink = (time + 0.500000);
 	newmis.current_weapon = _p_1745.current_weapon;
-	if ((newmis.is_feigning == 0.000000))
+	if ((newmis.is_feigning == 0))
 	{
 		newmis.frame = _p_1745.frame;
 	}
-	if ((_p_1750 == 1.000000))
+	if ((_p_1750 == 1))
 	{
-		newmis.takedamage = 2.000000;
+		newmis.takedamage = 2;
 		newmis.health = _p_1745.health;
 	}
 	else
 	{
-		newmis.takedamage = 0.000000;
+		newmis.takedamage = 0;
 	}
-	if ((_p_1749 & 2.000000))
+	if ((_p_1749 & 2))
 	{
 		newmis.ammo_shells = _p_1745.ammo_shells;
 	}
-	if ((_p_1749 & 4.000000))
+	if ((_p_1749 & 4))
 	{
 		newmis.ammo_nails = _p_1745.ammo_nails;
 	}
-	if ((_p_1749 & 8.000000))
+	if ((_p_1749 & 8))
 	{
 		newmis.ammo_rockets = _p_1745.ammo_rockets;
 	}
-	if ((_p_1749 & 16.000000))
+	if ((_p_1749 & 16))
 	{
 		newmis.ammo_cells = _p_1745.ammo_cells;
 	}
-	if ((_p_1749 & 32.000000))
+	if ((_p_1749 & 32))
 	{
 		newmis.armorvalue = _p_1745.armorvalue;
 	}
@@ -590,27 +590,27 @@ vector (entity _p_1782, float _p_1783) Remove_Prop =
 	{
 		if ((_l_1784.owner == _p_1782))
 		{
-			if ((_l_1784.health != 0.000000))
+			if ((_l_1784.health != 0))
 			{
 				_p_1782.health = _l_1784.health;
 			}
-			if ((_l_1784.ammo_shells != 0.000000))
+			if ((_l_1784.ammo_shells != 0))
 			{
 				_p_1782.ammo_shells = _l_1784.ammo_shells;
 			}
-			if ((_l_1784.ammo_nails != 0.000000))
+			if ((_l_1784.ammo_nails != 0))
 			{
 				_p_1782.ammo_nails = _l_1784.ammo_nails;
 			}
-			if ((_l_1784.ammo_rockets != 0.000000))
+			if ((_l_1784.ammo_rockets != 0))
 			{
 				_p_1782.ammo_rockets = _l_1784.ammo_rockets;
 			}
-			if ((_l_1784.ammo_cells != 0.000000))
+			if ((_l_1784.ammo_cells != 0))
 			{
 				_p_1782.ammo_cells = _l_1784.ammo_cells;
 			}
-			if ((_l_1784.armorvalue != 0.000000))
+			if ((_l_1784.armorvalue != 0))
 			{
 				_p_1782.armorvalue = _l_1784.armorvalue;
 			}
@@ -627,8 +627,8 @@ void () CamAttach =
 {
 
 	self.think = SUB_Null;
-	self.nextthink = (time - 1.000000);
-	sound (newmis, 0.000000, "buttons/switch02.wav", 1.000000, 1.000000);
+	self.nextthink = (time - 1);
+	sound (newmis, 0, "buttons/switch02.wav", 1, 1);
 };
 .float DropFlagDelay;
 
@@ -650,71 +650,71 @@ void () Cam =
 		}
 		_l_1805 = find (_l_1805, classname, "camera");
 	}
-	if ((self.is_feigning == 1.000000))
+	if ((self.is_feigning == 1))
 	{
 		return;
 	}
-	if ((self.no_grenades_2 < 1.000000))
+	if ((self.no_grenades_2 < 1))
 	{
-		sprint (self, 2.000000, "Not enough type 2 grenades... get more\n");
-		self.impulse = 0.000000;
+		sprint (self, 2, "Not enough type 2 grenades... get more\n");
+		self.impulse = 0;
 		if ((self.weaponmodel == "progs/spycamb.mdl"))
 		{
 			self.weaponmodel = "progs/v_shot.mdl";
 			self.currentammo = self.ammo_nails;
 			Attack_Finished (0.700000);
-			self.impulse = 0.000000;
+			self.impulse = 0;
 			self.StatusRefreshTime = (time + 0.100000);
-			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+			self.tfstate = (self.tfstate - (self.tfstate & 2));
 		}
 		return;
 	}
 	if ((self.weaponmodel != "progs/spycamb.mdl"))
 	{
-		self.tfstate = (self.tfstate | 2.000000);
+		self.tfstate = (self.tfstate | 2);
 		self.oldweaponmodel = self.weaponmodel;
 		self.oldcurrentammo = self.currentammo;
-		self.currentammo = 1.000000;
+		self.currentammo = 1;
 		self.weaponmodel = "progs/spycamb.mdl";
-		self.weaponframe = 0.000000;
+		self.weaponframe = 0;
 		return;
 	}
 	makevectors (self.v_angle);
-	_l_1799 = self.origin + (v_forward * 10.000000);
+	_l_1799 = self.origin + (v_forward * 10);
 //	 = self.absmin_z + (self.size_z * 0.700000);
-	traceline (_l_1799, (_l_1799 + (v_forward * 43.000000)), 0.000000, self);
-	_l_1802 = trace_endpos - (v_forward * 8.000000);
-	if ((trace_fraction != 1.000000))
+	traceline (_l_1799, (_l_1799 + (v_forward * 43)), 0, self);
+	_l_1802 = trace_endpos - (v_forward * 8);
+	if ((trace_fraction != 1))
 	{
-		sprint (self, 2.000000, "Camera set! Drop3 looks through it.\n");
-		self.no_grenades_2 = (self.no_grenades_2 - 1.000000);
-		_l_1807 = self.angles + '0.000000 180.000000 90.000000';
-		_l_1807_x = _l_1807_x * 12.000000;
-		_l_1807_x = rint ((_l_1807_x / 90.000000)) * 90.000000;
-//		_l_1807_y = rint (( / 90.000000)) * 90.000000;
-//		_l_1807_y = rint (( / 90.000000)) * 90.000000;
-//		if ((((_l_1807_y - self.origin_z) <= -14.000000) && ((_l_1807_y - self.origin_z) >= -18.000000)))
+		sprint (self, 2, "Camera set! Drop3 looks through it.\n");
+		self.no_grenades_2 = (self.no_grenades_2 - 1);
+		_l_1807 = self.angles + '0 180 90';
+		_l_1807_x = _l_1807_x * 12;
+		_l_1807_x = rint ((_l_1807_x / 90)) * 90;
+//		_l_1807_y = rint (( / 90)) * 90;
+//		_l_1807_y = rint (( / 90)) * 90;
+//		if ((((_l_1807_y - self.origin_z) <= -14) && ((_l_1807_y - self.origin_z) >= -18)))
 //		{
-//			_l_1807 = '-270.000000 180.000000 90.000000';
+//			_l_1807 = '-270 180 90';
 //		}
 		newmis = spawn ();
 		newmis.classname = "camera";
 		newmis.owner = self;
 		newmis.netname = "camera";
-		newmis.weapon = 41.000000;
-		newmis.movetype = 0.000000;
-		newmis.solid = 2.000000;
+		newmis.weapon = 41;
+		newmis.movetype = 0;
+		newmis.solid = 2;
 		newmis.team_no = self.team_no;
-		newmis.health = 25.000000;
-		newmis.takedamage = 0.000000;
+		newmis.health = 25;
+		newmis.takedamage = 0;
 		newmis.th_die = camera_die;
-		setsize (newmis, '-2.000000 -2.000000 -2.000000', '2.000000 2.000000 2.000000');
+		setsize (newmis, '-2 -2 -2', '2 2 2');
 		newmis.angles = _l_1807;
-		newmis.nextthink = (time - 1.000000);
-		newmis.playerclass = 0.000000;
+		newmis.nextthink = (time - 1);
+		newmis.playerclass = 0;
 		newmis.think = SUB_Null;
-		newmis.skin = 0.000000;
-		newmis.frame = 0.000000;
+		newmis.skin = 0;
+		newmis.frame = 0;
 		setmodel (newmis, "progs/spycamc.mdl");
 		setorigin (newmis, _l_1802);
 		_l_1806 = newmis;
@@ -722,26 +722,26 @@ void () Cam =
 		newmis.classname = "camera_base";
 		newmis.owner = self;
 		newmis.netname = "camera_base";
-		newmis.movetype = 0.000000;
-		newmis.solid = 0.000000;
+		newmis.movetype = 0;
+		newmis.solid = 0;
 		newmis.team_no = self.team_no;
-		newmis.takedamage = 0.000000;
-		setsize (newmis, '-2.000000 -2.000000 -2.000000', '2.000000 2.000000 2.000000');
+		newmis.takedamage = 0;
+		setsize (newmis, '-2 -2 -2', '2 2 2');
 		newmis.angles = _l_1807;
-		newmis.playerclass = 0.000000;
-		newmis.frame = 1.000000;
+		newmis.playerclass = 0;
+		newmis.frame = 1;
 		newmis.think = camera_expire;
-		newmis.nextthink = (time + 180.000000);
+		newmis.nextthink = (time + 180);
 		setmodel (newmis, "progs/spycamb.mdl");
 		setorigin (newmis, _l_1802);
 		if ((self.oldweaponmodel != ""))
 		{
-			self.tfstate = (self.tfstate - (self.tfstate & 2.000000));
+			self.tfstate = (self.tfstate - (self.tfstate & 2));
 		}
 		self.weaponmodel = self.oldweaponmodel;
 		self.currentammo = self.oldcurrentammo;
 		Attack_Finished (0.700000);
-		self.impulse = 0.000000;
+		self.impulse = 0;
 		self.StatusRefreshTime = (time + 0.100000);
 	}
 };
@@ -749,7 +749,7 @@ void () Cam =
 void () camerathink =
 {
 
-	if ((self.cnt != 1.000000))
+	if ((self.cnt != 1))
 	{
 		self.think = SUB_Null;
 		return;
@@ -781,61 +781,61 @@ void () LookThroughCam =
 		{
 			if ((_l_1853.owner == self))
 			{
-				if ((self.tfstate & 1.000000))
+				if ((self.tfstate & 1))
 				{
 					TeamFortress_ThrowGrenade ();
 					self.nextthink = (time + 0.300000);
 					self.think = LookThroughCam;
 					return;
 				}
-				if ((self.tfstate & 16.000000))
+				if ((self.tfstate & 16))
 				{
-					sprint (self, 2.000000, "You can't view your camera while infected\n");
-					self.impulse = 0.000000;
+					sprint (self, 2, "You can't view your camera while infected\n");
+					self.impulse = 0;
 					return;
 				}
-				if ((_l_1853.cnt == 1.000000))
+				if ((_l_1853.cnt == 1))
 				{
-					_l_1853.cnt = 0.000000;
-					_l_1853.skin = 0.000000;
+					_l_1853.cnt = 0;
+					_l_1853.skin = 0;
 					_l_1853.think = SUB_Null;
-					_l_1860 = Remove_Prop (self, 2.000000);
-					if ((self.health > 0.000000))
+					_l_1860 = Remove_Prop (self, 2);
+					if ((self.health > 0))
 					{
-						self.solid = 3.000000;
-						self.oldangle_x = (self.oldangle_x * -1.000000);
+						self.solid = 3;
+						self.oldangle_x = (self.oldangle_x * -1);
 						makevectors (self.oldangle);
 						self.angles = vectoangles (v_forward);
-						self.fixangle = 1.000000;
+						self.fixangle = 1;
 					}
 					self.currentammo = self.ammo_shells;
-					self.bugger = 0.000000;
-					self.gravity = 1.000000;
+					self.bugger = 0;
+					self.gravity = 1;
 					stuffcmd (self, "r_drawviewmodel 1\n");
 					self.modelindex = modelindex_player;
 					TeamFortress_SetSpeed (self);
 					setorigin (self, _l_1860);
-					self.impulse = 0.000000;
+					self.impulse = 0;
 					return;
 				}
-				if ((_l_1853.cnt == 0.000000))
+				if ((_l_1853.cnt == 0))
 				{
-					_l_1854 = findradius (_l_1853.origin, 32.000000);
-					_l_1859 = 1.000000;
+					_l_1854 = findradius (_l_1853.origin, 32);
+					_l_1859 = 1;
 					while ((_l_1854 != world))
 					{
 						if ((self == _l_1854))
 						{
-							_l_1859 = 0.000000;
+							_l_1859 = 0;
 						}
 						_l_1854 = _l_1854.chain;
 					}
-					if ((_l_1859 == 1.000000))
+					if ((_l_1859 == 1))
 					{
-						if (!(self.flags & 512.000000))
+						if (!(self.flags & 512))
 						{
-							sprint (self, 2.000000, "You can't view your camera while in the air\n");
-							self.impulse = 0.000000;
+							sprint (self, 2, "You can't view your camera while in the air\n");
+							self.impulse = 0;
 							return;
 						}
 						if (self.hook_out)
@@ -853,64 +853,64 @@ void () LookThroughCam =
 							}
 							_l_1855 = find (_l_1855, classname, "item_tfgoal");
 						}
-						_l_1853.skin = 1.000000;
+						_l_1853.skin = 1;
 						_l_1853.think = camerathink;
 						_l_1853.nextthink = (time + 0.200000);
 						self.oldangle = self.v_angle;
-						Spawn_Prop (self, self.origin, 63.000000, 1.000000, 8.000000);
+						Spawn_Prop (self, self.origin, 63, 1, 8);
 						self.modelindex = modelindex_null;
-						self.solid = 0.000000;
-						self.gravity = 0.000000;
+						self.solid = 0;
+						self.gravity = 0;
 						stuffcmd (self, "cl_movespeedkey 1\n");
-						self.maxspeed = 0.000000;
-						self.maxfbspeed = 0.000000;
-						self.maxstrafespeed = 0.000000;
-//						if (1.000000)
+						self.maxspeed = 0;
+						self.maxfbspeed = 0;
+						self.maxstrafespeed = 0;
+//						if (1)
 //						{
 							stuffcmd (self, "m_forward 0\n");
 							stuffcmd (self, "m_side 0\n");
 //						}
-						self.velocity = '0.000000 0.000000 0.000000';
+						self.velocity = '0 0 0';
 						stuffcmd (self, "cl_backspeed 0\n");
 						stuffcmd (self, "cl_forwardspeed 0\n");
 						stuffcmd (self, "cl_sidespeed 0\n");
 						makevectors (_l_1853.angles);
 						self.angles = vectoangles (v_forward);
-						self.fixangle = 1.000000;
+						self.fixangle = 1;
 						_l_1855 = find (world, classname, "camera_base");
 						while (_l_1855)
 						{
 							if ((_l_1855.owner == self))
 							{
 								makevectors (_l_1855.angles);
-								v_forward_z = v_forward_z * -1.000000;
-								_l_1856 = '0.000000 0.000000 -24.000000';
-								if (((self.is_feigning == 1.000000) && (_l_1855.angles_x == -270.000000)))
+								v_forward_z = v_forward_z * -1;
+								_l_1856 = '0 0 -24';
+								if (((self.is_feigning == 1) && (_l_1855.angles_x == -270)))
 								{
-									_l_1856 = '0.000000 0.000000 -8.000000';
+									_l_1856 = '0 0 -8';
 								}
-								setorigin (self, ((_l_1853.origin + _l_1856) + (v_forward * 4.000000)));
-								self.cam_origin = ((_l_1853.origin + _l_1856) + (v_forward * 4.000000));
+								setorigin (self, ((_l_1853.origin + _l_1856) + (v_forward * 4)));
+								self.cam_origin = ((_l_1853.origin + _l_1856) + (v_forward * 4));
 							}
 							_l_1855 = find (_l_1855, classname, "camera_base");
 						}
-						_l_1853.cnt = 1.000000;
-						self.bugger = 8.000000;
-						self.impulse = 0.000000;
+						_l_1853.cnt = 1;
+						self.bugger = 8;
+						self.impulse = 0;
 						stuffcmd (self, "r_drawviewmodel 0\n");
 						self.health = _l_1853.health;
-						self.ammo_shells = 0.000000;
-						self.ammo_nails = 0.000000;
-						self.ammo_rockets = 0.000000;
-						self.ammo_cells = 0.000000;
-						self.armorvalue = 0.000000;
-						self.currentammo = 0.000000;
+						self.ammo_shells = 0;
+						self.ammo_nails = 0;
+						self.ammo_rockets = 0;
+						self.ammo_cells = 0;
+						self.armorvalue = 0;
+						self.currentammo = 0;
 						return;
 					}
 					else
 					{
-						sprint (self, 2.000000, "You are too close to your camera to look through it.\n");
-						self.impulse = 0.000000;
+						sprint (self, 2, "You are too close to your camera to look through it.\n");
+						self.impulse = 0;
 						return;
 					}
 				}
@@ -919,8 +919,8 @@ void () LookThroughCam =
 		}
 		_l_1853 = find (_l_1853, netname, _l_1863);
 	}
-	sprint (self, 2.000000, "First drop a camera with drop3\n");
-	self.impulse = 0.000000;
+	sprint (self, 2, "First drop a camera with drop3\n");
+	self.impulse = 0;
 };
 
 void () camera_expire =
@@ -944,12 +944,12 @@ void (entity _p_1912) camera_die =
 	local entity _l_1913;
 
 	self = _p_1912;
-	_p_1912.effects = 4.000000;
-	_p_1912.takedamage = 0.000000;
+	_p_1912.effects = 4;
+	_p_1912.takedamage = 0;
 	make_explosion ();
 	self = _p_1912.owner;
-	sprint (self, 2.000000, "Your camera went bye-bye.\n");
-	if ((_p_1912.cnt == 1.000000))
+	sprint (self, 2, "Your camera went bye-bye.\n");
+	if ((_p_1912.cnt == 1))
 	{
 		LookThroughCam ();
 	}
@@ -979,6 +979,6 @@ void () activatecam =
 	{
 		return;
 	}
-	self.cnt = 0.000000;
+	self.cnt = 0;
 	self.touch = SUB_Null;
 };

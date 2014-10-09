@@ -17,15 +17,15 @@ void () RailTimer;*/
 void () LaserBolt_Think =
 {
 
-	self.solid = 1.000000;
-	self.movetype = 9.000000;
+	self.solid = 1;
+	self.movetype = 9;
 	self.velocity = self.oldorigin;
 	self.touch = LaserBolt_Touch;
-	self.avelocity = '0.000000 0.000000 500.000000';
+	self.avelocity = '0 0 500';
 	setmodel (self, "progs/beam.mdl");
-	self.effects = 8.000000;
-	self.skin = (self.owner.team_no - 1.000000);
-	self.nextthink = (time + 1.000000);
+	self.effects = 8;
+	self.skin = (self.owner.team_no - 1);
+	self.nextthink = (time + 1);
 	self.think = SUB_Remove;
 };
 
@@ -41,36 +41,36 @@ void () LaserBolt_Touch =
 	{
 		return;
 	}
-	if ((pointcontents (self.origin) == -6.000000))
+	if ((pointcontents (self.origin) == -6))
 	{
 		dremove (self);
 		return;
 	}
-	org = self.origin - (8.000000 * normalize (self.velocity));
+	org = self.origin - (8 * normalize (self.velocity));
 	if (other.health)
 	{
-		SpawnBlood (org, 15.000000);
-		deathmsg = 26.000000;
-		TF_T_Damage (other, self, self.enemy, 30.000000, 0.000000, 8.000000);
+		SpawnBlood (org, 15);
+		deathmsg = 26;
+		TF_T_Damage (other, self, self.enemy, 30, 0, 8);
 		self.velocity = self.oldorigin;
 		self.owner = other;
 		setmodel (self, string_null);
 		self.touch = SUB_Null;
-		self.solid = 0.000000;
-		self.movetype = 8.000000;
+		self.solid = 0;
+		self.movetype = 8;
 		self.nextthink = (time + 0.100000);
 		self.think = LaserBolt_Think;
 		return;
 	}
 	else
 	{
-		sound (self, 1.000000, "enforcer/enfstop.wav", 1.000000, 1.000000);
-		WriteByte (4.000000, 23.000000);
-		WriteByte (4.000000, 11.000000);
-		WriteCoord (4.000000, self.origin_x);
-		WriteCoord (4.000000, self.origin_y);
-		WriteCoord (4.000000, self.origin_z);
-		multicast (self.origin, 1.000000);
+		sound (self, 1, "enforcer/enfstop.wav", 1, 1);
+		WriteByte (4, 23);
+		WriteByte (4, 11);
+		WriteCoord (4, self.origin_x);
+		WriteCoord (4, self.origin_y);
+		WriteCoord (4, self.origin_z);
+		multicast (self.origin, 1);
 	}
 	dremove (self);
 };
@@ -80,50 +80,50 @@ void () W_FireLaser =
 	local vector vec;
 	local vector org;
 
-	self.ammo_nails = (self.ammo_nails - 1.000000);
-	self.currentammo = (self.ammo_nails - 1.000000);
+	self.ammo_nails = (self.ammo_nails - 1);
+	self.currentammo = (self.ammo_nails - 1);
 	makevectors (self.v_angle);
-	org = self.origin + (v_forward * 8.000000);
-	vec = aim (self, 10000.000000);
+	org = self.origin + (v_forward * 8);
+	vec = aim (self, 10000);
 	vec = normalize (vec);
 	newmis = spawn ();
 	newmis.owner = self;
 	newmis.enemy = self;
 	newmis.team_no = self.team_no;
-	newmis.movetype = 9.000000;
-	newmis.solid = 1.000000;
-	newmis.avelocity = '0.000000 0.000000 500.000000';
+	newmis.movetype = 9;
+	newmis.solid = 1;
+	newmis.avelocity = '0 0 500';
 	setmodel (newmis, "progs/beam.mdl");
 	if (infokey(world, "railcolors") == "on" || infokey(world, "railcolors") == "1" || infokey(world, "railcolors") == "" || (coloredlights))
 	{
-		if ((newmis.team_no == 1.000000))
+		if ((newmis.team_no == 1))
 		{
-			newmis.effects = 64.000000;
+			newmis.effects = 64;
 		}
 		else
 		{
-			if ((newmis.team_no == 2.000000))
+			if ((newmis.team_no == 2))
 			{
-				newmis.effects = 128.000000;
+				newmis.effects = 128;
 			}
 			else
 			{
-				newmis.effects = 2.000000;
+				newmis.effects = 2;
 			}
 		}
 	}
 	else
 	{
-		newmis.effects = 2.000000;
+		newmis.effects = 2;
 	}
-	newmis.skin = (self.team_no - 1.000000);
-	setsize (newmis, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
-	setorigin (newmis, (org + '0.000000 0.000000 16.000000'));
-	newmis.velocity = (vec * 1500.000000);
+	newmis.skin = (self.team_no - 1);
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, (org + '0 0 16'));
+	newmis.velocity = (vec * 1500);
 	newmis.angles = vectoangles (newmis.velocity);
 	newmis.angles_y = (newmis.angles_y + 0.100000);
 	newmis.oldorigin = newmis.velocity;
-	newmis.nextthink = (time + 5.000000);
+	newmis.nextthink = (time + 5);
 	newmis.think = SUB_Remove;
 	newmis.touch = LaserBolt_Touch;
 };
@@ -312,7 +312,7 @@ void() EMPGrenadeExplode =
 		te = te.chain;
 	}
 	BecomeExplosion();
-	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1);
 	dremove(self);
 };
 
@@ -320,23 +320,23 @@ void () TeamFortress_EngineerBuild =
 {
 	local entity te;
 
-	if ((self.is_building == 0.000000))
+	if ((self.is_building == 0))
 	{
-		if ((((self.ammo_cells < 100.000000) && (self.has_dispenser == 0.000000)) && (self.has_sentry == 0.000000)))
+		if ((((self.ammo_cells < 100) && (self.has_dispenser == 0)) && (self.has_sentry == 0)))
 		{
 			CenterPrint (self, "You don't have enough metal to \nbuild anything.\n\n");
 			return;
 		}
-		self.current_menu = 15.000000;
-		self.menu_count = 25.000000;
+		self.current_menu = 15;
+		self.menu_count = 25;
 	}
 	else
 	{
-		if ((self.is_building == 1.000000))
+		if ((self.is_building == 1))
 		{
-			sprint (self, 2.000000, "You stop building.\n");
-			self.pausetime = 0.000000;
-			self.tfstate = (self.tfstate - (self.tfstate & 65536.000000));
+			sprint (self, 2, "You stop building.\n");
+			self.pausetime = 0;
+			self.tfstate = (self.tfstate - (self.tfstate & 65536));
 			TeamFortress_SetSpeed (self);
 			te = find (world, netname, "build_timer");
 			while (te)
@@ -351,7 +351,7 @@ void () TeamFortress_EngineerBuild =
 					te = find (te, netname, "build_timer");
 				}
 			}
-			self.is_building = 0.000000;
+			self.is_building = 0;
 			self.current_weapon = self.weapon;
 			W_SetCurrentAmmo ();
 		}
@@ -765,26 +765,26 @@ void (entity gun) Engineer_UseSentryGun =
 	local entity dist_checker;
 	local string st;
 
-	sprint (self, 2.000000, "Level ");
+	sprint (self, 2, "Level ");
 	st = ftos (gun.weapon);
-	sprint (self, 2.000000, st);
-	sprint (self, 2.000000, " Sentry Gun has ");
+	sprint (self, 2, st);
+	sprint (self, 2, " Sentry Gun has ");
 	st = ftos (floor (gun.health));
-	sprint (self, 2.000000, st);
-	sprint (self, 2.000000, " health, ");
+	sprint (self, 2, st);
+	sprint (self, 2, " health, ");
 	st = ftos (floor (gun.ammo_shells));
-	sprint (self, 2.000000, st);
-	sprint (self, 2.000000, " shells");
-	if ((gun.weapon == 3.000000))
+	sprint (self, 2, st);
+	sprint (self, 2, " shells");
+	if ((gun.weapon == 3))
 	{
 		st = ftos (floor (gun.ammo_rockets));
-		sprint (self, 2.000000, ", ");
-		sprint (self, 2.000000, st);
-		sprint (self, 2.000000, " rockets");
+		sprint (self, 2, ", ");
+		sprint (self, 2, st);
+		sprint (self, 2, " rockets");
 	}
-	sprint (self, 2.000000, "\n");
-	self.current_menu = 17.000000;
-	self.menu_count = 25.000000;
+	sprint (self, 2, "\n");
+	self.current_menu = 17;
+	self.menu_count = 25;
 	self.building = gun;
 	dist_checker = spawn ();
 	dist_checker.classname = "timer";
@@ -801,10 +801,10 @@ void (entity gunhead) CheckSentry =
 
 	gunbase = gunhead.trigger_field;
 	dist = gunbase.origin - gunhead.origin;
-	if ((vlen (dist) > 15.000000))
+	if ((vlen (dist) > 15))
 	{
-		bprint (1.000000, self.real_owner.netname);
-		bprint (1.000000, "'s sentry gun malfunctioned\n");
+		bprint (1, self.real_owner.netname);
+		bprint (1, "'s sentry gun malfunctioned\n");
 		Sentry_Die ();
 	}
 };
@@ -819,11 +819,11 @@ void () CheckDistance =
 		return;
 	}
 	dist = self.enemy.origin - self.owner.origin;
-	if ((vlen (dist) > 64.000000))
+	if ((vlen (dist) > 64))
 	{
 		CenterPrint (self.owner, "\n");
-		self.owner.menu_count = 25.000000;
-		self.owner.current_menu = 1.000000;
+		self.owner.menu_count = 25;
+		self.owner.current_menu = 1;
 		self.owner.building = world;
 		dremove (self);
 		return;

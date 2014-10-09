@@ -329,7 +329,7 @@ setup_strcat();
 	precache_sound ("weapons/pkup.wav");
 	//
 
-	lightstyle (0.000000, "m");
+	lightstyle (0, "m");
 	lightstyle (1, "mmnmmommommnonmmonqnmmo");
 	lightstyle (2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
 	lightstyle (3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
@@ -358,10 +358,10 @@ void () StartFrame =
 	local string _l_3667;
 
 	teamplay = cvar ("teamplay");
-	timelimit = cvar ("timelimit") * 60.000000;
+	timelimit = cvar ("timelimit") * 60;
 	fraglimit = cvar ("fraglimit");
 	deathmatch = cvar ("deathmatch");
-	framecount = framecount + 1.000000;
+	framecount = framecount + 1;
 	if ((pointer_timeleft != world))
 	{
 		return;
@@ -373,11 +373,11 @@ void () StartFrame =
 	}
 	newmis = spawn ();
 	newmis.classname = "countdown";
-	newmis.no_grenades_1 = 0.000000;
+	newmis.no_grenades_1 = 0;
 	_l_3667 = infokey (world, "timelimit");
 	newmis.health = stof (_l_3667);
 	newmis.think = review_timeleft;
-	newmis.nextthink = (time + 1.000000);
+	newmis.nextthink = (time + 1);
 	pointer_timeleft = newmis;
 };
 
@@ -409,7 +409,7 @@ void () GibHead =
 	ThrowGib ("progs/gib4.mdl", self.health);
 	ThrowGib ("progs/gib4.mdl", self.health);
 	setmodel (self, string_null);
-	self.solid = 0.000000;
+	self.solid = 0;
 };
 
 void (entity ent) CopyToBodyQue =
@@ -430,7 +430,7 @@ void (entity ent) CopyToBodyQue =
 		bodyque_head.th_die = GibHead;
 	}
 	bodyque_head.velocity = ent.velocity;
-	bodyque_head.flags = 0.000000;
+	bodyque_head.flags = 0;
 	setorigin (bodyque_head, ent.origin);
 	setsize (bodyque_head, ent.mins, ent.maxs);
 	bodyque_head = bodyque_head.owner;

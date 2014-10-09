@@ -26,16 +26,16 @@ void () FlashTimer =
 
 	te = self.owner;
 	te.FlashTime = (te.FlashTime - 0.100000);
-	if ((te.FlashTime < 0.000000))
+	if ((te.FlashTime < 0))
 	{
-		te.FlashTime = 0.000000;
+		te.FlashTime = 0;
 		stuffcmd (te, "v_cshift 0\n");
 		remove (self);
 		return;
 	}
 	if ((te.FlashTime < 1.700000))
 	{
-		st = ftos ((te.FlashTime * 150.000000));
+		st = ftos ((te.FlashTime * 150));
 		stuffcmd (te, "v_cshift ");
 		stuffcmd (te, st);
 		stuffcmd (te, " ");
@@ -91,7 +91,7 @@ void() FlashGrenadeExplode =
 					newmis.nextthink = (time + 0.100000);
 				}
 //				te.FlashTime = 2.500000; //changed to 3 seconds
-				te.FlashTime = 3.000000;
+				te.FlashTime = 3;
 				if (((te.client != "zquake") && (te.client != "fuhquake")))
 				{
 					stuffcmd (te, "gl_polyblend 1\ngl_cshiftpercent 100\n");
@@ -102,7 +102,7 @@ void() FlashGrenadeExplode =
 		te = te.chain;
 	}
 	BecomeExplosion ();
-	self.owner.active_grenades_1 = (self.owner.active_grenades_1 - 1.000000);
+	self.owner.active_grenades_1 = (self.owner.active_grenades_1 - 1);
 	dremove (self);
 };
 
@@ -119,15 +119,15 @@ void() ConcussionGrenadeTouch =
 void () ConcussionGrenadeExplode =
 {
 
-	T_RadiusBounce (self, self.owner, 240.000000, world, 100.000000);
-	WriteByte (4.000000, 23.000000);
-	WriteByte (4.000000, 3.000000);
-	WriteCoord (4.000000, self.origin_x);
-	WriteCoord (4.000000, self.origin_y);
-	WriteCoord (4.000000, self.origin_z);
+	T_RadiusBounce (self, self.owner, 240, world, 100);
+	WriteByte (4, 23);
+	WriteByte (4, 3);
+	WriteCoord (4, self.origin_x);
+	WriteCoord (4, self.origin_y);
+	WriteCoord (4, self.origin_z);
 	BecomeExplosion ();
-	multicast (self.origin, 1.000000);
-	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1.000000);
+	multicast (self.origin, 1);
+	self.owner.active_grenades_2 = (self.owner.active_grenades_2 - 1);
 	dremove (self);
 };
 
@@ -161,14 +161,14 @@ void () ConcussionGrenadeTimer =
 		setorigin (newmis, self.owner.origin);
 		newmis.movetype = 8;
 		newmis.solid = 0;
-		newmis.velocity = '0.000000 0.000000 15.000000';
+		newmis.velocity = '0 0 15';
 		newmis.nextthink = (time + 0.500000);
 		newmis.think = bubble_bob;
 		newmis.touch = bubble_remove;
 		newmis.classname = "bubble";
 		newmis.frame = 0;
 		newmis.cnt = 0;
-		setsize (newmis, '-8.000000 -8.000000 -8.000000', '8.000000 8.000000 8.000000');
+		setsize (newmis, '-8 -8 -8', '8 8 8');
 		self.health = (self.health - 20);
 		if ((self.owner.playerclass == 5))
 		{

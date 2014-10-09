@@ -1495,7 +1495,7 @@ void () BackpackTouch =
 	{
 		return;
 	}
-	if ((other.health <= 0.000000))
+	if ((other.health <= 0))
 	{
 		return;
 	}
@@ -1508,48 +1508,48 @@ void () BackpackTouch =
 	other.ammo_rockets = (other.ammo_rockets + self.ammo_rockets);
 	other.ammo_cells = (other.ammo_cells + self.ammo_cells);
 	bound_other_ammo (other);
-	sprint (other, 0.000000, "You get ");
+	sprint (other, 0, "You get ");
 	if (self.ammo_shells)
 	{
 		s = ftos (self.ammo_shells);
-		sprint (other, 0.000000, s);
-		sprint (other, 0.000000, " shells  ");
+		sprint (other, 0, s);
+		sprint (other, 0, " shells  ");
 	}
 	if (self.ammo_nails)
 	{
 		s = ftos (self.ammo_nails);
-		sprint (other, 0.000000, s);
-		sprint (other, 0.000000, " nails ");
+		sprint (other, 0, s);
+		sprint (other, 0, " nails ");
 	}
 	if (self.ammo_rockets)
 	{
 		s = ftos (self.ammo_rockets);
-		sprint (other, 0.000000, s);
-		sprint (other, 0.000000, " rockets  ");
+		sprint (other, 0, s);
+		sprint (other, 0, " rockets  ");
 	}
 	if (self.ammo_cells)
 	{
 		s = ftos (self.ammo_cells);
-		sprint (other, 0.000000, s);
-		sprint (other, 0.000000, " cells  ");
+		sprint (other, 0, s);
+		sprint (other, 0, " cells  ");
 	}
-	if (((self.armorvalue && (other.playerclass == 9.000000)) && (other.ammo_cells < other.maxammo_cells)))
+	if (((self.armorvalue && (other.playerclass == 9)) && (other.ammo_cells < other.maxammo_cells)))
 	{
 		s = ftos (self.armorvalue);
-		sprint (other, 0.000000, s);
-		sprint (other, 0.000000, " metal  ");
+		sprint (other, 0, s);
+		sprint (other, 0, " metal  ");
 		other.ammo_cells = (other.ammo_cells + self.armorvalue);
 		if ((other.ammo_cells > other.maxammo_cells))
 		{
 			other.ammo_cells = other.maxammo_cells;
 		}
 	}
-	sprint (other, 0.000000, "\n");
+	sprint (other, 0, "\n");
 	if (other.autodiscard)
 	{
 		TeamFortress_Discard ();
 	}
-	sound (other, 3.000000, "weapons/lock4.wav", 1.000000, 1.000000);
+	sound (other, 3, "weapons/lock4.wav", 1, 1);
 	stuffcmd (other, "bf\n");
 	dremove (self);
 	self = other;

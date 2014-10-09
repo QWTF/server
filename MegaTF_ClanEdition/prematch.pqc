@@ -402,7 +402,7 @@ void () SetUpPrematch =
 
 	newmis = spawn ();
 	newmis.classname = "pmtimer";
-	newmis.nextthink = (time + ((prematch - floor (prematch)) * 60.000000));
+	newmis.nextthink = (time + ((prematch - floor (prematch)) * 60));
 	newmis.think = PrematchThink;
 	newmis.health = floor (prematch);
 	pointer_prematchtimer = newmis;

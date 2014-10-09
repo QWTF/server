@@ -80,7 +80,7 @@ void () HealSelf =
 	}
 
 	// Flash
-	if ((self.FlashTime > 0.000000))
+	if ((self.FlashTime > 0))
 	{
 		te = find (world, netname, "flashtimer");
 		while ((((te.owner != self) || (te.classname != "timer")) && (te != world)))
@@ -92,14 +92,14 @@ void () HealSelf =
 			stuffcmd (self, "v_cshift 0 0 0 0\n");
 			dremove (te);
 		}
-		self.FlashTime = 0.000000;
+		self.FlashTime = 0;
 		healed = 1;
 	}
 
 	// Flames
-	if ((self.numflames > 0.000000))
+	if ((self.numflames > 0))
 	{
-		self.numflames = 0.000000;
+		self.numflames = 0;
 		sprint (self, 2, "The flames have been doused!\n");
 		healed = 1;
 	}

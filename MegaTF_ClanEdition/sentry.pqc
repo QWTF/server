@@ -351,18 +351,18 @@ float() Sentry_Fire =
 		}
 		else
 		{
-			dir = (self.enemy.origin + '0.000000 0.000000 -35.000000') - self.origin;
+			dir = (self.enemy.origin + '0 0 -35') - self.origin;
 		}
 	}
-	if ((((self.ideal_yaw - anglemod (self.angles_y)) < -10.000000) || ((self.ideal_yaw - anglemod (self.angles_y)) > 10.000000)))
+	if ((((self.ideal_yaw - anglemod (self.angles_y)) < -10) || ((self.ideal_yaw - anglemod (self.angles_y)) > 10)))
 	{
-		return (0.000000);
+		return (0);
 	}
-	sound (self, 1.000000, "weapons/plaser.wav", 1.000000, 1.000000);
-	self.ammo_shells = (self.ammo_shells - 1.000000);
-	if ((self.ammo_shells < 0.000000))
+	sound (self, 1, "weapons/plaser.wav", 1, 1);
+	self.ammo_shells = (self.ammo_shells - 1);
+	if ((self.ammo_shells < 0))
 	{
-		self.ammo_shells = 0.000000;
+		self.ammo_shells = 0;
 	}
 #ifdef clan_progs
 	//CH this further checks while firing
@@ -373,76 +373,76 @@ float() Sentry_Fire =
 	}
 	// dont fire if you cant hit enemy
 	traceline (self.origin + '0 0 20', self.enemy.origin, #TL_ANY_SOLID, self);
-	if (trace_fraction != 1.0 && trace_ent.takedamage && self.ammo_shells > 0.000000)
+	if (trace_fraction != 1.0 && trace_ent.takedamage && self.ammo_shells > 0)
 #else
-	if ((self.ammo_shells > 0.000000))
+	if ((self.ammo_shells > 0))
 #endif
 	{
-		deathmsg = 27.000000;
+		deathmsg = 27;
 		if (coloredlights)
 		{
-			if ((self.real_owner.team_no == 1.000000))
+			if ((self.real_owner.team_no == 1))
 			{
-				self.effects = (self.effects | 64.000000);
+				self.effects = (self.effects | 64);
 			}
 			else
 			{
-				if ((self.real_owner.team_no == 2.000000))
+				if ((self.real_owner.team_no == 2))
 				{
-					self.effects = (self.effects | 128.000000);
+					self.effects = (self.effects | 128);
 				}
 				else
 				{
-					self.effects = (self.effects | 2.000000);
+					self.effects = (self.effects | 2);
 				}
 			}
 		}
 		else
 		{
-			self.effects = (self.effects | 2.000000);
+			self.effects = (self.effects | 2);
 		}
 
 
-		FireBullets (1.000000, dir, '0.100000 0.100000 0.000000');
+		FireBullets (1, dir, '0.100000 0.100000 0');
 	}
-	if ((((self.weapon == 3.000000) && (self.ammo_rockets > 0.000000)) && (self.super_damage_finished < time)))
+	if ((((self.weapon == 3) && (self.ammo_rockets > 0)) && (self.super_damage_finished < time)))
 	{
-		sound (self, 1.000000, "weapons/rocklr1a.wav", 1.000000, 1.000000);
+		sound (self, 1, "weapons/rocklr1a.wav", 1, 1);
 		newmis = spawn ();
 		newmis.owner = self;
-		newmis.movetype = 9.000000;
-		newmis.solid = 2.000000;
-		newmis.velocity = (normalize (dir) * 800.000000);
+		newmis.movetype = 9;
+		newmis.solid = 2;
+		newmis.velocity = (normalize (dir) * 800);
 		newmis.angles = vectoangles (newmis.velocity);
-		newmis.weapon = 34.000000;
+		newmis.weapon = 34;
 		newmis.touch = T_MissileTouch;
-		newmis.nextthink = (time + 5.000000);
+		newmis.nextthink = (time + 5);
 		newmis.think = SUB_Remove;
 		setmodel (newmis, "progs/missile.mdl");
-		setsize (newmis, '0.000000 0.000000 0.000000', '0.000000 0.000000 0.000000');
-		setorigin (newmis, ((self.origin + (v_forward * 8.000000)) + '0.000000 0.000000 16.000000'));
-		self.super_damage_finished = (time + 3.000000);
-		self.ammo_rockets = (self.ammo_rockets - 1.000000);
-		if ((self.ammo_rockets == 10.000000))
+		setsize (newmis, '0 0 0', '0 0 0');
+		setorigin (newmis, ((self.origin + (v_forward * 8)) + '0 0 16'));
+		self.super_damage_finished = (time + 3);
+		self.ammo_rockets = (self.ammo_rockets - 1);
+		if ((self.ammo_rockets == 10))
 		{
-			sprint (self.real_owner, 2.000000, "Sentry Gun is low on rockets.\n");
+			sprint (self.real_owner, 2, "Sentry Gun is low on rockets.\n");
 		}
 	}
-	if (((self.ammo_shells == 0.000000) && (random () < 0.100000)))
+	if (((self.ammo_shells == 0) && (random () < 0.100000)))
 	{
-		sprint (self.real_owner, 2.000000, "Sentry Gun is out of shells.\n");
+		sprint (self.real_owner, 2, "Sentry Gun is out of shells.\n");
 	}
 	else
 	{
-		if ((self.ammo_shells == 20.000000))
+		if ((self.ammo_shells == 20))
 		{
-			sprint (self.real_owner, 2.000000, "Sentry Gun is low on shells.\n");
+			sprint (self.real_owner, 2, "Sentry Gun is low on shells.\n");
 		}
 	}
-	if ((((self.ammo_rockets == 0.000000) && (self.weapon == 3.000000)) && (random () < 0.100000)))
+	if ((((self.ammo_rockets == 0) && (self.weapon == 3)) && (random () < 0.100000)))
 	{
-		sprint (self.real_owner, 2.000000, "Sentry Gun is out of rockets.\n");
+		sprint (self.real_owner, 2, "Sentry Gun is out of rockets.\n");
 	}
-	return (1.000000);
+	return (1);
 };
 
