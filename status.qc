@@ -104,8 +104,6 @@ void (entity pl) RefreshStatusBar =
 	gren1 = strcat(" \sG\s: ", ftos (self.no_grenades_1));
 	gren2 = strcat("/", ftos (self.no_grenades_2));
 	gren_print = strcat(gren1, gren2);
-	
-	gren_print = strcat(gren1, gren2);
 
     status_size = GetStatusSize (pl);
     clip_print = ClipSize (pl);
