@@ -12,7 +12,7 @@ float teamfrags;
 
 void () PrematchCountDown =
 {
-	local string st;
+	local string st, stcenterpring;
 	local entity te, flag01, flag02, flag03, flag04, flag05, flag06, flag07, flag08, flag09, flag10, flag11, flag12, flag13, flag14, flag15, flag16, flag17, flag18, flag19;
 
 	if (self.health == 0) // Prematch is over.
@@ -180,15 +180,29 @@ void () PrematchCountDown =
 		return;
 	}
 
-	// 10 second prematch countdown
-	if ((self.health <= 10) && (self.health > 1)) {
-		st = ftos (self.health);
-		bprint (self, st, " seconds.\n");
+
+	//MTF players like the centerprint as well.
+	// Todo: why can't I get the countdown to be longer than 3 seconds?
+	if (self.health == 3) {
+		stcenterpring = "\n3...";
+		bprint (self, "3 seconds.\n");
 	}
-	else if (self.health > 0) {
+	else if (self.health == 2) {
+		stcenterpring = "\n\n2...";
+		bprint (self, "2 seconds.\n");
+	}
+	else if (self.health == 1) {
+		stcenterpring = "\n\n\n1...";
 		bprint (self, "1 second.\n");
 	}
 	
+	te = find(world, classname, "player");
+	while (te != world)
+	{
+		CenterPrint(te, stcenterpring);
+		stuffcmd(te, "bf\n");
+		te = find(te, classname, "player");
+	}
 	self.health = self.health - 1;
 	self.nextthink = (time + 1);
 }
