@@ -848,30 +848,54 @@ void () review_timeleft = {
 		bprint(2,"\[5\] seconds remaining\n");
 	else if ((remaining == 30) & (seconds >= 30))
 		bprint(2,"\[30\] seconds remaining\n");
-	else if ((remaining == 60) & (seconds >= 60))
+	else if ((remaining == 59) & (seconds >= 59)) {
 		bprint(2,"\[1\] minute remaining\n");
-	else if ((remaining == 120) & (seconds >= 120))
+		localcmd("serverinfo status \"1 min left\"\n");
+	}
+	else if ((remaining == 119) & (seconds >= 119)) {
 		bprint(2,"\[2\] minutes remaining\n");
-	else if ((remaining == 180) & (seconds >= 180))
+		localcmd("serverinfo status \"2 min left\"\n");
+	}
+	else if ((remaining == 179) & (seconds >= 179)) {
 		bprint(2,"\[3\] minutes remaining\n");
-	else if ((remaining == 240) & (seconds >= 240))
+		localcmd("serverinfo status \"3 min left\"\n");
+	}
+	else if ((remaining == 239) & (seconds >= 239)) {
 		bprint(2,"\[4\] minutes remaining\n");
-	else if ((remaining == 300) & (seconds >= 300))
+		localcmd("serverinfo status \"4 min left\"\n");
+	}
+	else if ((remaining == 299) & (seconds >= 299)) {
 		bprint(2,"\[5\] minutes remaining\n");
-	else if ((remaining == 360) & (seconds >= 360))
+		localcmd("serverinfo status \"5 min left\"\n");
+	}
+	else if ((remaining == 359) & (seconds >= 359)) {
 		bprint(2,"\[6\] minutes remaining\n");
-	else if ((remaining == 420) & (seconds >= 420))
+		localcmd("serverinfo status \"6 min left\"\n");
+	}
+	else if ((remaining == 419) & (seconds >= 419)) {
 		bprint(2,"\[7\] minutes remaining\n");
-	else if ((remaining == 480) & (seconds >= 480))
+		localcmd("serverinfo status \"7 min left\"\n");
+	}
+	else if ((remaining == 479) & (seconds >= 479)) {
 		bprint(2,"\[8\] minutes remaining\n");
-	else if ((remaining == 540) & (seconds >= 540))
+		localcmd("serverinfo status \"8 min left\"\n");
+	}
+	else if ((remaining == 539) & (seconds >= 539)) {
 		bprint(2,"\[9\] minutes remaining\n");
-	else if ((remaining == 600) & (seconds >= 600))
+		localcmd("serverinfo status \"9 min left\"\n");
+	}
+	else if ((remaining == 599) & (seconds >= 599)) {
 		bprint(2,"\[10\] minutes remaining\n");
-	else if ((remaining == 900) & (seconds >= 900))
+		localcmd("serverinfo status \"10 min left\"\n");
+	}
+	else if ((remaining == 899) & (seconds >= 899)) {
 		bprint(2,"\[15\] minutes remaining\n");
-	else if ((remaining == 1800) & (seconds >= 1800))
+		localcmd("serverinfo status \"15 min left\"\n");
+	}
+	else if ((remaining == 1799) & (seconds >= 1799)) {
 		bprint(2,"\[30\] minutes remaining\n");
+		localcmd("serverinfo status \"30 min left\"\n");
+	}
 
    self.think = review_timeleft;
 
