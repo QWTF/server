@@ -7,7 +7,7 @@ float (float v) anglemod;
 void (entity targ,entity inflictor,entity attacker,float damage,float T_flags,float T_AttackType) TF_T_Damage;
 void () W_SetCurrentAmmo;
 void (entity p) bound_other_ammo;
-float (float tno) TeamFortress_TeamSet;
+float (float tno, float autoteam) TeamFortress_TeamSet;
 void (entity p) TeamFortress_SetSkin;
 float (float tno) TeamFortress_TeamGetColor;
 void () TeamFortress_ChangeClass;
@@ -103,31 +103,17 @@ void () Player_Menu =
 	else
 	{
 #endif
-	if ((self.current_menu == 5))
-	{
-		Menu_Intro ();
-		self.current_menu = 1;
-	}
-	else
-	{
-		if ((self.current_menu == 6))
+		if ((self.current_menu == 5))
 		{
-			Menu_ClassHelp ();
-			if ((self.menu_displaytime > 8))
-			{
-				self.current_menu = 1;
-			}
-			else
-			{
-				self.menu_displaytime = (self.menu_displaytime + 1);
-			}
+			Menu_Intro ();
+			self.current_menu = 1;
 		}
 		else
 		{
-			if ((self.current_menu == 7))
+			if ((self.current_menu == 6))
 			{
-				Menu_ClassHelp2 ();
-				if ((self.menu_displaytime > 5))
+				Menu_ClassHelp ();
+				if ((self.menu_displaytime > 8))
 				{
 					self.current_menu = 1;
 				}
@@ -138,23 +124,23 @@ void () Player_Menu =
 			}
 			else
 			{
-				if (self.current_menu == 10)
+				if ((self.current_menu == 7))
 				{
-					Menu_ShowBindings1();
-					if (self.menu_displaytime > 8)
+					Menu_ClassHelp2 ();
+					if ((self.menu_displaytime > 5))
 					{
-						self.current_menu = TF_FLARE_OFF;
+						self.current_menu = 1;
 					}
 					else
 					{
-						self.menu_displaytime = self.menu_displaytime + TF_FLARE_OFF;
+						self.menu_displaytime = (self.menu_displaytime + 1);
 					}
 				}
 				else
 				{
-					if (self.current_menu == 11)
+					if (self.current_menu == 10)
 					{
-						Menu_ShowBindings2();
+						Menu_ShowBindings1();
 						if (self.menu_displaytime > 8)
 						{
 							self.current_menu = TF_FLARE_OFF;
@@ -166,102 +152,117 @@ void () Player_Menu =
 					}
 					else
 					{
-						if (self.current_menu == 4)
+						if (self.current_menu == 11)
 						{
-							Menu_Drop();
-						}
-						else
-						{
-							if (self.current_menu == 20)
+							Menu_ShowBindings2();
+							if (self.menu_displaytime > 8)
 							{
-								Menu_DropStuff();
+								self.current_menu = TF_FLARE_OFF;
 							}
 							else
 							{
-								if (self.current_menu == 21)
+								self.menu_displaytime = self.menu_displaytime + TF_FLARE_OFF;
+							}
+						}
+						else
+						{
+							if (self.current_menu == 4)
+							{
+								Menu_Drop();
+							}
+							else
+							{
+								if (self.current_menu == 20)
 								{
-									Menu_Taunt();
+									Menu_DropStuff();
 								}
 								else
 								{
-									if (self.current_menu == 22)
+									if (self.current_menu == 21)
 									{
-										Menu_Yell();
+										Menu_Taunt();
 									}
 									else
 									{
-										if (self.current_menu == 12)
+										if (self.current_menu == 22)
 										{
-											Menu_Spy();
+											Menu_Yell();
 										}
 										else
 										{
-											if (self.current_menu == 13)
+											if (self.current_menu == 12)
 											{
-												Menu_Spy_Skin();
+												Menu_Spy();
 											}
 											else
 											{
-												if (self.current_menu == 14)
+												if (self.current_menu == 13)
 												{
-													Menu_Spy_Color();
+													Menu_Spy_Skin();
 												}
 												else
 												{
-													if (self.current_menu == 15)
+													if (self.current_menu == 14)
 													{
-														Menu_Engineer();
+														Menu_Spy_Color();
 													}
 													else
 													{
-														if (self.current_menu == 16)
+														if (self.current_menu == 15)
 														{
-															Menu_EngineerFix_Dispenser();
+															Menu_Engineer();
 														}
 														else
 														{
-															if (self.current_menu == 17)
+															if (self.current_menu == 16)
 															{
-																Menu_EngineerFix_SentryGun();
+																Menu_EngineerFix_Dispenser();
 															}
 															else
 															{
-																if (self.current_menu == 19)
+																if (self.current_menu == 17)
 																{
-																	Menu_Dispenser();
+																	Menu_EngineerFix_SentryGun();
 																}
 																else
 																{
-																	if (self.current_menu == 8)
+																	if (self.current_menu == 19)
 																	{
-																		Menu_RepeatHelp();
-																		self.current_menu = TF_FLARE_OFF;
+																		Menu_Dispenser();
 																	}
 																	else
 																	{
-																		if (self.current_menu == 9)
+																		if (self.current_menu == 8)
 																		{
-																			Menu_DoBindings();
+																			Menu_RepeatHelp();
+																			self.current_menu = TF_FLARE_OFF;
 																		}
 																		else
 																		{
-																		    if (self.team_no == TF_FLARE_LIT && teamplay && self.lives != TF_FLARE_LIT)
-																	        {
-																				self.current_menu = 2;
-																				Menu_Team();
-															                }
-																		    else
-															    	        {
-																				if ( (self.playerclass == TF_FLARE_LIT && self.lives != TF_FLARE_LIT) || (self.current_menu == 3) )
+																			if (self.current_menu == 9)
+																			{
+																				Menu_DoBindings();
+																			}
+																			else
+																			{
+																				if (self.team_no == TF_FLARE_LIT && teamplay && self.lives != TF_FLARE_LIT)
 																				{
-																				     self.current_menu = 3;
-																				     Menu_Class();
+																					self.current_menu = 2;
+																					Menu_Team();
 																				}
 																				else
 																				{
-																				     self.current_menu = TF_FLARE_LIT;
-																			    }
-				                                                            }
+																					if ( (self.playerclass == TF_FLARE_LIT && self.lives != TF_FLARE_LIT) || (self.current_menu == 3) )
+																					{
+																						 self.current_menu = 3;
+																						 Menu_Class();
+																					}
+																					else
+																					{
+																						 self.current_menu = TF_FLARE_LIT;
+																					}
+																				}
+																			}
 																		}
 																	}
 																}
@@ -279,7 +280,6 @@ void () Player_Menu =
 				}
 			}
 		}
-	}
 #ifdef clan_progs
 	}
 #endif
@@ -363,13 +363,13 @@ void(float inp) Menu_Team_Input =
 	{
 		if (inp <= number_of_teams && inp > TF_FLARE_LIT)
 		{
-			TeamFortress_TeamSet(inp);
+			TeamFortress_TeamSet(inp, 0);
 		}
 		else
 		{
 			if (number_of_teams == TF_FLARE_LIT && inp <= 4)
 			{
-				TeamFortress_TeamSet(inp);
+				TeamFortress_TeamSet(inp, 0);
 			}
 			else
 			{
@@ -511,9 +511,16 @@ void() Menu_Drop =
 
 void() Menu_RepeatHelp = 
 {
-	local string he;
-	he = infokey(self, "tf_help");
-	if (he != "off")
+	local string tfhelp;
+	local string class_help; // if you have class help off you probably don't want intro menu
+	
+	class_help = infokey (self, "ch");
+	if (class_help == string_null)
+		class_help = infokey (self, "classhelp");
+		
+	tfhelp = infokey(self, "tf_help");
+	
+	if ( (tfhelp != "off") && (class_help != "off"))
 	{
 		CenterPrint2(self, "Press š to see this help again\n", "New Command: 'mega' for Mega-TF Menu\n");
 	}
@@ -934,16 +941,33 @@ void(float inp) Menu_Yell_Input =
 
 void() Menu_Intro = 
 {
-	CenterPrint(self, ".");
+// we don't need it..
+	/*local string mtf_ver;
+	local string mtf_website;
+	mtf_ver = #mtf_Ver;		// #mtf_Ver defined in defs.pqc now..
+	mtf_website = #mtf_Website;
+	
+	CenterPrint (self, "Welcome to MegaTeamFortress v", mtf_ver);
+#ifdef clan_progs
+	CenterPrint (self, "CE");
+#endif
+	CenterPrint (self, "\n\nCreated by TeamFortress Software\nUpdated by Up2\n======================================\n", mtf_website);
+*/
 };
 
 void () Menu_ClassHelp =
 {
-	local string _l_881;
+	local string serverinfo_tfhelp;
+	local string class_help;
+	
+	class_help = infokey (self, "ch");
+	if (class_help == string_null)
+		class_help = infokey (self, "classhelp");
 
-	_l_881 = infokey (self, "tf_help");
-	if ((_l_881 != "off"))
-	{
+	serverinfo_tfhelp = infokey (self, "tf_help");
+	
+	if ((serverinfo_tfhelp != "off") && (class_help != "off")) {
+		
 		if ((self.menu_displaytime < 20))
 		{
 			if ((self.playerclass == 1))

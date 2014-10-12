@@ -20,6 +20,7 @@ float coloredlights;
 float sr_gren1;
 float sr_gren2;
 float sr_airmirv;
+void () DumpClanScores;
 
 // pablo. class restrictions.
 float(float pc) IsRestrictedClass;
@@ -161,9 +162,9 @@ void() autoteam_think =
 
 void () DecodeLevelParms =
 {
-	local string _l_5713;
-	local entity _l_5714;
-	local float _l_5715;
+	local string mtfstring;
+	local entity mtfentity;
+	local float mtffloat;
 
 	if (serverflags)
 	{
@@ -195,29 +196,29 @@ void () DecodeLevelParms =
 	nextmap = mapname;
 	allow_hook = 1;
 
-	_l_5714 = find (world, classname, "info_tfdetect");
-	if (_l_5714 != world) {
+	mtfentity = find (world, classname, "info_tfdetect");
+	if (mtfentity != world) {
 
 	    if (teamplay == 0)
 		cvar_set ("teamplay", "21?TeamFortress");
 
-	    ParseTFDetect (_l_5714);
+	    ParseTFDetect (mtfentity);
 
 	    if ((number_of_teams <= 0) || (number_of_teams >= 5))
 		number_of_teams = 4;
 
 	} else {
 
-	    _l_5714 = find (world, classname, "info_player_team1");
-	    if ((_l_5714 != world) || (CTF_Map == 1)) {
+	    mtfentity = find (world, classname, "info_player_team1");
+	    if ((mtfentity != world) || (CTF_Map == 1)) {
 
 		CTF_Map = 1;
 		if (teamplay == 0)
 		    cvar_set ("teamplay", "21?TeamFortress");
 
-		_l_5714 = spawn ();
-		_l_5714.nextthink = time + 30;
-		_l_5714.think = CTF_FlagCheck;
+		mtfentity = spawn ();
+		mtfentity.nextthink = time + 30;
+		mtfentity.think = CTF_FlagCheck;
 
 		number_of_teams = 2;
 
@@ -253,14 +254,14 @@ void () DecodeLevelParms =
 		}
 		nextmap = mapname;
 		allow_hook = 1;
-		_l_5714 = find (world, classname, "info_tfdetect");
-		if ((_l_5714 != world))
+		mtfentity = find (world, classname, "info_tfdetect");
+		if ((mtfentity != world))
 		{
 			if ((teamplay == 0))
 			{
 				cvar_set ("teamplay", "21?TeamFortress");
 			}
-			ParseTFDetect (_l_5714);
+			ParseTFDetect (mtfentity);
 			if (((number_of_teams <= 0) || (number_of_teams >= 5)))
 			{
 				number_of_teams = 4;
@@ -268,17 +269,17 @@ void () DecodeLevelParms =
 		}
 		else
 		{
-			_l_5714 = find (world, classname, "info_player_team1");
-			if (((_l_5714 != world) || (CTF_Map == 1)))
+			mtfentity = find (world, classname, "info_player_team1");
+			if (((mtfentity != world) || (CTF_Map == 1)))
 			{
 				CTF_Map = 1;
 				if ((teamplay == 0))
 				{
 					cvar_set ("teamplay", "21?TeamFortress");
 				}
-				_l_5714 = spawn ();
-				_l_5714.nextthink = (time + 30);
-				_l_5714.think = CTF_FlagCheck;
+				mtfentity = spawn ();
+				mtfentity.nextthink = (time + 30);
+				mtfentity.think = CTF_FlagCheck;
 				number_of_teams = 2;
 			}
 			else
@@ -310,85 +311,85 @@ void () DecodeLevelParms =
 			toggleflags = toggleflags - (toggleflags & 128);
 //		}
 		toggleflags = toggleflags | 2;
-		_l_5713 = infokey (world, "temp1");
-		toggleflags = (toggleflags | 256) | stof (_l_5713);
-		_l_5715 = 30;
-		_l_5713 = infokey (world, "a");
-		if ((_l_5713 == string_null))
+		mtfstring = infokey (world, "temp1");
+		toggleflags = (toggleflags | 256) | stof (mtfstring);
+		mtffloat = 30;
+		mtfstring = infokey (world, "a");
+		if ((mtfstring == string_null))
 		{
-			_l_5713 = infokey (world, "autoteam");
+			mtfstring = infokey (world, "autoteam");
 		}
-		if ((_l_5713 == "on"))
+		if ((mtfstring == "on"))
 		{
 			toggleflags = toggleflags | 64;
 		}
 		else
 		{
-			if ((_l_5713 == "off"))
+			if ((mtfstring == "off"))
 			{
 				toggleflags = toggleflags - (toggleflags & 64);
 			}
 			else
 			{
-				if ((stof (_l_5713) != 0))
+				if ((stof (mtfstring) != 0))
 				{
 					toggleflags = toggleflags | 64;
-					_l_5715 = stof (_l_5713);
+					mtffloat = stof (mtfstring);
 				}
 			}
 		}
-		_l_5713 = infokey (world, "t");
-		if ((_l_5713 == string_null))
+		mtfstring = infokey (world, "t");
+		if ((mtfstring == string_null))
 		{
-			_l_5713 = infokey (world, "teamfrags");
+			mtfstring = infokey (world, "teamfrags");
 		}
-		if ((_l_5713 == "on"))
+		if ((mtfstring == "on"))
 		{
 			toggleflags = toggleflags | 128;
 		}
 		else
 		{
-			if ((_l_5713 == "off"))
+			if ((mtfstring == "off"))
 			{
 				toggleflags = toggleflags - (toggleflags & 128);
 			}
 		}
-		_l_5713 = infokey (world, "g");
-		if ((_l_5713 == string_null))
+		mtfstring = infokey (world, "g");
+		if ((mtfstring == string_null))
 		{
-			_l_5713 = infokey (world, "grapple");
+			mtfstring = infokey (world, "grapple");
 		}
-		if ((_l_5713 == "off"))
-		{
-			allow_hook = 0;
-		}
-		if ((!(toggleflags & 1024) && (_l_5713 != "on")))
+		if ((mtfstring == "off"))
 		{
 			allow_hook = 0;
 		}
-		_l_5713 = infokey (world, "spy");
-		if ((_l_5713 == "off"))
+		if ((!(toggleflags & 1024) && (mtfstring != "on")))
+		{
+			allow_hook = 0;
+		}
+		mtfstring = infokey (world, "spy");
+		if ((mtfstring == "off"))
 		{
 			spy_off = 1;
 		}
-		_l_5713 = infokey (world, "s");
-		if ((_l_5713 == string_null))
+		mtfstring = infokey (world, "s");
+		if ((mtfstring == string_null))
 		{
-			_l_5713 = infokey (world, "spyinvis");
+			mtfstring = infokey (world, "spyinvis");
 		}
-		if (((_l_5713 == "on") || (toggleflags & 512)))
+		if (((mtfstring == "on") || (toggleflags & 512)))
 		{
 			invis_only = 1;
 		}
 		else
 		{
-			if ((_l_5713 == "off"))
+			if ((mtfstring == "off"))
 			{
 				invis_only = 0;
 			}
 		}
-		_l_5713 = infokey (world, "oldconc");
-		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		mtfstring = infokey (world, "oldconc");
+		if (((mtfstring == "on") || (mtfstring == "1")))
 		{
 			oldconc = 1;
 		}
@@ -396,8 +397,8 @@ void () DecodeLevelParms =
 		{
 			oldconc = 0;
 		}
-		_l_5713 = infokey (world, "spyjumpoption");
-		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		mtfstring = infokey (world, "spyjumpoption");
+		if (((mtfstring == "on") || (mtfstring == "1")))
 		{
 			spyjumpoption = 1;
 		}
@@ -405,8 +406,8 @@ void () DecodeLevelParms =
 		{
 			spyjumpoption = 0;
 		}
-		_l_5713 = infokey (world, "spycam");
-		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		mtfstring = infokey (world, "spycam");
+		if (((mtfstring == "on") || (mtfstring == "1")))
 		{
 			spycam = 1;
 		}
@@ -415,8 +416,8 @@ void () DecodeLevelParms =
 			spycam = 0;
 		}
 		spycam = 0;
-		_l_5713 = infokey (world, "medicarmorheal");
-		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		mtfstring = infokey (world, "medicarmorheal");
+		if (((mtfstring == "on") || (mtfstring == "1")))
 		{
 			medicarmorheal = 1;
 		}
@@ -424,17 +425,17 @@ void () DecodeLevelParms =
 		{
 			medicarmorheal = 0;
 		}
-		_l_5713 = infokey (world, "quadscore");
-		if ((_l_5713 != ""))
+		mtfstring = infokey (world, "quadscore");
+		if ((mtfstring != ""))
 		{
-			if ((_l_5713 == "on"))
+			if ((mtfstring == "on"))
 			{
 				quadscore = -666;
 				bprint (2, "çQuad Round 1 in progress!\n");
 			}
 			else
 			{
-				if ((_l_5713 == "0"))
+				if ((mtfstring == "0"))
 				{
 					quadscore = 0;
 				}
@@ -442,7 +443,7 @@ void () DecodeLevelParms =
 				{
 					bprint (2, quadscore);
 					bprint (2, "\n");
-					quadscore = stof (_l_5713);
+					quadscore = stof (mtfstring);
 					team2score = quadscore;
 					localcmd ("serverinfo quadscore 0\n");
 					bprint (2, "çQuad Round 2 in progress!\n");
@@ -450,8 +451,8 @@ void () DecodeLevelParms =
 				}
 			}
 		}
-		_l_5713 = infokey (world, "dropgrens");
-		if (((_l_5713 == "on") || (_l_5713 == "1")))
+		mtfstring = infokey (world, "dropgrens");
+		if (((mtfstring == "on") || (mtfstring == "1")))
 		{
 			sr_dropgrens = 1;
 		}
@@ -459,10 +460,10 @@ void () DecodeLevelParms =
 		{
 			sr_dropgrens = 0;
 		}
-		_l_5713 = infokey (world, "sr_gren1");
-		sr_gren1 = stof (_l_5713);
-		_l_5713 = infokey (world, "sr_gren2");
-		sr_gren2 = stof (_l_5713);
+		mtfstring = infokey (world, "sr_gren1");
+		sr_gren1 = stof (mtfstring);
+		mtfstring = infokey (world, "sr_gren2");
+		sr_gren2 = stof (mtfstring);
 		if ((sr_gren1 <= 0))
 		{
 			sr_gren1 = 10;
@@ -472,20 +473,20 @@ void () DecodeLevelParms =
 			sr_gren2 = 10;
 		}
 	
-		_l_5713 = infokey(world, "sr_airmirv");
-		sr_airmirv = stof (_l_5713);
+		mtfstring = infokey(world, "sr_airmirv");
+		sr_airmirv = stof (mtfstring);
 		if ((sr_airmirv <= 0))
 		{
 			sr_airmirv = 10;
 		}
 
 #ifdef clan_progs
-		_l_5713 = infokey (world, "clan_prematch");
-		if (_l_5713 == "on" || stof(_l_5713) > 0)
+		mtfstring = infokey (world, "clan_prematch");
+		if (mtfstring == "on" || stof(mtfstring) > 0)
 		{
-			if (stof(_l_5713) > 1)
+			if (stof(mtfstring) > 1)
 			{
-				clan_prematch = stof(_l_5713);
+				clan_prematch = stof(mtfstring);
 			}
 			else
 			{
@@ -497,8 +498,8 @@ void () DecodeLevelParms =
 		else
 		{
 #endif
-		_l_5713 = infokey (world, "prematch");
-		prematch = stof (_l_5713);
+		mtfstring = infokey (world, "prematch");
+		prematch = stof (mtfstring);
 		if ((prematch > 0))
 		{
 			SetUpPrematch ();
@@ -506,36 +507,36 @@ void () DecodeLevelParms =
 #ifdef clan_progs
 		}
 #endif
-		_l_5713 = infokey (world, "cr_scout");
-		cr_scout = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_sniper");
-		cr_sniper = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_soldier");
-		cr_soldier = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_demoman");
-		cr_demoman = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_medic");
-		cr_medic = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_hwguy");
-		cr_hwguy = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_pyro");
-		cr_pyro = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_spy");
-		cr_spy = stof (_l_5713);
-		_l_5713 = infokey (world, "cr_engineer");
-		cr_engineer = stof (_l_5713);
+		mtfstring = infokey (world, "cr_scout");
+		cr_scout = stof (mtfstring);
+		mtfstring = infokey (world, "cr_sniper");
+		cr_sniper = stof (mtfstring);
+		mtfstring = infokey (world, "cr_soldier");
+		cr_soldier = stof (mtfstring);
+		mtfstring = infokey (world, "cr_demoman");
+		cr_demoman = stof (mtfstring);
+		mtfstring = infokey (world, "cr_medic");
+		cr_medic = stof (mtfstring);
+		mtfstring = infokey (world, "cr_hwguy");
+		cr_hwguy = stof (mtfstring);
+		mtfstring = infokey (world, "cr_pyro");
+		cr_pyro = stof (mtfstring);
+		mtfstring = infokey (world, "cr_spy");
+		cr_spy = stof (mtfstring);
+		mtfstring = infokey (world, "cr_engineer");
+		cr_engineer = stof (mtfstring);
 		if ((((((((((cr_scout != 0) && (cr_sniper != 0)) && (cr_soldier != 0)) && (cr_demoman != 0)) && (cr_medic != 0)) && (cr_hwguy != 0)) && (cr_pyro != 0)) && (cr_spy != 0)) && (cr_engineer != 0)))
 		{
 			cr_engineer = 0;
 		}
-		_l_5713 = infokey (world, "clr_enabled");
-		if ((_l_5713 == "on"))
+		mtfstring = infokey (world, "clr_enabled");
+		if ((mtfstring == "on"))
 		{
 			clr_enabled = 1;
 		}
 		else
 		{
-			if ((_l_5713 == "1"))
+			if ((mtfstring == "1"))
 			{
 				clr_enabled = 1;
 			}
@@ -544,8 +545,8 @@ void () DecodeLevelParms =
 				clr_enabled = 0;
 			}
 		}
-		_l_5713 = infokey (world, "airscout");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "airscout");
+		if ((mtfstring == "off"))
 		{
 			airscout = 0;
 		}
@@ -553,8 +554,8 @@ void () DecodeLevelParms =
 		{
 			airscout = 1;
 		}
-		_l_5713 = infokey (world, "headkick");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "headkick");
+		if ((mtfstring == "off"))
 		{
 			headkick = 0;
 		}
@@ -562,8 +563,8 @@ void () DecodeLevelParms =
 		{
 			headkick = 1;
 		}
-		_l_5713 = infokey (world, "coloredlights");
-		if ((_l_5713 == "on"))
+		mtfstring = infokey (world, "coloredlights");
+		if ((mtfstring == "on"))
 		{
 			coloredlights = 1;
 		}
@@ -571,8 +572,8 @@ void () DecodeLevelParms =
 		{
 			coloredlights = 0;
 		}
-		_l_5713 = infokey (world, "drop3");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "drop3");
+		if ((mtfstring == "off"))
 		{
 			drop3 = 0;
 		}
@@ -580,8 +581,8 @@ void () DecodeLevelParms =
 		{
 			drop3 = 1;
 		}
-		_l_5713 = infokey (world, "drop2");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "drop2");
+		if ((mtfstring == "off"))
 		{
 			drop2 = 0;
 		}
@@ -589,8 +590,8 @@ void () DecodeLevelParms =
 		{
 			drop2 = 1;
 		}
-		_l_5713 = infokey (world, "drop1");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "drop1");
+		if ((mtfstring == "off"))
 		{
 			drop1 = 0;
 		}
@@ -598,8 +599,8 @@ void () DecodeLevelParms =
 		{
 			drop1 = 1;
 		}
-		_l_5713 = infokey (world, "footsteps");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "footsteps");
+		if ((mtfstring == "off"))
 		{
 			footsteps = 0;
 		}
@@ -607,8 +608,8 @@ void () DecodeLevelParms =
 		{
 			footsteps = 1;
 		}
-		_l_5713 = infokey (world, "old_gl");
-		if ((_l_5713 == "off"))
+		mtfstring = infokey (world, "old_gl");
+		if ((mtfstring == "off"))
 		{
 			old_gl = 0;
 		}
@@ -616,8 +617,10 @@ void () DecodeLevelParms =
 		{
 			old_gl = 1;
 		}
-		_l_5713 = infokey (world, "exec_class");
-		if ((_l_5713 != "off"))
+		mtfstring = infokey (world, "exec_class");
+		if (mtfstring == string_null)
+			mtfstring = infokey (world, "ec");
+		if ((mtfstring != "off"))
 		{
 			exec_class = 1;
 		}
@@ -625,12 +628,12 @@ void () DecodeLevelParms =
 		{
 			exec_class = 0;
 		}
-		_l_5713 = infokey (world, "rd");
-		if ((_l_5713 == string_null))
+		mtfstring = infokey (world, "rd");
+		if ((mtfstring == string_null))
 		{
-			_l_5713 = infokey (world, "respawn_delay");
+			mtfstring = infokey (world, "respawn_delay");
 		}
-		respawn_delay_time = stof (_l_5713);
+		respawn_delay_time = stof (mtfstring);
 		if (respawn_delay_time)
 		{
 			toggleflags = toggleflags | 4;
@@ -642,9 +645,9 @@ void () DecodeLevelParms =
 		if ((toggleflags & 64))
 		{
 			toggleflags = toggleflags - (toggleflags & 64);
-			_l_5714 = spawn ();
-			_l_5714.nextthink = (time + _l_5715);
-			_l_5714.think = autoteam_think;
+			mtfentity = spawn ();
+			mtfentity.nextthink = (time + mtffloat);
+			mtfentity.think = autoteam_think;
 		}
 	}
 	if (parm11)
@@ -872,10 +875,7 @@ void() GotoNextMap =
 		}
 		te = find(te, classname, "player");
 	}*/
-#ifdef fte_rankings
-	if (FTE_Server == 1)
-		Rank_UpdateStatsGlobal();
-#endif
+
 	// <---
 
 	if (nextmap != mapname)
@@ -921,22 +921,6 @@ void() ExitIntermission =
 	intermission_running = intermission_running + TF_FLARE_OFF;
 	if (intermission_running == 2)
 	{
-/*		if (world.model == "maps/2fort4.bsp")
-		{
-			if (!cvar("registered"))
-			{
-				WriteByte(2, 31);
-				WriteString(2, "Thankyou for playing 2Fort4 on the   \nClan KAVORKIAN server.                \nThis server modified by Ambush, MD.\nPlease visit our WebSite at     \nwww.antronOnline.com/quake  for info  \nabout this server and our clan.       \nClan KAVORKIAN...                    \n  we'll assist your suicide! \n");
-			}
-			else
-			{
-				WriteByte(2, 31);
-				WriteString(2, "Thankyou for playing 2Fort4 on the   \nClan KAVORKIAN server.                \nThis server modified by Ambush, MD.\nPlease visit our WebSite at     \nwww.antronOnline.com/quake  for info  \nabout this server and our clan.       \nClan KAVORKIAN...                    \n  we'll assist your suicide! \n");
-			}
-			return;
-		}
-		else
-		{*/
 			if (world.model == "maps/e2m6.bsp")
 			{
 				WriteByte(2, 31);
@@ -1029,6 +1013,7 @@ void() execute_changelevel =
 		other.modelindex = 0;
 		other = find(other, classname, "player");
 	}
+	DumpClanScores ();
 };
 
 void() changelevel_touch = 
@@ -2624,10 +2609,6 @@ void() PlayerPostThink =
 
 void() ClientConnect = 
 {
-	if (!strcat)
-	{
-		setup_strcat ();
-	}
 	num_players = num_players + 1;
 	globaluserid = globaluserid + 1;
 //	self.userid = globaluserid;
@@ -2638,31 +2619,10 @@ void() ClientConnect =
 	}
 	self.vote_wait = (time + 30);
 	local string st;
-#ifdef fte_rankings
-	self.rank_name = self.netname;
-	if (FTE_Server != 1)
-	{
-		if (infokey(world, "fteserver") == "1" || infokey(world, "fteserver") == "on")
-		{
-			FTE_Server = 1;
-		}
-	}
-	if (FTE_Server == 1)
-	{
-		self.rank_name = self.netname;
-		Rank_FindStats (self);
-		bprint(2, self.netname);
-		bprint(2, strcat(" joined! (rank: ",ftos(self.global_rank),")\n"));
-	}
-	else
-	{
-		bprint(2, self.netname);
-		bprint(2, " joined!\n");
-	}
-#else
+
 	bprint(2, self.netname);
 	bprint(2, " joined!\n");
-#endif
+	
 	self.is_ingame = 1;
 //	if (0 == 0)
 //	{
@@ -2806,10 +2766,7 @@ void () ClientDisconnect =
 		num_players_ready = num_players_ready - 1;
 	}
 #endif
-#ifdef fte_rankings
-	if (FTE_Server == 1)
-		Rank_UpdateStats(self);
-#endif
+
 	self.userid = 0;
 	local entity _l_6062;
 
@@ -2914,10 +2871,7 @@ void(entity targ, entity attacker) ClientObituary =
 	{
 		return;
 	}
-#ifdef fte_rankings
-	if (FTE_Server == 1)
-		Rank_AddDeaths(targ, 1);
-#endif
+
 // 'fer code caller!
 	if (deathmsg > 0 && deathmsg < 199)
 	{
@@ -2938,10 +2892,7 @@ void(entity targ, entity attacker) ClientObituary =
 			{
 				attacker.num_kills = attacker.num_kills - 1;
 			}
-#ifdef fte_rankings
-			if (FTE_Server == 1 && attacker != targ)
-				Rank_AddFrags(attacker, 1);
-#endif
+
 			if (targ.off_hook != 1)
 			{
 //So disps, Drones, and heads dont count as fers
@@ -4020,10 +3971,7 @@ void(entity te) ferdisplay =
 		bprint (1, "-fer!");
 		bprint (1, "\n");
 		playernamefer.num_kills = 0;
-#ifdef fte_rankings
-		if (FTE_Server == 1)
-			Rank_AddFers(playernamefer, 1);
-#endif
+
 	}
 	playernamefer.num_kills = 0;
 	dremove (self);

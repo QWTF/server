@@ -54,10 +54,6 @@ void() voteyes =
 				themap = strzone(themap);
 			bprint (1, themap);
 			bprint (1, " it is!\n");
-#ifdef fte_rankings
-			if (FTE_Server == 1)
-				Rank_UpdateStatsGlobal ();
-#endif
 			if (prozacmethod == 1)
 			{
 				localcmd ("exec qwmcycle/");
@@ -173,10 +169,6 @@ void(string put) votemap_start =
 		RemoveVote();
 		if (num_votes > (num_players * 0.6))
 		{
-#ifdef fte_rankings
-			if (FTE_Server == 1)
-				Rank_UpdateStatsGlobal ();
-#endif
 			self.has_voted = 0;
 			localcmd ("exec qwmcycle/");
 			localcmd (put);
@@ -277,10 +269,6 @@ void() MapNotFound =
 
 	localcmd("say --  Map Not Found  --\n");
 	nomap = 1;
-#ifdef fte_rankings
-	if (FTE_Server == 1 && Ranks_Updated == 1)
-		Ranks_Updated = 0;
-#endif
 	finder_ent = find (world,classname,"VoteFailed");
 	while (finder_ent)
 	{
@@ -379,44 +367,7 @@ float(string mapstr) validatemap =
 
 void (string d, string st) FTE_VoteMap =
 {
-			if (d == "")
-			{
-				sprint (self, 2, "Please specify a map name (EX: cmd votemap 2mach1)\n");
-				return;
-			}
-			local float handle;
-			local string t_mapname;
-			t_mapname = d;
-//if it's not an FTE server we cant use FTE's map check :\
-			if (infokey(world, "fteserver") != "1")
-			{
-				votemap_start (d);
-				return;
-			}
-			handle = search_begin(strcat("maps/", t_mapname, ".bsp"), false, true);
-			if (handle>=0)
-			{
-				clientcommand(self, st);
-				votemap_start (d);
-				search_end(handle);
-				return;
-			}
-			else
-			{
-				clientcommand(self, st);
-				sprint (self, 2, "Couldn't find ", t_mapname, "\n");
-				return;
-			}
-			t_mapname = "dm9";
-			handle = search_begin(strcat("maps/", t_mapname, ".bsp"), false, true);
-			if (handle>=0)
-			{
-				search_end(handle);
-			}
-			else
-			{
-				bprint("done\n");
-			}
+
 };
 
 //Basically this allows FTE/Fuh/EZQuake servers to use cmd.
