@@ -1,3 +1,20 @@
+//clan stuff
+#define clan_progs
+#define fte_rankings		// comment this out if not running fte server or dont want rankings enabled
+#define new_solid		// rocket hitting invisible wall fix (may be buggy, comment this out if it is..)
+
+#define WEAP_SNIPER_RIFLE_MAX_TIME  3 // PZ - Randomer's charge-up fix
+#define WEAP_SNIPER_RIFLE_MIN_DAMG  50 //
+#define WEAP_SNIPER_RIFLE_MAX_DAMG  400 //
+
+#define PC_SPY_MAXSPEED				320
+
+#define TL_ANY_SOLID	0
+#define TL_BSP_ONLY		1 // will hit BSP only
+
+//menus
+#define MENU_CLAN_PREMATCH		45
+
 
 /*
 ==============================================================================
@@ -479,7 +496,6 @@ float(string st) validatefile = #91;
 float prozacmethod;
 string prozacmap;
 float(string mapstr) validatemap;
-//string(string st1, string st2) strcat = #84; //original prozac strcat. It's now dynamically defined.
 string pmap_backup;
 
 void(entity e, string s) clientcommand = #440;
@@ -562,18 +578,16 @@ float engbat;
 void () pm_list;
 float true    = 1;
 float false    = 0;
-float canusenew;
+//float canusenew;
 float(string pattern, float caseinsensitive, float quiet) search_begin = #444;
 void(float handle) search_end = #445;
 string(float handle, float num) search_getfilename = #447;
 // Server Fix Function
-var string(string s1, string s2, ...) strcat = __NULL__;
 string(string s1, string s2, ...) qsg_strcat = #82;
 string(string s1, string s2, ...) cpqwsv_strcat = #84;
 string(string s1, string s2, ...) mvdsv_strcat = #89;
 string(string s1, string s2, ...) frik_strcat = #115;
 float(string s) checkextension = #99;
-void () setup_strcat;
 
 void () testfunct;
 
@@ -591,11 +605,9 @@ float Ranks_Updated;		// tells us if the global ranks have been updated already 
 .float global_caps;
 void () Rank_UpdateStatsGlobal;
 
-float FTE_Server;			//defines if server is an FTE server
 // Rank stuff
 void (entity rank_ent) Rank_FindStats;
 void (entity rank_ent) Rank_UpdateStats;
-void (entity rank_ent, float addscore) Rank_AddRank;
 void (entity rank_ent, float addscore) Rank_AddFrags;
 void (entity rank_ent, float addscore) Rank_AddFers;
 void (entity rank_ent, float addscore) Rank_AddDeaths;
@@ -621,4 +633,13 @@ float flagem_checked;
 
 .float jet_time;			// defines jetjump immune-to-pushback time (pushback from sentryguns)
 
-#define mtf_Ver		"08.22.06"		// insert MegaTF version here
+#define mtf_Ver		"10.12.14"		// insert MegaTF version here
+#define mtf_Website "\shttps://github.com/quaketf\s"
+
+//strcat for combining two strings, strlen to getting the length of a string.
+//substring Ex: substring("Abraham Lincoln", 1, 3) == "bra", stov = string to vector
+//From FrikaC's file access tutorial
+float(string s) strlen = #114;
+string(string s1, string s2) strcat = #115;
+string(string s, float start, float length) substring = #116;
+vector(string s) stov = #117;

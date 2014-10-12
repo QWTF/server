@@ -121,7 +121,6 @@ entity lastspawn;
 
 void () worldspawn =
 {
-setup_strcat();
 	lastspawn = world;
 	InitBodyQue ();
 	if ((infokey (world, "*gamedir") != "fortress"))
@@ -434,43 +433,4 @@ void (entity ent) CopyToBodyQue =
 	setorigin (bodyque_head, ent.origin);
 	setsize (bodyque_head, ent.mins, ent.maxs);
 	bodyque_head = bodyque_head.owner;
-};
-
-void() setup_strcat =
-{
-	if (strcat)	//we already set it up.
-		return;
-	if (world.targetname == "mvdsv")
-	{
-		strcat = mvdsv_strcat;
-		return;
-	}
-	else
-	{
-		if (cvar("pr_checkextension"))
-		{
-			if (checkextension("FRIK_FILE") || checkextension("ZQ_QC_STRINGS"))
-			{	//note: frik_file includes file access, zquake doesn't, so advertises an alternate extension
-				strcat = frik_strcat;			//the string builtins are the same.
-				canusenew = 1;
-				return;
-			}
-			if (checkextension("QSG_FILE"))
-			{	//included for compleateness.
-				strcat = qsg_strcat;
-				return;
-			}
-		}
-	}
-//I don't know how to detect if it's cpqwsv
-//the serverinfo *version key will contain CPQWSV, but it'll contain other things too, which we can't test for.
-//standard qc doesn't support substring comparisons, and the extra info in there make it unusable.
-	if (infokey(world, "prozacserver") != "1" && infokey(world, "prozacvote") != "1") {
-	dprint("Warning: could not detect an strcat builtin, assuming cpqwsv - If this is a server running Often's cpqwsv please set localinfo prozacserver 1\n");
-	dprint("Warning: If this is an equake server with vote support or if you dont want to see this message again set localinfo prozacvote 1\n");
-//	dprint("Warning: If this is a server running Often's cpqwsv please set localinfo prozacserver 1\n");
-	}
-	strcat = cpqwsv_strcat;
-	if (infokey(world, "prozacserver") == "1") {
-	canusenew = 1; }
 };
