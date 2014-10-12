@@ -1,15 +1,386 @@
-#define clan_progs
-#define fte_rankings		// comment this out if not running fte server or dont want rankings enabled
-#define new_solid		// rocket hitting invisible wall fix (may be buggy, comment this out if it is..)
+void () DumpClanScores =
+{    
+	local float winners;
+    local float no_teams;
+    local float printed;
+    local float ti;
+    //local float teamfrags;
+    local string st;
+    local entity te;
+    local float t1_pl;	local string players1;	/*local float t1_unacc;	local string t1frags;	local string t1unaccfrags;*/	local string t1score;
+    local float t2_pl;	local string players2;	/*local float t2_unacc;	local string t2frags;	local string t2unaccfrags;*/	local string t2score;
+    local float t3_pl;	local string players3;	/*local float t3_unacc;	local string t3frags;	local string t3unaccfrags;*/	local string t3score;
+    local float t4_pl;	local string players4;	/*local float t4_unacc;	local string t4frags;	local string t4unaccfrags;*/	local string t4score;
+    local string space1;	local string space2;	local string space3;
+	
+	t1_pl = TeamFortress_TeamGetNoPlayers (1);
+    t2_pl = TeamFortress_TeamGetNoPlayers (2);
+    t3_pl = TeamFortress_TeamGetNoPlayers (3);
+    t4_pl = TeamFortress_TeamGetNoPlayers (4);
 
-#define WEAP_SNIPER_RIFLE_MAX_TIME  3 // PZ - Randomer's charge-up fix
-#define WEAP_SNIPER_RIFLE_MIN_DAMG  50 //
-#define WEAP_SNIPER_RIFLE_MAX_DAMG  400 //
+    printed = 0;
+    no_teams = 0;
+    
+	if (t1_pl) {
+		no_teams = no_teams + 1;
+    }
+    if (t2_pl) {
+		no_teams = no_teams + 1;
+    }
+    if (t3_pl) {
+		no_teams = no_teams + 1;
+    }
+    if (t4_pl) {
+		no_teams = no_teams + 1;
+    }
+    //if (no_teams < 2) {
+		//return;
+    //}
+    //t4_unacc = 0;
+   // t3_unacc = 0;
+   // t2_unacc = 0;
+   // t1_unacc = 0;
 
-#define PC_SPY_MAXSPEED				320
+    ti = 0;
+    /*
+	te = find (world, classname, "player");
+    while (te) {
+		if (te.team_no == 1) {
+			t1_unacc = t1_unacc + te.real_frags;
+		} else if (te.team_no == 2) {
+			t2_unacc = t2_unacc + te.real_frags;
+		} else if (te.team_no == 3) {
+			t3_unacc = t3_unacc + te.real_frags;
+		} else if (te.team_no == 4) {
+			t4_unacc = t4_unacc + te.real_frags;
+		}
+		te = find (te, classname, "player");
+    }
+	t1_unacc = team1frags - t1_unacc;
+	t2_unacc = team2frags - t2_unacc;
+	t3_unacc = team3frags - t3_unacc;
+	t4_unacc = team4frags - t4_unacc;
+   */
+    winners = TeamFortress_TeamGetWinner ();
 
-#define TL_ANY_SOLID	0
-#define TL_BSP_ONLY		1 // will hit BSP only
+    bprint (2, "\n\n=-------= \sMatch Results\s =-------="); //covers all four teams
+    	
+	//Print team names
+	bprint (2, "\nTeam:        ");
+	if (t1_pl > 0) { bprint (2, "blue"); }
+	else { bprint (2, "    "); }
+	if (t2_pl > 0) { bprint (2, " red"); }
+	else { bprint (2, "    "); }
+	if (t3_pl > 0) { bprint (2, "  grn"); }
+	else { bprint (2, "     "); }
+	if (t4_pl > 0) { bprint (2, "  yell"); }
+	
+	//Print the number of PLAYERS per team, assume 99 max players (two digits)
+	bprint (2, "\nPlayers:     ");
+	
+	players1 = "     ";
+	players2 = "     ";
+	players3 = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
 
-//menus
-#define MENU_CLAN_PREMATCH		45
+	if (t1_pl > 0) { // players1 + space1 should add to "5" (4 chars for score, 1 for space)
+		players1 = ftos (TeamFortress_TeamGetNoPlayers (1));
+		
+		if (strlen(players1) == 1)
+			space1 = "    ";
+		else if (strlen(players1) == 2)
+			space1 = "   ";
+		else if (strlen(players1) == 3)
+			space1 = "  ";
+		else if (strlen(players1) > 3) { // it's 4 or more?
+			players1 = substring(players1, 0, 4); // just take first 4 chars of score
+			space1 = " ";
+		}
+	}
+	
+	if (t2_pl > 0) {
+		players2 = ftos (TeamFortress_TeamGetNoPlayers (2));
+		
+		if (strlen(players2) == 1)
+			space2 = "    ";
+		if (strlen(players2) == 2)
+			space2 = "   ";
+		else if (strlen(players2) == 3)
+			space2 = "  ";
+		else if (strlen(players2) > 3) { // it's 4 or more?
+			players2 = substring(players2, 0, 4);
+			space2 = " ";
+		}
+	}
+	
+	if (t3_pl > 0) {
+		players3 = ftos (TeamFortress_TeamGetNoPlayers (3));
+		
+		if (strlen(players3) == 1)
+			space3 = "    ";
+		if (strlen(players3) == 2)
+			space3 = "   ";
+		else if (strlen(players3) == 3)
+			space3 = "  ";
+		else if (strlen(players3) > 3) { // it's 4 or more?
+			players3 = substring(players3, 0, 4);
+			space3 = " ";
+		}
+	}	
+
+	if (t4_pl > 0) {
+		players4 = ftos (TeamFortress_TeamGetNoPlayers (4));
+		players4 = substring(players4, 0, 4); //let's just make sure it's at most 4 characters
+	}
+	
+	bprint2 (2, players1, space1, players2, space2, players3, space3, players4);
+
+/*	//Print the number of FRAGS per team, assuming 9999 max frags
+	bprint (2, "\nFrags:       ");
+
+	t1frags = "     ";
+	t2frags = "     ";
+	t3frags = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1frags + space1 should add to "5" (4 chars for score, 1 for space)
+		t1frags = ftos (team1frags);
+		
+		if (strlen(t1frags) == 1)
+			space1 = "    ";
+		else if (strlen(t1frags) == 2)
+			space1 = "   ";
+		else if (strlen(t1frags) == 3)
+			space1 = "  ";
+		else if (strlen(t1frags) > 3) { // it's 4 or more?
+			t1frags = substring(t1frags, 0, 4); // just take first 4 chars of score
+			space1 = " ";
+		}
+	}
+	
+	if (t2_pl > 0) {
+		t2frags = ftos (team2frags);
+		
+		if (strlen(t2frags) == 1)
+			space2 = "    ";
+		if (strlen(t2frags) == 2)
+			space2 = "   ";
+		else if (strlen(t2frags) == 3)
+			space2 = "  ";
+		else if (strlen(t2frags) > 3) { // it's 4 or more?
+			t2frags = substring(t2frags, 0, 4);
+			space2 = " ";
+		}
+	}
+	
+	if (t3_pl > 0) {
+		t3frags = ftos (team3frags);
+		
+		if (strlen(t3frags) == 1)
+			space3 = "    ";
+		if (strlen(t3frags) == 2)
+			space3 = "   ";
+		else if (strlen(t3frags) == 3)
+			space3 = "  ";
+		else if (strlen(t3frags) > 3) { // it's 4 or more?
+			t3frags = substring(t3frags, 0, 4);
+			space3 = " ";
+		}
+	}	
+
+	if (t4_pl > 0) {
+		t4frags = ftos (team4frags);
+		t4frags = substring(t4frags, 0, 4); //let's just make sure it's at most 4 characters
+	}
+	
+	bprint2 (2, t1frags, space1, t2frags, space2, t3frags, space3, t4frags);
+
+	
+	//Print UNACCOUNTED FRAGS per team, assuming 9999 max
+	bprint (2, "\nUnacc Frags: ");
+	
+	t1unaccfrags = "     ";
+	t2unaccfrags = "     ";
+	t3unaccfrags = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1unaccfrags + space1 should add to "5" (4 chars for score, 1 for space)
+		t1unaccfrags = ftos (t1_unacc);
+		
+		if (strlen(t1unaccfrags) == 1)
+			space1 = "    ";
+		else if (strlen(t1unaccfrags) == 2)
+			space1 = "   ";
+		else if (strlen(t1unaccfrags) == 3)
+			space1 = "  ";
+		else if (strlen(t1unaccfrags) > 3) { // it's 4 or more?
+			t1unaccfrags = substring(t1unaccfrags, 0, 4); // just take first 4 chars of score
+			space1 = " ";
+		}
+	}
+	
+	if (t2_pl > 0) {
+		t2unaccfrags = ftos (t2_unacc);
+		
+		if (strlen(t2unaccfrags) == 1)
+			space2 = "    ";
+		if (strlen(t2unaccfrags) == 2)
+			space2 = "   ";
+		else if (strlen(t2unaccfrags) == 3)
+			space2 = "  ";
+		else if (strlen(t2unaccfrags) > 3) { // it's 4 or more?
+			t2unaccfrags = substring(t2unaccfrags, 0, 4);
+			space2 = " ";
+		}
+	}
+	
+	if (t3_pl > 0) {
+		t3unaccfrags = ftos (t3_unacc);
+		
+		if (strlen(t3unaccfrags) == 1)
+			space3 = "    ";
+		if (strlen(t3unaccfrags) == 2)
+			space3 = "   ";
+		else if (strlen(t3unaccfrags) == 3)
+			space3 = "  ";
+		else if (strlen(t3unaccfrags) > 3) { // it's 4 or more?
+			t3unaccfrags = substring(t3unaccfrags, 0, 4);
+			space3 = " ";
+		}
+	}	
+
+	if (t4_pl > 0) {
+		t4unaccfrags = ftos (t4_unacc);
+		t4unaccfrags = substring(t4unaccfrags, 0, 4); //let's just make sure it's at most 4 characters
+	}
+	
+	bprint2 (2, t1unaccfrags, space1, t2unaccfrags, space2, t3unaccfrags, space3, t4unaccfrags);
+*/	
+	//Print TEAM SCORE, assuming 9999 max 
+	bprint (2, "\nTeam Score:  ");
+
+	t1score = "     ";
+	t2score = "     ";
+	t3score = "     ";
+	space1 = "";
+	space2 = "";
+	space3 = "";	
+
+	if (t1_pl > 0) { // t1score + space1 should add to "5" (4 chars for score, 1 for space)
+		t1score = ftos (team1score);
+		
+		if (strlen(t1score) == 1)
+			space1 = "    ";
+		else if (strlen(t1score) == 2)
+			space1 = "   ";
+		else if (strlen(t1score) == 3)
+			space1 = "  ";
+		else if (strlen(t1score) > 3) { // it's 4 or more?
+			t1score = substring(t1score, 0, 4); // just take first 4 chars of score
+			space1 = " ";
+		}
+	}
+	
+	if (t2_pl > 0) {
+		t2score = ftos (team2score);
+		
+		if (strlen(t2score) == 1)
+			space2 = "    ";
+		if (strlen(t2score) == 2)
+			space2 = "   ";
+		else if (strlen(t2score) == 3)
+			space2 = "  ";
+		else if (strlen(t2score) > 3) { // it's 4 or more?
+			t2score = substring(t2score, 0, 4);
+			space2 = " ";
+		}
+	}
+	
+	if (t3_pl > 0) {
+		t3score = ftos (team3score);
+		
+		if (strlen(t3score) == 1)
+			space3 = "    ";
+		if (strlen(t3score) == 2)
+			space3 = "   ";
+		else if (strlen(t3score) == 3)
+			space3 = "  ";
+		else if (strlen(t3score) > 3) { // it's 4 or more?
+			t3score = substring(t3score, 0, 4);
+			space3 = " ";
+		}
+	}	
+
+	if (t4_pl > 0) {
+		t4score = ftos (team4score);
+		t4score = substring(t4score, 0, 4); //let's just make sure it's at most 4 characters
+	}
+	
+	bprint2 (2, t1score, space1, t2score, space2, t3score, space3, t4score);
+	//End print Team Scores
+	
+	
+	bprint (2, "\n");
+		
+	if ( (no_teams == 2) && (team1score == team2score) )
+		bprint (2, "\sThe match is a DRAW.\s");
+	else if ((no_teams == 3) && (((team1score == team2score) == team3score)))
+		bprint (2, "\sThe match is a DRAW.\s");
+	else if ((no_teams == 4) && ((team1score == team2score) == team3score) == team4score)
+		bprint (2, "\sThe match is a DRAW.\s");
+	else {
+		st = GetTeamName (winners);
+		bprint (2, st, " defeated ");
+		
+		if ((winners != 1) && (t1_pl != 0)) {
+			st = GetTeamName (1);
+			bprint (2, st);
+			printed = printed + 1;
+		}
+		if ((winners != 2) && (t2_pl != 0)) {
+			st = GetTeamName (2);
+			if (printed == no_teams)
+				bprint2 (2, " and ", st);
+			else if (printed)
+				bprint2 (2, ", ", st);
+			else
+				bprint (2, st);
+			printed = printed + 1;
+		}
+		if ((winners != 3) && (t3_pl != 0)) {
+			st = GetTeamName (3);
+			if (printed == no_teams)
+				bprint2 (2, " and ", st);
+			else if (printed)
+				bprint2 (2, ", ", st);
+			else
+				bprint (2, st);
+			printed = printed + 1;
+		}
+		if ((winners != 4) && (t4_pl != 0)) {
+			st = GetTeamName (4);
+			if (printed == no_teams)
+				bprint2 (2, " and ", st);
+			else if (printed)
+				bprint2 (2, ", ", st);
+			else
+				bprint (2, st);
+		}
+    }
+    bprint (2, "\n\n");
+	
+	//End of match results output
+	te = find (world, classname, "player");
+    while (te) {
+		st = infokey (te, "take_sshot");
+		if (st != string_null)
+			stuffcmd (te, "screenshot\n");
+		te = find (te, classname, "player");
+    }
+};

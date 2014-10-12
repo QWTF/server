@@ -1,6 +1,5 @@
 qwprogs.dat
 
-clan.pqc		// defines clan parameters
 defs.pqc
 qw.pqc
 debug.pqc
@@ -52,3 +51,4 @@ prematch.pqc
 rpg.pqc
 xavior.pqc
 rankings.pqc	// Ranking system (taken from United)
+clan.pqc		// defines clan parameters
