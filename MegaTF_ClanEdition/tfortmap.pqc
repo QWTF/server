@@ -633,7 +633,9 @@ void() item_tfgoal =
 void(entity AD) ParseTFDetect = 
 {
 	local string mtf_ver;
+	local string mtf_website;
 	mtf_ver = #mtf_Ver;		// #mtf_Ver defined in defs.pqc now..
+	mtf_website = #mtf_Website;
 
 	if (AD.team_broadcast != string_null)
 	{
@@ -643,9 +645,17 @@ void(entity AD) ParseTFDetect =
 	localcmd("serverinfo ");
 	localcmd("MegaTF v");
 	localcmd(mtf_ver);
+	
+	sprint (self, 2, "\nQuakeWorld MegaTeamFortress v", mtf_ver);
+	
+	
 #ifdef clan_progs
 	localcmd("CE");
+	sprint (self, 2, "CE");
 #endif
+	
+	sprint (self, 2, "\n", mtf_website, "\n\n");
+	
 	localcmd("\n");
 	team1lives = AD.ammo_shells;
 	team2lives = AD.ammo_nails;
@@ -926,11 +936,6 @@ void(entity Goal, entity Player, entity AP, float addb) Apply_Results =
 			{
 				TeamFortress_TeamIncreaseScore(Player.team_no, Goal.count);
 				TeamFortress_TeamShowScores(2);
-#ifdef fte_rankings
-				// Note to self - add a better check here
-				if (FTE_Server == 1)
-					Rank_AddCaps(Player, 1);
-#endif
 			}
 		}
 	}
