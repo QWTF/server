@@ -844,9 +844,9 @@ void () review_timeleft = {
 
    seconds = minutes * 60;
    remaining = seconds - self.no_grenades_1;
-	if ((remaining == 5) & (seconds >= 5))
+	if ((remaining == 4) & (seconds >= 4))
 		bprint(2,"\[5\] seconds remaining\n");
-	else if ((remaining == 30) & (seconds >= 30))
+	else if ((remaining == 29) & (seconds >= 29))
 		bprint(2,"\[30\] seconds remaining\n");
 	else if ((remaining == 59) & (seconds >= 59)) {
 		bprint(2,"\[1\] minute remaining\n");

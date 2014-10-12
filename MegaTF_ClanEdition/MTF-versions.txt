@@ -1,8 +1,8 @@
 *============================================================================*
-* TeamFortress v2.94beta                                    MTF-versions.txt *
+* MegaTeamFortress 10.12.14                                 MTF-versions.txt *
 *============================================================================*
 
-The original QuakeWorld TeamFortress 2.9 + upgrades. No gameplay changes.
+The original QuakeWorld MegaTeamFortress based on 08.22.06 + upgrades. No gameplay changes. FINALLY open-sourced.
 Maintained by Up2nOgOod[ROCK]
 https://github.com/quaketf
 http://www.quakeworld.nu
@@ -11,19 +11,20 @@ http://www.quakeworld.nu
 Changelog:
 
 --------------------------------------------
-Version 2.94beta				  09/06/2014
+Version 10.12.14				  10/12/2014
 --------------------------------------------
 
 Changes:
-	- Changed the 3 second centerprint countdown to a 10 second prematch countdown written in console (Up2)
-	- Added "MATCH BEGINS NOW" at the end of prematch so fuh/ezQuake autorecord if user enabled the setting (Up2)
+	- Added a 3 second prematch countdown written in console (Up2)
 	- Added how many minutes left in the game, every minute (Up2)
 	- Synced remaining time with ezQuake (Up2)
+	- Match results output from TF2.9 (Up2)
+	- Mod now displays "[auto]" after a player autoteams (Up2)
+	- Removed lots of unnecessary code (Up2)
 
 Bugs Fixed:
 	- Players respawn with the velocity of their last death (twincannon)
 	
 Known Bugs:
-	- Ceasefire may not work correctly since /ready system has been introduced. Needs testing
-	- Some players may have to /ready multiple times before it registers, doesn't keep correct count
+	- Times are off by 1-4 seconds. No idea why, this was in the original MTF and fixed in regTF2.95
 
