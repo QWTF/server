@@ -122,7 +122,7 @@ void(float scanrange) TeamFortress_Scan;
 void(float timer) TeamFortress_SetDetpack;
 
 // Team Functions
-float(float tno) TeamFortress_TeamSet;
+float (float tno, float autoteam) TeamFortress_TeamSet;
 void(float tno) TeamFortress_TeamShowScores;
 void(entity Player) TeamFortress_TeamShowMemberClasses;
 
@@ -5867,25 +5867,25 @@ void () DeadImpulses =
 						{
 							if ((self.impulse == 140))
 							{
-								TeamFortress_TeamSet (1);
+								TeamFortress_TeamSet (1,0);
 							}
 							else
 							{
 								if ((self.impulse == 141))
 								{
-									TeamFortress_TeamSet (2);
+									TeamFortress_TeamSet (2,0);
 								}
 								else
 								{
 									if ((self.impulse == 142))
 									{
-										TeamFortress_TeamSet (3);
+										TeamFortress_TeamSet (3,0);
 									}
 									else
 									{
 										if ((self.impulse == 143))
 										{
-											TeamFortress_TeamSet (4);
+											TeamFortress_TeamSet (4,0);
 										}
 										else
 										{

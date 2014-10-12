@@ -81,7 +81,7 @@ float() TeamFortress_TeamPutPlayerInTeam =
 		//
 		i = i + 1;
 	}
-	return TeamFortress_TeamSet(likely_team);
+	return TeamFortress_TeamSet(likely_team, 1);
 };
 
 float(float tno) TeamFortress_TeamGetColor = 
@@ -205,7 +205,7 @@ void(entity p) SetTeamName =
 	stuffcmd(p, "\n");
 };
 
-float(float tno) TeamFortress_TeamSet = 
+float (float tno, float autoteam) TeamFortress_TeamSet =
 {
 	local string st;
 	local float tc;
@@ -269,11 +269,14 @@ float(float tno) TeamFortress_TeamSet =
 		}
 		return TF_FLARE_OFF;
 	}
-	bprint(2, self.netname);
-	bprint(2, " has joined Team No ");
-	st = ftos(tno);
-	bprint(2, st);
-	bprint(2, ".\n");
+	
+	bprint (2, self.netname, " has joined Team No ");
+	st = ftos (tno);
+	if (autoteam == 1)
+		bprint (2, st, ". \s[auto]\s\n"); // brown auto with gold brackets []
+	else
+		bprint (2, st, ".\n");
+	
 	stuffcmd(self, "color ");
 	tc = TeamFortress_TeamGetColor(tno) - TF_FLARE_OFF;
 	st = ftos(tc);
