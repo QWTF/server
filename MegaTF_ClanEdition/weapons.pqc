@@ -56,7 +56,6 @@ void () TeamFortress_Spotlight;
 void() MushroomFlame;
 void() DroneJet;
 void(float tno) RemoveOldAmmobox;
-string(float num) NumberToString1000;
 float(float tno) num_team_ammoboxes;
 void () W_FireBigAss;
 void() BallTouch;
@@ -6920,15 +6919,15 @@ void () TeamFortress_ID =
 				{
 					if (medicarmorheal == 1)
 					{
-						st = NumberToString1000 (trace_ent.health);
-						_l_3386 = NumberToString1000 (trace_ent.armorvalue);
+						st = ftos (trace_ent.health);
+						_l_3386 = ftos (trace_ent.armorvalue);
 						st = ftos (rint ((((trace_ent.health / trace_ent.max_health) + (trace_ent.armorvalue / trace_ent.maxarmor)) * 50)));
 						centerprint (self, "\n\n\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, "% strength\n");
 						return;
 					}
 					else
 					{
-						st = NumberToString1000 (trace_ent.health);
+						st = ftos (trace_ent.health);
 						centerprint (self, "\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " health\n");
 						return;
 					}
@@ -6937,7 +6936,7 @@ void () TeamFortress_ID =
 				{
 					if ((self.playerclass == 9))
 					{
-						st = NumberToString1000 (trace_ent.armorvalue);
+						st = ftos (trace_ent.armorvalue);
 						centerprint (self, "\n\n\n\n\n\n", trace_ent.netname, "\nFriendly ", cls, "\n", st, " armor\n");
 						return;
 					}
@@ -6954,8 +6953,8 @@ void () TeamFortress_ID =
 					{
 						if (medicarmorheal)
 						{
-							st = NumberToString1000 (trace_ent.health);
-							_l_3386 = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (trace_ent.health);
+							_l_3386 = ftos (trace_ent.armorvalue);
 							st = ftos (rint ((((trace_ent.health / trace_ent.max_health) + (trace_ent.armorvalue / trace_ent.maxarmor)) * 50)));
 							if ((trace_ent.undercover_skin != 0))
 							{
@@ -6969,7 +6968,7 @@ void () TeamFortress_ID =
 						}
 						else
 						{
-							st = NumberToString1000 (trace_ent.health);
+							st = ftos (trace_ent.health);
 							if ((trace_ent.undercover_skin != 0))
 							{
 								centerprint (self, "\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " health\n");
@@ -6985,7 +6984,7 @@ void () TeamFortress_ID =
 					{
 						if ((self.playerclass == 9))
 						{
-							st = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (trace_ent.armorvalue);
 							if ((trace_ent.undercover_skin != 0))
 							{
 								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls, "\n", st, " armor\n");
@@ -6998,7 +6997,7 @@ void () TeamFortress_ID =
 						}
 						else
 						{
-							st = NumberToString1000 (trace_ent.armorvalue);
+							st = ftos (trace_ent.armorvalue);
 							if ((trace_ent.undercover_skin != 0))
 							{
 								centerprint (self, "\n\n\n\n\n\n\n", trace_ent.undercover_name, "\nFriendly ", cls);

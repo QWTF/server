@@ -20,6 +20,7 @@ Changes:
 	- Synced remaining time with ezQuake (Up2)
 	- Match results output from TF2.9 (Up2)
 	- Mod now displays "[auto]" after a player autoteams (Up2)
+	- Updated status bar code/formatting (Up2)
 	- Removed lots of unnecessary code (Up2)
 
 Bugs Fixed:
