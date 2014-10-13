@@ -546,46 +546,6 @@ void () BigAssCarry =
 	self.nextthink = (time + 0.02);
 };
 
-/*void() MakeBall =
-{
-	local string st;
-	local float tc;
-	local float ctr;
-	local entity te;
-	ctr = TF_FLARE_LIT;
-	te = find(world, classname, "ball");
-	while (te)
-	{
-		te.movetype = 10;
-		ctr = ctr + TF_FLARE_OFF;
-		te = find(te, classname, "ball");
-	}
-	if (ctr < TF_FLARE_OFF)
-	{
-		newmis = spawn();
-		setmodel(newmis, "progs/s_light.spr");
-		newmis.movetype = 10;
-		setsize(newmis, '-16 -16 -14', '16 16 16');
-		newmis.solid = TF_FLARE_OFF;
-		newmis.classname = "ball";
-		newmis.touch = BallTouch;
-		newmis.think = BallCheck;
-		newmis.nextthink = time + 2;
-		makevectors(self.v_angle);
-		if (self.v_angle_x)
-		{
-			newmis.velocity = v_forward * 400 + v_up * 200;
-		}
-		else
-		{
-			newmis.velocity = aim(self, 10000);
-			newmis.velocity = newmis.velocity * 400;
-			newmis.velocity_z = 200;
-		}
-		setorigin(newmis, self.origin);
-	}
-};*/
-
 void () Prox =
 {
 	local vector _l_11458;

@@ -1,35 +1,25 @@
-string(entity pl) GetStatusSize;
-
 float(float tno) TeamFortress_TeamGetScore;
 float() TeamFortress_TeamGetWinner;
 float() TeamFortress_TeamGetSecond;
 
-////////////////////////////////////////////////////
-//  NumberToStringxxx functions
-//  take an integer, return a constant string.
-//
-void(entity pl, string s1) CenterPrint;
-void(entity pl, string s1, string s2) CenterPrint2;
-string(entity pl) GetStatusSize;
-
-string(entity _p_5356) DetpackTimeToString;
-
+string (entity pl) GetStatusSize;
+string (entity pl) DetpackTimeToString;
 string (entity pl) ClipSize;
-string(entity pl) DisguiseString;
-string(entity pl) SentryDetails;
-string(entity pl) SentryHealth;
-void (entity _p_3719, string _p_3720) CenterPrint =
-{
+string (entity pl) DisguiseString;
+string (entity pl) SentryDetails;
+string (entity pl) SentryHealth;
 
-	centerprint (_p_3719, _p_3720);
-	_p_3719.StatusRefreshTime = (time + 1.500000);
+void (entity pl, string s1) CenterPrint =
+{
+    centerprint (pl, s1);
+    pl.StatusRefreshTime = time + 1.5;
 };
 
 void (entity _p_3723, string _p_3724, string _p_3725) CenterPrint2 =
 {
 
 	centerprint (_p_3723, _p_3724, "\n", _p_3725);
-	_p_3723.StatusRefreshTime = (time + 1.500000);
+	_p_3723.StatusRefreshTime = (time + 1.5);
 };
 
 void (entity _p_3729, float _p_3730, string _p_3731) StatusPrint =
@@ -341,11 +331,11 @@ string (entity pl) SentryHealth =
     return ("SENTRY: 0 health"); // Why is this needed?
 };
 
-string (entity _p_5356) DetpackTimeToString =
+string (entity pl) DetpackTimeToString =
 {
 	local float _l_5357;
 
-	_l_5357 = _p_5356.health + 1;
+	_l_5357 = pl.health + 1;
 	if ((_l_5357 == 0))
 	{
 		return ("детпацк: 0  \n");
