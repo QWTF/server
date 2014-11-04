@@ -11,437 +11,463 @@ void () PreMatch_Think =
 
 // Quick and ugly hack. Leave countdown menu off by default, have user set serverinfo newcountdown on to use it.
 
-st = infokey (world, "newcountdown");
-if (st == string_null)
-		st = infokey (world, "ncd");
+	st = infokey (world, "newcountdown");
+	if (st == string_null)
+			st = infokey (world, "ncd");
 
-if ((st == "on") || (st == "1")) {
-	local string countdown;
-	local string sinfo_timelimit;
-	local string tlvalue;
-	local string sinfo_fraglimit;
-	local string flvalue;
-	local string sinfo_rj;
-	local string rjvalue;
-	local string sinfo_map;
+	// Since pipebombs/grens were enabled during pm, we need to clear them before the 10 seconds are up so they don't explode at the
+	// start of the match and open any buttons/doors
+	te = find (world, classname, "player");
+	while (te) {
+		oldself = self;
+		self = te;
 	
-	local string limits; local string scoutlim; local string soldlim; local string snipelim; local string demolim;
-	local string medlim; local string hwlim; local string pyrlim; local string spylim; local string englim; local string randlim;
-	
-	local string limit1; local string limit2; local string limit3; local string limit4; local string limit5;
-	local string limit6; local string limit7; local string limit8; local string limit9; local string limit10;
-	
-	local string classlimits; local string classlimits1; local string classlimits2; local string classlimits3; local string classlimits4; 
-	local string classlimits5; local string classlimits6; local string classlimits7; local string classlimits8;
-	
-	local string limscoutshort; local string limsnipeshort; local string limsoldshort; local string limdemoshort; local string limmedshort;
-	local string limhwshort; local string limpyrshort; local string limspyshort; local string limengshort; local string limrandshort;
-
-	local string limscoutlong; local string limsnipelong; local string limsoldlong; local string limdemolong; local string limmedlong;
-	local string limhwlong; local string limpyrlong; local string limspylong; local string limenglong; local string limrandlong;
-	
-	local string scoutpad; local string snipepad; local string soldpad; local string demopad; local string medpad; local string hwpad; local string pyrpad; local string spypad; local string engpad; local string randpad;
-	
-	
-	// If the countdown becomes default, move this code to tfort.qc in ready function, then remove the check for sbar_code_executed
-	local entity search;
-	search = find (world, classname, "player");
-	if ( (is_sbar_on == "1")  && (sbar_code_executed != "1") ) {
-		while (search) {
-			if (search.netname != string_null){
-				stuffcmd (search, "impulse 183\n"); // sbar_off because it causes the countdown menu to flicker
-				sbar_code_executed = "1";
-			}
-			search = find (search, classname, "player");
+		if (self.hook_out) {
+			Reset_Grapple (self.hook);
+			Attack_Finished (0.75);
+			self.hook_out = 1;
 		}
-	}
+		TeamFortress_RemoveTimers ();
+		gren = find (world, classname, "grenade");
 		
-	if (time_left > 0) {
-		st = ftos (time_left);
-		
-	te = find (world, classname, "player");	
-	
-		while (te) { // Countdown menu
-			if (self.hook_out < time) {
-				sound (te, 0, "buttons/switch04.wav", 1, 0);
-				self.hook_out = time + 0.9;
+		while (gren) {
+			if (gren.owner == self) {
+				gren.nextthink = time + 0.1;
 			}
+			gren = find (gren, classname, "grenade");
+		}
+		self = oldself;
+		te = find (te, classname, "player");
+    }
+
+	if ((st == "on") || (st == "1")) {
+		local string countdown;
+		local string sinfo_timelimit;
+		local string tlvalue;
+		local string sinfo_fraglimit;
+		local string flvalue;
+		local string sinfo_rj;
+		local string rjvalue;
+		local string sinfo_map;
+		
+		local string limits; local string scoutlim; local string soldlim; local string snipelim; local string demolim;
+		local string medlim; local string hwlim; local string pyrlim; local string spylim; local string englim; local string randlim;
+		
+		local string limit1; local string limit2; local string limit3; local string limit4; local string limit5;
+		local string limit6; local string limit7; local string limit8; local string limit9; local string limit10;
+		
+		local string classlimits; local string classlimits1; local string classlimits2; local string classlimits3; local string classlimits4; 
+		local string classlimits5; local string classlimits6; local string classlimits7; local string classlimits8;
+		
+		local string limscoutshort; local string limsnipeshort; local string limsoldshort; local string limdemoshort; local string limmedshort;
+		local string limhwshort; local string limpyrshort; local string limspyshort; local string limengshort; local string limrandshort;
+
+		local string limscoutlong; local string limsnipelong; local string limsoldlong; local string limdemolong; local string limmedlong;
+		local string limhwlong; local string limpyrlong; local string limspylong; local string limenglong; local string limrandlong;
+		
+		local string scoutpad; local string snipepad; local string soldpad; local string demopad; local string medpad; local string hwpad; local string pyrpad; local string spypad; local string engpad; local string randpad;
+		
+		
+		// If the countdown becomes default, move this code to tfort.qc in ready function, then remove the check for sbar_code_executed
+		local entity search;
+		search = find (world, classname, "player");
+		if ( (is_sbar_on == "1")  && (sbar_code_executed != "1") ) {
+			while (search) {
+				if (search.netname != string_null){
+					stuffcmd (search, "impulse 183\n"); // sbar_off because it causes the countdown menu to flicker
+					sbar_code_executed = "1";
+				}
+				search = find (search, classname, "player");
+			}
+		}
 			
-				//make sure timelimit, fraglimit, and rj exist and are not more than 4 characters.
-				if ((infokey (world, "timelimit")) == string_null)
-					tlvalue = "0";
-				else if ((strlen(infokey (world, "timelimit"))) > 4)
-					tlvalue = "9999";
-				else
-					tlvalue = (infokey (world, "timelimit"));
-					
-				if ((infokey (world, "fraglimit")) == string_null)
-					flvalue = "0";
-				else if ((strlen(infokey (world, "fraglimit"))) > 4)
-					flvalue = "9999";
-				else
-					flvalue = (infokey (world, "fraglimit"));
-				
-				if ((infokey (world, "rj")) == string_null)
-					rjvalue = "0";
-				else if ((strlen(infokey (world, "rj"))) > 4)
-					rjvalue = "9999";
-				else
-					rjvalue = (infokey (world, "rj"));				
-				
-				countdown = strcat("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\sCountdown\s: ", st);
-				
-				// Properly align countdown
-				if ((strlen(st)) > 1) {
-					sinfo_timelimit = strcat("  \n\n\sTimelimit\s: ",tlvalue);
-				}
-				else {
-					sinfo_timelimit = strcat("   \n\n\sTimelimit\s: ",tlvalue);
+		if (time_left > 0) {
+			st = ftos (time_left);
+			
+			te = find (world, classname, "player");	
+		
+			while (te) { // Countdown menu
+				if (self.hook_out < time) {
+					sound (te, 0, "buttons/switch04.wav", 1, 0);
+					self.hook_out = time + 0.9;
 				}
 				
-				// Properly align timelimit, support up to 9999
-				if ((strlen(tlvalue)) > 3) {
-					sinfo_fraglimit = strcat("\n\sFraglimit\s: ",flvalue);
-				}
-				else if ((strlen(tlvalue)) > 2) {
-					sinfo_fraglimit = strcat(" \n\sFraglimit\s: ",flvalue);
-				}
-				else if ((strlen(tlvalue)) > 1) {
-					sinfo_fraglimit = strcat("  \n\sFraglimit\s: ",flvalue);
-				}
-				else if ((strlen(tlvalue)) > 0) {
-					sinfo_fraglimit = strcat("   \n\sFraglimit\s: ",flvalue);
-				}
-				else {
-					sinfo_fraglimit = strcat("   \n\sFraglimit\s: ",flvalue);
-				}
-				
-				// Properly align fraglimit, support up to 9999
-				if ((strlen(flvalue)) > 3) {
-					sinfo_rj = strcat("\n\sRj\s:        ",rjvalue);
-				}
-				else if ((strlen(flvalue)) > 2) {
-					sinfo_rj = strcat(" \n\sRj\s:        ",rjvalue);
-				}
-				else if ((strlen(flvalue)) > 1) {
-					sinfo_rj = strcat("  \n\sRj\s:        ",rjvalue);
-				}
-				else if ((strlen(flvalue)) > 0) {
-					sinfo_rj = strcat("   \n\sRj\s:        ",rjvalue);
-				}
-				else {
-					sinfo_rj = strcat("   \n\sRj\s:        ",rjvalue);
-				}
-				
-				
-				// Start class limits logic
-					limscoutshort = (infokey (world, "cr_sc"));
-					limsnipeshort = (infokey (world, "cr_sn"));
-					limsoldshort = (infokey (world, "cr_so"));
-					limdemoshort = (infokey (world, "cr_de"));
-					limmedshort = (infokey (world, "cr_me"));
-					limhwshort = (infokey (world, "cr_hw"));
-					limpyrshort = (infokey (world, "cr_py"));
-					limspyshort = (infokey (world, "cr_sp"));
-					limengshort = (infokey (world, "cr_en"));
-					limrandshort = (infokey (world, "cr_ra"));
-								
-					limscoutlong = (infokey (world, "cr_scout"));
-					limsnipelong = (infokey (world, "cr_sniper"));
-					limsoldlong = (infokey (world, "cr_soldier"));
-					limdemolong = (infokey (world, "cr_demoman"));
-					limmedlong = (infokey (world, "cr_medic"));
-					limhwlong = (infokey (world, "cr_hwguy"));
-					limpyrlong = (infokey (world, "cr_pyro"));
-					limspylong = (infokey (world, "cr_spy"));
-					limenglong = (infokey (world, "cr_engineer"));
-					limrandlong = (infokey (world, "cr_random"));
-				
-				// Are there any class limits?			
-				if (((( limscoutshort	!= string_null) && (stof(limscoutshort)	!= 0)) || (( limscoutlong 	!= string_null) && (stof(limscoutlong) 	!= 0))) ||
-					((( limsnipeshort 	!= string_null) && (stof(limsnipeshort)	!= 0)) || (( limsnipelong 	!= string_null) && (stof(limsnipelong)	!= 0))) ||
-					((( limsoldshort 	!= string_null) && (stof(limsoldshort)	!= 0)) || (( limsoldlong 	!= string_null) && (stof(limsoldlong) 	!= 0))) ||
-					((( limdemoshort 	!= string_null) && (stof(limdemoshort) 	!= 0)) || (( limdemolong 	!= string_null) && (stof(limdemolong)	!= 0))) ||
-					((( limmedshort	 	!= string_null) && (stof(limmedshort) 	!= 0)) || (( limmedlong	 	!= string_null) && (stof(limmedlong) 	!= 0))) ||
-					((( limhwshort 		!= string_null) && (stof(limhwshort)	!= 0)) || (( limhwlong	 	!= string_null) && (stof(limhwlong)	 	!= 0))) ||
-					((( limpyrshort 	!= string_null) && (stof(limpyrshort)	!= 0)) || (( limpyrlong 	!= string_null) && (stof(limpyrlong)	!= 0))) ||
-					((( limspyshort 	!= string_null) && (stof(limspyshort) 	!= 0)) || (( limspylong		!= string_null) && (stof(limspylong) 	!= 0))) ||
-					((( limengshort	 	!= string_null) && (stof(limengshort) 	!= 0)) || (( limenglong 	!= string_null) && (stof(limenglong) 	!= 0))) ||
-					((( limrandshort 	!= string_null) && (stof(limrandshort)	!= 0)) || (( limrandlong 	!= string_null) && (stof(limrandlong) 	!= 0)))) {
-									
-					if (((stof(limscoutshort) == 1) 	|| (stof(limscoutlong) == 1)) &&
-						( (stof(limsnipeshort) == 1) 	|| (stof(limsnipelong) == 1)) &&
-						( (stof(limsoldshort) == 1) 	|| (stof(limsoldlong) == 1)	) &&
-						( (stof(limdemoshort) == 1) 	|| (stof(limdemolong) == 1)	) &&
-						( (stof(limmedshort) == 1) 		|| (stof(limmedlong) == 1)	) &&
-						( (stof(limhwshort) == 1) 		|| (stof(limhwlong) == 1)	) &&
-						( (stof(limpyrshort) == 1) 		|| (stof(limpyrlong) == 1)	) &&
-						( (stof(limspyshort) == 1) 		|| (stof(limspylong) == 1)	) &&
-						( (stof(limengshort) == 1) 		|| (stof(limenglong) == 1)	)) { //highlander mode. This if statement MUST come first or else we will get strcat overflow
+					//make sure timelimit, fraglimit, and rj exist and are not more than 4 characters.
+					if ((infokey (world, "timelimit")) == string_null)
+						tlvalue = "0";
+					else if ((strlen(infokey (world, "timelimit"))) > 4)
+						tlvalue = "9999";
+					else
+						tlvalue = (infokey (world, "timelimit"));
 						
-						classlimits = "           Highlander!";
-					}
-					else { // Not highlander.
-						//Scout limit
-						if (((limscoutshort != string_null) && (stof(limscoutshort) != 0)) || ((limscoutlong != string_null) && (stof(limscoutlong) != 0))) {
-							if ((limscoutshort != string_null) && (stof(limscoutshort) != 0))
-								scoutlim = strcat(limscoutshort, " Scout");
-							else
-								scoutlim = strcat(limscoutlong, " Scout");
-						
-							if ((strlen(scoutlim)) > 7) {
-								scoutpad = strcat("      ", scoutlim);
-								limit1 = strcat(scoutpad, "\n");
-							}
-							else  {
-								scoutpad = strcat("        ", scoutlim);
-								limit1 = strcat(scoutpad, " \n");
-							}
-						}
+					if ((infokey (world, "fraglimit")) == string_null)
+						flvalue = "0";
+					else if ((strlen(infokey (world, "fraglimit"))) > 4)
+						flvalue = "9999";
+					else
+						flvalue = (infokey (world, "fraglimit"));
 					
-						//Sniper limit
-						if (((limsnipeshort != string_null) && (stof(limsnipeshort) != 0)) || ((limsnipelong != string_null) && (stof(limsnipelong) != 0))) {
-							if ((limsnipeshort != string_null) && (stof(limsnipeshort) != 0))
-								snipelim = strcat(limsnipeshort, " Snipe");
-							else
-								snipelim = strcat(limsnipelong, " Snipe");
-						
-							if ((strlen(snipelim)) > 7) {
-								snipepad = strcat("      ", snipelim);
-								limit2 = strcat(snipepad, "\n");
-							}
-							else  {
-								snipepad = strcat("        ", snipelim);
-								limit2 = strcat(snipepad, " \n");
-							}
-						}
+					if ((infokey (world, "rj")) == string_null)
+						rjvalue = "0";
+					else if ((strlen(infokey (world, "rj"))) > 4)
+						rjvalue = "9999";
+					else
+						rjvalue = (infokey (world, "rj"));				
 					
-						//Soldier limit
-						if (((limsoldshort != string_null) && (stof(limsoldshort) != 0)) || ((limsoldlong != string_null) && (stof(limsoldlong) != 0))) {
-							if ((limsoldshort != string_null) && (stof(limsoldshort) != 0))
-								soldlim = strcat(limsoldshort, " Sold");
-							else
-								soldlim = strcat(limsoldlong, " Sold");
-							
-							if ((strlen(soldlim)) > 6) {
-								soldpad = strcat("     ", soldlim);
-								limit3 = strcat(soldpad, "\n");
-							}
-							else {
-								soldpad = strcat("       ", soldlim);
-								limit3 = strcat(soldpad, " \n");
-							}
-						}
-						
-						//Demoman limit
-						if (((limdemoshort != string_null) && (stof(limdemoshort) != 0)) || ((limdemolong != string_null) && (stof(limdemolong) != 0))) {
-							if ((limdemoshort != string_null) && (stof(limdemoshort) != 0))
-								demolim = strcat(limdemoshort, " Demo");
-							else
-								demolim = strcat(limdemolong, " Demo");
-							
-							if ((strlen(demolim)) > 6) {
-								demopad = strcat("     ", demolim);
-								limit4 = strcat(demopad, "\n");
-							}
-							else {
-								demopad = strcat("       ", demolim);
-								limit4 = strcat(demopad, " \n");
-							}
-						}
-						
-						//Medic limit
-						if (((limmedshort != string_null) && (stof(limmedshort) != 0)) || ((limmedlong != string_null) && (stof(limmedlong) != 0))) {
-							if ((limmedshort != string_null) && (stof(limmedshort) != 0))
-								medlim = strcat(limmedshort, " Medic");
-							else
-								medlim = strcat(limmedlong, " Medic");
-							
-							if ((strlen(medlim)) > 7) {
-								medpad = strcat("      ", medlim);
-								limit5 = strcat(medpad, "\n");
-							}
-							else {
-								medpad = strcat("        ", medlim);
-								limit5 = strcat(medpad, " \n");
-							}
-						}
+					countdown = strcat("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\sCountdown\s: ", st);
 					
-						//Hwguy limit
-						if (((limhwshort != string_null) && (stof(limhwshort) != 0)) || ((limhwlong != string_null) && (stof(limhwlong) != 0))) {
-							if ((limhwshort != string_null) && (stof(limhwshort) != 0))
-								hwlim = strcat(limhwshort, " HWGuy");
-							else
-								hwlim = strcat(limhwlong, " HWGuy");
-						
-							if ((strlen(hwlim)) > 7) {
-								hwpad = strcat("      ", hwlim);
-								limit6 = strcat(hwpad, "\n");
-							}
-							else {
-								hwpad = strcat("        ", hwlim);
-								limit6 = strcat(hwpad, " \n");
-							}
-						}
-					
-						//Pyro limit
-						if (((limpyrshort != string_null) && (stof(limpyrshort) != 0)) || ((limpyrlong != string_null) && (stof(limpyrlong) != 0))) {
-							if ((limpyrshort != string_null) && (stof(limpyrshort) != 0))
-								pyrlim = strcat(limpyrshort, " Pyro");
-							else
-								pyrlim = strcat(limpyrlong, " Pyro");
-						
-							if ((strlen(pyrlim)) > 6) {
-								pyrpad = strcat("     ", pyrlim);
-								limit7 = strcat(pyrpad, "\n");
-							}
-							else {
-								pyrpad = strcat("       ", pyrlim);
-								limit7 = strcat(pyrpad, " \n");
-							}
-						}
-					
-						//Spy limit
-						if (((limspyshort != string_null) && (stof(limspyshort) != 0)) || ((limspylong != string_null) && (stof(limspylong) != 0))) {
-							if ((limspyshort != string_null) && (stof(limspyshort) != 0))
-								spylim = strcat(limspyshort, " Spy");
-							else
-								spylim = strcat(limspylong, " Spy");
-						
-							if ((strlen(spylim)) > 5) {
-								spypad = strcat("    ", spylim);
-								limit8 = strcat(spypad, "\n");
-							}
-							else {
-								spypad = strcat("      ", spylim);
-								limit8 = strcat(spypad, " \n");
-							}
-						}
-					
-						//Eng limit
-						if (((limengshort != string_null) && (stof(limengshort) != 0)) || ((limenglong != string_null) && (stof(limenglong) != 0))) {
-							if ((limengshort != string_null) && (stof(limengshort) != 0))
-								englim = strcat(limengshort, " Eng");
-							else
-								englim = strcat(limenglong, " Eng");
-						
-							if ((strlen(englim)) > 5) {
-								engpad = strcat("    ", englim);
-								limit9 = strcat(engpad, "\n");
-							}
-							else {
-								engpad = strcat("      ", englim);
-								limit9 = strcat(engpad, " \n");
-							}
-						}
-					
-						//"Random" limit
-						if (((limrandshort != string_null) && (stof(limrandshort) != 0)) || ((limrandlong != string_null) && (stof(limrandlong) != 0))) {
-							if ((limrandshort != string_null) && (stof(limrandshort) != 0))
-								randlim = strcat(limrandshort, " Rand");
-							else
-								randlim = strcat(limrandlong, " Rand");
-						
-							if ((strlen(randlim)) > 6) {
-								randpad = strcat("     ", randlim);
-								limit10 = strcat(randpad, "\n");
-							}
-							else {
-								randpad = strcat("       ", randlim);
-								limit10 = strcat(randpad, " \n");
-							}
-						}
-					
-						classlimits1 = strcat(limit1, limit2);
-						classlimits2 = strcat(classlimits1, limit3);
-						classlimits3 = strcat(classlimits2, limit4);
-						classlimits4 = strcat(classlimits3, limit5);
-						classlimits5 = strcat(classlimits4, limit6);
-						classlimits6 = strcat(classlimits5, limit7);
-						classlimits7 = strcat(classlimits6, limit8);
-						classlimits8 = strcat(classlimits7, limit9);
-						classlimits = strcat(classlimits8, limit10);
-					}
-					
-					// Properly align rj, support up to 9999
-					if ((strlen(rjvalue)) > 3) {
-						limits = strcat("\n\n\sLimits\s:        \n",classlimits);
-					}
-					else if ((strlen(rjvalue)) > 2) {
-						limits = strcat(" \n\n\sLimits\s:        \n",classlimits);
-					}
-					else if ((strlen(rjvalue)) > 1) {
-						limits = strcat("  \n\n\sLimits\s:        \n",classlimits);
-					}
-					else if ((strlen(rjvalue)) > 0) {
-						limits = strcat("   \n\n\sLimits\s:        \n",classlimits);
+					// Properly align countdown
+					if ((strlen(st)) > 1) {
+						sinfo_timelimit = strcat("  \n\n\sTimelimit\s: ",tlvalue);
 					}
 					else {
-						limits = strcat("   \n\n\sLimits\s:        \n",classlimits);
+						sinfo_timelimit = strcat("   \n\n\sTimelimit\s: ",tlvalue);
 					}
 					
-					sinfo_map = strcat("\n\n\sMap\s: ",(infokey (world, "map")));
-				}
-				else { // no limits, so just print maps
-					// Properly align rj, support up to 9999
-					if ((strlen(rjvalue)) > 3) {
+					// Properly align timelimit, support up to 9999
+					if ((strlen(tlvalue)) > 3) {
+						sinfo_fraglimit = strcat("\n\sFraglimit\s: ",flvalue);
+					}
+					else if ((strlen(tlvalue)) > 2) {
+						sinfo_fraglimit = strcat(" \n\sFraglimit\s: ",flvalue);
+					}
+					else if ((strlen(tlvalue)) > 1) {
+						sinfo_fraglimit = strcat("  \n\sFraglimit\s: ",flvalue);
+					}
+					else if ((strlen(tlvalue)) > 0) {
+						sinfo_fraglimit = strcat("   \n\sFraglimit\s: ",flvalue);
+					}
+					else {
+						sinfo_fraglimit = strcat("   \n\sFraglimit\s: ",flvalue);
+					}
+					
+					// Properly align fraglimit, support up to 9999
+					if ((strlen(flvalue)) > 3) {
+						sinfo_rj = strcat("\n\sRj\s:        ",rjvalue);
+					}
+					else if ((strlen(flvalue)) > 2) {
+						sinfo_rj = strcat(" \n\sRj\s:        ",rjvalue);
+					}
+					else if ((strlen(flvalue)) > 1) {
+						sinfo_rj = strcat("  \n\sRj\s:        ",rjvalue);
+					}
+					else if ((strlen(flvalue)) > 0) {
+						sinfo_rj = strcat("   \n\sRj\s:        ",rjvalue);
+					}
+					else {
+						sinfo_rj = strcat("   \n\sRj\s:        ",rjvalue);
+					}
+					
+					
+					// Start class limits logic
+						limscoutshort = (infokey (world, "cr_sc"));
+						limsnipeshort = (infokey (world, "cr_sn"));
+						limsoldshort = (infokey (world, "cr_so"));
+						limdemoshort = (infokey (world, "cr_de"));
+						limmedshort = (infokey (world, "cr_me"));
+						limhwshort = (infokey (world, "cr_hw"));
+						limpyrshort = (infokey (world, "cr_py"));
+						limspyshort = (infokey (world, "cr_sp"));
+						limengshort = (infokey (world, "cr_en"));
+						limrandshort = (infokey (world, "cr_ra"));
+									
+						limscoutlong = (infokey (world, "cr_scout"));
+						limsnipelong = (infokey (world, "cr_sniper"));
+						limsoldlong = (infokey (world, "cr_soldier"));
+						limdemolong = (infokey (world, "cr_demoman"));
+						limmedlong = (infokey (world, "cr_medic"));
+						limhwlong = (infokey (world, "cr_hwguy"));
+						limpyrlong = (infokey (world, "cr_pyro"));
+						limspylong = (infokey (world, "cr_spy"));
+						limenglong = (infokey (world, "cr_engineer"));
+						limrandlong = (infokey (world, "cr_random"));
+					
+					// Are there any class limits?			
+					if (((( limscoutshort	!= string_null) && (stof(limscoutshort)	!= 0)) || (( limscoutlong 	!= string_null) && (stof(limscoutlong) 	!= 0))) ||
+						((( limsnipeshort 	!= string_null) && (stof(limsnipeshort)	!= 0)) || (( limsnipelong 	!= string_null) && (stof(limsnipelong)	!= 0))) ||
+						((( limsoldshort 	!= string_null) && (stof(limsoldshort)	!= 0)) || (( limsoldlong 	!= string_null) && (stof(limsoldlong) 	!= 0))) ||
+						((( limdemoshort 	!= string_null) && (stof(limdemoshort) 	!= 0)) || (( limdemolong 	!= string_null) && (stof(limdemolong)	!= 0))) ||
+						((( limmedshort	 	!= string_null) && (stof(limmedshort) 	!= 0)) || (( limmedlong	 	!= string_null) && (stof(limmedlong) 	!= 0))) ||
+						((( limhwshort 		!= string_null) && (stof(limhwshort)	!= 0)) || (( limhwlong	 	!= string_null) && (stof(limhwlong)	 	!= 0))) ||
+						((( limpyrshort 	!= string_null) && (stof(limpyrshort)	!= 0)) || (( limpyrlong 	!= string_null) && (stof(limpyrlong)	!= 0))) ||
+						((( limspyshort 	!= string_null) && (stof(limspyshort) 	!= 0)) || (( limspylong		!= string_null) && (stof(limspylong) 	!= 0))) ||
+						((( limengshort	 	!= string_null) && (stof(limengshort) 	!= 0)) || (( limenglong 	!= string_null) && (stof(limenglong) 	!= 0))) ||
+						((( limrandshort 	!= string_null) && (stof(limrandshort)	!= 0)) || (( limrandlong 	!= string_null) && (stof(limrandlong) 	!= 0)))) {
+										
+						if (((stof(limscoutshort) == 1) 	|| (stof(limscoutlong) == 1)) &&
+							( (stof(limsnipeshort) == 1) 	|| (stof(limsnipelong) == 1)) &&
+							( (stof(limsoldshort) == 1) 	|| (stof(limsoldlong) == 1)	) &&
+							( (stof(limdemoshort) == 1) 	|| (stof(limdemolong) == 1)	) &&
+							( (stof(limmedshort) == 1) 		|| (stof(limmedlong) == 1)	) &&
+							( (stof(limhwshort) == 1) 		|| (stof(limhwlong) == 1)	) &&
+							( (stof(limpyrshort) == 1) 		|| (stof(limpyrlong) == 1)	) &&
+							( (stof(limspyshort) == 1) 		|| (stof(limspylong) == 1)	) &&
+							( (stof(limengshort) == 1) 		|| (stof(limenglong) == 1)	)) { //highlander mode. This if statement MUST come first or else we will get strcat overflow
+							
+							classlimits = "           Highlander!";
+						}
+						else { // Not highlander.
+							//Scout limit
+							if (((limscoutshort != string_null) && (stof(limscoutshort) != 0)) || ((limscoutlong != string_null) && (stof(limscoutlong) != 0))) {
+								if ((limscoutshort != string_null) && (stof(limscoutshort) != 0))
+									scoutlim = strcat(limscoutshort, " Scout");
+								else
+									scoutlim = strcat(limscoutlong, " Scout");
+							
+								if ((strlen(scoutlim)) > 7) {
+									scoutpad = strcat("      ", scoutlim);
+									limit1 = strcat(scoutpad, "\n");
+								}
+								else  {
+									scoutpad = strcat("        ", scoutlim);
+									limit1 = strcat(scoutpad, " \n");
+								}
+							}
+						
+							//Sniper limit
+							if (((limsnipeshort != string_null) && (stof(limsnipeshort) != 0)) || ((limsnipelong != string_null) && (stof(limsnipelong) != 0))) {
+								if ((limsnipeshort != string_null) && (stof(limsnipeshort) != 0))
+									snipelim = strcat(limsnipeshort, " Snipe");
+								else
+									snipelim = strcat(limsnipelong, " Snipe");
+							
+								if ((strlen(snipelim)) > 7) {
+									snipepad = strcat("      ", snipelim);
+									limit2 = strcat(snipepad, "\n");
+								}
+								else  {
+									snipepad = strcat("        ", snipelim);
+									limit2 = strcat(snipepad, " \n");
+								}
+							}
+						
+							//Soldier limit
+							if (((limsoldshort != string_null) && (stof(limsoldshort) != 0)) || ((limsoldlong != string_null) && (stof(limsoldlong) != 0))) {
+								if ((limsoldshort != string_null) && (stof(limsoldshort) != 0))
+									soldlim = strcat(limsoldshort, " Sold");
+								else
+									soldlim = strcat(limsoldlong, " Sold");
+								
+								if ((strlen(soldlim)) > 6) {
+									soldpad = strcat("     ", soldlim);
+									limit3 = strcat(soldpad, "\n");
+								}
+								else {
+									soldpad = strcat("       ", soldlim);
+									limit3 = strcat(soldpad, " \n");
+								}
+							}
+							
+							//Demoman limit
+							if (((limdemoshort != string_null) && (stof(limdemoshort) != 0)) || ((limdemolong != string_null) && (stof(limdemolong) != 0))) {
+								if ((limdemoshort != string_null) && (stof(limdemoshort) != 0))
+									demolim = strcat(limdemoshort, " Demo");
+								else
+									demolim = strcat(limdemolong, " Demo");
+								
+								if ((strlen(demolim)) > 6) {
+									demopad = strcat("     ", demolim);
+									limit4 = strcat(demopad, "\n");
+								}
+								else {
+									demopad = strcat("       ", demolim);
+									limit4 = strcat(demopad, " \n");
+								}
+							}
+							
+							//Medic limit
+							if (((limmedshort != string_null) && (stof(limmedshort) != 0)) || ((limmedlong != string_null) && (stof(limmedlong) != 0))) {
+								if ((limmedshort != string_null) && (stof(limmedshort) != 0))
+									medlim = strcat(limmedshort, " Medic");
+								else
+									medlim = strcat(limmedlong, " Medic");
+								
+								if ((strlen(medlim)) > 7) {
+									medpad = strcat("      ", medlim);
+									limit5 = strcat(medpad, "\n");
+								}
+								else {
+									medpad = strcat("        ", medlim);
+									limit5 = strcat(medpad, " \n");
+								}
+							}
+						
+							//Hwguy limit
+							if (((limhwshort != string_null) && (stof(limhwshort) != 0)) || ((limhwlong != string_null) && (stof(limhwlong) != 0))) {
+								if ((limhwshort != string_null) && (stof(limhwshort) != 0))
+									hwlim = strcat(limhwshort, " HWGuy");
+								else
+									hwlim = strcat(limhwlong, " HWGuy");
+							
+								if ((strlen(hwlim)) > 7) {
+									hwpad = strcat("      ", hwlim);
+									limit6 = strcat(hwpad, "\n");
+								}
+								else {
+									hwpad = strcat("        ", hwlim);
+									limit6 = strcat(hwpad, " \n");
+								}
+							}
+						
+							//Pyro limit
+							if (((limpyrshort != string_null) && (stof(limpyrshort) != 0)) || ((limpyrlong != string_null) && (stof(limpyrlong) != 0))) {
+								if ((limpyrshort != string_null) && (stof(limpyrshort) != 0))
+									pyrlim = strcat(limpyrshort, " Pyro");
+								else
+									pyrlim = strcat(limpyrlong, " Pyro");
+							
+								if ((strlen(pyrlim)) > 6) {
+									pyrpad = strcat("     ", pyrlim);
+									limit7 = strcat(pyrpad, "\n");
+								}
+								else {
+									pyrpad = strcat("       ", pyrlim);
+									limit7 = strcat(pyrpad, " \n");
+								}
+							}
+						
+							//Spy limit
+							if (((limspyshort != string_null) && (stof(limspyshort) != 0)) || ((limspylong != string_null) && (stof(limspylong) != 0))) {
+								if ((limspyshort != string_null) && (stof(limspyshort) != 0))
+									spylim = strcat(limspyshort, " Spy");
+								else
+									spylim = strcat(limspylong, " Spy");
+							
+								if ((strlen(spylim)) > 5) {
+									spypad = strcat("    ", spylim);
+									limit8 = strcat(spypad, "\n");
+								}
+								else {
+									spypad = strcat("      ", spylim);
+									limit8 = strcat(spypad, " \n");
+								}
+							}
+						
+							//Eng limit
+							if (((limengshort != string_null) && (stof(limengshort) != 0)) || ((limenglong != string_null) && (stof(limenglong) != 0))) {
+								if ((limengshort != string_null) && (stof(limengshort) != 0))
+									englim = strcat(limengshort, " Eng");
+								else
+									englim = strcat(limenglong, " Eng");
+							
+								if ((strlen(englim)) > 5) {
+									engpad = strcat("    ", englim);
+									limit9 = strcat(engpad, "\n");
+								}
+								else {
+									engpad = strcat("      ", englim);
+									limit9 = strcat(engpad, " \n");
+								}
+							}
+						
+							//"Random" limit
+							if (((limrandshort != string_null) && (stof(limrandshort) != 0)) || ((limrandlong != string_null) && (stof(limrandlong) != 0))) {
+								if ((limrandshort != string_null) && (stof(limrandshort) != 0))
+									randlim = strcat(limrandshort, " Rand");
+								else
+									randlim = strcat(limrandlong, " Rand");
+							
+								if ((strlen(randlim)) > 6) {
+									randpad = strcat("     ", randlim);
+									limit10 = strcat(randpad, "\n");
+								}
+								else {
+									randpad = strcat("       ", randlim);
+									limit10 = strcat(randpad, " \n");
+								}
+							}
+						
+							classlimits1 = strcat(limit1, limit2);
+							classlimits2 = strcat(classlimits1, limit3);
+							classlimits3 = strcat(classlimits2, limit4);
+							classlimits4 = strcat(classlimits3, limit5);
+							classlimits5 = strcat(classlimits4, limit6);
+							classlimits6 = strcat(classlimits5, limit7);
+							classlimits7 = strcat(classlimits6, limit8);
+							classlimits8 = strcat(classlimits7, limit9);
+							classlimits = strcat(classlimits8, limit10);
+						}
+						
+						// Properly align rj, support up to 9999
+						if ((strlen(rjvalue)) > 3) {
+							limits = strcat("\n\n\sLimits\s:        \n",classlimits);
+						}
+						else if ((strlen(rjvalue)) > 2) {
+							limits = strcat(" \n\n\sLimits\s:        \n",classlimits);
+						}
+						else if ((strlen(rjvalue)) > 1) {
+							limits = strcat("  \n\n\sLimits\s:        \n",classlimits);
+						}
+						else if ((strlen(rjvalue)) > 0) {
+							limits = strcat("   \n\n\sLimits\s:        \n",classlimits);
+						}
+						else {
+							limits = strcat("   \n\n\sLimits\s:        \n",classlimits);
+						}
+						
 						sinfo_map = strcat("\n\n\sMap\s: ",(infokey (world, "map")));
 					}
-					else if ((strlen(rjvalue)) > 2) {
-						sinfo_map = strcat(" \n\n\sMap\s: ",(infokey (world, "map")));
+					else { // no limits, so just print maps
+						// Properly align rj, support up to 9999
+						if ((strlen(rjvalue)) > 3) {
+							sinfo_map = strcat("\n\n\sMap\s: ",(infokey (world, "map")));
+						}
+						else if ((strlen(rjvalue)) > 2) {
+							sinfo_map = strcat(" \n\n\sMap\s: ",(infokey (world, "map")));
+						}
+						else if ((strlen(rjvalue)) > 1) {
+							sinfo_map = strcat("  \n\n\sMap\s: ",(infokey (world, "map")));
+						}
+						else if ((strlen(rjvalue)) > 0) {
+							sinfo_map = strcat("   \n\n\sMap\s: ",(infokey (world, "map")));
+						}
+						else {
+							sinfo_map = strcat("   \n\n\sMap\s: ",(infokey (world, "map")));
+						}
 					}
-					else if ((strlen(rjvalue)) > 1) {
-						sinfo_map = strcat("  \n\n\sMap\s: ",(infokey (world, "map")));
-					}
-					else if ((strlen(rjvalue)) > 0) {
-						sinfo_map = strcat("   \n\n\sMap\s: ",(infokey (world, "map")));
-					}
-					else {
-						sinfo_map = strcat("   \n\n\sMap\s: ",(infokey (world, "map")));
-					}
-				}
-			
-			
-			centerprint (te, countdown, sinfo_timelimit, sinfo_fraglimit, sinfo_rj, limits, sinfo_map); // Print countdown menu
-			te = find(te, classname, "player");
+				
+				
+				centerprint (te, countdown, sinfo_timelimit, sinfo_fraglimit, sinfo_rj, limits, sinfo_map); // Print countdown menu
+				te = find(te, classname, "player");
+			}
+			self.nextthink = time + 1;
+			return;
 		}
-		self.nextthink = time + 1;
-		return;
-    }
-	
-	if (sbar_code_executed == "1")
-		stuffcmd (search, "impulse 182\n"); // sbar_on
 		
-	localcmd ("serverinfo status2 Match\n");
-	localcmd ("serverinfo status Match\n");
-	
-    bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
-    
-	if (game_locked)
-		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
-}
-else { // no countdown menu, default countdown instead
-	
-	if (time_left > 1) {
-        st = ftos (time_left);
-        bprint2 (PRINT_HIGH, st, " seconds.\n");
-        self.nextthink = time + 1;
-        return;
-    }
-	else if (time_left > 0) {
-		bprint (PRINT_HIGH, "1 second.\n");
-        self.nextthink = time + 1;
-        return;
-    }
-	
-	
-	localcmd ("serverinfo status2 Match\n");
-	localcmd ("serverinfo status Match\n");
-	bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
+		if (sbar_code_executed == "1")
+			stuffcmd (search, "impulse 182\n"); // sbar_on
+			
+		localcmd ("serverinfo status2 Match\n");
+		localcmd ("serverinfo status Match\n");
 		
-	if (game_locked)
-		bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
-}
+		bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
+		
+		if (game_locked)
+			bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
+	}
+	else { // no countdown menu, default countdown instead
+		
+		if (time_left > 1) {
+			st = ftos (time_left);
+			bprint2 (PRINT_HIGH, st, " seconds.\n");
+			self.nextthink = time + 1;
+			return;
+		}
+		else if (time_left > 0) {
+			bprint (PRINT_HIGH, "1 second.\n");
+			self.nextthink = time + 1;
+			return;
+		}
+		
+		
+		localcmd ("serverinfo status2 Match\n");
+		localcmd ("serverinfo status Match\n");
+		bprint (PRINT_HIGH, "MATCH BEGINS NOW\n");
+			
+		if (game_locked)
+			bprint (PRINT_HIGH, "GAME IS NOW LOCKED\n");
+	}
+
     team4score = 0;
     team3score = 0;
     team2score = 0;
