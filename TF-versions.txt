@@ -1,5 +1,5 @@
 *============================================================================*
-* TeamFortress v2.94beta                                     TF-versions.txt *
+* TeamFortress v2.94                                         TF-versions.txt *
 *============================================================================*
 
 The original QuakeWorld TeamFortress 2.9 + upgrades. No gameplay changes.
@@ -11,7 +11,7 @@ http://www.quakeworld.nu
 Changelog:
 
 --------------------------------------------
-Version 2.94beta				  09/06/2014
+Version 2.94     				  11/04/2014
 --------------------------------------------
 
 Changes:
@@ -23,10 +23,10 @@ Changes:
 		- The number of cells you receive has not been changed
 	- Removed "There are no other players on your team" message. It's not necessary (Up2)
 	- Removed Bindings menu (hifi)
-	- Misc code clean up (Up2)
 	- Setinfo ec/exec_class is no longer required. TF will always try to exec a class script (Up2)
 	- Removed teamplay equalization, probably never used (Up2)
 	- "Query" command updated with equalization and teamplay text removed (Up2)
+	- Misc code clean up (Up2)
 
 Bugs Fixed:
 	- Bugfix from tf2.9: Caltrops will disappear if they don't touch the ground within 10 seconds (Empezar/fifi)
@@ -34,10 +34,10 @@ Bugs Fixed:
 	- Bugfix from tf2.9: Changeclass works in all game modes (Up2)
 	- Bugfix from tf2.9: Fixed flaginfo message when flag is captured to not show server info (e.g. MVDSV version) (Empezar)
 	- /Rpickup is now random every time it runs (Up2)
+	- No more having to /ready or /rpickup multiple times before it registers
 	
 Known Bugs:
 	- Ceasefire may not work correctly since /ready system has been introduced. Needs testing
-	- Some players may have to /ready multiple times before it registers, doesn't keep correct count
 
 --------------------------------------------
 Version 2.93.3					  06/20/2014
