@@ -96,13 +96,13 @@ float () TeamFortress_TeamPutPlayerInTeam =
 float (float tno) TeamFortress_TeamGetColor =
 {
     if (tno == 1)
-		return (BLUE);
+		return (DARKBLUE);
     if (tno == 2)
 		return (RED);
     if (tno == 3)
 		return (YELLOW);
     if (tno == 4)
-		return (GREEN);
+		return (DARKGREEN);
 		
     return (0);
 };
@@ -110,7 +110,7 @@ float (float tno) TeamFortress_TeamGetColor =
 void (float tno) TeamFortress_TeamSetColor =
 {
     if (tno == 1) {
-		team1col = BLUE;
+		team1col = DARKBLUE;
 		return;
     }
     if (tno == 2) {
@@ -122,7 +122,7 @@ void (float tno) TeamFortress_TeamSetColor =
 		return;
     }
     if (tno == 4) {
-		team4col = GREEN;
+		team4col = DARKGREEN;
 		return;
     }
 };
